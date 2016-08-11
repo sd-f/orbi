@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CameraControlScript : MonoBehaviour
 {
-
+    // keyboard + touch
     private Vector3 firstpoint; //change type on Vector3
     private Vector3 secondpoint;
     private float xAngle = 0.0F; //angle for axes x for rotation
@@ -12,27 +12,35 @@ public class CameraControlScript : MonoBehaviour
     private float yAngTemp = 0.0F;
     public float speed = 100.0F;
 
-    // gyro
-    private float initialYAngle = 0f;
-    private float appliedGyroYAngle = 0f;
-    private float calibrationYAngle = 0f;
 
     // Use this for initialization
     void Start()
     {
-        Application.targetFrameRate = 60;
-        initialYAngle = transform.eulerAngles.y;
-        xAngle = 0.0F;
-        yAngle = 0.0F;
+        Application.targetFrameRate = 1;
         this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
     }
 
     void Update()
     {
-        touchCameraRotation();
-        keyCameraRotation();
-        ApplyGyroRotation();
-        ApplyCalibration();
+        //Debug.Log("gyro enabled " + Input.gyro.enabled);
+        //Debug.Log("gyro supported " + SystemInfo.supportsGyroscope);
+        //touchCameraRotation();
+        //keyCameraRotation();
+        //ApplyGyroRotation();
+        //ApplyCalibration();
+        //var x = Input.gyro.rotationRateUnbiased.x;
+        //var y = Input.gyro.rotationRateUnbiased.y;
+        //var z = Input.gyro.rotationRateUnbiased.z;
+        //Quaternion rotFix = new Quaternion(Input.gyro.attitude.x, Input.gyro.attitude.y, -Input.gyro.attitude.z, -Input.gyro.attitude.w);
+        //Debug.Log("x " + Input.gyro.attitude.x + " y " + Input.gyro.attitude.y + " z " + Input.gyro.attitude.z);
+        //transform.eulerAngles = new Vector3(x, y, z);
+        //transform.localRotation = rotFix;
+        Quaternion newRot = Quaternion.Euler(Input.compass.rawVector.y, -Input.compass.rawVector.x, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, newRot, 0.1f * Time.deltaTime);
+        //Debug.Log(Input.compass);
+        //Debug.Log(Input.compass.rawVector);
+        //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(xRot, yRot, zRot)), Time.deltaTime * rotSpeed);
+        //Debug.Log(transform.rotation);
     }
 
     void keyCameraRotation()
@@ -84,29 +92,4 @@ public class CameraControlScript : MonoBehaviour
         }
     }
 
-    void OnGUI()
-    {
-        if (GUILayout.Button("Calibrate", GUILayout.Width(300), GUILayout.Height(100)))
-        {
-            CalibrateYAngle();
-        }
-    }
-
-    public void CalibrateYAngle()
-    {
-        calibrationYAngle = appliedGyroYAngle - initialYAngle; // Offsets the y angle in case it wasn't 0 at edit time.
-    }
-
-    void ApplyGyroRotation()
-    {
-        transform.rotation = Input.gyro.attitude;
-        transform.Rotate(0f, 0f, 180f, Space.Self); // Swap "handedness" of quaternion from gyro.
-        transform.Rotate(90f, 180f, 0f, Space.World); // Rotate to make sense as a camera pointing out the back of your device.
-        appliedGyroYAngle = transform.eulerAngles.y; // Save the angle around y axis for use in calibration.
-    }
-
-    void ApplyCalibration()
-    {
-        transform.Rotate(0f, -calibrationYAngle, 0f, Space.World); // Rotates y angle back however much it deviated when calibrationYAngle was saved.
-    }
 }

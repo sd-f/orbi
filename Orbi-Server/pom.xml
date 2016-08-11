@@ -9,11 +9,14 @@
     <name>orbi-server</name>
 
     <properties>
+		<comuni.nexus.repo.url>https://softwaredesign.foundation/nexus/content/repositories</comuni.nexus.repo.url>
+	
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- delta spike -->
         <deltaspike.version>1.7.0</deltaspike.version>
         <eclipselink.version>2.6.3</eclipselink.version>
+		
     </properties>
 
     <dependencies>
@@ -109,6 +112,21 @@
             </plugin>
         </plugins>
     </build>
+	
+	<distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>sd.f-releases</id>
+            <name>softwaredesign.foundation Releases</name>
+            <url>${comuni.nexus.repo.url}/sd.f-releases</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>sd.f-snapshots</id>
+            <name>softwaredesign.foundation Snapshots</name>
+            <url>${comuni.nexus.repo.url}/sd.f-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <repositories>
         <repository>

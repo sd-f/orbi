@@ -14,7 +14,9 @@ public class InitScript : MonoBehaviour
 
     void Start()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         UdpateWorld(47.067700d, 15.555200d, 0.0d);
+       
     }
 
     void Update()

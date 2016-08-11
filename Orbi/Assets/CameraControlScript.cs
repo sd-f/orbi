@@ -12,16 +12,18 @@ public class CameraControlScript : MonoBehaviour
     private float yAngTemp = 0.0F;
     public float speed = 100.0F;
 
+    FloatFilter magneticFilter = new AngleFilter(10);
 
     // Use this for initialization
     void Start()
     {
-        Application.targetFrameRate = 1;
+        SensorHelper.ActivateRotation();
         this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
     }
 
     void Update()
     {
+        transform.rotation = SensorHelper.rotation;
         //Debug.Log("gyro enabled " + Input.gyro.enabled);
         //Debug.Log("gyro supported " + SystemInfo.supportsGyroscope);
         //touchCameraRotation();
@@ -35,8 +37,8 @@ public class CameraControlScript : MonoBehaviour
         //Debug.Log("x " + Input.gyro.attitude.x + " y " + Input.gyro.attitude.y + " z " + Input.gyro.attitude.z);
         //transform.eulerAngles = new Vector3(x, y, z);
         //transform.localRotation = rotFix;
-        Quaternion newRot = Quaternion.Euler(Input.compass.rawVector.y, -Input.compass.rawVector.x, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, newRot, 0.1f * Time.deltaTime);
+        //Quaternion newRot = Quaternion.Euler(Input.compass.rawVector.y, -Input.compass.rawVector.x, 0);
+        //transform.rotation = Quaternion.Slerp(transform.rotation, newRot, 0.1f * Time.deltaTime);
         //Debug.Log(Input.compass);
         //Debug.Log(Input.compass.rawVector);
         //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(new Vector3(xRot, yRot, zRot)), Time.deltaTime * rotSpeed);

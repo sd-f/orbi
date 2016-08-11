@@ -95,7 +95,7 @@
                 <artifactId>tomee-maven-plugin</artifactId>
                 <version>7.0.1</version>
                 <configuration>
-                    <context>ROOT</context>
+                    <context>api</context>
                     <tomeeVersion>7.0.1</tomeeVersion>
                     <tomeeClassifier>plus</tomeeClassifier>
                     <reloadOnUpdate>true</reloadOnUpdate>

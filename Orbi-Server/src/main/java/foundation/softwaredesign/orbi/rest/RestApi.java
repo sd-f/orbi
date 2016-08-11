@@ -25,7 +25,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
-@Path("/api")
+@Path("/")
 @Produces({APPLICATION_XML, APPLICATION_JSON})
 @RequestScoped
 public class RestApi {

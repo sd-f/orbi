@@ -17,8 +17,12 @@ public class CameraControlScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        Sensor.Activate(Sensor.Type.MagneticField);
+        Sensor.Activate(Sensor.Type.Accelerometer);
         SensorHelper.ActivateRotation();
-        this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
+        //this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
+        //transform.rotation = Quaternion.Euler(transform.rotation.x, magneticFilter.Update(Sensor.GetOrientation().x), 0);
+        //InvokeRepeating("UpdateDirectionFromCompass", 0, 5);
     }
 
     void Update()

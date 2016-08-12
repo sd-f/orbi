@@ -122,7 +122,7 @@ public class RestApi {
 
     private World getWorld(BigDecimal latitude, BigDecimal longitude) {
         World world = new World();
-        List<Cube> cubeList = cubeRepository.findAll();
+        List<Cube> cubeList = cubeRepository.findCubesAround(latitude, longitude);
         world.setCubes(cubeList);
         // TODO elevation
         Position position =  getPosition(latitude,longitude);

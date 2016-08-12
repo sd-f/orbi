@@ -17,9 +17,13 @@ public class MenuScript : MonoBehaviour {
     private Button buttonAddCubeOk;
     private Button buttonAddCubeCancel;
 
+    private GameObject mapsPlane;
+
     private MeshRenderer cubeToCraft;
 
     void Start () {
+
+        mapsPlane = GameObject.Find("planeBackgroundMaps");
 
         buttonAddCube = GameObject.Find("buttonAddCube").GetComponent<Button>();
         buttonAddCubeOk = GameObject.Find("buttonAddCubeOk").GetComponent<Button>();
@@ -32,14 +36,14 @@ public class MenuScript : MonoBehaviour {
         buttonCamera = GameObject.Find("buttonChangeBackgroundToCamera").GetComponent<Button>();
         buttonMaps = GameObject.Find("buttonChangeBackgroundToMaps").GetComponent<Button>();
 
-        buttonMaps.interactable = startInMapsView;
-        buttonCamera.interactable = !startInMapsView;
+        buttonMaps.interactable = !startInMapsView;
+        buttonCamera.interactable = startInMapsView;
 
         bgCamera = GameObject.Find("planeBackgroundCamera").GetComponent<MeshRenderer>();
         bgMaps = GameObject.Find("planeBackgroundMaps").GetComponent<MeshRenderer>();
 
-        bgCamera.enabled = startInMapsView;
-        bgMaps.enabled = !startInMapsView;
+        bgCamera.enabled = !startInMapsView;
+        bgMaps.enabled = startInMapsView;
 
         cubeToCraft = GameObject.Find("cubeToCraft").GetComponent<MeshRenderer>();
         cubeToCraft.enabled = false;
@@ -48,6 +52,14 @@ public class MenuScript : MonoBehaviour {
 	void Update () {
 	
 	}
+
+    FloatFilter magneticFilter = new AngleFilter(10);
+
+    public void ReadCompass()
+    {
+        mapsPlane.transform.rotation = Quaternion.Euler(transform.rotation.x, magneticFilter.Update(Sensor.GetOrientation().x), 0);
+        
+    }
 
     public void ToggleMap()
     {
@@ -123,4 +135,6 @@ public class MenuScript : MonoBehaviour {
             Debug.Log("WWW Error: " + www.error);
         }
     }
+
+
 }

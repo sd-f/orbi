@@ -3,20 +3,20 @@ using System.Collections;
 
 public class LocationScript : MonoBehaviour {
 
-    public static double latitude = 0.0f;
-    public static double longitude = 0.0f;
+    public static double latitude = 47.067585f;
+    public static double longitude = 15.555209f;
     public static double elevation = 0.0f;
 
     IEnumerator Start()
     {
-        Debug.Log("location starting...");
+        //Debug.Log("location starting...");
         // First, check if user has location service enabled
         if (!Input.location.isEnabledByUser)
             yield break;
 
         // Start service before querying location
         Input.location.Start();
-        Debug.Log("location started");
+        //Debug.Log("location started");
         // Wait until service initializes
         int maxWait = 20;
         while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
@@ -57,6 +57,9 @@ public class LocationScript : MonoBehaviour {
 
     void UpdateWorld()
     {
+        latitude = Input.location.lastData.latitude;
+        longitude = Input.location.lastData.longitude;
+        elevation = Input.location.lastData.altitude;
         InitScript initScript = GameObject.FindGameObjectWithTag("cubes_container").GetComponent<InitScript>();
         initScript.UdpateWorld(); // todo elevation
     }

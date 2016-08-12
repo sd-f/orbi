@@ -3,6 +3,9 @@ using System.Collections;
 
 public class LocationScript : MonoBehaviour {
 
+    public static double latitude = 0.0f;
+    public static double longitude = 0.0f;
+    public static double elevation = 0.0f;
 
     IEnumerator Start()
     {
@@ -55,7 +58,7 @@ public class LocationScript : MonoBehaviour {
     void UpdateWorld()
     {
         InitScript initScript = GameObject.FindGameObjectWithTag("cubes_container").GetComponent<InitScript>();
-        initScript.UdpateWorld(Input.location.lastData.latitude, Input.location.lastData.longitude, 0.0d); // todo elevation
+        initScript.UdpateWorld(); // todo elevation
     }
 
     void OnDestroy()

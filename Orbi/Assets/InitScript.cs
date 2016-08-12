@@ -6,6 +6,8 @@ using System.Net;
 
 public class InitScript : MonoBehaviour
 {
+    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     void Awake()
@@ -15,8 +17,6 @@ public class InitScript : MonoBehaviour
     void Start()
     {
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
-        UdpateWorld(47.067700d, 15.555200d, 0.0d);
-       
     }
 
     void Update()
@@ -26,9 +26,13 @@ public class InitScript : MonoBehaviour
             Application.Quit();
     }
 
-    public void UdpateWorld(double latitude, double longitude, double elevation)
+    public void UdpateWorld()
     {
-        
+
+        double latitude = LocationScript.latitude;
+        double longitude = LocationScript.longitude;
+        //double elevation = 0.0d;
+
         Debug.Log("UpdateWorld");
         if (GameObject.FindGameObjectWithTag("maps_container"))
         {
@@ -44,7 +48,7 @@ public class InitScript : MonoBehaviour
         
         Debug.Log("UpdateWorld " + latitude);
 
-        string uri = "https://softwaredesign.foundation/orbi/api/world";
+        string uri = serverUri + "/world";
         uri = uri + "?";
         uri = uri + "latitude=" + latitude;
         uri = uri + "&";
@@ -54,49 +58,52 @@ public class InitScript : MonoBehaviour
         Dictionary<string,string> headers = new Dictionary<string, string>();
         headers.Add("Accept", "application/json");
         WWW www = new WWW(uri, null, headers);
-        StartCoroutine(WaitForRequest(www));
+        StartCoroutine(WaitForWorldRequest(www));
     }
 
-    IEnumerator WaitForRequest(WWW www)
+    IEnumerator WaitForWorldRequest(WWW www)
     {
         yield return www;
 
         // check for errors
         if (www.error == null)
         {
-            JSONObject world = new JSONObject(www.text);
-            //Debug.Log("world " + world);
-            if (world.type == JSONObject.Type.OBJECT)
-            {
-                // remove old cubes
-                GameObject[] oldCubes = GameObject.FindGameObjectsWithTag("world_cube");
-
-                foreach (GameObject cube in oldCubes)
-                {
-                    GameObject.Destroy(cube);
-                }
-                JSONObject cubes = (JSONObject)world.list[0];
-                foreach (JSONObject cube in cubes.list)
-                {
-                    //Debug.Log("adding cube " + cube);
-
-                    GameObject newCube = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                    // Modify the clone to your heart's content
-                    newCube.transform.parent = GameObject.FindGameObjectWithTag("cubes_container").transform;
-                    newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
-                    newCube.tag = "world_cube";
-                    newCube.name = "cube_" + cube.list[1].n;
-                    newCube.transform.position = new Vector3(cube.list[0].list[0].n, cube.list[0].list[1].n, cube.list[0].list[2].n);
-                }
-            }
-            else
-            {
-                //Debug.Log("Sorry nothing here, start create your world!");
-            }
+            ConstructWorld(new JSONObject(www.text));
         }
         else
         {
             Debug.Log("WWW Error: " + www.error);
+        }
+    }
+
+    public void ConstructWorld(JSONObject world)
+    {
+        if (world.type == JSONObject.Type.OBJECT)
+        {
+            // remove old cubes
+            GameObject[] oldCubes = GameObject.FindGameObjectsWithTag("world_cube");
+
+            foreach (GameObject cube in oldCubes)
+            {
+                GameObject.Destroy(cube);
+            }
+            JSONObject cubes = (JSONObject)world.list[0];
+            foreach (JSONObject cube in cubes.list)
+            {
+                //Debug.Log("adding cube " + cube);
+
+                GameObject newCube = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                // Modify the clone to your heart's content
+                newCube.transform.parent = GameObject.FindGameObjectWithTag("cubes_container").transform;
+                newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
+                newCube.tag = "world_cube";
+                newCube.name = "cube_" + cube.list[1].n;
+                newCube.transform.position = new Vector3(cube.list[0].list[0].n, cube.list[0].list[1].n, cube.list[0].list[2].n);
+            }
+        }
+        else
+        {
+            //Debug.Log("Sorry nothing here, start create your world!");
         }
     }
 

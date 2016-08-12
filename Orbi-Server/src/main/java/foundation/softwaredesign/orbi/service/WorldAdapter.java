@@ -45,22 +45,51 @@ public class WorldAdapter {
         return false;
     }
 
+    private BigDecimal scaleToVirtual(BigDecimal real, BigDecimal position, Integer scale) {
+        BigDecimal newCoordinate = real.subtract(position);
+        return newCoordinate.multiply(new BigDecimal(scale));
+    }
+
+    private BigDecimal scaleToReal(BigDecimal virtual, BigDecimal position, Integer scale) {
+        BigDecimal newCoordinate = virtual.divide(new BigDecimal(scale));
+        return newCoordinate.add(position);
+    }
+
     public void convertToVirtual(World world, Position position) {
         if (isWorldOk(world) && isPositionOk(position)) {
             world.getCubes()
                     .stream()
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
-                        BigDecimal newX = cube.getCoordinates().getX().subtract(position.getLongitute());
-                        newX = newX.multiply(new BigDecimal(50000));
-                        cube.getCoordinates().setX(newX);
-                        BigDecimal newY = cube.getCoordinates().getY().subtract(position.getElevation());
-                        newY = newY.multiply(new BigDecimal(50000));
-                        cube.getCoordinates().setY(newY);
-                        BigDecimal newZ = cube.getCoordinates().getZ().subtract(position.getLatitude());
-                        newZ = newZ.multiply(new BigDecimal(50000));
-                        cube.getCoordinates().setZ(newZ);
+                        cube.getCoordinates().setX(
+                                scaleToVirtual(cube.getCoordinates().getX(), position.getLongitute(), 50000)
+                        );
+                        cube.getCoordinates().setY(
+                                scaleToVirtual(cube.getCoordinates().getY(), position.getElevation(), 1)
+                        );
+                        cube.getCoordinates().setZ(
+                                scaleToVirtual(cube.getCoordinates().getZ(), position.getLatitude(), 50000)
+                        );
             });
+        }
+    }
+
+    public void convertToReal(World world, Position position) {
+        if (isWorldOk(world) && isPositionOk(position)) {
+            world.getCubes()
+                    .stream()
+                    .filter(this::isCubeOk)
+                    .forEach(cube -> {
+                        cube.getCoordinates().setX(
+                                scaleToReal(cube.getCoordinates().getX(), position.getLongitute(), 50000)
+                        );
+                        cube.getCoordinates().setY(
+                                scaleToReal(cube.getCoordinates().getY(), position.getElevation(), 1)
+                        );
+                        cube.getCoordinates().setZ(
+                                scaleToReal(cube.getCoordinates().getZ(), position.getLatitude(), 50000)
+                        );
+                    });
         }
     }
 }

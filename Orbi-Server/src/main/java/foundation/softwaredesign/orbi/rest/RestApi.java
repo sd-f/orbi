@@ -74,8 +74,8 @@ public class RestApi {
     @Path("/elevation")
     @Produces(MediaType.TEXT_PLAIN)
     public String elevation(@NotNull @QueryParam("user") String user,
-                               @NotNull @QueryParam("longitude") BigDecimal longitude,
-                               @NotNull @QueryParam("latitude") BigDecimal latitude) {
+                            @NotNull @QueryParam("latitude") BigDecimal latitude,
+                            @NotNull @QueryParam("longitude") BigDecimal longitude) {
         Client client = ClientBuilder.newClient();
 
         String locationString =  new Location(latitude,longitude).toString();
@@ -97,18 +97,41 @@ public class RestApi {
 
     @GET
     @Path("/world")
-    public World plane(@NotNull @QueryParam("user") String user,
-                       @NotNull @QueryParam("longitude") BigDecimal longitude,
-                       @NotNull @QueryParam("latitude") BigDecimal latitude) {
+    public World world(@NotNull @QueryParam("user") String user,
+                       @NotNull @QueryParam("latitude") BigDecimal latitude,
+                       @NotNull @QueryParam("longitude") BigDecimal longitude) {
+        System.out.println("requesting world");
+        return getWorld(latitude,longitude);
+    }
 
+    @POST
+    @Path("/create")
+    @Consumes({APPLICATION_XML, APPLICATION_JSON})
+    public World create(@NotNull @QueryParam("user") String user,
+                        @NotNull @QueryParam("latitude") BigDecimal latitude,
+                        @NotNull @QueryParam("longitude") BigDecimal longitude,
+                        World world) {
+        System.out.println("creating cubes");
+        worldAdapter.convertToReal(world, getPosition(latitude,longitude));
+        for (Cube cube: world.getCubes()) {
+            cubeRepository.save(cube);
+            System.out.println("Saved cube");
+        }
+        return getWorld(latitude,longitude);
+    }
+
+    private World getWorld(BigDecimal latitude, BigDecimal longitude) {
         World world = new World();
         List<Cube> cubeList = cubeRepository.findAll();
         world.setCubes(cubeList);
         // TODO elevation
-        Position position =  new Position(latitude,longitude,new BigDecimal(0.0));
-        System.out.println("Requestion world at " + position);
+        Position position =  getPosition(latitude,longitude);
         worldAdapter.convertToVirtual(world, position);
         return world;
+    }
+
+    private Position getPosition(BigDecimal latitude, BigDecimal longitude) {
+        return new Position(latitude,longitude,new BigDecimal(0.0));
     }
 
 }

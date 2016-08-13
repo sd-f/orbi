@@ -1,7 +1,7 @@
 package foundation.softwaredesign.orbi.service;
 
 import foundation.softwaredesign.orbi.model.real.Position;
-import foundation.softwaredesign.orbi.model.virtual.Cube;
+import foundation.softwaredesign.orbi.model.virtual.GameObject;
 import foundation.softwaredesign.orbi.model.virtual.World;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,7 +17,7 @@ import static java.util.Objects.nonNull;
 public class WorldAdapter {
 
     private Boolean isWorldOk(World world) {
-        if (nonNull(world) && nonNull(world.getCubes()) && !world.getCubes().isEmpty()) {
+        if (nonNull(world) && nonNull(world.getGameObjects()) && !world.getGameObjects().isEmpty()) {
             return true;
         }
         return false;
@@ -34,11 +34,11 @@ public class WorldAdapter {
         return false;
     }
 
-    private Boolean isCubeOk(Cube cube) {
-        if (nonNull(cube) && nonNull(cube.getCoordinates())) {
-            if (nonNull(cube.getCoordinates().getX())
-                    && nonNull(cube.getCoordinates().getY())
-                    && nonNull(cube.getCoordinates().getZ())) {
+    private Boolean isCubeOk(GameObject gameObject) {
+        if (nonNull(gameObject) && nonNull(gameObject.getPosition())) {
+            if (nonNull(gameObject.getPosition().getX())
+                    && nonNull(gameObject.getPosition().getY())
+                    && nonNull(gameObject.getPosition().getZ())) {
                 return true;
             }
         }
@@ -57,18 +57,18 @@ public class WorldAdapter {
 
     public void convertToVirtual(World world, Position position) {
         if (isWorldOk(world) && isPositionOk(position)) {
-            world.getCubes()
+            world.getGameObjects()
                     .stream()
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
-                        cube.getCoordinates().setX(
-                                scaleToVirtual(cube.getCoordinates().getX(), position.getLongitute(), 50000)
+                        cube.getPosition().setX(
+                                scaleToVirtual(cube.getPosition().getX(), position.getLongitute(), 50000)
                         );
-                        cube.getCoordinates().setY(
-                                scaleToVirtual(cube.getCoordinates().getY(), position.getElevation(), 1)
+                        cube.getPosition().setY(
+                                scaleToVirtual(cube.getPosition().getY(), position.getElevation(), 1)
                         );
-                        cube.getCoordinates().setZ(
-                                scaleToVirtual(cube.getCoordinates().getZ(), position.getLatitude(), 50000)
+                        cube.getPosition().setZ(
+                                scaleToVirtual(cube.getPosition().getZ(), position.getLatitude(), 50000)
                         );
             });
         }
@@ -76,18 +76,18 @@ public class WorldAdapter {
 
     public void convertToReal(World world, Position position) {
         if (isWorldOk(world) && isPositionOk(position)) {
-            world.getCubes()
+            world.getGameObjects()
                     .stream()
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
-                        cube.getCoordinates().setX(
-                                scaleToReal(cube.getCoordinates().getX(), position.getLongitute(), 50000)
+                        cube.getPosition().setX(
+                                scaleToReal(cube.getPosition().getX(), position.getLongitute(), 50000)
                         );
-                        cube.getCoordinates().setY(
-                                scaleToReal(cube.getCoordinates().getY(), position.getElevation(), 1)
+                        cube.getPosition().setY(
+                                scaleToReal(cube.getPosition().getY(), position.getElevation(), 1)
                         );
-                        cube.getCoordinates().setZ(
-                                scaleToReal(cube.getCoordinates().getZ(), position.getLatitude(), 50000)
+                        cube.getPosition().setZ(
+                                scaleToReal(cube.getPosition().getZ(), position.getLatitude(), 50000)
                         );
                     });
         }

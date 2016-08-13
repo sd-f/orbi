@@ -7,18 +7,18 @@ import java.math.BigInteger;
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
-public class Cube {
+public class GameObject {
 
     private BigInteger id;
 
-    private Coordinates coordinates;
+    private Position position;
 
-    public Coordinates getCoordinates() {
-        return coordinates;
+    public Position getPosition() {
+        return position;
     }
 
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     public BigInteger getId() {

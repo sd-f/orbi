@@ -5,15 +5,15 @@ import java.math.BigDecimal;
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
-public class Coordinates {
+public class Position {
     private BigDecimal x;
     private BigDecimal y;
     private BigDecimal z;
 
-    public Coordinates() {
+    public Position() {
     }
 
-    public Coordinates(BigDecimal x, BigDecimal y, BigDecimal z) {
+    public Position(BigDecimal x, BigDecimal y, BigDecimal z) {
         this.x = x;
         this.y = y;
         this.z = z;

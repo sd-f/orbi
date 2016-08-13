@@ -9,13 +9,13 @@ import java.util.List;
 @XmlRootElement
 public class World {
 
-    private List<Cube> cubes;
+    private List<GameObject> gameObjects;
 
-    public List<Cube> getCubes() {
-        return cubes;
+    public List<GameObject> getGameObjects() {
+        return gameObjects;
     }
 
-    public void setCubes(List<Cube> cubes) {
-        this.cubes = cubes;
+    public void setGameObjects(List<GameObject> gameObjects) {
+        this.gameObjects = gameObjects;
     }
 }

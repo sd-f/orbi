@@ -8,22 +8,23 @@ import java.math.BigInteger;
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Entity
-public class CubeEntity {
+@Table(name = "game_object")
+public class GameObjectEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "cube_entity_id_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "game_object_id_gen")
     private BigInteger id;
 
-    @Column(precision = 12, scale = 6)
+    @Column(precision = 12, scale = 6, nullable = false)
     private BigInteger userId;
 
-    @Column(precision = 12, scale = 6)
+    @Column(precision = 12, scale = 6, nullable = false)
     private BigDecimal latitude;
 
-    @Column(precision = 12, scale = 6)
+    @Column(precision = 12, scale = 6, nullable = false)
     private BigDecimal longitude;
 
-    @Column(precision = 12, scale = 6)
+    @Column(precision = 12, scale = 6, nullable = false)
     private BigDecimal elevation;
 
     public BigInteger getId() {

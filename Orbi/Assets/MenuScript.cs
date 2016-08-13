@@ -57,8 +57,9 @@ public class MenuScript : MonoBehaviour {
 
     public void ReadCompass()
     {
-        mapsPlane.transform.rotation = Quaternion.Euler(transform.rotation.x, magneticFilter.Update(Sensor.GetOrientation().x), 0);
-        
+        mapsPlane.transform.Rotate(new Vector3(mapsPlane.transform.rotation.x, mapsPlane.transform.rotation.y, 0)); // = Quaternion.Euler(, Sensor.GetOrientation().y, 0);
+        //GUI.TextArea(Rect(10, 10, Screen.width - 10, Screen.height - 10), Sensor.GetOrientation().y);
+
     }
 
     public void ToggleMap()

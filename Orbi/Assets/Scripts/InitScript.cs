@@ -6,8 +6,8 @@ using System.Net;
 
 public class InitScript : MonoBehaviour
 {
-    public static string serverUri = "https://softwaredesign.foundation/orbi/api";
-    //public static string serverUri = "http://localhost:8080/api";
+    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     void Awake()
@@ -100,7 +100,7 @@ public class InitScript : MonoBehaviour
                 newCube.tag = "world_cube";
                 newCube.name = "cube_" + cube.list[1].n;
                 newCube.transform.rotation = Quaternion.Euler(0.0001f,0.00001f,0.0f);
-                newCube.transform.position = new Vector3(cube.list[0].list[0].n, cube.list[0].list[1].n, cube.list[0].list[2].n);
+                newCube.transform.position = new Vector3(cube.list[2].list[0].n, cube.list[2].list[1].n, cube.list[2].list[2].n);
                 
             }
         }

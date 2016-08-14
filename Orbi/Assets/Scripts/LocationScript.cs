@@ -3,8 +3,8 @@ using System.Collections;
 
 public class LocationScript : MonoBehaviour {
 
-    public static double latitude = 47.067585f;
-    public static double longitude = 15.555209f;
+    public static double latitude = 47.0676;
+    public static double longitude = 15.5552f;
     public static double elevation = 0.0f;
 
     IEnumerator Start()

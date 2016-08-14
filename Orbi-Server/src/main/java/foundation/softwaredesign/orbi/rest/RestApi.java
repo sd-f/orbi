@@ -51,8 +51,8 @@ public class RestApi {
     @GET
     @Path("/elevation")
     @Produces(MediaType.TEXT_PLAIN)
-    public String elevation(@NotNull @QueryParam("latitude") BigDecimal latitude,
-                            @NotNull @QueryParam("longitude") BigDecimal longitude) {
+    public String elevation(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
+                            @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
 
         Double elevation = elevationRepository.getElevation(latitude, longitude);
         if (nonNull(elevation)) {
@@ -63,8 +63,8 @@ public class RestApi {
 
     @GET
     @Path("/world")
-    public World world(@NotNull @QueryParam("latitude") BigDecimal latitude,
-                       @NotNull @QueryParam("longitude") BigDecimal longitude) {
+    public World world(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
+                       @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
         System.out.println("requesting world");
         return getWorld(latitude, longitude);
     }
@@ -72,8 +72,8 @@ public class RestApi {
     @POST
     @Path("/create")
     @Consumes({APPLICATION_XML, APPLICATION_JSON})
-    public World create(@NotNull @QueryParam("latitude") BigDecimal latitude,
-                        @NotNull @QueryParam("longitude") BigDecimal longitude,
+    public World create(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
+                        @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude,
                         World world) {
         System.out.println("creating cubes");
         worldAdapter.convertToReal(world, getPosition(latitude, longitude));

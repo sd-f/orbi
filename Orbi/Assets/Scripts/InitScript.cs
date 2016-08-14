@@ -6,8 +6,8 @@ using System.Net;
 
 public class InitScript : MonoBehaviour
 {
-    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
-    public static string serverUri = "http://localhost:8080/api";
+    public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    //public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     void Awake()

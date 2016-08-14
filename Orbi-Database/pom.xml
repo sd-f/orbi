@@ -1,0 +1,125 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>foundation.softwaredesign</groupId>
+    <artifactId>orbi-database</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>Orbi-Database</name>
+
+    <properties>
+        <comuni.nexus.repo.url>https://softwaredesign.foundation/nexus/content/repositories</comuni.nexus.repo.url>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <liquibase.version>3.4.0</liquibase.version>
+        <liquibase.ext.postgres.version>3.4</liquibase.ext.postgres.version>
+        <liquibase.slf4j.version>1.2.1</liquibase.slf4j.version>
+        <orbi.env.db.password>orbi</orbi.env.db.password> <!-- changeme -->
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>9.4.1209</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase.ext</groupId>
+            <artifactId>liquibase-postgresql</artifactId>
+            <version>${liquibase.ext.postgres.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mattbertolini</groupId>
+            <artifactId>liquibase-slf4j</artifactId>
+            <version>${liquibase.slf4j.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>${liquibase.version}</version>
+                <configuration>
+                    <rollbackTag>begin</rollbackTag>
+                    <propertyFile>liquibase.properties</propertyFile>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.liquibase.ext</groupId>
+                        <artifactId>liquibase-postgresql</artifactId>
+                        <version>${liquibase.ext.postgres.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>sd.f-releases</id>
+            <name>softwaredesign.foundation Releases</name>
+            <url>${comuni.nexus.repo.url}/sd.f-releases</url>
+        </repository>
+        <snapshotRepository>
+            <uniqueVersion>true</uniqueVersion>
+            <id>sd.f-snapshots</id>
+            <name>softwaredesign.foundation Snapshots</name>
+            <url>${comuni.nexus.repo.url}/sd.f-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>sd.f-releases</id>
+            <name>softwaredesign.foundation Releases</name>
+            <url>${comuni.nexus.repo.url}/sd.f-releases</url>
+        </repository>
+        <repository>
+            <id>apache-m2-snapshot</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/content/groups/snapshots</url>
+        </repository>
+        <repository>
+            <id>tomcat-m2-repo</id>
+            <name>Tomcat Dev Repository</name>
+            <url>http://tomcat.apache.org/dev/dist/m2-repository/</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sd.f-releases</id>
+            <name>softwaredesign.foundation Releases Plugins</name>
+            <url>${comuni.nexus.repo.url}/sd.f-releases</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>apache-m2-snapshot</id>
+            <name>Apache Snapshot Repository</name>
+            <url>https://repository.apache.org/content/groups/snapshots</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+</project>

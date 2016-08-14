@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="create_table_game_object" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.game_object
+            (
+            id bigint NOT NULL,
+            elevation numeric(12,6) NOT NULL,
+            latitude numeric(12,6) NOT NULL,
+            longitude numeric(12,6) NOT NULL,
+            name character varying(255),
+            user_id bigint NOT NULL,
+            CONSTRAINT game_object_pkey PRIMARY KEY (id)
+            );
+        </sql>
+        <rollback>
+            <dropTable tableName="game_object" schemaName="public"></dropTable>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_game_object_index_id" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX game_object_id_idx
+            ON public.game_object (id);
+        </sql>
+        <rollback>
+            <dropIndex indexName="game_object_id_idx" tableName="game_object" schemaName="public"></dropIndex>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_elevation_sequence_rid" author="Lucas Reeh">
+        <createSequence sequenceName="elevation_rid_seq" schemaName="public"></createSequence>
+        <rollback>
+            <dropSequence sequenceName="elevation_rid_seq" schemaName="public"></dropSequence>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_elevation" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.elevation
+            (
+            rid integer NOT NULL DEFAULT nextval('elevation_rid_seq'::regclass),
+            rast raster,
+            filename text,
+            latitude integer,
+            longitude integer,
+            CONSTRAINT elevation_pkey PRIMARY KEY (rid),
+            CONSTRAINT enforce_height_rast CHECK (st_height(rast) = 3601),
+            CONSTRAINT enforce_max_extent_rast CHECK (st_envelope(rast) @ '01030000208C10000001000000050000006587A9CBEDFF2940D961EA72FB7F46406587A9CBEDFF2940269E158D048048404D3C2B1A09003140269E158D048048404D3C2B1A09003140D961EA72FB7F46406587A9CBEDFF2940D961EA72FB7F4640'::geometry),
+            CONSTRAINT enforce_nodata_values_rast CHECK (_raster_constraint_nodata_values(rast) = '{-32767.0000000000}'::numeric[]),
+            CONSTRAINT enforce_num_bands_rast CHECK (st_numbands(rast) = 1),
+            CONSTRAINT enforce_out_db_rast CHECK (_raster_constraint_out_db(rast) = '{f}'::boolean[]),
+            CONSTRAINT enforce_pixel_types_rast CHECK (_raster_constraint_pixel_types(rast) = '{16BSI}'::text[]),
+            CONSTRAINT enforce_same_alignment_rast CHECK (st_samealignment(rast, '0100000000D5BC9A785634323FD5BC9A78563432BF6587A9CBEDFF2B40269E158D04004740000000000000000000000000000000008C10000001000100'::raster)),
+            CONSTRAINT enforce_scalex_rast CHECK (round(st_scalex(rast)::numeric, 10) = round(0.000277777777777777, 10)),
+            CONSTRAINT enforce_scaley_rast CHECK (round(st_scaley(rast)::numeric, 10) = round('-0.000277777777777777'::numeric, 10)),
+            CONSTRAINT enforce_srid_rast CHECK (st_srid(rast) = 4236),
+            CONSTRAINT enforce_width_rast CHECK (st_width(rast) = 3601)
+            );
+        </sql>
+        <rollback>
+            <dropTable tableName="elevation" schemaName="public"></dropTable>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_elevation_index_rid" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX elevation_st_convexhull_idx
+            ON public.elevation
+            USING gist
+            (st_convexhull(rast));
+        </sql>
+        <rollback>
+            <dropIndex indexName="elevation_st_convexhull_idx" tableName="elevation" schemaName="public"></dropIndex>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

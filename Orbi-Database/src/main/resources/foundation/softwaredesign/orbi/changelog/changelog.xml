@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="begin" author="Lucas Reeh">
+        <tagDatabase tag="begin" />
+    </changeSet>
+
+    <include file="ORBI-1/000_tables.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="end" author="Lucas Reeh">
+        <tagDatabase tag="end" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -15,6 +15,9 @@ public class GameObjectEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "game_object_id_gen")
     private BigInteger id;
 
+    @Column
+    String name;
+
     @Column(precision = 12, scale = 6, nullable = false)
     private BigInteger userId;
 
@@ -33,6 +36,14 @@ public class GameObjectEntity {
 
     public void setId(BigInteger id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigInteger getUserId() {

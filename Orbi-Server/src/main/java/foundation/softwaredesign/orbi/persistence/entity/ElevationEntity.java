@@ -1,18 +1,21 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
+import org.eclipse.persistence.annotations.ReadOnly;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigInteger;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Entity
+@ReadOnly
 @Table(name = "elevation")
 public class ElevationEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "elevation_id_gen")
     Integer rid;
     BigInteger longitutde;
     BigInteger latitude;

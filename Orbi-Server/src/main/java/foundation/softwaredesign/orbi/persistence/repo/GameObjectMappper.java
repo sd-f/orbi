@@ -5,6 +5,9 @@ import foundation.softwaredesign.orbi.model.virtual.Position;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -26,20 +29,23 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.getPosition().setX(cubeEntity.getLongitude());
         gameObject.getPosition().setY(cubeEntity.getElevation());
         gameObject.getPosition().setZ(cubeEntity.getLatitude());
+        gameObject.setName(cubeEntity.getName());
         return gameObject;
     }
 
     @Override
     protected GameObjectEntity toEntity(GameObjectEntity gameObjectEntity, GameObject gameObject) {
-        GameObjectEntity newGameObject = gameObjectEntity;
-        if (isNull(newGameObject)) {
-            newGameObject = new GameObjectEntity();
+        GameObjectEntity newGameObjectEntity = gameObjectEntity;
+        if (isNull(newGameObjectEntity)) {
+            newGameObjectEntity = new GameObjectEntity();
         }
         if (nonNull(gameObject.getPosition())) {
-            newGameObject.setLongitude(gameObject.getPosition().getX());
-            newGameObject.setElevation(gameObject.getPosition().getY());
-            newGameObject.setLatitude(gameObject.getPosition().getZ());
+            newGameObjectEntity.setLongitude(gameObject.getPosition().getX());
+            newGameObjectEntity.setElevation(gameObject.getPosition().getY());
+            newGameObjectEntity.setLatitude(gameObject.getPosition().getZ());
         }
-        return newGameObject;
+        newGameObjectEntity.setUserId(BigInteger.valueOf(1));
+        newGameObjectEntity.setName(gameObject.getName());
+        return newGameObjectEntity;
     }
 }

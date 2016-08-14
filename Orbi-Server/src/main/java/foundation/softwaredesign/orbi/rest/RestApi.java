@@ -6,6 +6,7 @@ import foundation.softwaredesign.orbi.model.virtual.World;
 import foundation.softwaredesign.orbi.persistence.repo.ElevationRepository;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 import foundation.softwaredesign.orbi.service.WorldAdapter;
+import foundation.softwaredesign.orbi.service.WorldFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -36,37 +37,14 @@ public class RestApi {
     @Inject
     WorldAdapter worldAdapter;
 
+    @Inject
+    WorldFactory worldFactory;
 
     @GET
     @Path("/init")
     @Produces(MediaType.TEXT_PLAIN)
     public String init() {
-        gameObjectRepository.deleteAll();
-
-        // schreibtisch
-        GameObject gameObject = new GameObject();
-        gameObject.setPosition(new Position(new BigDecimal(15.555060), new BigDecimal(0), new BigDecimal(47.067640)));
-        gameObjectRepository.save(gameObject);
-
-        // werft
-        gameObject = new GameObject();
-        gameObject.setPosition(new Position(new BigDecimal(15.555330), new BigDecimal(0), new BigDecimal(47.067640)));
-        gameObjectRepository.save(gameObject);
-
-        // parkplatz rechts
-        gameObject = new GameObject();
-        gameObject.setPosition(new Position(new BigDecimal(15.555080), new BigDecimal(0), new BigDecimal(47.067500)));
-        gameObjectRepository.save(gameObject);
-
-        // parkplatz rechts
-        gameObject = new GameObject();
-        gameObject.setPosition(new Position(new BigDecimal(15.555330), new BigDecimal(0), new BigDecimal(47.067500)));
-        gameObjectRepository.save(gameObject);
-
-        // schreibtisch
-        //gameObject = new GameObject();
-        //gameObject.setPosition(new Position(new BigDecimal(47.067551),new BigDecimal(0), new BigDecimal(15.555174)));
-        //gameObjectRepository.save(gameObject);
+        worldFactory.init();
         return "OK";
     }
 

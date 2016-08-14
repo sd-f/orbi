@@ -5,6 +5,7 @@ import foundation.softwaredesign.orbi.model.virtual.GameObject;
 import foundation.softwaredesign.orbi.model.virtual.World;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 
 import java.math.BigDecimal;
 
@@ -13,7 +14,7 @@ import static java.util.Objects.nonNull;
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
-@ApplicationScoped
+@RequestScoped
 public class WorldAdapter {
 
     private Boolean isWorldOk(World world) {

@@ -63,7 +63,7 @@ public class WorldAdapter {
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
                         cube.getPosition().setZ(
-                                scaleToVirtual(cube.getPosition().getZ(), position.getLongitute(), 50000).multiply(BigDecimal.valueOf(-1f))
+                                scaleToVirtual(cube.getPosition().getZ(), position.getLongitute(), 50000).multiply(BigDecimal.valueOf(-1))
                         );
                         cube.getPosition().setY(
                                 scaleToVirtual(cube.getPosition().getY(), position.getElevation(), 1)
@@ -82,7 +82,7 @@ public class WorldAdapter {
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
                         cube.getPosition().setZ(
-                                scaleToReal(cube.getPosition().getZ(), position.getLongitute(), 50000)
+                                scaleToReal(cube.getPosition().getZ(), position.getLongitute(), 50000).multiply(BigDecimal.valueOf(-1))
                         );
                         cube.getPosition().setY(
                                 scaleToReal(cube.getPosition().getY(), position.getElevation(), 1)

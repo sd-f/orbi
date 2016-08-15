@@ -129,7 +129,7 @@ public class MenuScript : MonoBehaviour {
         if (www.error == null)
         {
             InitScript initScript = GameObject.FindGameObjectWithTag("cubes_container").GetComponent<InitScript>();
-            initScript.ConstructWorld(new JSONObject(www.text));
+            initScript.ConstructWorld(www.data);
         }
         else
         {

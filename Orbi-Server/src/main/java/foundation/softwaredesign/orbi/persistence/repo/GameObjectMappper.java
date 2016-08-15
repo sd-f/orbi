@@ -26,7 +26,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         GameObject gameObject = new GameObject();
         gameObject.setId(cubeEntity.getId());
         gameObject.setPosition(new Position());
-        gameObject.getPosition().setY(cubeEntity.getLongitude());
+        gameObject.getPosition().setZ(cubeEntity.getLongitude());
         gameObject.getPosition().setY(cubeEntity.getElevation());
         gameObject.getPosition().setX(cubeEntity.getLatitude());
         gameObject.setName(cubeEntity.getName());

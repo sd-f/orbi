@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class CameraControlScript : MonoBehaviour
 {
@@ -20,6 +19,7 @@ public class CameraControlScript : MonoBehaviour
         Sensor.Activate(Sensor.Type.MagneticField);
         Sensor.Activate(Sensor.Type.Accelerometer);
         SensorHelper.ActivateRotation();
+        SensorHelper.TryForceRotationFallback(RotationFallbackType.MagneticField);
         //this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
         //transform.rotation = Quaternion.Euler(transform.rotation.x, magneticFilter.Update(Sensor.GetOrientation().x), 0);
         //InvokeRepeating("UpdateDirectionFromCompass", 0, 5);
@@ -27,7 +27,10 @@ public class CameraControlScript : MonoBehaviour
 
     void Update()
     {
+        //transform.rotation = Quaternion.Euler(SensorHelper.rotation.x, Sensor.GetOrientation().x-90f, SensorHelper.rotation.z);
         transform.rotation = SensorHelper.rotation;
+        
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z), Time.deltaTime * 2);
         //Debug.Log("gyro enabled " + Input.gyro.enabled);
         //Debug.Log("gyro supported " + SystemInfo.supportsGyroscope);
         //touchCameraRotation();

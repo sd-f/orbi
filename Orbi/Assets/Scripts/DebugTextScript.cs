@@ -8,13 +8,10 @@ public class DebugTextScript : MonoBehaviour {
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        this.GetComponent<Text>().text = "x = " + Sensor.GetOrientation().x 
-            + " y = " + Sensor.GetOrientation().y
-            + " z = " + Sensor.GetOrientation().z
-            + " q= " + Quaternion.Euler(Sensor.GetOrientation().x, Sensor.GetOrientation().y, 0);
+
+    // Update is called once per frame
+    void Update () {
+        this.GetComponent<Text>().text = "x = " + SensorHelper.rotation.x;
 
     }
 }

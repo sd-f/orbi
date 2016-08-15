@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Net;
+using Assets.Scripts.model;
 
 public class InitScript : MonoBehaviour
 {
-    public static string serverUri = "https://softwaredesign.foundation/orbi/api";
-    //public static string serverUri = "http://localhost:8080/api";
+    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     void Awake()
@@ -46,7 +47,7 @@ public class InitScript : MonoBehaviour
                 map.Refresh();
             }
         }
-        
+
         //Debug.Log("UpdateWorld " + latitude);
 
         string uri = serverUri + "/world";
@@ -56,7 +57,7 @@ public class InitScript : MonoBehaviour
         uri = uri + "longitude=" + longitude;
         uri = uri + "&user=test";
         //Debug.Log("debug = " + uri);
-        Dictionary<string,string> headers = new Dictionary<string, string>();
+        Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Accept", "application/json");
         WWW www = new WWW(uri, null, headers);
         StartCoroutine(WaitForWorldRequest(www));
@@ -69,7 +70,7 @@ public class InitScript : MonoBehaviour
         // check for errors
         if (www.error == null)
         {
-            ConstructWorld(new JSONObject(www.text));
+            ConstructWorld(www.data);
         }
         else
         {
@@ -77,37 +78,52 @@ public class InitScript : MonoBehaviour
         }
     }
 
-    public void ConstructWorld(JSONObject world)
+
+    
+    
+    public void ConstructWorld(String worldString)
     {
+        World world = JsonUtility.FromJson<World>(worldString);
+        
+        Debug.Log(world.gameObjects);
+
+        GameObject[] oldCubes = GameObject.FindGameObjectsWithTag("world_cube");
+
+        foreach (GameObject cube in oldCubes)
+        {
+            GameObject.Destroy(cube);
+        }
+
+        foreach (VirtualGameObject gameObject in world.gameObjects)
+        {
+            GameObject newCube = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            // Modify the clone to your heart's content
+            newCube.transform.parent = GameObject.FindGameObjectWithTag("cubes_container").transform;
+            newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
+            newCube.tag = "world_cube";
+            newCube.name = "cube_" + gameObject.id + "_" + gameObject.name;
+            newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
+            newCube.transform.position = new Vector3((float) gameObject.position.x, (float) gameObject.position.y, (float) gameObject.position.z);
+        }
+        /*
         if (world.type == JSONObject.Type.OBJECT)
         {
             // remove old cubes
-            GameObject[] oldCubes = GameObject.FindGameObjectsWithTag("world_cube");
-
-            foreach (GameObject cube in oldCubes)
-            {
-                GameObject.Destroy(cube);
-            }
+            
             JSONObject cubes = (JSONObject)world.list[0];
             foreach (JSONObject cube in cubes.list)
             {
                 //Debug.Log("adding cube " + cube);
+
                 
-                GameObject newCube = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                // Modify the clone to your heart's content
-                newCube.transform.parent = GameObject.FindGameObjectWithTag("cubes_container").transform;
-                newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
-                newCube.tag = "world_cube";
-                newCube.name = "cube_" + cube.list[1].n;
-                newCube.transform.rotation = Quaternion.Euler(0.0001f,0.00001f,0.0f);
-                newCube.transform.position = new Vector3(cube.list[2].list[0].n, cube.list[2].list[1].n, cube.list[2].list[2].n);
-                
+
             }
         }
         else
         {
             //Debug.Log("Sorry nothing here, start create your world!");
         }
+        */
     }
 
 }

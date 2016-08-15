@@ -7,8 +7,8 @@ using Assets.Scripts.model;
 
 public class InitScript : MonoBehaviour
 {
-    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
-    public static string serverUri = "http://localhost:8080/api";
+    public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    //public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     void Awake()
@@ -84,8 +84,6 @@ public class InitScript : MonoBehaviour
     public void ConstructWorld(String worldString)
     {
         World world = JsonUtility.FromJson<World>(worldString);
-        
-        Debug.Log(world.gameObjects);
 
         GameObject[] oldCubes = GameObject.FindGameObjectsWithTag("world_cube");
 

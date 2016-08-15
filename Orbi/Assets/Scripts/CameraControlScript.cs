@@ -12,6 +12,10 @@ public class CameraControlScript : MonoBehaviour
     public float speed = 100.0F;
 
     public static FloatFilter magneticFilter = new AngleFilter(10);
+    public static Quaternion gyroRotation;
+    public static Quaternion gyroRotationCorrected;
+    //public static Quaternion compass;
+    public static float deltaCompass = 0f;
 
     // Use this for initialization
     void Start()
@@ -25,10 +29,16 @@ public class CameraControlScript : MonoBehaviour
 
     void Update()
     {
+        gyroRotation = SensorHelper.rotation;
+        deltaCompass = gyroRotation.x - magneticFilter.Value;
+        // todo better slerp speed
+        gyroRotationCorrected = Quaternion.Slerp(transform.rotation, 
+            Quaternion.Euler(gyroRotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, gyroRotation.eulerAngles.z)
+            , Time.deltaTime * 10f);
 
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z), Time.deltaTime * 2);
         //transform.rotation = Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z);
-        transform.rotation = SensorHelper.rotation;
+        transform.rotation = gyroRotationCorrected;
         //SensorHelper.
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, -90f, 0), Time.deltaTime * 2);
 

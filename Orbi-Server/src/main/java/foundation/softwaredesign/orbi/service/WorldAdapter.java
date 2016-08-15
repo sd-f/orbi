@@ -62,14 +62,14 @@ public class WorldAdapter {
                     .stream()
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
-                        cube.getPosition().setX(
-                                scaleToVirtual(cube.getPosition().getX(), position.getLongitute(), 50000)
+                        cube.getPosition().setZ(
+                                scaleToVirtual(cube.getPosition().getZ(), position.getLongitute(), 50000).multiply(BigDecimal.valueOf(-1f))
                         );
                         cube.getPosition().setY(
                                 scaleToVirtual(cube.getPosition().getY(), position.getElevation(), 1)
                         );
-                        cube.getPosition().setZ(
-                                scaleToVirtual(cube.getPosition().getZ(), position.getLatitude(), 50000)
+                        cube.getPosition().setX(
+                                scaleToVirtual(cube.getPosition().getX(), position.getLatitude(), 50000)
                         );
             });
         }
@@ -81,14 +81,14 @@ public class WorldAdapter {
                     .stream()
                     .filter(this::isCubeOk)
                     .forEach(cube -> {
-                        cube.getPosition().setX(
-                                scaleToReal(cube.getPosition().getX(), position.getLongitute(), 50000)
+                        cube.getPosition().setZ(
+                                scaleToReal(cube.getPosition().getZ(), position.getLongitute(), 50000)
                         );
                         cube.getPosition().setY(
                                 scaleToReal(cube.getPosition().getY(), position.getElevation(), 1)
                         );
-                        cube.getPosition().setZ(
-                                scaleToReal(cube.getPosition().getZ(), position.getLatitude(), 50000)
+                        cube.getPosition().setX(
+                                scaleToReal(cube.getPosition().getX(), position.getLatitude(), 50000)
                         );
                     });
         }

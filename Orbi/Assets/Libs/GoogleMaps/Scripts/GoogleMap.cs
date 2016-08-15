@@ -28,10 +28,10 @@ public class GoogleMap : MonoBehaviour
 		if(autoLocateCenter && (markers.Length == 0 && paths.Length == 0)) {
 			Debug.LogError("Auto Center will only work if paths or markers are used.");	
 		}
-		StartCoroutine(_Refresh());
+		_Refresh();
 	}
 	
-	IEnumerator _Refresh ()
+	void _Refresh ()
 	{
 		var url = "http://maps.googleapis.com/maps/api/staticmap";
 		var qs = "";
@@ -73,20 +73,27 @@ public class GoogleMap : MonoBehaviour
 					qs += "|" + WWW.EscapeURL(string.Format ("{0},{1}", loc.latitude, loc.longitude));
 			}
 		}
-		
-		
-		var req = new HTTP.Request ("GET", url + "?" + qs, true);
-		req.Send ();
-		while (!req.isDone)
-			yield return null;
-		if (req.exception == null) {
-			var tex = new Texture2D (size, size);
-			tex.LoadImage (req.response.bytes);
-			GetComponent<Renderer>().material.mainTexture = tex;
-		}
-	}
-	
-	
+
+        WWW www = new WWW(url + "?" + qs);
+        StartCoroutine(WaitForRequest(www));
+    }
+
+    IEnumerator WaitForRequest(WWW www)
+    {
+        yield return www;
+        if (www.error == null)
+        {
+            var tex = new Texture2D(size, size);
+            tex.LoadImage(www.bytes);
+            GetComponent<Renderer>().material.mainTexture = tex;
+        }
+        else
+        {
+            Debug.Log("WWW Error: " + www.error);
+        }
+    }
+
+
 }
 
 public enum GoogleMapColor

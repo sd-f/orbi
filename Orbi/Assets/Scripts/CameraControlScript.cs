@@ -11,15 +11,13 @@ public class CameraControlScript : MonoBehaviour
     private float yAngTemp = 0.0F;
     public float speed = 100.0F;
 
-    FloatFilter magneticFilter = new AngleFilter(10);
+    public static FloatFilter magneticFilter = new AngleFilter(10);
 
     // Use this for initialization
     void Start()
     {
-        Sensor.Activate(Sensor.Type.MagneticField);
-        Sensor.Activate(Sensor.Type.Accelerometer);
         SensorHelper.ActivateRotation();
-        SensorHelper.TryForceRotationFallback(RotationFallbackType.MagneticField);
+        //SensorHelper.TryForceRotationFallback(RotationFallbackType.MagneticField);
         //this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
         //transform.rotation = Quaternion.Euler(transform.rotation.x, magneticFilter.Update(Sensor.GetOrientation().x), 0);
         //InvokeRepeating("UpdateDirectionFromCompass", 0, 5);
@@ -27,9 +25,13 @@ public class CameraControlScript : MonoBehaviour
 
     void Update()
     {
-        //transform.rotation = Quaternion.Euler(SensorHelper.rotation.x, Sensor.GetOrientation().x-90f, SensorHelper.rotation.z);
+
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z), Time.deltaTime * 2);
+        //transform.rotation = Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z);
         transform.rotation = SensorHelper.rotation;
-        
+        //SensorHelper.
+        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, -90f, 0), Time.deltaTime * 2);
+
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z), Time.deltaTime * 2);
         //Debug.Log("gyro enabled " + Input.gyro.enabled);
         //Debug.Log("gyro supported " + SystemInfo.supportsGyroscope);

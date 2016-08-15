@@ -70,7 +70,7 @@ public class InitScript : MonoBehaviour
         // check for errors
         if (www.error == null)
         {
-            ConstructWorld(www.data);
+            ConstructWorld(www.text);
         }
         else
         {

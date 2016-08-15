@@ -11,7 +11,9 @@ public class DebugTextScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        this.GetComponent<Text>().text = "x = " + SensorHelper.rotation.x;
+        GameObject craftcontainer = GameObject.Find("gameObjectCubeToCraftContainer");
+        this.GetComponent<Text>().text = "x = " + craftcontainer.transform.position.x
+            + ", y = " + +craftcontainer.transform.position.z;
 
     }
 }

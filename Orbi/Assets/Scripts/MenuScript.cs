@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Assets.Scripts.model;
 
 public class MenuScript : MonoBehaviour {
 
@@ -53,7 +54,7 @@ public class MenuScript : MonoBehaviour {
 	
 	}
 
-    FloatFilter magneticFilter = new AngleFilter(10);
+    //FloatFilter magneticFilter = new AngleFilter(10);
 
     public void ReadCompass()
     {
@@ -92,20 +93,16 @@ public class MenuScript : MonoBehaviour {
 
     public void CraftCube()
     {
-
-        JSONObject world = new JSONObject(JSONObject.Type.OBJECT);
-        JSONObject cubes = new JSONObject(JSONObject.Type.ARRAY);
-        JSONObject cube = new JSONObject(JSONObject.Type.OBJECT);
-        JSONObject coordinates = new JSONObject(JSONObject.Type.OBJECT);
-        JSONObject x = new JSONObject(JSONObject.Type.NUMBER);
-        JSONObject y = new JSONObject(JSONObject.Type.NUMBER);
-        JSONObject z = new JSONObject(JSONObject.Type.NUMBER);
-        coordinates.AddField("x", x);
-        coordinates.AddField("y", y);
-        coordinates.AddField("z", z);
-        cube.AddField("coordinates", coordinates);
-        cubes.Add(cube);
-        world.AddField("cubes", cubes);
+        World world = new World();
+        GameObject craftContainer = GameObject.Find("gameObjectCubeToCraftContainer");
+        VirtualGameObject objectToCraft = new VirtualGameObject();
+        objectToCraft.name = "crafted";
+        Position objectToCraftPosition = new Position();
+        objectToCraftPosition.x = craftContainer.transform.position.x;
+        objectToCraftPosition.y = craftContainer.transform.position.y;
+        objectToCraftPosition.z = craftContainer.transform.position.z;
+        objectToCraft.position = objectToCraftPosition;
+        world.gameObjects.Add(objectToCraft);
         string uri = InitScript.serverUri + "/create";
         uri = uri + "?";
         uri = uri + "latitude=" + LocationScript.latitude;
@@ -114,7 +111,7 @@ public class MenuScript : MonoBehaviour {
         uri = uri + "&user=test";
         //Debug.Log("debug = " + uri);
         var encoding = new System.Text.UTF8Encoding();
-        string jsonString = world.ToString();
+        string jsonString = JsonUtility.ToJson(world);
         Dictionary<string, string> headers = new Dictionary<string, string>();
         headers.Add("Accept", "application/json");
         headers.Add("Content-Type", "application/json");
@@ -129,7 +126,7 @@ public class MenuScript : MonoBehaviour {
         if (www.error == null)
         {
             InitScript initScript = GameObject.FindGameObjectWithTag("cubes_container").GetComponent<InitScript>();
-            initScript.ConstructWorld(www.data);
+            initScript.ConstructWorld(www.text);
         }
         else
         {

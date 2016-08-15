@@ -1,11 +1,14 @@
 package foundation.softwaredesign.orbi.model.virtual;
 
+import javax.xml.bind.annotation.XmlRootElement;
 import java.math.BigDecimal;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
+@XmlRootElement
 public class Position {
+
     private BigDecimal x;
     private BigDecimal y;
     private BigDecimal z;

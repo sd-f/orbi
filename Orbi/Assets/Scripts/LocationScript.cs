@@ -47,7 +47,7 @@ public class LocationScript : MonoBehaviour {
 
         // Stop service if there is no need to query location updates continuously
         
-        InvokeRepeating("UpdateWorld", 0, 5);
+        InvokeRepeating("UpdateWorld", 0, 10);
     }
 
     // Update is called once per frame
@@ -61,7 +61,7 @@ public class LocationScript : MonoBehaviour {
         longitude = Input.location.lastData.longitude;
         elevation = Input.location.lastData.altitude;
         InitScript initScript = GameObject.FindGameObjectWithTag("cubes_container").GetComponent<InitScript>();
-        initScript.UdpateWorld(); // todo elevation
+        initScript.UpdateWorld();
     }
 
     void OnDestroy()

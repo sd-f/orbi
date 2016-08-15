@@ -18,6 +18,8 @@ public class MenuScript : MonoBehaviour {
     private Button buttonAddCubeOk;
     private Button buttonAddCubeCancel;
 
+    private Button buttonReadCompass;
+
     private GameObject mapsPlane;
 
     private MeshRenderer cubeToCraft;
@@ -25,6 +27,8 @@ public class MenuScript : MonoBehaviour {
     void Start () {
 
         mapsPlane = GameObject.Find("planeBackgroundMaps");
+
+        buttonReadCompass = GameObject.Find("buttonReadCompass").GetComponent<Button>();
 
         buttonAddCube = GameObject.Find("buttonAddCube").GetComponent<Button>();
         buttonAddCubeOk = GameObject.Find("buttonAddCubeOk").GetComponent<Button>();
@@ -51,14 +55,18 @@ public class MenuScript : MonoBehaviour {
     }
 
 	void Update () {
-	
-	}
+        
+    }
 
     //FloatFilter magneticFilter = new AngleFilter(10);
 
     public void ReadCompass()
     {
-        mapsPlane.transform.Rotate(new Vector3(mapsPlane.transform.rotation.x, mapsPlane.transform.rotation.y, 0)); // = Quaternion.Euler(, Sensor.GetOrientation().y, 0);
+        if (CompassScript.headingNorth)
+        {
+            CameraControlScript.fixNorthHeading();
+        }
+        //mapsPlane.transform.Rotate(new Vector3(mapsPlane.transform.rotation.x, mapsPlane.transform.rotation.y, 0)); // = Quaternion.Euler(, Sensor.GetOrientation().y, 0);
         //GUI.TextArea(Rect(10, 10, Screen.width - 10, Screen.height - 10), Sensor.GetOrientation().y);
 
     }
@@ -126,7 +134,7 @@ public class MenuScript : MonoBehaviour {
         if (www.error == null)
         {
             InitScript initScript = GameObject.FindGameObjectWithTag("cubes_container").GetComponent<InitScript>();
-            initScript.ConstructWorld(www.text);
+            initScript.ConstructGameObjects(www.text);
         }
         else
         {

@@ -13,7 +13,7 @@ public class DebugTextScript : MonoBehaviour {
     void Update () {
         this.GetComponent<Text>().text = "gyro = " + CameraControlScript.gyroRotation
             + "\ndelta = " + CameraControlScript.deltaCompass
-            + "\ncorrected = " + CameraControlScript.gyroRotationCorrected;
-
+            + "\ncorrected = " + CameraControlScript.gyroRotationCorrected
+            +"\nfiltered = " + CompassScript.magneticFilter.Value;
     }
 }

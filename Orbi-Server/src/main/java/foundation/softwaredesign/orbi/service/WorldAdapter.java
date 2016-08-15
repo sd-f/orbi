@@ -1,12 +1,10 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.real.Position;
 import foundation.softwaredesign.orbi.model.virtual.GameObject;
+import foundation.softwaredesign.orbi.model.virtual.Position;
 import foundation.softwaredesign.orbi.model.virtual.World;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
-
 import java.math.BigDecimal;
 
 import static java.util.Objects.nonNull;
@@ -26,9 +24,9 @@ public class WorldAdapter {
 
     private Boolean isPositionOk(Position position) {
         if (nonNull(position)) {
-            if (nonNull(position.getElevation())
-                    && nonNull(position.getLatitude())
-                && nonNull(position.getLongitute())) {
+            if (nonNull(position.getZ())
+                    && nonNull(position.getX())
+                    && nonNull(position.getY())) {
                 return true;
             }
         }
@@ -56,22 +54,36 @@ public class WorldAdapter {
         return newCoordinate.add(position);
     }
 
+    public void convertPositionToVirtual(Position virtualPosition, Position referencePosition) {
+        virtualPosition.setZ(
+                scaleToVirtual(virtualPosition.getZ(), referencePosition.getZ(), 50000).multiply(BigDecimal.valueOf(-1))
+        );
+        virtualPosition.setY(
+                scaleToVirtual(virtualPosition.getY(), referencePosition.getY(), 1)
+        );
+        virtualPosition.setX(
+                scaleToVirtual(virtualPosition.getX(), referencePosition.getX(), 50000));
+    }
+
+    public void convertPositionToReal(Position realPosition, Position referencePosition) {
+        realPosition.setZ(
+                scaleToReal(realPosition.getZ(), referencePosition.getZ(), 50000).multiply(BigDecimal.valueOf(-1))
+        );
+        realPosition.setY(
+                scaleToReal(realPosition.getY(), referencePosition.getY(), 1)
+        );
+        realPosition.setX(
+                scaleToReal(realPosition.getX(), referencePosition.getX(), 50000));
+    }
+
     public void convertToVirtual(World world, Position position) {
         if (isWorldOk(world) && isPositionOk(position)) {
             world.getGameObjects()
                     .stream()
                     .filter(this::isCubeOk)
-                    .forEach(cube -> {
-                        cube.getPosition().setZ(
-                                scaleToVirtual(cube.getPosition().getZ(), position.getLongitute(), 50000).multiply(BigDecimal.valueOf(-1))
-                        );
-                        cube.getPosition().setY(
-                                scaleToVirtual(cube.getPosition().getY(), position.getElevation(), 1)
-                        );
-                        cube.getPosition().setX(
-                                scaleToVirtual(cube.getPosition().getX(), position.getLatitude(), 50000)
-                        );
-            });
+                    .forEach(gameObject -> {
+                        convertPositionToVirtual(gameObject.getPosition(), position);
+                    });
         }
     }
 
@@ -80,16 +92,8 @@ public class WorldAdapter {
             world.getGameObjects()
                     .stream()
                     .filter(this::isCubeOk)
-                    .forEach(cube -> {
-                        cube.getPosition().setZ(
-                                scaleToReal(cube.getPosition().getZ(), position.getLongitute(), 50000).multiply(BigDecimal.valueOf(-1))
-                        );
-                        cube.getPosition().setY(
-                                scaleToReal(cube.getPosition().getY(), position.getElevation(), 1)
-                        );
-                        cube.getPosition().setX(
-                                scaleToReal(cube.getPosition().getX(), position.getLatitude(), 50000)
-                        );
+                    .forEach(gameObject -> {
+                        convertPositionToReal(gameObject.getPosition(), position);
                     });
         }
     }

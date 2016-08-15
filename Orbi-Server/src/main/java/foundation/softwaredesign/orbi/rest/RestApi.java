@@ -50,15 +50,22 @@ public class RestApi {
 
     @GET
     @Path("/elevation")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String elevation(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
+    public Position elevation(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
                             @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
+        Position position = getPosition(latitude,longitude);
+        position.setY(new BigDecimal(elevationRepository.getElevation(latitude, longitude)));
+        return position;
+    }
 
-        Double elevation = elevationRepository.getElevation(latitude, longitude);
-        if (nonNull(elevation)) {
-            return elevation.toString();
-        }
-        return null;
+    @GET
+    @Path("/terrain")
+    public World terrain(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
+                                  @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
+        World terrainWorld = worldFactory.generateRasterAroundPosition(getPosition(latitude, longitude), 32);
+        worldFactory.addElevations(terrainWorld);
+        worldAdapter.convertToVirtual(terrainWorld, getPosition(latitude, longitude));
+        System.out.println("terrain");
+        return terrainWorld;
     }
 
     @GET
@@ -89,13 +96,13 @@ public class RestApi {
         List<GameObject> gameObjectList = gameObjectRepository.findCubesAround(latitude, longitude);
         world.setGameObjects(gameObjectList);
         // TODO elevation
-        foundation.softwaredesign.orbi.model.real.Position position = getPosition(latitude, longitude);
+        Position position = getPosition(latitude, longitude);
         worldAdapter.convertToVirtual(world, position);
         return world;
     }
 
-    private foundation.softwaredesign.orbi.model.real.Position getPosition(BigDecimal latitude, BigDecimal longitude) {
-        return new foundation.softwaredesign.orbi.model.real.Position(latitude, longitude, new BigDecimal(0.0));
+    private Position getPosition(BigDecimal latitude, BigDecimal longitude) {
+        return new Position(latitude, new BigDecimal(0.0), longitude);
     }
 
 }

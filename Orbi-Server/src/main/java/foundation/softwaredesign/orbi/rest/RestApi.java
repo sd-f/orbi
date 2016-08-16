@@ -16,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
@@ -93,7 +92,7 @@ public class RestApi {
 
     private World getWorld(BigDecimal latitude, BigDecimal longitude) {
         World world = new World();
-        List<GameObject> gameObjectList = gameObjectRepository.findCubesAround(latitude, longitude);
+        List<GameObject> gameObjectList = gameObjectRepository.findGameObjectsAround(latitude, longitude);
         world.setGameObjects(gameObjectList);
         // TODO elevation
         Position position = getPosition(latitude, longitude);

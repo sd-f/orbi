@@ -27,5 +27,5 @@ public interface GameObjectRepository extends EntityRepository<GameObject, BigIn
             "  from GameObjectEntity e" +
             " where ( e.longitude between (?2 - 0.001) and (?2 + 0.001))" +
             "   and ( e.latitude between (?1 - 0.001) and (?1 + 0.001))")
-    List<GameObject> findCubesAround(BigDecimal latitude, BigDecimal longitude);
+    List<GameObject> findGameObjectsAround(BigDecimal latitude, BigDecimal longitude);
 }

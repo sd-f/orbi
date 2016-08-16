@@ -15,8 +15,21 @@ public class InitScript : MonoBehaviour
     int hmWidth; // heightmap width
     int hmHeight; // heightmap height
 
+    public static double maxZ = 0.0d;
+    public static double minZ = 1000000d;
+
     Camera mainCamera;
     Terrain terrain;
+
+    public static float CorrectHeightInScene(double height)
+    {
+       return CorrectHeight(height)*7.6f;
+    }
+
+    public static float CorrectHeight(double height)
+    {
+        return (float)((height - minZ) / (maxZ - minZ));
+    }
 
     void Awake()
     {
@@ -70,11 +83,9 @@ public class InitScript : MonoBehaviour
 
     public void UpdateWorld()
     {
-        
-        UpdateGoogleMaps();
-        UpdatePlayerElevation();
-        UpdateGameObjects();
         UpdateTerrain();
+        UpdateGoogleMaps();
+        
     }
 
     public void UpdateTerrain()
@@ -100,11 +111,10 @@ public class InitScript : MonoBehaviour
                     //print(heights[i,j]);
                 }
             World dummyWorld = JsonUtility.FromJson<World>(www.text);
-            Debug.Log(hmWidth + "," + hmHeight);
+            //Debug.Log(hmWidth + "," + hmHeight);
             double maxX = 0.0d;
             double maxY = 0.0d;
-            double maxZ = 0.0d;
-            double minZ = 1000000d;
+            
             foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
             {
                 if (dummyGameObject.position.x + 100 > maxX)
@@ -124,8 +134,8 @@ public class InitScript : MonoBehaviour
                     minZ = dummyGameObject.position.y;
                 }
             }
-            terrain.transform.position = new Vector3(-50, (float)minZ, -50);
-            Debug.Log("max= " + maxX + "," + maxY);
+            //terrain.transform.position = new Vector3(-50, (float)minZ, -50);
+            //Debug.Log("max= " + maxX + "," + maxY);
             foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
             {
                 int xHeight = (int)(((Math.Round(dummyGameObject.position.x) + maxX) / (maxX * 2.0d)) * 32.0d);
@@ -133,13 +143,17 @@ public class InitScript : MonoBehaviour
                 //Debug.Log(xHeight + "," + yHeight);
                 if ((xHeight < 32 && xHeight >= 0) && (yHeight < 32 && yHeight >= 0))
                 {
-                    Debug.Log((float)dummyGameObject.position.y / maxZ);
-                    heights[xHeight, yHeight] = (float) ((dummyGameObject.position.y - minZ) / (maxZ - minZ));
+                   // Debug.Log((float)dummyGameObject.position.y / maxZ);
+                    heights[xHeight, yHeight] = (float) CorrectHeight(dummyGameObject.position.y);
                 }
 
 
             }
             terrain.terrainData.SetHeights(0, 0, heights);
+            //Debug.Log(heights[17, 17]);
+            //mainCamera.transform.position = new Vector3(0, heights[17, 17]*10 + 2.0f, 0);
+            UpdatePlayerElevation();
+            UpdateGameObjects();
 
         }
         else
@@ -162,7 +176,7 @@ public class InitScript : MonoBehaviour
         if (www.error == null)
         {
             Position position = JsonUtility.FromJson<Position>(www.text);
-            mainCamera.transform.Translate(new Vector3(0, (float) position.y, 0));
+            mainCamera.transform.Translate(new Vector3(0, CorrectHeightInScene( position.y) + 2.0f, 0));
 
         }
         else
@@ -174,6 +188,7 @@ public class InitScript : MonoBehaviour
     public void UpdateGameObjects()
     {
         WWW www = Request(Api.world);
+        Debug.Log(www.url);
         StartCoroutine(WaitForGameObjectsRequest(www));
     }
 
@@ -184,6 +199,7 @@ public class InitScript : MonoBehaviour
         // check for errors
         if (www.error == null)
         {
+            
             ConstructGameObjects(www.text);
         }
         else
@@ -205,17 +221,19 @@ public class InitScript : MonoBehaviour
         {
             GameObject.Destroy(cube);
         }
+       
 
         foreach (VirtualGameObject gameObject in world.gameObjects)
         {
             GameObject newCube = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
             // Modify the clone to your heart's content
             newCube.transform.parent = GameObject.FindGameObjectWithTag("cubes_container").transform;
-            newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
+            newCube.transform.localScale = new Vector3(0.1F, 0.1F, 0.1F);
             newCube.tag = "world_cube";
             newCube.name = "cube_" + gameObject.id + "_" + gameObject.name;
             newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
-            newCube.transform.position = new Vector3((float) gameObject.position.x, (float) gameObject.position.y, (float) gameObject.position.z);
+            newCube.transform.position = new Vector3((float) gameObject.position.x, CorrectHeightInScene( gameObject.position.y ), (float) gameObject.position.z);
+           
         }
         /*
         if (world.type == JSONObject.Type.OBJECT)

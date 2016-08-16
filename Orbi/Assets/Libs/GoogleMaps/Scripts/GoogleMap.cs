@@ -85,7 +85,7 @@ public class GoogleMap : MonoBehaviour
         {
             var tex = new Texture2D(size, size);
             tex.LoadImage(www.bytes);
-            GetComponent<Renderer>().material.mainTexture = tex;
+            //GetComponent<Renderer>().material.mainTexture = tex;
            
             Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
 

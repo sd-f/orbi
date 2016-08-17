@@ -17,8 +17,8 @@ public class ElevationEntity {
 
     @Id
     Integer rid;
-    BigInteger longitutde;
-    BigInteger latitude;
+    Long longitutde;
+    Long latitude;
 
     public Integer getRid() {
         return rid;
@@ -28,19 +28,19 @@ public class ElevationEntity {
         this.rid = rid;
     }
 
-    public BigInteger getLongitutde() {
+    public Long getLongitutde() {
         return longitutde;
     }
 
-    public void setLongitutde(BigInteger longitutde) {
+    public void setLongitutde(Long longitutde) {
         this.longitutde = longitutde;
     }
 
-    public BigInteger getLatitude() {
+    public Long getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(BigInteger latitude) {
+    public void setLatitude(Long latitude) {
         this.latitude = latitude;
     }
 }

@@ -12,24 +12,15 @@ public class InitScript : MonoBehaviour
     public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
-    int hmWidth; // heightmap width
-    int hmHeight; // heightmap height
+    static int hmWidth; // heightmap width
+    static int hmHeight; // heightmap height
+    static float terrainHeight = 128.0f;
 
-    public static double maxZ = 0.0d;
-    public static double minZ = 1000000d;
+    public static double maxZ = 0d;
+    public static double minZ = 100000d;
 
     Camera mainCamera;
     Terrain terrain;
-
-    public static float CorrectHeightInScene(double height)
-    {
-       return CorrectHeight(height)*7.6f;
-    }
-
-    public static float CorrectHeight(double height)
-    {
-        return (float)((height - minZ) / (maxZ - minZ));
-    }
 
     void Awake()
     {
@@ -38,10 +29,14 @@ public class InitScript : MonoBehaviour
     void Start()
     {
         
-        terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
+        terrain = GameObject.Find("MapsTerrain").GetComponent<Terrain>();
+        
         hmWidth = terrain.terrainData.heightmapWidth;
         hmHeight = terrain.terrainData.heightmapHeight;
-        Terrain.activeTerrain.heightmapMaximumLOD = 0;
+        
+        Debug.Log("heightmapScale=" + terrain.terrainData.size);
+        Debug.Log("heightmap[" + hmHeight + "," + hmWidth + "]");
+        //Terrain.activeTerrain.heightmapMaximumLOD = 0;
         UpdateWorld();
         mainCamera = GameObject.Find("cameraMain").GetComponent<Camera>();
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -81,8 +76,11 @@ public class InitScript : MonoBehaviour
         }
     }
 
+   
+
     public void UpdateWorld()
     {
+        
         UpdateTerrain();
         UpdateGoogleMaps();
         
@@ -95,6 +93,23 @@ public class InitScript : MonoBehaviour
         StartCoroutine(WaitForTerrainRequest(www));
     }
 
+    public static float CorrectHeightOnTerrain(double height)
+    {
+        float correctedHeight = (float)((height) / (minZ + terrainHeight));
+        if (((height) / (minZ + terrainHeight)) > 1)
+            return 1;
+        return correctedHeight;
+    }
+
+    public static float CorrectHeightInScene(double height)
+    {
+        float correctedHeight = (float)((height) / (minZ + terrainHeight));
+        Debug.Log("minZ=" + minZ + " height= " + (height - minZ) + " -> " + correctedHeight);
+        if (((height) / (minZ + terrainHeight)) > 1)
+            return terrainHeight;
+        return correctedHeight * terrainHeight;
+    }
+
     IEnumerator WaitForTerrainRequest(WWW www)
     {
         yield return www;
@@ -102,64 +117,88 @@ public class InitScript : MonoBehaviour
         // check for errors
         if (www.error == null)
         {
-            
+            World dummyWorld = JsonUtility.FromJson<World>(www.text);
+
+            foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
+            {
+                if (dummyGameObject.position.y < minZ)
+                    minZ = dummyGameObject.position.y;
+                if (dummyGameObject.position.y > maxZ)
+                    maxZ = dummyGameObject.position.y;
+            }
+            Debug.Log("min " + minZ + " max " + maxZ);
             float[,] heights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
+
+
+            float height = 0.0f;
+            height = (float)CorrectHeightOnTerrain(minZ);
             for (int i = 0; i < hmWidth; i++)
                 for (int j = 0; j < hmHeight; j++)
                 {
-                    heights[i, j] = 0;
+                    if (heights[i, j] == 0)
+                    {
+                        heights[i, j] = height;
+                    }
                     //print(heights[i,j]);
                 }
-            World dummyWorld = JsonUtility.FromJson<World>(www.text);
-            //Debug.Log(hmWidth + "," + hmHeight);
-            double maxX = 0.0d;
-            double maxY = 0.0d;
+            int x, y;
+            Texture2D texture = new Texture2D(16, 16);
+            foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
+            {
+                height = (float)CorrectHeightOnTerrain(dummyGameObject.position.y);
+                y = (int)Math.Floor(dummyGameObject.position.x) + 64;
+                x = (int)Math.Floor(dummyGameObject.position.z) + 64;
+
+                //Debug.Log(x + "," + y + " h="+ height);
+                heights[x, y] = height;
+                texture.SetPixel(x/8, y/8,new Color(height, (float)((dummyGameObject.position.y - minZ) / (maxZ-minZ)), 0.5f));
+                //Debug.Log(x/8 + "," + y/8 + " h=" + height);
+
+
+            }
+
+            // interpolation
+            texture.Apply();
+            Texture2D newTexuture = ScaleTexture(texture, 129, 129);
+            //testplane.material.mainTexture = newTexuture;
+            Color[] colors = newTexuture.GetPixels();
             
-            foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
+            for (x = 0; x < hmWidth; x++)
             {
-                if (dummyGameObject.position.x + 100 > maxX)
+                for (y = 0; y < hmHeight; y++)
                 {
-                    maxX = dummyGameObject.position.x + 100;
-                }
-                if (dummyGameObject.position.z + 100 > maxY)
-                {
-                    maxY = dummyGameObject.position.x + 100;
-                }
-                if (dummyGameObject.position.y> maxZ)
-                {
-                    maxZ = dummyGameObject.position.y;
-                }
-                if (dummyGameObject.position.y < minZ)
-                {
-                    minZ = dummyGameObject.position.y;
+                    heights[x, y] = newTexuture.GetPixel(x,y).r;
                 }
             }
-            //terrain.transform.position = new Vector3(-50, (float)minZ, -50);
-            //Debug.Log("max= " + maxX + "," + maxY);
-            foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
-            {
-                int xHeight = (int)(((Math.Round(dummyGameObject.position.x) + maxX) / (maxX * 2.0d)) * 32.0d);
-                int yHeight = (int)(((Math.Round(dummyGameObject.position.z) + maxY) / (maxY * 2.0d)) * 32.0d);
-                //Debug.Log(xHeight + "," + yHeight);
-                if ((xHeight < 32 && xHeight >= 0) && (yHeight < 32 && yHeight >= 0))
-                {
-                   // Debug.Log((float)dummyGameObject.position.y / maxZ);
-                    heights[xHeight, yHeight] = (float) CorrectHeight(dummyGameObject.position.y);
-                }
 
-
-            }
             terrain.terrainData.SetHeights(0, 0, heights);
-            //Debug.Log(heights[17, 17]);
-            //mainCamera.transform.position = new Vector3(0, heights[17, 17]*10 + 2.0f, 0);
-            UpdatePlayerElevation();
-            UpdateGameObjects();
+            terrain.Flush();
 
+            //Debug.Log("terrain updated");
+            UpdateGameObjects();
+            UpdatePlayerElevation();
         }
         else
         {
             Debug.Log("WWW Error: " + www.error);
         }
+    }
+
+    private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
+    {
+        Texture2D result = new Texture2D(targetWidth, targetHeight, source.format, false);
+        float incX = (1.0f / (float)targetWidth);
+        float incY = (1.0f / (float)targetHeight);
+        for (int i = 0; i < result.height; ++i)
+        {
+            for (int j = 0; j < result.width; ++j)
+            {
+                Color newColor = source.GetPixelBilinear((float)j / (float)result.width, (float)i / (float)result.height);
+                result.SetPixel(j, i, newColor);
+            }
+        }
+        result.Apply();
+        return result;
     }
 
     public void UpdatePlayerElevation()
@@ -176,7 +215,8 @@ public class InitScript : MonoBehaviour
         if (www.error == null)
         {
             Position position = JsonUtility.FromJson<Position>(www.text);
-            mainCamera.transform.Translate(new Vector3(0, CorrectHeightInScene( position.y) + 2.0f, 0));
+            Debug.Log(position + " corrected= " + CorrectHeightInScene(position.y));
+            mainCamera.transform.position = new Vector3(0, CorrectHeightInScene( position.y + 2.0f), 0);
 
         }
         else
@@ -235,25 +275,6 @@ public class InitScript : MonoBehaviour
             newCube.transform.position = new Vector3((float) gameObject.position.x, CorrectHeightInScene( gameObject.position.y ), (float) gameObject.position.z);
            
         }
-        /*
-        if (world.type == JSONObject.Type.OBJECT)
-        {
-            // remove old cubes
-            
-            JSONObject cubes = (JSONObject)world.list[0];
-            foreach (JSONObject cube in cubes.list)
-            {
-                //Debug.Log("adding cube " + cube);
-
-                
-
-            }
-        }
-        else
-        {
-            //Debug.Log("Sorry nothing here, start create your world!");
-        }
-        */
     }
 
 }

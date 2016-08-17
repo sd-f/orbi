@@ -13,28 +13,28 @@ public class GameObjectEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "game_object_id_gen")
-    private BigInteger id;
+    private Long id;
 
     @Column
     String name;
 
-    @Column(precision = 12, scale = 6, nullable = false)
-    private BigInteger userId;
+    @Column
+    private Long userId;
 
     @Column(precision = 12, scale = 6, nullable = false)
-    private BigDecimal latitude;
+    private Double latitude;
 
     @Column(precision = 12, scale = 6, nullable = false)
-    private BigDecimal longitude;
+    private Double longitude;
 
     @Column(precision = 12, scale = 6, nullable = false)
-    private BigDecimal elevation;
+    private Double elevation;
 
-    public BigInteger getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -46,35 +46,35 @@ public class GameObjectEntity {
         this.name = name;
     }
 
-    public BigInteger getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(BigInteger userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public BigDecimal getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(BigDecimal latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public BigDecimal getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(BigDecimal longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public BigDecimal getElevation() {
+    public Double getElevation() {
         return elevation;
     }
 
-    public void setElevation(BigDecimal elevation) {
+    public void setElevation(Double elevation) {
         this.elevation = elevation;
     }
 }

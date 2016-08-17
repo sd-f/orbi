@@ -5,7 +5,7 @@ import foundation.softwaredesign.orbi.model.virtual.Position;
 import foundation.softwaredesign.orbi.model.virtual.World;
 import foundation.softwaredesign.orbi.persistence.repo.ElevationRepository;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
-import foundation.softwaredesign.orbi.service.WorldAdapter;
+import foundation.softwaredesign.orbi.service.VirtualWorldAdapter;
 import foundation.softwaredesign.orbi.service.WorldFactory;
 
 import javax.enterprise.context.RequestScoped;
@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.math.BigDecimal;
 import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -34,7 +33,9 @@ public class RestApi {
     ElevationRepository elevationRepository;
 
     @Inject
-    WorldAdapter worldAdapter;
+    VirtualWorldAdapter virtualWorldAdapter;
+    @Inject
+    VirtualWorldAdapter realWorldAdapter;
 
     @Inject
     WorldFactory worldFactory;
@@ -49,28 +50,29 @@ public class RestApi {
 
     @GET
     @Path("/elevation")
-    public Position elevation(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
-                            @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
-        Position position = getPosition(latitude,longitude);
-        position.setY(new BigDecimal(elevationRepository.getElevation(latitude, longitude)));
+    public Position elevation(@NotNull(message = "latitude required") @QueryParam("latitude") Double latitude,
+                              @NotNull(message = "longitude required") @QueryParam("longitude") Double longitude) {
+        Position position = getPosition(latitude, longitude);
+        position.setY(elevationRepository.getElevation(latitude, longitude));
         return position;
     }
 
     @GET
     @Path("/terrain")
-    public World terrain(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
-                                  @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
-        World terrainWorld = worldFactory.generateRasterAroundPosition(getPosition(latitude, longitude), 32);
-        worldFactory.addElevations(terrainWorld);
-        worldAdapter.convertToVirtual(terrainWorld, getPosition(latitude, longitude));
+    public World terrain(@NotNull(message = "latitude required") @QueryParam("latitude") Double latitude,
+                         @NotNull(message = "longitude required") @QueryParam("longitude") Double longitude) {
+        World terrainWorld = worldFactory.generateRasterAroundPosition(getPosition(latitude, longitude), 129); // todo resolution after db performance tuning
+        worldFactory.addElevations(terrainWorld, getPosition(latitude, longitude));
+        //virtualWorldAdapter.translate(terrainWorld, getPosition(latitude, longitude));
+        //virtualWorldAdapter.scale(terrainWorld);
         System.out.println("terrain");
         return terrainWorld;
     }
 
     @GET
     @Path("/world")
-    public World world(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
-                       @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude) {
+    public World world(@NotNull(message = "latitude required") @QueryParam("latitude") Double latitude,
+                       @NotNull(message = "longitude required") @QueryParam("longitude") Double longitude) {
         System.out.println("requesting world");
         return getWorld(latitude, longitude);
     }
@@ -78,11 +80,12 @@ public class RestApi {
     @POST
     @Path("/create")
     @Consumes({APPLICATION_XML, APPLICATION_JSON})
-    public World create(@NotNull(message = "latitude required") @QueryParam("latitude") BigDecimal latitude,
-                        @NotNull(message = "longitude required") @QueryParam("longitude") BigDecimal longitude,
+    public World create(@NotNull(message = "latitude required") @QueryParam("latitude") Double latitude,
+                        @NotNull(message = "longitude required") @QueryParam("longitude") Double longitude,
                         World world) {
         System.out.println("creating cubes");
-        worldAdapter.convertToReal(world, getPosition(latitude, longitude));
+        realWorldAdapter.translate(world, getPosition(latitude, longitude));
+        realWorldAdapter.scale(world);
         for (GameObject gameObject : world.getGameObjects()) {
             gameObjectRepository.save(gameObject);
             System.out.println("Saved gameObject");
@@ -90,18 +93,21 @@ public class RestApi {
         return getWorld(latitude, longitude);
     }
 
-    private World getWorld(BigDecimal latitude, BigDecimal longitude) {
+    private World getWorld(Double latitude, Double longitude) {
         World world = new World();
         List<GameObject> gameObjectList = gameObjectRepository.findGameObjectsAround(latitude, longitude);
         world.setGameObjects(gameObjectList);
         // TODO elevation
         Position position = getPosition(latitude, longitude);
-        worldAdapter.convertToVirtual(world, position);
+        //virtualWorldAdapter.scalePosition(position);
+        virtualWorldAdapter.translate(world, position);
+        virtualWorldAdapter.scale(world);
+
         return world;
     }
 
-    private Position getPosition(BigDecimal latitude, BigDecimal longitude) {
-        return new Position(latitude, new BigDecimal(0.0), longitude);
+    private Position getPosition(Double latitude, Double longitude) {
+        return new Position(longitude, 0.0, latitude);
     }
 
 }

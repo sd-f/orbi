@@ -13,12 +13,12 @@ import java.math.BigInteger;
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Repository
-public interface ElevationRepository extends EntityRepository<ElevationEntity, BigInteger> {
+public interface ElevationRepository extends EntityRepository<ElevationEntity, Long> {
 
     @Query(value = "" +
             "SELECT ST_Value(rast, ST_SetSRID(ST_Point(?2, ?1), 4236))" +
             "  FROM elevation\n" +
             " WHERE longitude = trunc(?2)" +
             "   AND latitude = trunc(?1) ", isNative = true, singleResult = SingleResultType.OPTIONAL)
-    Double getElevation(BigDecimal latitude, BigDecimal longitude);
+    Double getElevation(Double latitude, Double longitude);
 }

@@ -9,7 +9,7 @@ import java.math.BigInteger;
  */
 public class GameObject {
 
-    private BigInteger id;
+    private Long id;
 
     private Position position;
 
@@ -31,11 +31,11 @@ public class GameObject {
         this.position = position;
     }
 
-    public BigInteger getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(BigInteger id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

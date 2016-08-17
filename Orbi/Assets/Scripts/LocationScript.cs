@@ -47,7 +47,7 @@ public class LocationScript : MonoBehaviour {
 
         // Stop service if there is no need to query location updates continuously
         
-        InvokeRepeating("UpdateWorld", 0, 10);
+        InvokeRepeating("UpdateLocationAndWorld", 0, 25);
     }
 
     // Update is called once per frame
@@ -55,7 +55,7 @@ public class LocationScript : MonoBehaviour {
 	
 	}
 
-    void UpdateWorld()
+    void UpdateLocationAndWorld()
     {
         latitude = Input.location.lastData.latitude;
         longitude = Input.location.lastData.longitude;

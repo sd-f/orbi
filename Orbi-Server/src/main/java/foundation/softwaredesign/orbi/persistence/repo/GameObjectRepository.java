@@ -10,6 +10,7 @@ import org.apache.deltaspike.data.api.mapping.MappingConfig;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @Repository(forEntity = GameObjectEntity.class)
 @MappingConfig(GameObjectMappper.class)
-public interface GameObjectRepository extends EntityRepository<GameObject, BigInteger> {
+public interface GameObjectRepository extends EntityRepository<GameObject, Long> {
 
     @Modifying
     @Query("delete from GameObjectEntity")
@@ -25,7 +26,7 @@ public interface GameObjectRepository extends EntityRepository<GameObject, BigIn
 
     @Query(" select e" +
             "  from GameObjectEntity e" +
-            " where ( e.longitude between (?2 - 0.001) and (?2 + 0.001))" +
-            "   and ( e.latitude between (?1 - 0.001) and (?1 + 0.001))")
-    List<GameObject> findGameObjectsAround(BigDecimal latitude, BigDecimal longitude);
+            " where ( e.longitude between (?2 - 0.002) and (?2 + 0.002))" +
+            "   and ( e.latitude between (?1 - 0.002) and (?1 + 0.002))")
+    List<GameObject> findGameObjectsAround(Double latitude, Double longitude);
 }

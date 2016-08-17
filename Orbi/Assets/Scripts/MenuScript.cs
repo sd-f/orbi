@@ -45,10 +45,10 @@ public class MenuScript : MonoBehaviour {
         buttonCamera.interactable = startInMapsView;
 
         bgCamera = GameObject.Find("planeBackgroundCamera").GetComponent<MeshRenderer>();
-        bgMaps = GameObject.Find("planeBackgroundMaps").GetComponent<MeshRenderer>();
+        //bgMaps = GameObject.Find("planeBackgroundMaps").GetComponent<MeshRenderer>();
 
         bgCamera.enabled = !startInMapsView;
-        bgMaps.enabled = startInMapsView;
+        //bgMaps.enabled = true;
 
         cubeToCraft = GameObject.Find("cubeToCraft").GetComponent<MeshRenderer>();
         cubeToCraft.enabled = false;
@@ -74,8 +74,8 @@ public class MenuScript : MonoBehaviour {
     public void ToggleMap()
     {
         buttonCamera.interactable = !buttonCamera.interactable;
-        buttonMaps.interactable = !buttonMaps.interactable;
-        bgMaps.enabled = !bgMaps.enabled;
+        //buttonMaps.interactable = !buttonMaps.interactable;
+        //bgMaps.enabled = !bgMaps.enabled;
         bgCamera.enabled = !bgCamera.enabled;
     }
 

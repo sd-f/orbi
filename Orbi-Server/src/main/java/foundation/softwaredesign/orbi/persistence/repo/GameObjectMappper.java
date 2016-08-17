@@ -26,9 +26,9 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         GameObject gameObject = new GameObject();
         gameObject.setId(cubeEntity.getId());
         gameObject.setPosition(new Position());
-        gameObject.getPosition().setZ(cubeEntity.getLongitude());
+        gameObject.getPosition().setX(cubeEntity.getLongitude());
+        gameObject.getPosition().setZ(cubeEntity.getLatitude());
         gameObject.getPosition().setY(cubeEntity.getElevation());
-        gameObject.getPosition().setX(cubeEntity.getLatitude());
         gameObject.setName(cubeEntity.getName());
         return gameObject;
     }
@@ -40,11 +40,11 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
             newGameObjectEntity = new GameObjectEntity();
         }
         if (nonNull(gameObject.getPosition())) {
-            newGameObjectEntity.setLongitude(gameObject.getPosition().getZ());
+            newGameObjectEntity.setLatitude(gameObject.getPosition().getZ());
+            newGameObjectEntity.setLongitude(gameObject.getPosition().getX());
             newGameObjectEntity.setElevation(gameObject.getPosition().getY());
-            newGameObjectEntity.setLatitude(gameObject.getPosition().getX());
         }
-        newGameObjectEntity.setUserId(BigInteger.valueOf(1));
+        newGameObjectEntity.setUserId(new Long(1));
         newGameObjectEntity.setName(gameObject.getName());
         return newGameObjectEntity;
     }

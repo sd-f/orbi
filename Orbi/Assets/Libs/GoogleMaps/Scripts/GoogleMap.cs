@@ -87,12 +87,13 @@ public class GoogleMap : MonoBehaviour
             tex.LoadImage(www.bytes);
             //GetComponent<Renderer>().material.mainTexture = tex;
            
-            Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
+            Terrain terrain = GameObject.Find("MapsTerrain").GetComponent<Terrain>();
 
             SplatPrototype[] sp = terrain.terrainData.splatPrototypes;
 
+            //Debug.Log(tex.width);
             // TODO rotation fix for image -90°
-
+            /*
             Color32[] pixels = tex.GetPixels32();
             pixels = RotateMatrix(pixels, tex.width);
             tex.SetPixels32(pixels);
@@ -103,7 +104,7 @@ public class GoogleMap : MonoBehaviour
             pixels = RotateMatrix(pixels, tex.width);
             tex.SetPixels32(pixels);
             tex.Apply();
-
+            */
             sp[0].texture = tex;
             terrain.terrainData.splatPrototypes = sp;
 
@@ -132,8 +133,32 @@ public class GoogleMap : MonoBehaviour
 
         return ret;
     }
-
+    
 }
+
+/* maps scales
+20 : 1128.497220
+19 : 2256.994440
+18 : 4513.988880
+17 : 9027.977761
+16 : 18055.955520
+15 : 36111.911040
+14 : 72223.822090
+13 : 144447.644200
+12 : 288895.288400
+11 : 577790.576700
+10 : 1155581.153000
+9  : 2311162.307000
+8  : 4622324.614000
+7  : 9244649.227000
+6  : 18489298.450000
+5  : 36978596.910000
+4  : 73957193.820000
+3  : 147914387.600000
+2  : 295828775.300000
+1  : 591657550.500000
+*/
+
 /*
 public void test()
 {

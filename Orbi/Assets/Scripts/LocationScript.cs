@@ -28,14 +28,14 @@ public class LocationScript : MonoBehaviour {
         // Service didn't initialize in 20 seconds
         if (maxWait < 1)
         {
-            print("Timed out");
+            Debug.Log("Timed out");
             yield break;
         }
 
         // Connection has failed
         if (Input.location.status == LocationServiceStatus.Failed)
         {
-            print("Unable to determine device location");
+            Debug.Log("Unable to determine device location");
             yield break;
         }
         else
@@ -47,7 +47,8 @@ public class LocationScript : MonoBehaviour {
 
         // Stop service if there is no need to query location updates continuously
         
-        InvokeRepeating("UpdateLocationAndWorld", 0, 25);
+        InvokeRepeating("UpdateLocationAndWorld", 0, 20);
+        Debug.Log("location started");
     }
 
     // Update is called once per frame

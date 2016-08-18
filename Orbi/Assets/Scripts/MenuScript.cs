@@ -12,7 +12,7 @@ public class MenuScript : MonoBehaviour {
     private Button buttonCamera;
     private Button buttonMaps;
     private MeshRenderer bgCamera;
-    private MeshRenderer bgMaps;
+    private Terrain bgMaps;
 
     private Button buttonAddCube;
     private Button buttonAddCubeOk;
@@ -45,10 +45,10 @@ public class MenuScript : MonoBehaviour {
         buttonCamera.interactable = startInMapsView;
 
         bgCamera = GameObject.Find("planeBackgroundCamera").GetComponent<MeshRenderer>();
-        //bgMaps = GameObject.Find("planeBackgroundMaps").GetComponent<MeshRenderer>();
+        bgMaps = GameObject.Find("MapsTerrain").GetComponent<Terrain>();
 
         bgCamera.enabled = !startInMapsView;
-        //bgMaps.enabled = true;
+        bgMaps.enabled = true;
 
         cubeToCraft = GameObject.Find("cubeToCraft").GetComponent<MeshRenderer>();
         cubeToCraft.enabled = false;
@@ -64,8 +64,9 @@ public class MenuScript : MonoBehaviour {
     {
         if (CompassScript.headingNorth)
         {
-            CameraControlScript.fixNorthHeading();
+            
         }
+        CameraControlScript.fixNorthHeading();
         //mapsPlane.transform.Rotate(new Vector3(mapsPlane.transform.rotation.x, mapsPlane.transform.rotation.y, 0)); // = Quaternion.Euler(, Sensor.GetOrientation().y, 0);
         //GUI.TextArea(Rect(10, 10, Screen.width - 10, Screen.height - 10), Sensor.GetOrientation().y);
 
@@ -74,8 +75,8 @@ public class MenuScript : MonoBehaviour {
     public void ToggleMap()
     {
         buttonCamera.interactable = !buttonCamera.interactable;
-        //buttonMaps.interactable = !buttonMaps.interactable;
-        //bgMaps.enabled = !bgMaps.enabled;
+        buttonMaps.interactable = !buttonMaps.interactable;
+        bgMaps.enabled = !bgMaps.enabled;
         bgCamera.enabled = !bgCamera.enabled;
     }
 

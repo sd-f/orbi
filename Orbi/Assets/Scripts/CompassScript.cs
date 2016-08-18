@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System;
 
 public class CompassScript : MonoBehaviour {
 
@@ -28,11 +29,12 @@ public class CompassScript : MonoBehaviour {
 
     private bool isNorth()
     {
-        return (magneticFilter.Value < 5.0f) && (magneticFilter.Value > -5.0f);
+        return ((magneticFilter.Value) < 5.0f) && ((magneticFilter.Value) > -5.0f);
     }
 
     void Update()
     {
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
         if (isNorth())
         {
             if (!headingNorth)
@@ -49,6 +51,6 @@ public class CompassScript : MonoBehaviour {
                 button.image.color = Color.white;
             }
         }
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
+       
     }
 }

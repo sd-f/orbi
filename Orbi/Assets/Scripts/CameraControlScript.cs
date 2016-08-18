@@ -16,10 +16,17 @@ public class CameraControlScript : MonoBehaviour
     //public static Quaternion compass;
     public static float deltaCompass = 0.0f;
 
+    bool gyroAvailable = false;
+
     // Use this for initialization
     void Start()
     {
+        if (Sensor.Activate(Sensor.Type.Gyroscope))
+        {
+            gyroAvailable = true;
+        }
         SensorHelper.ActivateRotation();
+        
         //SensorHelper.TryForceRotationFallback(RotationFallbackType.MagneticField);
         //this.transform.rotation = Quaternion.Euler(yAngle, xAngle, 0.0F);
         //transform.rotation = Quaternion.Euler(transform.rotation.x, magneticFilter.Update(Sensor.GetOrientation().x), 0);
@@ -28,20 +35,37 @@ public class CameraControlScript : MonoBehaviour
 
     public static void fixNorthHeading()
     {
-        deltaCompass = gyroRotation.y * 270.0f;
+        deltaCompass = gyroRotation.eulerAngles.y;
     }
 
     void Update()
     {
-        gyroRotation = SensorHelper.rotation;
-        // todo better slerp speed
-        gyroRotationCorrected = Quaternion.Slerp(transform.rotation, 
-            Quaternion.Euler(gyroRotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, gyroRotation.eulerAngles.z)
-            , Time.deltaTime * 10f);
+        if (SystemInfo.deviceType == DeviceType.Desktop)
+        {
+            keyCameraRotation();
+        }
+        else if (SystemInfo.deviceType == DeviceType.Handheld)
+        {
+            if (gyroAvailable)
+            {
+                gyroRotation = SensorHelper.rotation;
+                // todo better slerp speed
+                gyroRotationCorrected = Quaternion.Slerp(transform.rotation,
+                    Quaternion.Euler(gyroRotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, gyroRotation.eulerAngles.z)
+                    , Time.deltaTime * 10f);
+                transform.rotation = gyroRotationCorrected;
+            }
+            else
+            {
+                touchCameraRotation();
+            }
+        }
+        
+        
 
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z), Time.deltaTime * 2);
         //transform.rotation = Quaternion.Euler(SensorHelper.rotation.x, SensorHelper.rotation.y, SensorHelper.rotation.z);
-        transform.rotation = gyroRotationCorrected;
+
         //SensorHelper.
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(0, -90f, 0), Time.deltaTime * 2);
 

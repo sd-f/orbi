@@ -11,9 +11,10 @@ public class DebugTextScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        this.GetComponent<Text>().text = "gyro = " + CameraControlScript.gyroRotation
+        this.GetComponent<Text>().text = "gyro = " + CameraControlScript.gyroRotation.eulerAngles
             + "\ndelta = " + CameraControlScript.deltaCompass
-            + "\ncorrected = " + CameraControlScript.gyroRotationCorrected
-            +"\nfiltered = " + CompassScript.magneticFilter.Value;
+            + "\ncorrected = " + CameraControlScript.gyroRotationCorrected.eulerAngles
+            + "\nfiltered = " + CompassScript.magneticFilter.Value
+            + "\nSensor.GetOrientation().x = " + Sensor.GetOrientation().x;
     }
 }

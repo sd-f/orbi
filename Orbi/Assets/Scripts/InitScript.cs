@@ -5,11 +5,12 @@ using System;
 using System.Net;
 using Assets.Scripts.model;
 using Assets.Scripts.enums;
+using UnityEngine.UI;
 
 public class InitScript : MonoBehaviour
 {
-    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
-    public static string serverUri = "http://localhost:8080/api";
+    public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    //public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     static int hmWidth; // heightmap width
@@ -18,6 +19,8 @@ public class InitScript : MonoBehaviour
 
     public static double maxZ = 0d;
     public static double minZ = 100000d;
+    Image refreshImage;
+    int requestsRunning = 0;
 
     Camera mainCamera;
     Terrain terrain;
@@ -28,14 +31,14 @@ public class InitScript : MonoBehaviour
 
     void Start()
     {
-        
+        refreshImage = GameObject.Find("imageRefresh").GetComponent<Image>();
         terrain = GameObject.Find("MapsTerrain").GetComponent<Terrain>();
         
         hmWidth = terrain.terrainData.heightmapWidth;
         hmHeight = terrain.terrainData.heightmapHeight;
         
-        Debug.Log("heightmapScale=" + terrain.terrainData.size);
-        Debug.Log("heightmap[" + hmHeight + "," + hmWidth + "]");
+        //Debug.Log("heightmapScale=" + terrain.terrainData.size);
+        //Debug.Log("heightmap[" + hmHeight + "," + hmWidth + "]");
         //Terrain.activeTerrain.heightmapMaximumLOD = 0;
         UpdateWorld();
         mainCamera = GameObject.Find("cameraMain").GetComponent<Camera>();
@@ -80,7 +83,6 @@ public class InitScript : MonoBehaviour
 
     public void UpdateWorld()
     {
-        
         UpdateTerrain();
         UpdateGoogleMaps();
         
@@ -104,7 +106,7 @@ public class InitScript : MonoBehaviour
     public static float CorrectHeightInScene(double height)
     {
         float correctedHeight = (float)((height) / (minZ + terrainHeight));
-        Debug.Log("minZ=" + minZ + " height= " + (height - minZ) + " -> " + correctedHeight);
+        //Debug.Log("minZ=" + minZ + " height= " + (height - minZ) + " -> " + correctedHeight);
         if (((height) / (minZ + terrainHeight)) > 1)
             return terrainHeight;
         return correctedHeight * terrainHeight;
@@ -112,7 +114,9 @@ public class InitScript : MonoBehaviour
 
     IEnumerator WaitForTerrainRequest(WWW www)
     {
+        RequestIndicatorRequestStarted();
         yield return www;
+        RequestIndicatorRequestFinished();
 
         // check for errors
         if (www.error == null)
@@ -126,7 +130,7 @@ public class InitScript : MonoBehaviour
                 if (dummyGameObject.position.y > maxZ)
                     maxZ = dummyGameObject.position.y;
             }
-            Debug.Log("min " + minZ + " max " + maxZ);
+            //Debug.Log("min " + minZ + " max " + maxZ);
             float[,] heights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
 
 
@@ -209,18 +213,22 @@ public class InitScript : MonoBehaviour
 
     IEnumerator WaitForElevationRequest(WWW www)
     {
+
+        RequestIndicatorRequestStarted();
         yield return www;
+        RequestIndicatorRequestFinished();
 
         // check for errors
         if (www.error == null)
         {
             Position position = JsonUtility.FromJson<Position>(www.text);
-            Debug.Log(position + " corrected= " + CorrectHeightInScene(position.y));
-            mainCamera.transform.position = new Vector3(0, CorrectHeightInScene( position.y + 2.0f), 0);
+           // Debug.Log(position + " corrected= " + CorrectHeightInScene(position.y));
+            mainCamera.transform.position = new Vector3(0, CorrectHeightInScene( position.y + 8.0f), 0);
 
         }
         else
         {
+            requestsRunning--;
             Debug.Log("WWW Error: " + www.error);
         }
     }
@@ -234,7 +242,9 @@ public class InitScript : MonoBehaviour
 
     IEnumerator WaitForGameObjectsRequest(WWW www)
     {
+        RequestIndicatorRequestStarted();
         yield return www;
+        RequestIndicatorRequestFinished();
 
         // check for errors
         if (www.error == null)
@@ -276,5 +286,25 @@ public class InitScript : MonoBehaviour
            
         }
     }
+
+    private void RequestIndicatorRequestStarted()
+    {
+        //Debug.Log("started running=" + requestsRunning);
+        requestsRunning++;
+        refreshImage.enabled = true;
+    }
+
+    private void RequestIndicatorRequestFinished()
+    {
+        //Debug.Log("finished running=" + requestsRunning);
+        requestsRunning--;
+        if (requestsRunning < 0)
+        {
+            requestsRunning = 0;
+        }
+        if (requestsRunning == 0)
+            refreshImage.enabled = false;
+    }
+
 
 }

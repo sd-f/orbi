@@ -43,14 +43,14 @@ public class WorldRestApi {
         return "OK";
     }
 
-    @GET
+    @POST
     @Path("/altitude")
     public World terrain(@NotNull World terrain) {
         elevationService.addAltitude(terrain);
         return terrain;
     }
 
-    @GET
+    @POST
     @Path("/around")
     public World world(@NotNull GeoPosition geoPosition) {
         return worldService.getWorld(geoPosition);

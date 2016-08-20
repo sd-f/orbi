@@ -35,7 +35,7 @@ public class PlayerRestApi {
     @Inject
     GameObjectService gameObjectService;
 
-    @GET
+    @POST
     @Path("/altitude")
     public GeoPosition elevation(@NotNull GeoPosition geoPosition) {
         elevationService.addAltitude(geoPosition);

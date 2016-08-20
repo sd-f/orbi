@@ -16,9 +16,10 @@ import java.math.BigInteger;
 public interface ElevationRepository extends EntityRepository<ElevationEntity, Long> {
 
     @Query(value = "" +
-            "SELECT ST_Value(rast, ST_SetSRID(ST_Point(?2, ?1), 4236))" +
-            "  FROM elevation\n" +
-            " WHERE longitude = trunc(?2)" +
-            "   AND latitude = trunc(?1) ", isNative = true, singleResult = SingleResultType.OPTIONAL)
+            "SELECT ST_Value(rast, 1, ST_SetSRID(ST_Point(?1,?1), 4236)) altitude\n" +
+            "FROM elevation e\n" +
+            "WHERE ST_Intersects(e.rast,ST_SetSRID(ST_Point(?1,?2), 4236))\n" +
+            "  AND e.latitude = trunc(?1)\n" +
+            "  AND e.longitude = trunc(?2);", isNative = true, singleResult = SingleResultType.OPTIONAL)
     Double getAltitude(Double latitude, Double longitude);
 }

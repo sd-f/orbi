@@ -10,7 +10,7 @@
         <tagDatabase tag="begin" />
     </changeSet>
 
-    <include file="ORBI-1/000_tables.xml" relativeToChangelogFile="true"/>
+    <include file="ORBI-00001/000_tables.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="end" author="Lucas Reeh">
         <tagDatabase tag="end" />

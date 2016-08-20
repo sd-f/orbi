@@ -48,20 +48,20 @@
             rid integer NOT NULL DEFAULT nextval('elevation_rid_seq'::regclass),
             rast raster,
             filename text,
-            latitude integer,
-            longitude integer,
+            latitude numeric,
+            longitude numeric,
             CONSTRAINT elevation_pkey PRIMARY KEY (rid),
-            CONSTRAINT enforce_height_rast CHECK (st_height(rast) = 3601),
-            CONSTRAINT enforce_max_extent_rast CHECK (st_envelope(rast) @ '01030000208C10000001000000050000006587A9CBEDFF2940D961EA72FB7F46406587A9CBEDFF2940269E158D048048404D3C2B1A09003140269E158D048048404D3C2B1A09003140D961EA72FB7F46406587A9CBEDFF2940D961EA72FB7F4640'::geometry),
+            CONSTRAINT enforce_height_rast CHECK (st_height(rast) = ANY (ARRAY[100, 1])),
+            CONSTRAINT enforce_max_extent_rast CHECK (st_envelope(rast) @ '01030000208C10000001000000050000006587A9CBEDFF2B40D961EA72FB7F46406587A9CBEDFF2B40269E158D040047409A78563412002E40269E158D040047409A78563412002E40D961EA72FB7F46406587A9CBEDFF2B40D961EA72FB7F4640'::geometry),
             CONSTRAINT enforce_nodata_values_rast CHECK (_raster_constraint_nodata_values(rast) = '{-32767.0000000000}'::numeric[]),
             CONSTRAINT enforce_num_bands_rast CHECK (st_numbands(rast) = 1),
             CONSTRAINT enforce_out_db_rast CHECK (_raster_constraint_out_db(rast) = '{f}'::boolean[]),
             CONSTRAINT enforce_pixel_types_rast CHECK (_raster_constraint_pixel_types(rast) = '{16BSI}'::text[]),
-            CONSTRAINT enforce_same_alignment_rast CHECK (st_samealignment(rast, '0100000000D5BC9A785634323FD5BC9A78563432BF6587A9CBEDFF2B40269E158D04004740000000000000000000000000000000008C10000001000100'::raster)),
-            CONSTRAINT enforce_scalex_rast CHECK (round(st_scalex(rast)::numeric, 10) = round(0.000277777777777777, 10)),
-            CONSTRAINT enforce_scaley_rast CHECK (round(st_scaley(rast)::numeric, 10) = round('-0.000277777777777777'::numeric, 10)),
+            CONSTRAINT enforce_same_alignment_rast CHECK (st_samealignment(rast, '010000000070BD9A785634323F70BD9A78563432BF6587A9CBEDFF2B40269E158D04004740000000000000000000000000000000008C10000001000100'::raster)),
+            CONSTRAINT enforce_scalex_rast CHECK (round(st_scalex(rast)::numeric, 10) = round(0.000277777777777786, 10)),
+            CONSTRAINT enforce_scaley_rast CHECK (round(st_scaley(rast)::numeric, 10) = round(- 0.000277777777777786, 10)),
             CONSTRAINT enforce_srid_rast CHECK (st_srid(rast) = 4236),
-            CONSTRAINT enforce_width_rast CHECK (st_width(rast) = 3601)
+            CONSTRAINT enforce_width_rast CHECK (st_width(rast) = ANY (ARRAY[100, 1]))
             );
         </sql>
         <rollback>

@@ -1,8 +1,6 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -28,7 +26,10 @@ public class GameObjectEntity {
     private Double longitude;
 
     @Column(precision = 12, scale = 6, nullable = false)
-    private Double elevation;
+    private Double altitude;
+
+    @Column
+    private Double rotationY;
 
     public Long getId() {
         return id;
@@ -70,11 +71,19 @@ public class GameObjectEntity {
         this.longitude = longitude;
     }
 
-    public Double getElevation() {
-        return elevation;
+    public Double getAltitude() {
+        return altitude;
     }
 
-    public void setElevation(Double elevation) {
-        this.elevation = elevation;
+    public void setAltitude(Double elevation) {
+        this.altitude = elevation;
+    }
+
+    public Double getRotationY() {
+        return rotationY;
+    }
+
+    public void setRotationY(Double rotationY) {
+        this.rotationY = rotationY;
     }
 }

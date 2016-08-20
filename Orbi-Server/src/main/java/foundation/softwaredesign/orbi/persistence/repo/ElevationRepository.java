@@ -20,5 +20,5 @@ public interface ElevationRepository extends EntityRepository<ElevationEntity, L
             "  FROM elevation\n" +
             " WHERE longitude = trunc(?2)" +
             "   AND latitude = trunc(?1) ", isNative = true, singleResult = SingleResultType.OPTIONAL)
-    Double getElevation(Double latitude, Double longitude);
+    Double getAltitude(Double latitude, Double longitude);
 }

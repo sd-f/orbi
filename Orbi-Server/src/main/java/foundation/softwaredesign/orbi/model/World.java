@@ -1,4 +1,4 @@
-package foundation.softwaredesign.orbi.model.virtual;
+package foundation.softwaredesign.orbi.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.List;

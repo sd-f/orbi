@@ -1,6 +1,6 @@
 package foundation.softwaredesign.orbi.persistence.repo;
 
-import foundation.softwaredesign.orbi.model.virtual.GameObject;
+import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import org.apache.deltaspike.data.api.EntityRepository;
 import org.apache.deltaspike.data.api.Modifying;
@@ -8,9 +8,6 @@ import org.apache.deltaspike.data.api.Query;
 import org.apache.deltaspike.data.api.Repository;
 import org.apache.deltaspike.data.api.mapping.MappingConfig;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 /**

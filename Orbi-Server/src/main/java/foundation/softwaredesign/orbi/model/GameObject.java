@@ -1,8 +1,6 @@
-package foundation.softwaredesign.orbi.model.virtual;
+package foundation.softwaredesign.orbi.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-
-import java.math.BigInteger;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -10,9 +8,8 @@ import java.math.BigInteger;
 public class GameObject {
 
     private Long id;
-
-    private Position position;
-
+    private GeoPosition geoPosition;
+    private Rotation rotation;
     private String name;
 
     public String getName() {
@@ -23,12 +20,12 @@ public class GameObject {
         this.name = name;
     }
 
-    public Position getPosition() {
-        return position;
+    public GeoPosition getGeoPosition() {
+        return geoPosition;
     }
 
-    public void setPosition(Position position) {
-        this.position = position;
+    public void setGeoPosition(GeoPosition geoPosition) {
+        this.geoPosition = geoPosition;
     }
 
     public Long getId() {
@@ -37,6 +34,14 @@ public class GameObject {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Rotation getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(Rotation rotation) {
+        this.rotation = rotation;
     }
 
     @Override

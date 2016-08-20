@@ -1,12 +1,9 @@
 package foundation.softwaredesign.orbi.persistence.repo;
 
-import foundation.softwaredesign.orbi.model.virtual.GameObject;
-import foundation.softwaredesign.orbi.model.virtual.Position;
+import foundation.softwaredesign.orbi.model.GameObject;
+import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -25,10 +22,12 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     protected GameObject toDto(GameObjectEntity cubeEntity) {
         GameObject gameObject = new GameObject();
         gameObject.setId(cubeEntity.getId());
-        gameObject.setPosition(new Position());
-        gameObject.getPosition().setX(cubeEntity.getLongitude());
-        gameObject.getPosition().setZ(cubeEntity.getLatitude());
-        gameObject.getPosition().setY(cubeEntity.getElevation());
+        gameObject.setGeoPosition(new GeoPosition());
+        gameObject.getGeoPosition().setLatitude(cubeEntity.getLatitude());
+        gameObject.getGeoPosition().setLongitude(cubeEntity.getLongitude());
+        gameObject.getGeoPosition().setAltitude(cubeEntity.getAltitude());
+
+
         gameObject.setName(cubeEntity.getName());
         return gameObject;
     }
@@ -39,10 +38,13 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         if (isNull(newGameObjectEntity)) {
             newGameObjectEntity = new GameObjectEntity();
         }
-        if (nonNull(gameObject.getPosition())) {
-            newGameObjectEntity.setLatitude(gameObject.getPosition().getZ());
-            newGameObjectEntity.setLongitude(gameObject.getPosition().getX());
-            newGameObjectEntity.setElevation(gameObject.getPosition().getY());
+        if (nonNull(gameObject.getGeoPosition())) {
+            newGameObjectEntity.setLatitude(gameObject.getGeoPosition().getLatitude());
+            newGameObjectEntity.setLongitude(gameObject.getGeoPosition().getLongitude());
+            newGameObjectEntity.setAltitude(gameObject.getGeoPosition().getAltitude());
+        }
+        if (nonNull(gameObject.getRotation())) {
+            newGameObjectEntity.setRotationY(gameObject.getRotation().getY());
         }
         newGameObjectEntity.setUserId(new Long(1));
         newGameObjectEntity.setName(gameObject.getName());

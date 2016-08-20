@@ -5,7 +5,6 @@ import org.eclipse.persistence.annotations.ReadOnly;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.math.BigInteger;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -17,8 +16,8 @@ public class ElevationEntity {
 
     @Id
     Integer rid;
-    Long longitutde;
     Long latitude;
+    Long longitutde;
 
     public Integer getRid() {
         return rid;

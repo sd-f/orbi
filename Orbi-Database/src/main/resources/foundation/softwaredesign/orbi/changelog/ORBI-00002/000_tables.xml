@@ -17,7 +17,7 @@
 
     <changeSet id="add_game_object_rotation_y" author="Lucas Reeh">
         <addColumn tableName="game_object" schemaName="public">
-            <column name="rotation_y" type="NUMERIC"></column>
+            <column name="rotation_y" type="NUMERIC" defaultValue="0.0"></column>
         </addColumn>
         <rollback>
             <dropColumn tableName="game_object" schemaName="public" columnName="rotation_y"></dropColumn>

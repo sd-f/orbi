@@ -10,7 +10,17 @@
         <tagDatabase tag="begin" />
     </changeSet>
 
+    <changeSet id="before_ORBI-00001" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00001" />
+    </changeSet>
+
     <include file="ORBI-00001/000_tables.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="before_ORBI-00002" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00002" />
+    </changeSet>
+
+    <include file="ORBI-00002/000_tables.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="end" author="Lucas Reeh">
         <tagDatabase tag="end" />

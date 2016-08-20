@@ -52,7 +52,6 @@
             longitude numeric,
             CONSTRAINT elevation_pkey PRIMARY KEY (rid),
             CONSTRAINT enforce_height_rast CHECK (st_height(rast) = ANY (ARRAY[100, 1])),
-            CONSTRAINT enforce_max_extent_rast CHECK (st_envelope(rast) @ '01030000208C10000001000000050000006587A9CBEDFF2B40D961EA72FB7F46406587A9CBEDFF2B40269E158D040047409A78563412002E40269E158D040047409A78563412002E40D961EA72FB7F46406587A9CBEDFF2B40D961EA72FB7F4640'::geometry),
             CONSTRAINT enforce_nodata_values_rast CHECK (_raster_constraint_nodata_values(rast) = '{-32767.0000000000}'::numeric[]),
             CONSTRAINT enforce_num_bands_rast CHECK (st_numbands(rast) = 1),
             CONSTRAINT enforce_out_db_rast CHECK (_raster_constraint_out_db(rast) = '{f}'::boolean[]),

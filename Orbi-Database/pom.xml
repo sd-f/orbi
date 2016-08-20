@@ -62,7 +62,7 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>${liquibase.version}</version>
                 <configuration>
-                    <rollbackTag>begin</rollbackTag>
+                    <rollbackTag>before_ORBI-00002</rollbackTag>
                     <propertyFile>liquibase.properties</propertyFile>
                 </configuration>
                 <dependencies>

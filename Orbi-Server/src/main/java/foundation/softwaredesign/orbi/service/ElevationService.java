@@ -33,6 +33,6 @@ public class ElevationService {
     }
 
     public Double getAltitude(GeoPosition position) {
-        return elevationRepository.getAltitude(position.getAltitude(), position.getLatitude());
+        return elevationRepository.getAltitude(position.getLatitude(), position.getLongitude());
     }
 }

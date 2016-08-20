@@ -25,36 +25,36 @@ public class WorldFactory {
 
     public void reset() {
         initialObjects = new HashMap<>();
-        Double y0 = 47.0680; // N
-        Double y2 = 47.0676; // S
+        Double right = 15.5554; // E
+        Double left = 15.5550; // W
 
-        Double x0 = 15.5554; // E
-        Double x2 = 15.5550; // W
+        Double top = 47.0680; // N
+        Double bottom = 47.0676; // S
 
-        Double x1 = 15.5552;
-        Double y1 = 47.0678;
+        Double middle = 47.0678;
+        Double center = 15.5552;
 
-        initialObjects.put("test_calibration_N__1", new GeoPosition(x1, 0.5, y0)); // N
-        initialObjects.put("test_calibration_N__2", new GeoPosition(x1, 1.5, y0)); // N
-        initialObjects.put("test_calibration_N__3", new GeoPosition(x1, 2.5, y0)); // N
-        initialObjects.put("test_calibration_N__4", new GeoPosition(x1, 3.5, y0)); // N
-        initialObjects.put("test_calibration_NE_1", new GeoPosition(x0, 0.5, y0)); // NE
-        initialObjects.put("test_calibration_E__1", new GeoPosition(x0, 0.5, y1)); // E
-        initialObjects.put("test_calibration_E__2", new GeoPosition(x0, 1.5, y1)); // E
-        initialObjects.put("test_calibration_E__3", new GeoPosition(x0, 2.5, y1)); // E
-        initialObjects.put("test_calibration_SE_1", new GeoPosition(x0, 0.5, y2)); // SE
-        initialObjects.put("test_calibration_S__1", new GeoPosition(x1, 0.5, y2)); // S
-        initialObjects.put("test_calibration_S__2", new GeoPosition(x1, 1.5, y2)); // S
-        initialObjects.put("test_calibration_SW_1", new GeoPosition(x2, 0.5, y2)); // SW
-        initialObjects.put("test_calibration_W__1", new GeoPosition(x2, 0.5, y1)); // W
-        initialObjects.put("test_calibration_NW_1", new GeoPosition(x2, 0.5, y0)); // NW
-        initialObjects.put("test_calibration_100M", new GeoPosition(15.5540, 0.0, y1)); // NW
+        initialObjects.put("test_calibration_N__1", new GeoPosition(top, center, 0.5)); // N
+        initialObjects.put("test_calibration_N__2", new GeoPosition(top, center, 1.5)); // N
+        initialObjects.put("test_calibration_N__3", new GeoPosition(top, center, 2.5)); // N
+        initialObjects.put("test_calibration_N__4", new GeoPosition(top, center, 3.5)); // N
+        initialObjects.put("test_calibration_NE_1", new GeoPosition(top, right, 0.5)); // NE
+        initialObjects.put("test_calibration_E__1", new GeoPosition(middle, right, 0.5)); // E
+        initialObjects.put("test_calibration_E__2", new GeoPosition(middle, right, 1.5)); // E
+        initialObjects.put("test_calibration_E__3", new GeoPosition(middle, right, 2.5)); // E
+        initialObjects.put("test_calibration_SE_1", new GeoPosition(bottom, right, 0.5)); // SE
+        initialObjects.put("test_calibration_S__1", new GeoPosition(bottom, center, 0.5)); // S
+        initialObjects.put("test_calibration_S__2", new GeoPosition(bottom, center, 1.5)); // S
+        initialObjects.put("test_calibration_SW_1", new GeoPosition(bottom, left, 0.5)); // SW
+        initialObjects.put("test_calibration_W__1", new GeoPosition(bottom, left, 0.5)); // W
+        initialObjects.put("test_calibration_NW_1", new GeoPosition(top, left, 0.5)); // NW
+        initialObjects.put("test_calibration_100M", new GeoPosition(middle, 15.5540, 0.0)); // NW
 
         gameObjectRepository.deleteAll();
 
         for (Map.Entry<String, GeoPosition> entry : initialObjects.entrySet()) {
 
-            entry.getValue().setLongitude(
+            entry.getValue().setAltitude(
                     entry.getValue().getLongitude()
                             + elevationService.getAltitude(entry.getValue()));
 

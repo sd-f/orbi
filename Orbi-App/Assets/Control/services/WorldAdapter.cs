@@ -33,7 +33,7 @@ namespace Assets.Control.services
             geoPosition.latitude = (.5 * Math.Log((1 + siny) / (1 - siny)) * -PixelsPerLonRadian);
 
             
-            geoPosition.altitude = geoPosition.altitude - TerrainService.MIN_HEIGHT;
+            geoPosition.altitude = (geoPosition.altitude - TerrainService.MIN_HEIGHT)/2.0f;
         }
 
         public static void ToVirtual(GeoPosition position, Player player)
@@ -51,7 +51,7 @@ namespace Assets.Control.services
             double latRadians = (geoPosition.latitude) / -PixelsPerLonRadian;
             geoPosition.latitude = (RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
             geoPosition.latitude = geoPosition.latitude / CORRECTED_SCALE;
-            geoPosition.altitude = geoPosition.altitude + TerrainService.MIN_HEIGHT;
+            geoPosition.altitude = (geoPosition.altitude + TerrainService.MIN_HEIGHT)*2.0d;
         }
 
         public static void ToReal(GeoPosition position, Player player)

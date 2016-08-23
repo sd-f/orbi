@@ -19,7 +19,7 @@ namespace Assets.Control.services
                 newPosition.altitude = newPlayer.geoPosition.altitude;
                 WorldAdapter.ToVirtual(newPosition);
                 newPlayer.geoPosition.altitude = newPosition.altitude;
-                camera.transform.position = new Vector3(0, (float)newPlayer.geoPosition.altitude, 0);
+                camera.transform.position = new Vector3(0, (float)newPlayer.geoPosition.altitude + 2.0f, 0);
 
                 //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
             }

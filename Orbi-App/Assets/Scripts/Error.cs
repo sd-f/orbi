@@ -9,7 +9,7 @@ public class Error : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        INSTANCE = GameObject.Find("ErrorPanel");
+        INSTANCE = this.gameObject;
         INSTANCE.SetActive(false);
 	}
 

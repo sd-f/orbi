@@ -13,7 +13,7 @@ namespace Assets.Control.services
         public static int TERRAIN_SIZE = 256;
         public static double MAX_HEIGHT = 0d;
         public static double MIN_HEIGHT = 100000d;
-        public static int TERRAIN_HEIGHT = 300;
+        public static int TERRAIN_HEIGHT = 100;
 
         public World GenerateDummyWorldArround(Player player)
         {
@@ -60,7 +60,6 @@ namespace Assets.Control.services
             Texture2D texture = new Texture2D(heightMapSizeForRequest, heightMapSizeForRequest);
             int x, y, vX, vY;
             int factor = TERRAIN_SIZE / (heightMapSizeForRequest - 1);
-            double scale = (MAX_HEIGHT - MIN_HEIGHT) / TERRAIN_HEIGHT;
             foreach (Model.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
                 WorldAdapter.ToVirtual(dummyGameObject.geoPosition, player);
@@ -88,6 +87,7 @@ namespace Assets.Control.services
                     heights[x, y] = texture.GetPixel(x, y).r;
                 }
             }
+            terrain.terrainData.SetHeightsDelayLOD(0, 0, heights);
             terrain.terrainData.SetHeights(0, 0, heights);
             terrain.Flush();
 
@@ -98,8 +98,6 @@ namespace Assets.Control.services
         private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
         {
             Texture2D result = new Texture2D(targetWidth, targetHeight, source.format, false);
-            float incX = (1.0f / (float)targetWidth);
-            float incY = (1.0f / (float)targetHeight);
             for (int i = 0; i < result.height; ++i)
             {
                 for (int j = 0; j < result.width; ++j)

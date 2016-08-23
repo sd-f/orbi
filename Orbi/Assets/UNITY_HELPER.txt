@@ -1,3 +1,0 @@
-# other scenes
-
-gameObject[] goArray = SceneManager.GetSceneByName(sceneToLoad).GetRootGameObjects();

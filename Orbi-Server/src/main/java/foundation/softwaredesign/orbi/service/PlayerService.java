@@ -1,7 +1,7 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.CraftingGameObject;
 import foundation.softwaredesign.orbi.model.GameObject;
+import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
@@ -24,8 +24,8 @@ public class PlayerService {
         gameObjectRepository.saveAndFlush(gameObject);
     }
 
-    public World craftGameObject(CraftingGameObject craftingGameObject) {
-        saveGameObject(craftingGameObject.getGameObject());
-        return worldService.getWorld(craftingGameObject.getPlayerGeoPosition());
+    public World craftGameObject(Player player) {
+        saveGameObject(player.getGameObjectToCraft());
+        return worldService.getWorld(player.getGeoPosition());
     }
 }

@@ -22,6 +22,12 @@
 
     <include file="ORBI-00002/000_tables.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00003" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00003" />
+    </changeSet>
+
+    <include file="ORBI-00003/000_tables.xml" relativeToChangelogFile="true"/>
+
     <changeSet id="end" author="Lucas Reeh">
         <tagDatabase tag="end" />
     </changeSet>

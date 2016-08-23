@@ -31,6 +31,9 @@ public class GameObjectEntity {
     @Column
     private Double rotationY;
 
+    @Column
+    private String prefab;
+
     public Long getId() {
         return id;
     }
@@ -85,5 +88,13 @@ public class GameObjectEntity {
 
     public void setRotationY(Double rotationY) {
         this.rotationY = rotationY;
+    }
+
+    public String getPrefab() {
+        return prefab;
+    }
+
+    public void setPrefab(String prefab) {
+        this.prefab = prefab;
     }
 }

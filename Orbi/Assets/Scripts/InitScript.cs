@@ -9,8 +9,8 @@ using UnityEngine.UI;
 
 public class InitScript : MonoBehaviour
 {
-    public static string serverUri = "https://softwaredesign.foundation/orbi/api";
-    //public static string serverUri = "http://localhost:8080/api";
+    //public static string serverUri = "https://softwaredesign.foundation/orbi/api";
+    public static string serverUri = "http://localhost:8080/api";
     public GameObject cubePrefab;
 
     static int hmWidth; // heightmap width
@@ -123,61 +123,7 @@ public class InitScript : MonoBehaviour
         {
             World dummyWorld = JsonUtility.FromJson<World>(www.text);
 
-            foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
-            {
-                if (dummyGameObject.position.y < minZ)
-                    minZ = dummyGameObject.position.y;
-                if (dummyGameObject.position.y > maxZ)
-                    maxZ = dummyGameObject.position.y;
-            }
-            //Debug.Log("min " + minZ + " max " + maxZ);
-            float[,] heights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
-
-
-            float height = 0.0f;
-            height = (float)CorrectHeightOnTerrain(minZ);
-            for (int i = 0; i < hmWidth; i++)
-                for (int j = 0; j < hmHeight; j++)
-                {
-                    if (heights[i, j] == 0)
-                    {
-                        heights[i, j] = height;
-                    }
-                    //print(heights[i,j]);
-                }
-            int x, y;
-            Texture2D texture = new Texture2D(16, 16);
-            foreach (VirtualGameObject dummyGameObject in dummyWorld.gameObjects)
-            {
-                height = (float)CorrectHeightOnTerrain(dummyGameObject.position.y);
-                y = (int)Math.Floor(dummyGameObject.position.x) + 64;
-                x = (int)Math.Floor(dummyGameObject.position.z) + 64;
-
-                //Debug.Log(x + "," + y + " h="+ height);
-                heights[x, y] = height;
-                texture.SetPixel(x/8, y/8,new Color(height, (float)((dummyGameObject.position.y - minZ) / (maxZ-minZ)), 0.5f));
-                //Debug.Log(x/8 + "," + y/8 + " h=" + height);
-
-
-            }
-
-            // interpolation
-            texture.Apply();
-            Texture2D newTexuture = ScaleTexture(texture, 129, 129);
-            //testplane.material.mainTexture = newTexuture;
-            Color[] colors = newTexuture.GetPixels();
             
-            for (x = 0; x < hmWidth; x++)
-            {
-                for (y = 0; y < hmHeight; y++)
-                {
-                    heights[x, y] = newTexuture.GetPixel(x,y).r;
-                }
-            }
-
-            terrain.terrainData.SetHeights(0, 0, heights);
-            terrain.Flush();
-
             //Debug.Log("terrain updated");
             UpdateGameObjects();
             UpdatePlayerElevation();
@@ -188,22 +134,7 @@ public class InitScript : MonoBehaviour
         }
     }
 
-    private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
-    {
-        Texture2D result = new Texture2D(targetWidth, targetHeight, source.format, false);
-        float incX = (1.0f / (float)targetWidth);
-        float incY = (1.0f / (float)targetHeight);
-        for (int i = 0; i < result.height; ++i)
-        {
-            for (int j = 0; j < result.width; ++j)
-            {
-                Color newColor = source.GetPixelBilinear((float)j / (float)result.width, (float)i / (float)result.height);
-                result.SetPixel(j, i, newColor);
-            }
-        }
-        result.Apply();
-        return result;
-    }
+    
 
     public void UpdatePlayerElevation()
     {

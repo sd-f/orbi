@@ -28,7 +28,7 @@ public class ElevationService {
     public void addAltitude(GeoPosition position) {
         Double elevation = getAltitude(position);
         if (nonNull(elevation)) {
-            position.setLongitude(elevation);
+            position.setAltitude(elevation);
         }
     }
 

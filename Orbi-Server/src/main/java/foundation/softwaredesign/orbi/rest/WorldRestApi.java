@@ -1,10 +1,8 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.GameObject;
-import foundation.softwaredesign.orbi.model.GeoPosition;
+import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.ElevationService;
-import foundation.softwaredesign.orbi.service.GameObjectService;
 import foundation.softwaredesign.orbi.service.WorldFactory;
 import foundation.softwaredesign.orbi.service.WorldService;
 
@@ -13,8 +11,6 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-
-import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_XML;
@@ -44,7 +40,7 @@ public class WorldRestApi {
     }
 
     @POST
-    @Path("/altitude")
+    @Path("/terrain")
     public World terrain(@NotNull World terrain) {
         elevationService.addAltitude(terrain);
         return terrain;
@@ -52,8 +48,8 @@ public class WorldRestApi {
 
     @POST
     @Path("/around")
-    public World world(@NotNull GeoPosition geoPosition) {
-        return worldService.getWorld(geoPosition);
+    public World world(@NotNull Player player) {
+        return worldService.getWorld(player.getGeoPosition());
     }
 
 

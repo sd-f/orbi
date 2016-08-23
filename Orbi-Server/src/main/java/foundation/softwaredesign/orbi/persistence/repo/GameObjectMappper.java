@@ -26,7 +26,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.getGeoPosition().setLatitude(cubeEntity.getLatitude());
         gameObject.getGeoPosition().setLongitude(cubeEntity.getLongitude());
         gameObject.getGeoPosition().setAltitude(cubeEntity.getAltitude());
-
+        gameObject.setPrefab(cubeEntity.getPrefab());
 
         gameObject.setName(cubeEntity.getName());
         return gameObject;
@@ -46,6 +46,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         if (nonNull(gameObject.getRotation())) {
             newGameObjectEntity.setRotationY(gameObject.getRotation().getY());
         }
+        newGameObjectEntity.setPrefab(gameObject.getPrefab());
         newGameObjectEntity.setUserId(new Long(1));
         newGameObjectEntity.setName(gameObject.getName());
         return newGameObjectEntity;

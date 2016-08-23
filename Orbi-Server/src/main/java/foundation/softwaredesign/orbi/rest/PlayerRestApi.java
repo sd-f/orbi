@@ -1,9 +1,6 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.CraftingGameObject;
-import foundation.softwaredesign.orbi.model.GameObject;
-import foundation.softwaredesign.orbi.model.GeoPosition;
-import foundation.softwaredesign.orbi.model.World;
+import foundation.softwaredesign.orbi.model.*;
 import foundation.softwaredesign.orbi.service.ElevationService;
 import foundation.softwaredesign.orbi.service.GameObjectService;
 import foundation.softwaredesign.orbi.service.PlayerService;
@@ -37,16 +34,16 @@ public class PlayerRestApi {
 
     @POST
     @Path("/altitude")
-    public GeoPosition elevation(@NotNull GeoPosition geoPosition) {
-        elevationService.addAltitude(geoPosition);
-        return geoPosition;
+    public Player elevation(@NotNull Player player) {
+        elevationService.addAltitude(player.getGeoPosition());
+        return player;
     }
 
     @POST
     @Path("/craft")
     @Transactional
-    public World create(@NotNull CraftingGameObject craftingGameObject) {
-        return playerService.craftGameObject(craftingGameObject);
+    public World create(@NotNull Player player) {
+        return playerService.craftGameObject(player);
     }
 
 }

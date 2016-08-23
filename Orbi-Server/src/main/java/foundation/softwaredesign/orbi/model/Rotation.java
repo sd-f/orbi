@@ -1,13 +1,19 @@
 package foundation.softwaredesign.orbi.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
+@XmlRootElement
 public class Rotation {
 
     private Double x;
     private Double y;
     private Double z;
+
+    public Rotation() {
+    }
 
     public Rotation(Double x, Double y, Double z) {
         this.x = x;

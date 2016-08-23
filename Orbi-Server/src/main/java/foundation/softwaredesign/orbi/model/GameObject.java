@@ -11,6 +11,7 @@ public class GameObject {
     private GeoPosition geoPosition;
     private Rotation rotation;
     private String name;
+    private String prefab;
 
     public String getName() {
         return name;
@@ -42,6 +43,14 @@ public class GameObject {
 
     public void setRotation(Rotation rotation) {
         this.rotation = rotation;
+    }
+
+    public String getPrefab() {
+        return prefab;
+    }
+
+    public void setPrefab(String prefab) {
+        this.prefab = prefab;
     }
 
     @Override

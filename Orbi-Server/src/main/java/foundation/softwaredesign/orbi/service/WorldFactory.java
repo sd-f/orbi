@@ -61,6 +61,7 @@ public class WorldFactory {
             GameObject gameObject = new GameObject();
             gameObject.setGeoPosition(entry.getValue());
             gameObject.setName(entry.getKey());
+            gameObject.setPrefab("ScifiCrate/ScifiCrate_1");
             gameObjectRepository.save(gameObject);
         }
     }

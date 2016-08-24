@@ -22,9 +22,13 @@ namespace Assets.Control
                 // works only if terrain is loaded
                 playerScript.UpdatePlayerHeight(player);
                 gameObjectsScript.UpdateGameObjects(player);
+                IndicateRequestFinished();
             }
             else
+            {
+                IndicateRequestFinished();
                 Error.Show(request.error);
+            } 
         }
     }
 }

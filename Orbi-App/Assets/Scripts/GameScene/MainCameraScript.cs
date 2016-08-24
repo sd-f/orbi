@@ -8,12 +8,11 @@ public class MainCameraScript : MonoBehaviour {
     private float KEY_ROTATION_SPEED = 100.0F;
 
     // gyro rotation
-    public static Quaternion GYRO_ROTATION;
-    public static float DELTA_COMPASS = 0.0f;
+    private Quaternion gyroRotation;
+    private float deltaCompass = 0.0f;
 
     void Start () {
         SensorHelper.ActivateRotation();
-        
 	}
 	
 	void Update () {
@@ -24,11 +23,16 @@ public class MainCameraScript : MonoBehaviour {
             GyroRotation();
     }
 
+    public void UpdateDeltaCompass()
+    {
+        deltaCompass = gyroRotation.eulerAngles.y;
+    }
+
     void GyroRotation()
     {
-        GYRO_ROTATION = SensorHelper.rotation;
+        gyroRotation = SensorHelper.rotation;
         transform.rotation = Quaternion.Slerp(transform.rotation,
-            Quaternion.Euler(GYRO_ROTATION.eulerAngles.x, GYRO_ROTATION.eulerAngles.y - DELTA_COMPASS, GYRO_ROTATION.eulerAngles.z)
+            Quaternion.Euler(gyroRotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, gyroRotation.eulerAngles.z)
             , Time.deltaTime * 10f);
     }
 

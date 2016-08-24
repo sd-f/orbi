@@ -37,12 +37,16 @@ namespace Assets.Control.services
                     newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
                     WorldAdapter.ToVirtual(gameObject.geoPosition, player);
                     newCube.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
-
+                    IndicateRequestFinished();
                 }
                
             }
             else
+            {
+                IndicateRequestFinished();
                 Error.Show(request.error);
+            }
+               
         }
 
         private UnityEngine.GameObject getPrefab(string prefab)

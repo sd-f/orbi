@@ -16,7 +16,7 @@ public class GameScript : MonoBehaviour {
     void Start () {
         MAPS_SCRIPT = UnityEngine.GameObject.Find("MapsTerrain").GetComponent<MapsTerrainScript>();
         //Invoke("UpdateWorld", 0.5f); // TODO InvokeRepeating
-        InvokeRepeating("UpdateWorld", 0.5f, 2.0f);
+        InvokeRepeating("UpdateWorld", 0, 3);
 	}
 	
 	// Update is called once per frame

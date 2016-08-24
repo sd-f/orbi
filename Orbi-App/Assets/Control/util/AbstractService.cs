@@ -11,6 +11,8 @@ namespace Assets.Control
 
         public WWW Request(string apiPath, string jsonString)
         {
+            IndicateRequestStart();
+
             string uri = Game.GetInstance().GetServerUrl() + "/" + apiPath;
             UTF8Encoding encoding = new System.Text.UTF8Encoding();
             
@@ -29,6 +31,17 @@ namespace Assets.Control
             }
            
             return www;
+        }
+
+        public void IndicateRequestStart()
+        {
+            Server.RUNNING_REQUESTS++;
+        }
+
+        public void IndicateRequestFinished()
+        {
+            if (Server.RUNNING_REQUESTS > 0)
+                Server.RUNNING_REQUESTS--;
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Assets.Control
 
         public Game()
         {
-            player.geoPosition = ServiceConstants.START_POSITION;
+            player.geoPosition = Server.START_POSITION;
         }
 
         public void SetServer(ServerType serverType)
@@ -23,7 +23,7 @@ namespace Assets.Control
 
         public string GetServerUrl()
         {
-            return ServiceConstants.GetServerUrl(INSTANCE.server);
+            return Server.GetServerUrl(INSTANCE.server);
         }
 
         public static Game GetInstance()

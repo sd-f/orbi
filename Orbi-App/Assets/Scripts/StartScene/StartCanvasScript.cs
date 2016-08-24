@@ -1,25 +1,31 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
-public class MapsCanvasScript : MonoBehaviour {
+public class StartCanvasScript : MonoBehaviour
+{
 
-    Vector2 lastScreenSize = new Vector2(1920, 1080);
+
+    Vector2 lastScreenSize = new Vector2(1920,1080);
     RectTransform bgImageRectTransform;
 
     // Use this for initialization
     void Awake()
     {
-        bgImageRectTransform = GameObject.Find("CanvasBackgroundImage").GetComponent<RectTransform>();
-        InvokeRepeating("OnScreenSizeChanged", 0, 1);
+        bgImageRectTransform = GameObject.Find("StartBackgroundImage").GetComponent<RectTransform>();
+        InvokeRepeating("OnScreenSizeChanged", 0.5f, 1);
     }
 
 
-    void OnScreenSizeChanged()
+    void OnScreenSizeChanged ()
     {
         if (lastScreenSize != new Vector2(Screen.width, Screen.height))
         {
-
+            
             bgImageRectTransform.sizeDelta = new Vector2(Screen.width, Screen.height);
         }
     }
+
+
 }
+	

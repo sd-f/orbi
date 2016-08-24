@@ -22,9 +22,14 @@ namespace Assets.Control.services
                 camera.transform.position = new Vector3(0, (float)newPlayer.geoPosition.altitude + 2.0f, 0);
 
                 //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
+                IndicateRequestFinished();
             }
             else
+            {
+                IndicateRequestFinished();
                 Error.Show(request.error);
+            }
+               
         }
     }
 }

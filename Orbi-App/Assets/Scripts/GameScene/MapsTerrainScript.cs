@@ -16,7 +16,7 @@ public class MapsTerrainScript : MonoBehaviour {
         googleMapsTerrain = GetComponent<Terrain>();
         googleMapsTerrain.heightmapMaximumLOD = 0;
         PLAYER_SCRIPT = UnityEngine.GameObject.Find("Player").GetComponent<PlayerScript>();
-        GAMEOBJECTS_SCRIPT = UnityEngine.GameObject.Find("GameObjects").GetComponent<GameObjectsScript>();
+        GAMEOBJECTS_SCRIPT = UnityEngine.GameObject.Find("Objects").GetComponent<GameObjectsScript>();
     }
 	
 	public void UpdateWorld(Player player) {

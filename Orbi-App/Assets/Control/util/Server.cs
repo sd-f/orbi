@@ -2,12 +2,19 @@
 
 namespace Assets.Control
 {
-    class ServiceConstants
+    class Server
     {
+        public static int RUNNING_REQUESTS = 0;
+
         public static string SERVER_URL = "https://softwaredesign.foundation/orbi/api";
         public static string SERVER_DEV_URL = "https://softwaredesign.foundation/orbi-dev/api";
         public static string SERVER_LOCALHOST_URL = "http://localhost:8080/api";
         public static GeoPosition START_POSITION = new GeoPosition(47.0678d, 15.5552d,511.0d);
+
+        public static bool RequestsRunning()
+        {
+            return (RUNNING_REQUESTS > 0);
+        }
 
         public static string GetServerUrl(ServerType type)
         {

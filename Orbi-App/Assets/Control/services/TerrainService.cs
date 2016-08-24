@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Control.services
 {
@@ -48,7 +49,7 @@ namespace Assets.Control.services
                 if (dummyGameObject.geoPosition.altitude > MAX_HEIGHT)
                     MAX_HEIGHT = dummyGameObject.geoPosition.altitude;
             }
-            Debug.Log("min " + MIN_HEIGHT + " max " + MAX_HEIGHT);
+            //Debug.Log("min " + MIN_HEIGHT + " max " + MAX_HEIGHT);
             int hmWidth = terrain.terrainData.heightmapWidth;
             int hmHeight = terrain.terrainData.heightmapHeight;
             float[,] heights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
@@ -60,6 +61,8 @@ namespace Assets.Control.services
             Texture2D texture = new Texture2D(heightMapSizeForRequest, heightMapSizeForRequest);
             int x, y, vX, vY;
             int factor = TERRAIN_SIZE / (heightMapSizeForRequest - 1);
+            float height = 0.0f;
+            float[,] source = new float[heightMapSizeForRequest, heightMapSizeForRequest];
             foreach (Model.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
                 WorldAdapter.ToVirtual(dummyGameObject.geoPosition, player);
@@ -71,13 +74,21 @@ namespace Assets.Control.services
                 y = (int)Math.Round(dummyGameObject.geoPosition.ToPosition().x);
                 vX = (x / factor) + ((heightMapSizeForRequest - 1) / 2);
                 vY = (y / factor) + ((heightMapSizeForRequest - 1) / 2);
-
-                texture.SetPixel(vX, vY, new Color((float)(dummyGameObject.geoPosition.altitude / TERRAIN_HEIGHT), 0.0f, 0.0f));
-
+                height = (float)(dummyGameObject.geoPosition.altitude / TERRAIN_HEIGHT);
+                texture.SetPixel(vX, vY, new Color(height, 0.0f, 0.0f));
+                source[vX, vY] = height;
             }
             texture.Apply();
             UnityEngine.GameObject.Find("Plane").GetComponent<Renderer>().material.mainTexture = texture;
-            //Texture2D newTexuture = ScaleTexture(texture, hmWidth, hmHeight);
+            // 33x33
+            // -> 257
+
+            float[,] target = new float[hmWidth, hmHeight];
+           // target = scale(source, heightMapSizeForRequest, heightMapSizeForRequest, hmWidth, hmHeight);
+
+            //texture.Resize(hmWidth, hmHeight);
+            //texture.Apply();
+            //Texture2D heightTexture = ScaleTexture(texture, hmWidth, hmHeight);
             //Debug.Log("w" + hmWidth + "h" + hmHeight);
             // TODO smooth height
             for (x = 0; x < hmWidth; x++)
@@ -89,26 +100,36 @@ namespace Assets.Control.services
             }
             terrain.terrainData.SetHeightsDelayLOD(0, 0, heights);
             terrain.terrainData.SetHeights(0, 0, heights);
+            AddAlpha(terrain);
+            terrain.terrainData.RefreshPrototypes();
             terrain.Flush();
 
+            
+
         }
 
-
-
-        private Texture2D ScaleTexture(Texture2D source, int targetWidth, int targetHeight)
+        void AddAlpha(Terrain t)
         {
-            Texture2D result = new Texture2D(targetWidth, targetHeight, source.format, false);
-            for (int i = 0; i < result.height; ++i)
+            //Debug.Log(t.terrainData.alphamapWidth);
+            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
+            int offset = -(TERRAIN_SIZE / 2);
+            float norm = (float) ((MAX_HEIGHT - MIN_HEIGHT));
+            float factor = 1f;
+            for (int y = 0; y < t.terrainData.alphamapHeight; y++)
             {
-                for (int j = 0; j < result.width; ++j)
+                for (int x = 0; x < t.terrainData.alphamapWidth; x++)
                 {
-                    Color newColor = source.GetPixelBilinear((float)j / (float)result.width, (float)i / (float)result.height);
-                    result.SetPixel(j, i, newColor);
+                    float alpha = (float) (t.SampleHeight(new Vector3(y + offset, 0.0f, x + offset))) / norm;
+                    alpha = alpha * factor;
+                    //maps[x, y, 0] = 1 - alpha;
+                    maps[x, y, 0] = alpha;
+                    maps[x, y, 1] = 1 - alpha;
                 }
             }
-            result.Apply();
-            return result;
+            //Debug.Log(maps[t.terrainData.alphamapHeight, t.terrainData.alphamapWidth, 1]);
+            t.terrainData.SetAlphamaps(0, 0, maps);
         }
+
 
     }
 

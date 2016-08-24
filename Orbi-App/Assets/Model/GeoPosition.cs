@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
 namespace Assets.Model
 {
@@ -25,7 +26,12 @@ namespace Assets.Model
 
         public Position ToPosition()
         {
-            return new Position(this.longitude, this.altitude, -this.latitude);
+            return new Position(this.longitude, this.altitude, this.latitude);
+        }
+
+        public override string ToString()
+        {
+            return JsonUtility.ToJson(this);
         }
     }
 }

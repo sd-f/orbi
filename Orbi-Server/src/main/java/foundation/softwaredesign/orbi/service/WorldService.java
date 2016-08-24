@@ -23,7 +23,7 @@ public class WorldService {
         World world = new World();
         List<GameObject> gameObjectList = gameObjectService.getObjectAround(geoPosition);
         world.setGameObjects(gameObjectList);
-        elevationService.addAltitude(world);
+        //elevationService.addAltitude(world);
         return world;
     }
 }

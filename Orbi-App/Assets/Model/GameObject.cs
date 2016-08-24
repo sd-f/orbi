@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Assets.Model
 {
@@ -12,5 +13,9 @@ namespace Assets.Model
         public Position position;
         public Rotation rotation;
         
+        public override string ToString()
+        {
+            return JsonUtility.ToJson(this, true);
+        }
     }
 }

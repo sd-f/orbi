@@ -32,10 +32,10 @@ namespace Assets.Control.services
             geoPosition.latitude = geoPosition.latitude * scale;
             double siny = Math.Sin(DegreesToRadians(geoPosition.latitude));
             geoPosition.longitude = (geoPosition.longitude * pixelsPerLonDegree);
-            geoPosition.latitude = (.5 * Math.Log((1 + siny) / (1 - siny)) * -pixelsPerLonRadian);
+            geoPosition.latitude = -((.5 * Math.Log((1 + siny) / (1 - siny)) * -pixelsPerLonRadian));
 
-            
-            geoPosition.altitude = (geoPosition.altitude - terrainService.getMinHeight())/2.0f;
+            Vector3 pos = geoPosition.ToPosition().ToVector3();
+            geoPosition.altitude = geoPosition.altitude + terrainService.GetTerrainHeight(pos.x,pos.z);
         }
 
         public void ToVirtual(GeoPosition position, Player player)
@@ -48,12 +48,13 @@ namespace Assets.Control.services
 
         public void ToReal(GeoPosition geoPosition)
         {
+            Vector3 pos = geoPosition.ToPosition().ToVector3();
+            geoPosition.altitude = geoPosition.altitude - terrainService.GetTerrainHeight(pos.x, pos.z);
             geoPosition.longitude = (geoPosition.longitude) / pixelsPerLonDegree;
             geoPosition.longitude = geoPosition.longitude / scale;
             double latRadians = (geoPosition.latitude) / -pixelsPerLonRadian;
-            geoPosition.latitude = (RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
+            geoPosition.latitude = -(RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
             geoPosition.latitude = geoPosition.latitude / scale;
-            geoPosition.altitude = (geoPosition.altitude + terrainService.getMinHeight()) *2.0d;
         }
 
         public void ToReal(GeoPosition position, Player player)
@@ -61,6 +62,9 @@ namespace Assets.Control.services
             ToReal(position);
             position.latitude = position.latitude + player.geoPosition.latitude;
             position.longitude = position.longitude + player.geoPosition.longitude;
+
+            Vector3 pos = position.ToPosition().ToVector3();
+            position.altitude = terrainService.GetTerrain().SampleHeight(pos);
         }
 
         public double DegreesToRadians(double deg)
@@ -78,6 +82,8 @@ namespace Assets.Control.services
             value = Math.Min(value, max);
             return Math.Max(value, min);
         }
+
+        
 
     }
 }

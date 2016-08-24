@@ -1,6 +1,7 @@
 ﻿using Assets.Model;
 using System.Collections;
 using UnityEngine;
+using System;
 
 namespace Assets.Control.services
 {
@@ -30,6 +31,11 @@ namespace Assets.Control.services
                 Error.Show(request.error);
             }
                
+        }
+
+        public void SetPlayerOnTerrain(UnityEngine.GameObject cameraGameObject, TerrainService terrainService)
+        {
+            cameraGameObject.transform.position = new Vector3(0, terrainService.GetTerrainHeight(0,0) + 2.0f, 0);
         }
     }
 }

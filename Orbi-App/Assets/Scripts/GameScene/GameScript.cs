@@ -10,7 +10,6 @@ public class GameScript : MonoBehaviour {
     // Game objects
     private Terrain terrain;
     private UnityEngine.GameObject cameraGameObject;
-    private UnityEngine.GameObject planeTerrain;
     private UnityEngine.GameObject objectsContainer;
 
     void Awake () {
@@ -18,10 +17,9 @@ public class GameScript : MonoBehaviour {
         Game.GetInstance().SetServer(StartInitScript.server);
         cameraGameObject = UnityEngine.GameObject.Find("MainCamera");
         objectsContainer = UnityEngine.GameObject.Find("Objects");
-        planeTerrain = UnityEngine.GameObject.Find("PlaneTerrain");
         terrain = UnityEngine.GameObject.Find("Terrain").GetComponent<Terrain>();
         // // TODO InvokeRepeating
-        service = new WorldService(terrain, planeTerrain, cameraGameObject, objectsContainer);
+        service = new WorldService(terrain, cameraGameObject, objectsContainer);
         
         Invoke("WaitForLocation", 0);
 

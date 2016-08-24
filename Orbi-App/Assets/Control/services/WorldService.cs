@@ -18,9 +18,9 @@ namespace Assets.Control
         UnityEngine.GameObject cameraGameObject;
         UnityEngine.GameObject objectsContainer;
 
-        public WorldService(Terrain terrain, UnityEngine.GameObject planeTerrain, UnityEngine.GameObject cameraGameObject, UnityEngine.GameObject objectsContainer)
+        public WorldService(Terrain terrain, UnityEngine.GameObject cameraGameObject, UnityEngine.GameObject objectsContainer)
         {
-            terrainService = new TerrainService(terrain, planeTerrain);
+            terrainService = new TerrainService(terrain);
             worldAdapter = new WorldAdapter(terrainService);
             this.cameraGameObject = cameraGameObject;
             this.objectsContainer = objectsContainer;
@@ -35,9 +35,8 @@ namespace Assets.Control
                 yield return terrainService.RequestTerrain(player);
             } else
                 terrainService.ResetTerrain();
-
-            yield return playerService.RequestPlayerHeight(player, cameraGameObject, worldAdapter);
-            yield return gameObjectsService.RequestGameObjects(player, objectsContainer, worldAdapter);
+            playerService.SetPlayerOnTerrain(cameraGameObject,terrainService);
+            yield return gameObjectsService.RequestGameObjects(player, objectsContainer, worldAdapter, terrainService);
             //Info.Show("updating player height");
             // works only if terrain is loaded
         }

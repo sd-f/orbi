@@ -14,7 +14,7 @@ namespace Assets.Control
             IndicateRequestStart();
 
             string uri = Game.GetInstance().GetServerUrl() + "/" + apiPath;
-            UTF8Encoding encoding = new System.Text.UTF8Encoding();
+            UTF8Encoding encoding = new UTF8Encoding();
             
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("Accept", "application/json");
@@ -29,8 +29,7 @@ namespace Assets.Control
             {
                 www = new WWW(uri, null, headers);
             }
-            //Debug.Log(uri);
-            
+            Debug.Log(uri);
             return www;
         }
 

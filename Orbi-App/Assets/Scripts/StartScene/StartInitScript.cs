@@ -3,7 +3,7 @@ using Assets.Control;
 
 public class StartInitScript : MonoBehaviour {
 
-    public static ServerType server = ServerType.PROD;
+    public static ServerType server = ServerType.LOCAL;
 
 	void Start () {
         Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;

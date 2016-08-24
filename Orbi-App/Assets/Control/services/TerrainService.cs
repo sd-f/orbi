@@ -23,22 +23,22 @@ namespace Assets.Control.services
 
         private TerrainData td;
         private Terrain t;
-        private UnityEngine.GameObject planeTerrain;
+        private LayerMask terrainMask;
 
         private float[,] hm;
 
         WorldAdapter adapter;
 
-        public TerrainService(Terrain terrain, UnityEngine.GameObject planeTerrain)
+        public TerrainService(Terrain terrain)
         {
             this.t = terrain;
             this.td = t.terrainData;
+            terrainMask = 1 << LayerMask.NameToLayer("Terrain");
             this.hmSize = td.heightmapResolution;
             this.amSize = td.alphamapResolution;
             this.terrainSize = (int)td.size.x;
             this.terrainHeight = (int)td.size.y;
             this.hm = new float[hmSize, hmSize];
-            this.planeTerrain = planeTerrain;
             adapter = new WorldAdapter(this);
         }
 
@@ -73,7 +73,6 @@ namespace Assets.Control.services
 
         public void setTexture(Texture2D texture, int layerIndex)
         {
-            planeTerrain.GetComponent<Renderer>().material.mainTexture = texture;
             SplatPrototype[] splats = td.splatPrototypes;
             splats[0].texture = texture;
             td.splatPrototypes = splats;
@@ -83,7 +82,7 @@ namespace Assets.Control.services
 
         public void ResetTerrain()
         {
-            SetHeightMin(0.9f);
+            SetHeightMin(0.0f);
             SetHeightsToMin();
             
             t.Flush();
@@ -148,6 +147,7 @@ namespace Assets.Control.services
                 if (dummyGameObject.geoPosition.altitude > heightMax)
                     heightMax = dummyGameObject.geoPosition.altitude;
             }
+            //Debug.Log("min" + heightMin + "max" + heightMax);
         }
 
         public void AdjustTerrainHeights(World dummyWorld, Player player)
@@ -158,11 +158,13 @@ namespace Assets.Control.services
             int x, y, vX, vY;
             int factor = terrainSize / (HEIGHTMAP_SIZE_SERVER - 1);
             float height = 0.0f;
+            double altitude = 0.0f;
 
             foreach (Model.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
+                altitude = dummyGameObject.geoPosition.altitude - heightMin;
                 adapter.ToVirtual(dummyGameObject.geoPosition, player);
-
+                
                 //UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
                 //cube.transform.position = dummyGameObject.geoPosition.ToPosition().ToVector3();
                 //cube.transform.localScale = new Vector3(2, 2, 2);
@@ -170,7 +172,7 @@ namespace Assets.Control.services
                 y = (int)Math.Round(dummyGameObject.geoPosition.ToPosition().x);
                 vX = (x / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
                 vY = (y / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
-                height = (float)(dummyGameObject.geoPosition.altitude / terrainHeight);
+                height = (float)(altitude / terrainHeight);
                 //texture.SetPixel(vX, vY, new Color(height, 0.0f, 0.0f));
                 hm[vX, vY] = height;
             }
@@ -254,7 +256,19 @@ namespace Assets.Control.services
             t.terrainData.SetAlphamaps(0, 0, map);
         }
 
+        public float GetTerrainHeight(float x, float z)
+        {
 
+            // objectPos is position of your object
+            Vector3 rayOrigin = new Vector3(x, 110, z);
+
+            Ray ray = new Ray(rayOrigin, Vector3.down);
+            float distanceToCheck = 120f;
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, distanceToCheck, terrainMask))
+                return hit.point.y;
+            return 0.0f;
+        }
     }
 
 

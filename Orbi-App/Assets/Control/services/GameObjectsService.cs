@@ -10,7 +10,7 @@ namespace Assets.Control.services
 {
     class GameObjectsService: AbstractService
     {
-        public IEnumerator RequestGameObjects(Player player, UnityEngine.GameObject parent, WorldAdapter adapter)
+        public IEnumerator RequestGameObjects(Player player, UnityEngine.GameObject parent, WorldAdapter adapter, TerrainService terrainService)
         {
             WWW request = Request("world/around", JsonUtility.ToJson(player));
             yield return request;
@@ -31,22 +31,25 @@ namespace Assets.Control.services
                     // = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
                     // Modify the clone to your heart's content
                     newCube.transform.parent = parent.transform;
-                    newCube.transform.localScale = new Vector3(0.1F, 0.1F, 0.1F);
+                    newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
                     newCube.tag = "dynamicGameObject";
                     newCube.name = "cube_" + gameObject.id + "_" + gameObject.name;
                     newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
                     adapter.ToVirtual(gameObject.geoPosition, player);
+                    Debug.Log(gameObject.geoPosition);
+                    /*Vector3 pos = gameObject.geoPosition.ToPosition().ToVector3();
+                    float height = terrainService.GetTerrain().SampleHeight(new Vector3(pos.x+128, 100, pos.z+128));
+                    height = 100 - height;
+                    Debug.Log(height);
+                    gameObject.geoPosition.altitude = gameObject.geoPosition.altitude + height;*/
                     newCube.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
-                    IndicateRequestFinished();
+                    
                 }
-               
             }
             else
-            {
-                IndicateRequestFinished();
                 Error.Show(request.error);
-            }
-               
+            IndicateRequestFinished();
+
         }
 
         private UnityEngine.GameObject getPrefab(string prefab)

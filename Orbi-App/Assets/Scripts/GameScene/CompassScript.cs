@@ -10,7 +10,7 @@ public class CompassScript : MonoBehaviour {
     private MainCameraScript cameraScript;
     private GameObject buttonCompass;
 
-    void Start()
+    void Awake()
     {
         Sensor.Activate(Sensor.Type.MagneticField);
         Sensor.Activate(Sensor.Type.Accelerometer);

@@ -1,5 +1,6 @@
 ﻿using Assets.Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,28 +9,128 @@ using UnityEngine.UI;
 
 namespace Assets.Control.services
 {
-    class TerrainService
+    class TerrainService: AbstractService
     {
-        private int heightMapSizeForRequest = 33;
-        public static int TERRAIN_SIZE = 256;
-        public static double MAX_HEIGHT = 0d;
-        public static double MIN_HEIGHT = 100000d;
-        public static int TERRAIN_HEIGHT = 100;
+        private static int HEIGHTMAP_SIZE_SERVER = 33;
+
+        private double heightMax = 0d;
+        private double heightMin = 100000d;
+
+        private int hmSize;         // 33
+        private int amSize;         // 256
+        public int terrainSize;     // 256
+        public int terrainHeight;   // 100
+
+        private TerrainData td;
+        private Terrain t;
+        private UnityEngine.GameObject planeTerrain;
+
+        private float[,] hm;
+
+        WorldAdapter adapter;
+
+        public TerrainService(Terrain terrain, UnityEngine.GameObject planeTerrain)
+        {
+            this.t = terrain;
+            this.td = t.terrainData;
+            this.hmSize = td.heightmapResolution;
+            this.amSize = td.alphamapResolution;
+            this.terrainSize = (int)td.size.x;
+            this.terrainHeight = (int)td.size.y;
+            this.hm = new float[hmSize, hmSize];
+            this.planeTerrain = planeTerrain;
+            adapter = new WorldAdapter(this);
+        }
+
+        public IEnumerator RequestTerrain(Player player)
+        {
+            World generatedWorld = GenerateDummyWorldArround(player);
+            WWW request = Request("world/terrain", JsonUtility.ToJson(generatedWorld));
+            yield return request;
+            if (request.error == null)
+            {
+                World terrainWorld = JsonUtility.FromJson<World>(request.text);
+                try
+                {
+                    AdjustTerrainHeights(terrainWorld, player);
+                    AddStaticAlpha();
+                    t.Flush();
+                }
+                catch (Exception ex) {
+                    Error.Show(ex.Message);
+                }    
+            }
+            else
+                Error.Show(request.error);
+            
+            IndicateRequestFinished();
+        }
+
+        public double getMinHeight()
+        {
+            return this.heightMin;
+        }
+
+        public void setTexture(Texture2D texture, int layerIndex)
+        {
+            planeTerrain.GetComponent<Renderer>().material.mainTexture = texture;
+            SplatPrototype[] splats = td.splatPrototypes;
+            splats[0].texture = texture;
+            td.splatPrototypes = splats;
+            td.RefreshPrototypes();
+            t.Flush();
+        }
+
+        public void ResetTerrain()
+        {
+            SetHeightMin(0.9f);
+            SetHeightsToMin();
+            
+            t.Flush();
+            AddStaticAlpha();
+            t.Flush();
+        }
+
+        public Terrain GetTerrain()
+        {
+            return this.t;
+        }
+
+        private void SetHeights()
+        {
+            td.SetHeightsDelayLOD(0, 0, hm);
+            td.SetHeights(0, 0, hm);
+        }
+
+        public void SetHeightMin(double min)
+        {
+            this.heightMin = min;
+        }
+
+        public void SetHeightsToMin()
+        {
+            for (int x = 0; x < hmSize; x++)
+                for (int y = 0; y < hmSize; y++)
+                {
+                    hm[x, y] = (float)heightMin;
+                }
+            SetHeights();
+        }
 
         public World GenerateDummyWorldArround(Player player)
         {
             World dummyWorld = new World();
-
-            int factor = TERRAIN_SIZE / (heightMapSizeForRequest - 1);
+            
+            int factor = terrainSize / (HEIGHTMAP_SIZE_SERVER - 1);
             // 0 .. 17 -> -8 .. +8
-            for (int i = 0; i < heightMapSizeForRequest; i++)
-                for (int j = 0; j < heightMapSizeForRequest; j++)
+            for (int i = 0; i < HEIGHTMAP_SIZE_SERVER; i++)
+                for (int j = 0; j < HEIGHTMAP_SIZE_SERVER; j++)
                 {
                     Model.GameObject dummyGameObject = new Model.GameObject();
                     GeoPosition dummyGeoLocation = new GeoPosition();
-                    dummyGeoLocation.latitude = (i - (heightMapSizeForRequest / 2)) * factor;
-                    dummyGeoLocation.longitude = (j - (heightMapSizeForRequest / 2)) * factor;
-                    WorldAdapter.ToReal(dummyGeoLocation, player);
+                    dummyGeoLocation.latitude = (i - (HEIGHTMAP_SIZE_SERVER / 2)) * factor;
+                    dummyGeoLocation.longitude = (j - (HEIGHTMAP_SIZE_SERVER / 2)) * factor;
+                    adapter.ToReal(dummyGeoLocation, player);
                     dummyGeoLocation.altitude = 0.0d;
                     dummyGameObject.geoPosition = dummyGeoLocation;
                     dummyWorld.gameObjects.Add(dummyGameObject);
@@ -38,82 +139,63 @@ namespace Assets.Control.services
             return dummyWorld;
         }
 
-
-
-        public void AdjustTerrainHeights(Terrain terrain, World dummyWorld, Player player)
+        private void SetHeightsMinMaxFromDummyWorld(World dummyWorld)
         {
             foreach (Model.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
-                if (dummyGameObject.geoPosition.altitude < MIN_HEIGHT)
-                    MIN_HEIGHT = dummyGameObject.geoPosition.altitude;
-                if (dummyGameObject.geoPosition.altitude > MAX_HEIGHT)
-                    MAX_HEIGHT = dummyGameObject.geoPosition.altitude;
+                if (dummyGameObject.geoPosition.altitude < heightMin)
+                    heightMin = dummyGameObject.geoPosition.altitude;
+                if (dummyGameObject.geoPosition.altitude > heightMax)
+                    heightMax = dummyGameObject.geoPosition.altitude;
             }
-            //Debug.Log("min " + MIN_HEIGHT + " max " + MAX_HEIGHT);
-            int hmWidth = terrain.terrainData.heightmapWidth;
-            int hmHeight = terrain.terrainData.heightmapHeight;
-            float[,] heights = terrain.terrainData.GetHeights(0, 0, hmWidth, hmHeight);
-            for (int i = 0; i < hmWidth; i++)
-                for (int j = 0; j < hmHeight; j++)
-                {
-                    heights[i, j] = (float)MIN_HEIGHT;
-                }
-            Texture2D texture = new Texture2D(heightMapSizeForRequest, heightMapSizeForRequest);
+        }
+
+        public void AdjustTerrainHeights(World dummyWorld, Player player)
+        {
+            SetHeightsMinMaxFromDummyWorld(dummyWorld);
+            SetHeightsToMin();
+            //Texture2D texture = new Texture2D(heightMapSizeForRequest, heightMapSizeForRequest);
             int x, y, vX, vY;
-            int factor = TERRAIN_SIZE / (heightMapSizeForRequest - 1);
+            int factor = terrainSize / (HEIGHTMAP_SIZE_SERVER - 1);
             float height = 0.0f;
-            float[,] source = new float[heightMapSizeForRequest, heightMapSizeForRequest];
+
             foreach (Model.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
-                WorldAdapter.ToVirtual(dummyGameObject.geoPosition, player);
+                adapter.ToVirtual(dummyGameObject.geoPosition, player);
 
                 //UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
                 //cube.transform.position = dummyGameObject.geoPosition.ToPosition().ToVector3();
                 //cube.transform.localScale = new Vector3(2, 2, 2);
                 x = (int)Math.Round(dummyGameObject.geoPosition.ToPosition().z);
                 y = (int)Math.Round(dummyGameObject.geoPosition.ToPosition().x);
-                vX = (x / factor) + ((heightMapSizeForRequest - 1) / 2);
-                vY = (y / factor) + ((heightMapSizeForRequest - 1) / 2);
-                height = (float)(dummyGameObject.geoPosition.altitude / TERRAIN_HEIGHT);
-                texture.SetPixel(vX, vY, new Color(height, 0.0f, 0.0f));
-                source[vX, vY] = height;
+                vX = (x / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
+                vY = (y / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
+                height = (float)(dummyGameObject.geoPosition.altitude / terrainHeight);
+                //texture.SetPixel(vX, vY, new Color(height, 0.0f, 0.0f));
+                hm[vX, vY] = height;
             }
-            texture.Apply();
-            UnityEngine.GameObject.Find("Plane").GetComponent<Renderer>().material.mainTexture = texture;
-            // 33x33
-            // -> 257
-
-            float[,] target = new float[hmWidth, hmHeight];
-           // target = scale(source, heightMapSizeForRequest, heightMapSizeForRequest, hmWidth, hmHeight);
-
-            //texture.Resize(hmWidth, hmHeight);
-            //texture.Apply();
-            //Texture2D heightTexture = ScaleTexture(texture, hmWidth, hmHeight);
-            //Debug.Log("w" + hmWidth + "h" + hmHeight);
-            // TODO smooth height
-            for (x = 0; x < hmWidth; x++)
-            {
-                for (y = 0; y < hmHeight; y++)
-                {
-                    heights[x, y] = texture.GetPixel(x, y).r;
-                }
-            }
-            terrain.terrainData.SetHeightsDelayLOD(0, 0, heights);
-            terrain.terrainData.SetHeights(0, 0, heights);
-            AddAlpha(terrain);
-            terrain.terrainData.RefreshPrototypes();
-            terrain.Flush();
-
             
-
+            SetHeights();
         }
 
-        void AddAlpha(Terrain t)
+        private void AddStaticAlpha()
+        {
+            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
+            for (int y = 0; y < t.terrainData.alphamapHeight; y++)
+                for (int x = 0; x < t.terrainData.alphamapWidth; x++)
+                {
+                    maps[x, y, 0] = 1;
+                    maps[x, y, 1] = 0.2f;
+                }
+            t.terrainData.SetAlphamaps(0, 0, maps);
+        }
+
+        private void AddAlpha()
         {
             //Debug.Log(t.terrainData.alphamapWidth);
             float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
-            int offset = -(TERRAIN_SIZE / 2);
-            float norm = (float) ((MAX_HEIGHT - MIN_HEIGHT));
+            int offset = -(terrainSize / 2);
+            float norm = (float) ((heightMax - heightMin));
             float factor = 1f;
             for (int y = 0; y < t.terrainData.alphamapHeight; y++)
             {
@@ -122,12 +204,54 @@ namespace Assets.Control.services
                     float alpha = (float) (t.SampleHeight(new Vector3(y + offset, 0.0f, x + offset))) / norm;
                     alpha = alpha * factor;
                     //maps[x, y, 0] = 1 - alpha;
-                    maps[x, y, 0] = alpha;
-                    maps[x, y, 1] = 1 - alpha;
+                    //maps[x, y, 0] = alpha;
+                    //maps[x, y, 1] = 1 - alpha;
+                    maps[x, y, 0] = 1;
+                    maps[x, y, 1] = 0.1f;
                 }
             }
             //Debug.Log(maps[t.terrainData.alphamapHeight, t.terrainData.alphamapWidth, 1]);
             t.terrainData.SetAlphamaps(0, 0, maps);
+        }
+
+        private void ResetAlpha()
+        {
+            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
+            for (int y = 0; y < t.terrainData.alphamapHeight; y++)
+                for (int x = 0; x < t.terrainData.alphamapWidth; x++)
+                {
+                    maps[x, y, 0] = 1;
+                    maps[x, y, 1] = 0;
+                }
+            t.terrainData.SetAlphamaps(0, 0, maps);
+        }
+
+        private void AddSteepnessAlpha()
+        {
+            float[,,] map = new float[t.terrainData.alphamapWidth, t.terrainData.alphamapHeight, 2];
+
+            // For each point on the alphamap...
+            for (var y = 0; y < t.terrainData.alphamapHeight; y++)
+            {
+                for (var x = 0; x < t.terrainData.alphamapWidth; x++)
+                {
+                    // Get the normalized terrain coordinate that
+                    // corresponds to the the point.
+                    var normX = x * 1.0 / (t.terrainData.alphamapWidth - 1);
+                    var normY = y * 1.0 / (t.terrainData.alphamapHeight - 1);
+
+                    // Get the steepness value at the normalized coordinate.
+                    var angle = t.terrainData.GetSteepness((float)normX, (float)normY);
+
+                    // Steepness is given as an angle, 0..90 degrees. Divide
+                    // by 90 to get an alpha blending value in the range 0..1.
+                    var frac = angle / 90.0;
+                    map[x, y, 0] = (float) frac;
+                    map[x, y, 1] = (float) (1 - frac);
+                }
+            }
+
+            t.terrainData.SetAlphamaps(0, 0, map);
         }
 
 

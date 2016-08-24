@@ -3,9 +3,10 @@ using Assets.Control;
 
 public class StartInitScript : MonoBehaviour {
 
-    public ServerType server = ServerType.PROD;
+    public static ServerType server = ServerType.PROD;
 
 	void Start () {
+        Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
         Game.GetInstance().SetServer(server);
     }
 

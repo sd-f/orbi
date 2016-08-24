@@ -10,7 +10,7 @@ namespace Assets.Control.services
 {
     class GameObjectsService: AbstractService
     {
-        public IEnumerator RequestGameObjects(Player player, UnityEngine.GameObject parent)
+        public IEnumerator RequestGameObjects(Player player, UnityEngine.GameObject parent, WorldAdapter adapter)
         {
             WWW request = Request("world/around", JsonUtility.ToJson(player));
             yield return request;
@@ -35,7 +35,7 @@ namespace Assets.Control.services
                     newCube.tag = "dynamicGameObject";
                     newCube.name = "cube_" + gameObject.id + "_" + gameObject.name;
                     newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
-                    WorldAdapter.ToVirtual(gameObject.geoPosition, player);
+                    adapter.ToVirtual(gameObject.geoPosition, player);
                     newCube.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
                     IndicateRequestFinished();
                 }

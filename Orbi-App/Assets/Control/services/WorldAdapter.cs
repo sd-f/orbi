@@ -10,33 +10,35 @@ namespace Assets.Control.services
     class WorldAdapter
     {
 
-        public static int TileSize = 256;
-        public static double OriginX, OriginY;
-        public static double PixelsPerLonDegree;
-        public static double PixelsPerLonRadian;
-        private static double CORRECTED_SCALE = GoogleMapsService.SCALE / 2.5d;
+        private static int TILE_SIZE = 256;
+        private double originX, originY;
+        private double pixelsPerLonDegree;
+        private double pixelsPerLonRadian;
+        private double scale = GoogleMapsService.SCALE / 2.5d;
+        private TerrainService terrainService;
 
-        static WorldAdapter()
+        public WorldAdapter(TerrainService terrainService)
         {
-            OriginX = TileSize / 2;
-            OriginY = TileSize / 2;
-            PixelsPerLonDegree = TileSize / 360.0d;
-            PixelsPerLonRadian = TileSize / (2.0d * Math.PI);
+            this.terrainService = terrainService;
+            originX = TILE_SIZE / 2;
+            originY = TILE_SIZE / 2;
+            pixelsPerLonDegree = TILE_SIZE / 360.0d;
+            pixelsPerLonRadian = TILE_SIZE / (2.0d * Math.PI);
         }
 
-        public static void ToVirtual(GeoPosition geoPosition)
+        public void ToVirtual(GeoPosition geoPosition)
         {
-            geoPosition.longitude = geoPosition.longitude * CORRECTED_SCALE;
-            geoPosition.latitude = geoPosition.latitude * CORRECTED_SCALE;
+            geoPosition.longitude = geoPosition.longitude * scale;
+            geoPosition.latitude = geoPosition.latitude * scale;
             double siny = Math.Sin(DegreesToRadians(geoPosition.latitude));
-            geoPosition.longitude = (geoPosition.longitude * PixelsPerLonDegree);
-            geoPosition.latitude = (.5 * Math.Log((1 + siny) / (1 - siny)) * -PixelsPerLonRadian);
+            geoPosition.longitude = (geoPosition.longitude * pixelsPerLonDegree);
+            geoPosition.latitude = (.5 * Math.Log((1 + siny) / (1 - siny)) * -pixelsPerLonRadian);
 
             
-            geoPosition.altitude = (geoPosition.altitude - TerrainService.MIN_HEIGHT)/2.0f;
+            geoPosition.altitude = (geoPosition.altitude - terrainService.getMinHeight())/2.0f;
         }
 
-        public static void ToVirtual(GeoPosition position, Player player)
+        public void ToVirtual(GeoPosition position, Player player)
         {
             position.latitude = position.latitude - player.geoPosition.latitude;
             position.longitude = position.longitude - player.geoPosition.longitude;
@@ -44,24 +46,24 @@ namespace Assets.Control.services
         }
 
 
-        public static void ToReal(GeoPosition geoPosition)
+        public void ToReal(GeoPosition geoPosition)
         {
-            geoPosition.longitude = (geoPosition.longitude) / PixelsPerLonDegree;
-            geoPosition.longitude = geoPosition.longitude / CORRECTED_SCALE;
-            double latRadians = (geoPosition.latitude) / -PixelsPerLonRadian;
+            geoPosition.longitude = (geoPosition.longitude) / pixelsPerLonDegree;
+            geoPosition.longitude = geoPosition.longitude / scale;
+            double latRadians = (geoPosition.latitude) / -pixelsPerLonRadian;
             geoPosition.latitude = (RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
-            geoPosition.latitude = geoPosition.latitude / CORRECTED_SCALE;
-            geoPosition.altitude = (geoPosition.altitude + TerrainService.MIN_HEIGHT)*2.0d;
+            geoPosition.latitude = geoPosition.latitude / scale;
+            geoPosition.altitude = (geoPosition.altitude + terrainService.getMinHeight()) *2.0d;
         }
 
-        public static void ToReal(GeoPosition position, Player player)
+        public void ToReal(GeoPosition position, Player player)
         {
             ToReal(position);
             position.latitude = position.latitude + player.geoPosition.latitude;
             position.longitude = position.longitude + player.geoPosition.longitude;
         }
 
-        public static double DegreesToRadians(double deg)
+        public double DegreesToRadians(double deg)
         {
             return deg * Math.PI / 180.0;
         }

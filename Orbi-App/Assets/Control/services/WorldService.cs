@@ -8,27 +8,40 @@ namespace Assets.Control
 {
     class WorldService : AbstractService
     {
-        private TerrainService terrainService = new TerrainService();
+        private TerrainService terrainService;
+        private GameObjectsService gameObjectsService = new GameObjectsService();
+        private PlayerService playerService = new PlayerService();
+        private GoogleMapsService googleMapsService = new GoogleMapsService();
+        private WorldAdapter worldAdapter;
 
-        public IEnumerator RequestTerrain(Terrain terrain, PlayerScript playerScript, GameObjectsScript gameObjectsScript, Player player)
+        // gameobjects
+        UnityEngine.GameObject cameraGameObject;
+        UnityEngine.GameObject objectsContainer;
+
+        public WorldService(Terrain terrain, UnityEngine.GameObject planeTerrain, UnityEngine.GameObject cameraGameObject, UnityEngine.GameObject objectsContainer)
         {
-            World generatedWorld = terrainService.GenerateDummyWorldArround(player);
-            WWW request = Request("world/terrain", JsonUtility.ToJson(generatedWorld));
-            yield return request;
-            if (request.error == null)
+            terrainService = new TerrainService(terrain, planeTerrain);
+            worldAdapter = new WorldAdapter(terrainService);
+            this.cameraGameObject = cameraGameObject;
+            this.objectsContainer = objectsContainer;
+        }
+
+        public IEnumerator UpdateWorld(Player player)
+        {
+            
+            yield return googleMapsService.RequestMapData(terrainService, player.geoPosition);
+            if (Game.GetInstance().IsHeightsEnabled())
             {
-                World terrainWorld = JsonUtility.FromJson<World>(request.text);
-                terrainService.AdjustTerrainHeights(terrain, terrainWorld, player);
-                // works only if terrain is loaded
-                playerScript.UpdatePlayerHeight(player);
-                gameObjectsScript.UpdateGameObjects(player);
-                IndicateRequestFinished();
-            }
-            else
-            {
-                IndicateRequestFinished();
-                Error.Show(request.error);
-            } 
+                yield return terrainService.RequestTerrain(player);
+            } else
+                terrainService.ResetTerrain();
+
+            yield return playerService.RequestPlayerHeight(player, cameraGameObject, worldAdapter);
+            yield return gameObjectsService.RequestGameObjects(player, objectsContainer, worldAdapter);
+            //Info.Show("updating player height");
+            // works only if terrain is loaded
         }
     }
+
+    
 }

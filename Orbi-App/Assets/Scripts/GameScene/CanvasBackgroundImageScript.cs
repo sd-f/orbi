@@ -7,9 +7,9 @@ public class CanvasBackgroundImageScript : MonoBehaviour {
 
     private Image image;
 
-	void Start () {
+	void Awake() {
         image = GetComponent<Image>();
-        Invoke("CheckIfLoaded",0.5f);
+        Invoke("CheckIfLoaded",2);
 	}
 	
 	// Update is called once per frame

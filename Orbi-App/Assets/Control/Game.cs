@@ -10,6 +10,8 @@ namespace Assets.Control
         public Player player = new Player();
         public World world = new World();
         public ServerType server = ServerType.LOCAL;
+        private bool heightsEnabled = false;
+        private bool locationReady = false;
 
         public Game()
         {
@@ -19,6 +21,26 @@ namespace Assets.Control
         public void SetServer(ServerType serverType)
         {
             INSTANCE.server = serverType;
+        }
+
+        public void SetHeightsEnabled(bool enabled)
+        {
+            heightsEnabled = enabled;
+        }
+
+        public bool IsHeightsEnabled()
+        {
+            return heightsEnabled;
+        }
+
+        public void SetLocationReady(bool ready)
+        {
+            locationReady = ready;
+        }
+
+        public bool IsLocationReady()
+        {
+            return locationReady;
         }
 
         public string GetServerUrl()

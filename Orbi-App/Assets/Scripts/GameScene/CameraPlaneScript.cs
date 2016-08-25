@@ -20,23 +20,24 @@ public class CameraPlaneScript : MonoBehaviour {
             yield break;
         }
 
-        //AdjustPlaneSize();
-        //InvokeRepeating("OnScreenSizeChanged", 0, 1);
+        AdjustPlaneSize();
+        InvokeRepeating("OnScreenSizeChanged", 0, 1);
 
     }
 
     void AdjustPlaneSize()
     {
         //Get a world space vector to the upper right corner of the screen
-        Vector3 UpRight = cameraCamera.ViewportToWorldPoint(new Vector3(1, 1, plane.transform.position.z));
+        Vector3 UpRight = cameraCamera.ViewportToWorldPoint(new Vector3(1, 1, 128));
         //Get a would space vector to the lower left corner of the screen
-        Vector3 DownLeft = cameraCamera.ViewportToWorldPoint(new Vector3(0, 0, plane.transform.position.z));
+        Vector3 DownLeft = cameraCamera.ViewportToWorldPoint(new Vector3(0, 0, 128));
         //Set our width scale to be right - left
         //Set our height scale to be up - down
+
         float width = UpRight.x - DownLeft.x;
         float height = UpRight.y - DownLeft.y;
-        plane.transform.position = new Vector3((width / 2), (height / 2) + 2.0f, 128);
-        plane.transform.localScale = new Vector3(width, 0, height);
+        //plane.transform.position = new Vector3((width / 2), (height / 2) + 2.0f, 128);
+        plane.transform.localScale = new Vector3(width/10, 0, height/10);
     }
 
     void OnScreenSizeChanged()

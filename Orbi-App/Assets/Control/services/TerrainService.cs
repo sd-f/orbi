@@ -147,7 +147,6 @@ namespace Assets.Control.services
                 if (dummyGameObject.geoPosition.altitude > heightMax)
                     heightMax = dummyGameObject.geoPosition.altitude;
             }
-            //Debug.Log("min" + heightMin + "max" + heightMax);
         }
 
         public void AdjustTerrainHeights(World dummyWorld, Player player)
@@ -165,16 +164,15 @@ namespace Assets.Control.services
                 altitude = dummyGameObject.geoPosition.altitude - heightMin;
                 adapter.ToVirtual(dummyGameObject.geoPosition, player);
                 
-                //UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
-                //cube.transform.position = dummyGameObject.geoPosition.ToPosition().ToVector3();
-                //cube.transform.localScale = new Vector3(2, 2, 2);
                 x = (int)Math.Round(dummyGameObject.geoPosition.ToPosition().z);
                 y = (int)Math.Round(dummyGameObject.geoPosition.ToPosition().x);
                 vX = (x / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
                 vY = (y / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
                 height = (float)(altitude / terrainHeight);
-                //texture.SetPixel(vX, vY, new Color(height, 0.0f, 0.0f));
-                hm[vX, vY] = height;
+                if (height > 1)
+                    height = 1;
+                if ((vX <= hmSize) && (vY <= hmSize) && (vX >= 0) && (vY >= 0))
+                    hm[vX, vY] = height;
             }
             
             SetHeights();
@@ -182,9 +180,9 @@ namespace Assets.Control.services
 
         private void AddStaticAlpha()
         {
-            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
-            for (int y = 0; y < t.terrainData.alphamapHeight; y++)
-                for (int x = 0; x < t.terrainData.alphamapWidth; x++)
+            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, amSize, amSize);
+            for (int y = 0; y < amSize; y++)
+                for (int x = 0; x < amSize; x++)
                 {
                     maps[x, y, 0] = 1;
                     maps[x, y, 1] = 0.2f;
@@ -192,74 +190,8 @@ namespace Assets.Control.services
             t.terrainData.SetAlphamaps(0, 0, maps);
         }
 
-        private void AddAlpha()
-        {
-            //Debug.Log(t.terrainData.alphamapWidth);
-            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
-            int offset = -(terrainSize / 2);
-            float norm = (float) ((heightMax - heightMin));
-            float factor = 1f;
-            for (int y = 0; y < t.terrainData.alphamapHeight; y++)
-            {
-                for (int x = 0; x < t.terrainData.alphamapWidth; x++)
-                {
-                    float alpha = (float) (t.SampleHeight(new Vector3(y + offset, 0.0f, x + offset))) / norm;
-                    alpha = alpha * factor;
-                    //maps[x, y, 0] = 1 - alpha;
-                    //maps[x, y, 0] = alpha;
-                    //maps[x, y, 1] = 1 - alpha;
-                    maps[x, y, 0] = 1;
-                    maps[x, y, 1] = 0.1f;
-                }
-            }
-            //Debug.Log(maps[t.terrainData.alphamapHeight, t.terrainData.alphamapWidth, 1]);
-            t.terrainData.SetAlphamaps(0, 0, maps);
-        }
-
-        private void ResetAlpha()
-        {
-            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, t.terrainData.alphamapWidth, t.terrainData.alphamapHeight);
-            for (int y = 0; y < t.terrainData.alphamapHeight; y++)
-                for (int x = 0; x < t.terrainData.alphamapWidth; x++)
-                {
-                    maps[x, y, 0] = 1;
-                    maps[x, y, 1] = 0;
-                }
-            t.terrainData.SetAlphamaps(0, 0, maps);
-        }
-
-        private void AddSteepnessAlpha()
-        {
-            float[,,] map = new float[t.terrainData.alphamapWidth, t.terrainData.alphamapHeight, 2];
-
-            // For each point on the alphamap...
-            for (var y = 0; y < t.terrainData.alphamapHeight; y++)
-            {
-                for (var x = 0; x < t.terrainData.alphamapWidth; x++)
-                {
-                    // Get the normalized terrain coordinate that
-                    // corresponds to the the point.
-                    var normX = x * 1.0 / (t.terrainData.alphamapWidth - 1);
-                    var normY = y * 1.0 / (t.terrainData.alphamapHeight - 1);
-
-                    // Get the steepness value at the normalized coordinate.
-                    var angle = t.terrainData.GetSteepness((float)normX, (float)normY);
-
-                    // Steepness is given as an angle, 0..90 degrees. Divide
-                    // by 90 to get an alpha blending value in the range 0..1.
-                    var frac = angle / 90.0;
-                    map[x, y, 0] = (float) frac;
-                    map[x, y, 1] = (float) (1 - frac);
-                }
-            }
-
-            t.terrainData.SetAlphamaps(0, 0, map);
-        }
-
         public float GetTerrainHeight(float x, float z)
         {
-
-            // objectPos is position of your object
             Vector3 rayOrigin = new Vector3(x, 110, z);
 
             Ray ray = new Ray(rayOrigin, Vector3.down);

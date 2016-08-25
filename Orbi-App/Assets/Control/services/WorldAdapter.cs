@@ -11,7 +11,6 @@ namespace Assets.Control.services
     {
 
         private static int TILE_SIZE = 256;
-        private double originX, originY;
         private double pixelsPerLonDegree;
         private double pixelsPerLonRadian;
         private double scale = GoogleMapsService.SCALE / 2.5d;
@@ -20,8 +19,6 @@ namespace Assets.Control.services
         public WorldAdapter(TerrainService terrainService)
         {
             this.terrainService = terrainService;
-            originX = TILE_SIZE / 2;
-            originY = TILE_SIZE / 2;
             pixelsPerLonDegree = TILE_SIZE / 360.0d;
             pixelsPerLonRadian = TILE_SIZE / (2.0d * Math.PI);
         }

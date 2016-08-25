@@ -29,7 +29,7 @@ namespace Assets.Control
             {
                 www = new WWW(uri, null, headers);
             }
-            Debug.Log(uri);
+            //Debug.Log(uri);
             return www;
         }
 

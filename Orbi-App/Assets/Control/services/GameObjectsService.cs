@@ -36,7 +36,7 @@ namespace Assets.Control.services
                     newCube.name = "cube_" + gameObject.id + "_" + gameObject.name;
                     newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
                     adapter.ToVirtual(gameObject.geoPosition, player);
-                    Debug.Log(gameObject.geoPosition);
+                    //Debug.Log(gameObject.geoPosition);
                     /*Vector3 pos = gameObject.geoPosition.ToPosition().ToVector3();
                     float height = terrainService.GetTerrain().SampleHeight(new Vector3(pos.x+128, 100, pos.z+128));
                     height = 100 - height;

@@ -1,5 +1,8 @@
 ﻿using Assets.Control;
+using Assets.Control.services;
+using Assets.Control.util;
 using Assets.Model;
+using UnityEngine;
 
 namespace Assets.Control
 {
@@ -10,12 +13,31 @@ namespace Assets.Control
         public Player player = new Player();
         public World world = new World();
         public ServerType server = ServerType.LOCAL;
+
+        private WorldAdapter adapter;
+        private TerrainService terrainService;
+        private GameObjectsService gameObjectsService = new GameObjectsService();
+        private PlayerService playerService = new PlayerService();
+        private GoogleMapsService googleMapsService = new GoogleMapsService();
+
+        private string craftPrefab = GameObjectTypes.DEFAULT;
         private bool heightsEnabled = false;
         private bool locationReady = false;
 
         public Game()
         {
             player.geoPosition = Server.START_POSITION;
+        }
+
+        public static Game GetInstance()
+        {
+            return INSTANCE;
+        }
+
+        public void InitTerrain(Terrain terrain)
+        {
+            terrainService = new TerrainService(terrain);
+            adapter = new WorldAdapter(terrainService);
         }
 
         public void SetServer(ServerType serverType)
@@ -48,10 +70,42 @@ namespace Assets.Control
             return Server.GetServerUrl(INSTANCE.server);
         }
 
-        public static Game GetInstance()
+        public void SetCraftPrefab(string prefab)
         {
-            return INSTANCE;
+            this.craftPrefab = prefab;
         }
+
+        public string GetCraftPrefab()
+        {
+            return this.craftPrefab;
+        }
+
+        public TerrainService GetTerrainService()
+        {
+            return this.terrainService;
+        }
+
+        public PlayerService GetPlayerService()
+        {
+            return this.playerService;
+        }
+
+        public GoogleMapsService GetGoogleMapsService()
+        {
+            return this.googleMapsService;
+        }
+
+        public GameObjectsService GetGameObjectsService()
+        {
+            return this.gameObjectsService;
+        }
+
+        public WorldAdapter GetAdapter()
+        {
+            return this.adapter;
+        }
+
+
 
     }
 }

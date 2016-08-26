@@ -1,4 +1,5 @@
-﻿using Assets.Model;
+﻿using Assets.Control.util;
+using Assets.Model;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,41 +11,22 @@ namespace Assets.Control.services
 {
     class GameObjectsService: AbstractService
     {
-        public IEnumerator RequestGameObjects(Player player, UnityEngine.GameObject parent, WorldAdapter adapter, TerrainService terrainService)
+
+        UnityEngine.GameObject gameObjectsContainer;
+
+        public GameObjectsService()
         {
-            WWW request = Request("world/around", JsonUtility.ToJson(player));
+            gameObjectsContainer = UnityEngine.GameObject.Find("Objects");
+        }
+
+        public IEnumerator RequestGameObjects()
+        {
+            WWW request = Request("world/around", JsonUtility.ToJson(Game.GetInstance().player));
             yield return request;
             if (request.error == null)
             {
                 World newWorld = JsonUtility.FromJson<World>(request.text);
-                // TODO update instead of deleta and create
-                UnityEngine.GameObject[] oldCubes = UnityEngine.GameObject.FindGameObjectsWithTag("dynamicGameObject");
-                foreach (UnityEngine.GameObject cube in oldCubes)
-                {
-                    UnityEngine.GameObject.Destroy(cube);
-                }
-
-
-                foreach (Model.GameObject gameObject in newWorld.gameObjects)
-                {
-                    UnityEngine.GameObject newCube = UnityEngine.GameObject.Instantiate(getPrefab(gameObject.prefab)) as UnityEngine.GameObject;
-                    // = Instantiate(cubePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                    // Modify the clone to your heart's content
-                    newCube.transform.parent = parent.transform;
-                    newCube.transform.localScale = new Vector3(0.2F, 0.2F, 0.2F);
-                    newCube.tag = "dynamicGameObject";
-                    newCube.name = "cube_" + gameObject.id + "_" + gameObject.name;
-                    newCube.transform.rotation = Quaternion.Euler(0.0001f, 0.00001f, 0.0f);
-                    adapter.ToVirtual(gameObject.geoPosition, player);
-                    //Debug.Log(gameObject.geoPosition);
-                    /*Vector3 pos = gameObject.geoPosition.ToPosition().ToVector3();
-                    float height = terrainService.GetTerrain().SampleHeight(new Vector3(pos.x+128, 100, pos.z+128));
-                    height = 100 - height;
-                    Debug.Log(height);
-                    gameObject.geoPosition.altitude = gameObject.geoPosition.altitude + height;*/
-                    newCube.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
-                    
-                }
+                RefreshWorld(Game.GetInstance().player, newWorld);
             }
             else
                 Error.Show(request.error);
@@ -52,9 +34,23 @@ namespace Assets.Control.services
 
         }
 
-        private UnityEngine.GameObject getPrefab(string prefab)
+        public void RefreshWorld(Player player, World world)
         {
-            return Resources.Load<UnityEngine.GameObject>("Prefabs/" + prefab) as UnityEngine.GameObject;
+            // TODO update instead of deleta and create
+            UnityEngine.GameObject[] oldCubes = UnityEngine.GameObject.FindGameObjectsWithTag("dynamicGameObject");
+            foreach (UnityEngine.GameObject cube in oldCubes)
+            {
+                UnityEngine.GameObject.Destroy(cube);
+            }
+
+
+            foreach (Model.GameObject gameObject in world.gameObjects)
+            {
+                UnityEngine.GameObject newObject = GameObjectTypes.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, true);
+                Game.GetInstance().GetAdapter().ToVirtual(gameObject.geoPosition, player);
+                newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
+
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Assets.Control
 
         
 
-        public IEnumerator RequestMapData(TerrainService terrainService, GeoPosition geoPosition)
+        public IEnumerator RequestMapData(GeoPosition geoPosition)
         {
             IndicateRequestStart();
             if (satellite)
@@ -45,7 +45,7 @@ namespace Assets.Control
                 Texture2D tex = new Texture2D(1024, 1024);
                 request.LoadImageIntoTexture(tex);
                 //tex.LoadImage(request.bytes);
-                terrainService.setTexture(tex, 0);
+                Game.GetInstance().GetTerrainService().setTexture(tex, 0);
             }
             else
                 Error.Show(request.error);

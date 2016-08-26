@@ -9,17 +9,13 @@ public class GameScript : MonoBehaviour {
     private WorldService service;
     // Game objects
     private Terrain terrain;
-    private UnityEngine.GameObject cameraGameObject;
-    private UnityEngine.GameObject objectsContainer;
 
     void Awake () {
         Server.RUNNING_REQUESTS = 0;
         Game.GetInstance().SetServer(StartInitScript.server);
-        cameraGameObject = UnityEngine.GameObject.Find("MainCamera");
-        objectsContainer = UnityEngine.GameObject.Find("Objects");
         terrain = UnityEngine.GameObject.Find("Terrain").GetComponent<Terrain>();
         // // TODO InvokeRepeating
-        service = new WorldService(terrain, cameraGameObject, objectsContainer);
+        service = new WorldService(terrain);
         
         Invoke("WaitForLocation", 0);
 

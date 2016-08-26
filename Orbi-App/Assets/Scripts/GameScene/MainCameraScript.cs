@@ -5,20 +5,22 @@ using Assets.Control;
 public class MainCameraScript : MonoBehaviour {
 
     // keyboard rotation - debug only
-    private float KEY_ROTATION_SPEED = 100.0F;
+    private float KEY_ROTATION_SPEED = 10.0F;
 
     // gyro rotation
     private Quaternion gyroRotation;
     private float deltaCompass = 0.0f;
 
-    void Start () {
+    void Awake () {
         SensorHelper.ActivateRotation();
-	}
+    }
 	
 	void Update () {
         // keyboard rotation - debug only
         if (SystemInfo.deviceType == DeviceType.Desktop)
-            KeyboardRotation();
+        {
+           KeyboardRotation();
+        }
         else
             GyroRotation();
     }

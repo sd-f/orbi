@@ -8,35 +8,23 @@ namespace Assets.Control
 {
     class WorldService : AbstractService
     {
-        private TerrainService terrainService;
-        private GameObjectsService gameObjectsService = new GameObjectsService();
-        private PlayerService playerService = new PlayerService();
-        private GoogleMapsService googleMapsService = new GoogleMapsService();
-        private WorldAdapter worldAdapter;
 
-        // gameobjects
-        UnityEngine.GameObject cameraGameObject;
-        UnityEngine.GameObject objectsContainer;
-
-        public WorldService(Terrain terrain, UnityEngine.GameObject cameraGameObject, UnityEngine.GameObject objectsContainer)
+        public WorldService(Terrain terrain)
         {
-            terrainService = new TerrainService(terrain);
-            worldAdapter = new WorldAdapter(terrainService);
-            this.cameraGameObject = cameraGameObject;
-            this.objectsContainer = objectsContainer;
+            Game.GetInstance().InitTerrain(terrain);
         }
 
         public IEnumerator UpdateWorld(Player player)
         {
             
-            yield return googleMapsService.RequestMapData(terrainService, player.geoPosition);
+            yield return Game.GetInstance().GetGoogleMapsService().RequestMapData(player.geoPosition);
             if (Game.GetInstance().IsHeightsEnabled())
             {
-                yield return terrainService.RequestTerrain(player);
+                yield return Game.GetInstance().GetTerrainService().RequestTerrain(player);
             } else
-                terrainService.ResetTerrain();
-            playerService.SetPlayerOnTerrain(cameraGameObject,terrainService);
-            yield return gameObjectsService.RequestGameObjects(player, objectsContainer, worldAdapter, terrainService);
+                Game.GetInstance().GetTerrainService().ResetTerrain();
+            Game.GetInstance().GetPlayerService().SetPlayerOnTerrain();
+            yield return Game.GetInstance().GetGameObjectsService().RequestGameObjects();
             //Info.Show("updating player height");
             // works only if terrain is loaded
         }

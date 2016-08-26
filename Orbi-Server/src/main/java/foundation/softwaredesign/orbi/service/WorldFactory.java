@@ -34,21 +34,21 @@ public class WorldFactory {
         Double middle = 47.0678;
         Double center = 15.5552;
 
-        initialObjects.put("test_calibration_N__1", new GeoPosition(top, center, 0.0)); // N
+        initialObjects.put("test_calibration_N__1", new GeoPosition(top, center, 0.000001)); // N
         initialObjects.put("test_calibration_N__2", new GeoPosition(top, center, 1.0)); // N
         initialObjects.put("test_calibration_N__3", new GeoPosition(top, center, 2.0)); // N
         initialObjects.put("test_calibration_N__4", new GeoPosition(top, center, 3.0)); // N
-        initialObjects.put("test_calibration_NE_1", new GeoPosition(top, right, 0.0)); // NE
-        initialObjects.put("test_calibration_E__1", new GeoPosition(middle, right, 0.0)); // E
+        initialObjects.put("test_calibration_NE_1", new GeoPosition(top, right, 0.000001)); // NE
+        initialObjects.put("test_calibration_E__1", new GeoPosition(middle, right, 0.000001)); // E
         initialObjects.put("test_calibration_E__2", new GeoPosition(middle, right, 1.0)); // E
         initialObjects.put("test_calibration_E__3", new GeoPosition(middle, right, 2.0)); // E
-        initialObjects.put("test_calibration_SE_1", new GeoPosition(bottom, right, 0.0)); // SE
+        initialObjects.put("test_calibration_SE_1", new GeoPosition(bottom, right, 0.000001)); // SE
         initialObjects.put("test_calibration_S__1", new GeoPosition(bottom, center, 0.0)); // S
         initialObjects.put("test_calibration_S__2", new GeoPosition(bottom, center, 1.0)); // S
-        initialObjects.put("test_calibration_SW_1", new GeoPosition(bottom, left, 0.0)); // SW
-        initialObjects.put("test_calibration_W__1", new GeoPosition(middle, left, 0.0)); // W
-        initialObjects.put("test_calibration_NW_1", new GeoPosition(top, left, 0.0)); // NW
-        initialObjects.put("test_calibration_100M", new GeoPosition(middle, 15.5540, 0.0)); // NW
+        initialObjects.put("test_calibration_SW_1", new GeoPosition(bottom, left, 0.000001)); // SW
+        initialObjects.put("test_calibration_W__1", new GeoPosition(middle, left, 0.000001)); // W
+        initialObjects.put("test_calibration_NW_1", new GeoPosition(top, left, 0.000001)); // NW
+        initialObjects.put("test_calibration_100M", new GeoPosition(middle, 15.5540, 0.000001)); // NW
 
         gameObjectRepository.deleteAll();
 
@@ -56,7 +56,11 @@ public class WorldFactory {
             GameObject gameObject = new GameObject();
             gameObject.setGeoPosition(entry.getValue());
             gameObject.setName(entry.getKey());
+
             gameObject.setPrefab("ScifiCrate/ScifiCrate_1");
+            if (gameObject.getName().contains("1")) {
+                gameObject.setPrefab("ScifiCrate/ScifiCrate_2");
+            }
             gameObjectRepository.save(gameObject);
         }
     }

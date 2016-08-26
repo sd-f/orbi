@@ -27,6 +27,7 @@ namespace Assets.Control.services
         {
             geoPosition.longitude = geoPosition.longitude * scale;
             geoPosition.latitude = geoPosition.latitude * scale;
+
             double siny = Math.Sin(DegreesToRadians(geoPosition.latitude));
             geoPosition.longitude = (geoPosition.longitude * pixelsPerLonDegree);
             geoPosition.latitude = -((.5 * Math.Log((1 + siny) / (1 - siny)) * -pixelsPerLonRadian));
@@ -47,8 +48,10 @@ namespace Assets.Control.services
         {
             Vector3 pos = geoPosition.ToPosition().ToVector3();
             geoPosition.altitude = geoPosition.altitude - terrainService.GetTerrainHeight(pos.x, pos.z);
+
             geoPosition.longitude = (geoPosition.longitude) / pixelsPerLonDegree;
             geoPosition.longitude = geoPosition.longitude / scale;
+
             double latRadians = (geoPosition.latitude) / -pixelsPerLonRadian;
             geoPosition.latitude = -(RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
             geoPosition.latitude = geoPosition.latitude / scale;
@@ -60,8 +63,8 @@ namespace Assets.Control.services
             position.latitude = position.latitude + player.geoPosition.latitude;
             position.longitude = position.longitude + player.geoPosition.longitude;
 
-            Vector3 pos = position.ToPosition().ToVector3();
-            position.altitude = terrainService.GetTerrain().SampleHeight(pos);
+            //Vector3 pos = position.ToPosition().ToVector3();
+            //position.altitude = terrainService.GetTerrain().SampleHeight(pos);
         }
 
         public double DegreesToRadians(double deg)

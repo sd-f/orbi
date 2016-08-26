@@ -9,18 +9,25 @@ namespace Assets.Control.services
     class PlayerService: AbstractService
     {
 
-        public IEnumerator RequestPlayerHeight(Player player, UnityEngine.GameObject cameraGameObject, WorldAdapter adapter)
+        UnityEngine.GameObject camera;
+
+        public PlayerService()
         {
-            WWW request = Request("player/altitude", JsonUtility.ToJson(player));
+            camera = UnityEngine.GameObject.Find("MainCamera");
+        }
+
+        public IEnumerator RequestPlayerHeight()
+        {
+            WWW request = Request("player/altitude", JsonUtility.ToJson(Game.GetInstance().player));
             yield return request;
             if (request.error == null)
             {
                 Player newPlayer = JsonUtility.FromJson<Player>(request.text);
                 GeoPosition newPosition = new GeoPosition();
                 newPosition.altitude = newPlayer.geoPosition.altitude;
-                adapter.ToVirtual(newPosition);
+                Game.GetInstance().GetAdapter().ToVirtual(newPosition);
                 newPlayer.geoPosition.altitude = newPosition.altitude;
-                cameraGameObject.transform.position = new Vector3(0, (float)newPlayer.geoPosition.altitude + 2.0f, 0);
+                camera.transform.position = new Vector3(0, (float)newPlayer.geoPosition.altitude + 2.0f, 0);
 
                 //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
                 IndicateRequestFinished();
@@ -33,9 +40,31 @@ namespace Assets.Control.services
                
         }
 
-        public void SetPlayerOnTerrain(UnityEngine.GameObject cameraGameObject, TerrainService terrainService)
+        public IEnumerator RequestCraft()
         {
-            cameraGameObject.transform.position = new Vector3(0, terrainService.GetTerrainHeight(0,0) + 2.0f, 0);
+            WWW request = Request("player/craft", JsonUtility.ToJson(Game.GetInstance().player));
+            yield return request;
+            if (request.error == null)
+            {
+                World world = JsonUtility.FromJson<World>(request.text);
+                Game.GetInstance().GetGameObjectsService().RefreshWorld(Game.GetInstance().player, world);
+
+                //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
+                Info.Show("Saved");
+                IndicateRequestFinished();
+            }
+            else
+            {
+                IndicateRequestFinished();
+                Error.Show(request.error);
+            }
+
         }
+
+        public void SetPlayerOnTerrain()
+        {
+            camera.transform.position = new Vector3(0, Game.GetInstance().GetTerrainService().GetTerrainHeight(0, 0) + 3.0f, 0);
+        }
+
     }
 }

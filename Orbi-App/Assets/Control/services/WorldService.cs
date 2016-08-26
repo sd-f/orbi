@@ -28,6 +28,8 @@ namespace Assets.Control
             //Info.Show("updating player height");
             // works only if terrain is loaded
         }
+
+        
     }
 
     

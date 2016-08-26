@@ -40,7 +40,7 @@ namespace Assets.Control.services
                
         }
 
-        public IEnumerator RequestCraft()
+        public IEnumerator RequestCraft(CraftContainerScript script)
         {
             WWW request = Request("player/craft", JsonUtility.ToJson(Game.GetInstance().player));
             yield return request;
@@ -50,7 +50,8 @@ namespace Assets.Control.services
                 Game.GetInstance().GetGameObjectsService().RefreshWorld(Game.GetInstance().player, world);
 
                 //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
-                Info.Show("Saved");
+                Info.Show("Yeah!");
+                
                 IndicateRequestFinished();
             }
             else
@@ -58,6 +59,7 @@ namespace Assets.Control.services
                 IndicateRequestFinished();
                 Error.Show(request.error);
             }
+            script.ClearContainer();
 
         }
 

@@ -24,30 +24,63 @@ public class CraftContainerScript : MonoBehaviour {
     private float KEY_ROTATION_SPEED = 7.0F;
 
     UnityEngine.GameObject newObject;
+    UnityEngine.GameObject effectGameObject;
+    UnityEngine.GameObject selectorEffectGameObject;
     public LayerMask layers;
-
 
     void Awake () {
         menu = UnityEngine.GameObject.Find("Menu").GetComponent<MenuScript>();
         container = this.gameObject;
 	}
 	
+    public void StartDestroying() { 
+        ClearContainer();
+        Game.GetInstance().player.selectedObjectId = 0;
+        selectorEffectGameObject = UnityEngine.GameObject.Instantiate(Resources.Load<UnityEngine.GameObject>("Prefabs/SelectLaserEffect"));
+        selectorEffectGameObject.transform.localPosition = new Vector3(0, 0, 0);
+        selectorEffectGameObject.name = "SelectLaser";
+        selectorEffectGameObject.transform.parent = container.transform;
+        
+    }
+
+    public void DoDestroy()
+    {
+        if (Game.GetInstance().player.selectedObjectId == 0)
+        {
+            Error.Show("Nothing selected");
+        } else
+        {
+            StartCoroutine(Game.GetInstance().GetGameObjectsService().RequestDestroy(this));
+        }
+    }
+
+    public void CancelDestroying()
+    {
+        Game.GetInstance().player.selectedObjectId = 0;
+        ClearContainer();
+    }
+
     public void StartCrafting()
     {
         // delete all children
         ClearContainer();
         prefab = Game.GetInstance().GetCraftPrefab();
+        effectGameObject = UnityEngine.GameObject.Find("CraftingEffect");
         //container.transform.localPosition = new Vector3(0, 0, 6);
-        newObject = GameObjectTypes.CreateObject(container.transform, Game.GetInstance().GetCraftPrefab(), -1, gameObject.name, false);
+        effectGameObject = UnityEngine.GameObject.Instantiate(Resources.Load<UnityEngine.GameObject>("Prefabs/CraftingEffect"));
+        effectGameObject.transform.parent = container.transform;
+        
+        newObject = GameObjectTypes.CreateObject(container.transform, Game.GetInstance().GetCraftPrefab(), -1, gameObject.name, false, "ObjectToCraft");
         GameObjectTypes.SetLayer(newObject, LayerMask.NameToLayer("Default"));
         newObject.transform.localPosition = new Vector3(0, 0, 7);
     }
 
-    void ClearContainer()
+    public void ClearContainer()
     {
         foreach (Transform child in container.transform)
         {
-            Destroy(child.gameObject);
+            //if (child.gameObject.tag.Equals("ObjectToCraft"))
+              Destroy(child.gameObject);
         }
     }
 
@@ -57,12 +90,12 @@ public class CraftContainerScript : MonoBehaviour {
         gameObject.name = "NEW_" + System.DateTime.Now.ToString().Replace(' ', '_');
         gameObject.prefab = prefab;
         gameObject.rotation = new Rotation();
-        gameObject.rotation.y = newObject.transform.localEulerAngles.y;
-        gameObject.geoPosition = new GeoPosition(newObject.transform.position.x, newObject.transform.position.y, newObject.transform.position.z);
+        gameObject.rotation.y = newObject.transform.eulerAngles.y;
+        gameObject.geoPosition = new GeoPosition(newObject.transform.position.z, newObject.transform.position.x, newObject.transform.position.y);
         Game.GetInstance().GetAdapter().ToReal(gameObject.geoPosition, Game.GetInstance().player);
         Game.GetInstance().player.gameObjectToCraft = gameObject;
         ClearContainer();
-        StartCoroutine(Game.GetInstance().GetPlayerService().RequestCraft());
+        StartCoroutine(Game.GetInstance().GetPlayerService().RequestCraft(this));
         
     }
 
@@ -79,9 +112,11 @@ public class CraftContainerScript : MonoBehaviour {
             newObject.transform.position = Vector3.SmoothDamp(tmpPosition, new Vector3(tmpPosition.x, GetMinHeightForObject(newObject), tmpPosition.z), ref velocityDown, 0.1f);
             //newObject.transform.rotation = Quaternion.Euler(0, newObject.transform.rotation.y, 0);
             container.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
-           // container.transform.localPosition = new Vector3(0, 0, 7);
+            // container.transform.localPosition = new Vector3(0, 0, 7);
             //newObject.transform.position = new Vector3(newObject.transform.position.x, GetMinHeightForObject(newObject), newObject.transform.position.z);
             //Info.Show(tmpPosition.x + "," + tmpPosition.z + " - " + GetHeight(tmpPosition.x, tmpPosition.z));
+
+            effectGameObject.transform.position = newObject.transform.position;
             if (SystemInfo.deviceType == DeviceType.Desktop)
                 keyboardObjectMovement(newObject);
             else
@@ -166,7 +201,7 @@ public class CraftContainerScript : MonoBehaviour {
             break; // should be only one object
         }
         
-        return height + 0.000001f;
+        return height + 0.0000001f;
     }
 
     public float GetHeight(float x, float z)

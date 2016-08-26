@@ -72,6 +72,12 @@ public class ImageMessageScript : MonoBehaviour {
         {
             bgImage.rectTransform.sizeDelta = new Vector2(Screen.width, bgImage.rectTransform.rect.height);
             text.rectTransform.sizeDelta = new Vector2(Screen.width-50, text.rectTransform.rect.height);
+            //text.rectTransform.localPosition = new Vector3((bgImage.rectTransform.rect.width/2) + 25, -25, 0);
         }
+    }
+
+    void OnDestroy()
+    {
+        CancelInvoke();
     }
 }

@@ -10,9 +10,10 @@ public class GameScript : MonoBehaviour {
     // Game objects
     private Terrain terrain;
 
-    void Awake () {
+    void Start () {
         Server.RUNNING_REQUESTS = 0;
         Game.GetInstance().SetServer(StartInitScript.server);
+        Game.GetInstance().ResetServices();
         terrain = UnityEngine.GameObject.Find("Terrain").GetComponent<Terrain>();
         // // TODO InvokeRepeating
         service = new WorldService(terrain);
@@ -46,5 +47,10 @@ public class GameScript : MonoBehaviour {
                 StartCoroutine(service.UpdateWorld(Game.GetInstance().player));
             Invoke("UpdateWorld", 2);
         }
+    }
+
+    void OnDestroy()
+    {
+        CancelInvoke();
     }
 }

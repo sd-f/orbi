@@ -39,4 +39,9 @@ public class ButtonLoadingScript : MonoBehaviour {
         }
         
 	}
+
+    void OnDestroy()
+    {
+        CancelInvoke();
+    }
 }

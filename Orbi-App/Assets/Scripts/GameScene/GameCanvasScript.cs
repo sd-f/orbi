@@ -27,4 +27,9 @@ public class GameCanvasScript : MonoBehaviour {
     {
         SceneManager.LoadScene("SettingsScene");
     }
+
+    void OnDestroy()
+    {
+        CancelInvoke();
+    }
 }

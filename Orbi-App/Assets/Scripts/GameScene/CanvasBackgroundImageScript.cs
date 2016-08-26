@@ -22,4 +22,9 @@ public class CanvasBackgroundImageScript : MonoBehaviour {
             Invoke("CheckIfLoaded", 0.5f);
         }
 	}
+
+    void OnDestroy()
+    {
+        CancelInvoke();
+    }
 }

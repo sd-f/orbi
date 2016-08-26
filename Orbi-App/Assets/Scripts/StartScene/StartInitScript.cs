@@ -4,7 +4,7 @@ using System.Collections;
 
 public class StartInitScript : MonoBehaviour {
 
-    public static ServerType server = ServerType.LOCAL;
+    public static ServerType server = ServerType.PROD;
 
     void Start()
     {

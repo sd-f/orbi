@@ -49,6 +49,9 @@ public class CameraPlaneScript : MonoBehaviour {
         }
     }
 
-    
+    void OnDestroy()
+    {
+        CancelInvoke();
+    }
 
 }

@@ -29,6 +29,13 @@ namespace Assets.Control
             player.geoPosition = Server.START_POSITION;
         }
 
+        public void ResetServices()
+        {
+            gameObjectsService = new GameObjectsService();
+            playerService = new PlayerService();
+            googleMapsService = new GoogleMapsService();
+        }
+
         public static Game GetInstance()
         {
             return INSTANCE;
@@ -104,8 +111,6 @@ namespace Assets.Control
         {
             return this.adapter;
         }
-
-
 
     }
 }

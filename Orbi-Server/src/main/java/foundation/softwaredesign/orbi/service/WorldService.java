@@ -2,7 +2,9 @@ package foundation.softwaredesign.orbi.service;
 
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
+import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
+import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -19,11 +21,17 @@ public class WorldService {
     @Inject
     ElevationService elevationService;
 
+
     public World getWorld(GeoPosition geoPosition) {
         World world = new World();
         List<GameObject> gameObjectList = gameObjectService.getObjectAround(geoPosition);
         world.setGameObjects(gameObjectList);
         //elevationService.addAltitude(world);
         return world;
+    }
+
+    public World delete(Player player) {
+        gameObjectService.delete(player.getSelectedObjectId());
+        return getWorld(player.getGeoPosition());
     }
 }

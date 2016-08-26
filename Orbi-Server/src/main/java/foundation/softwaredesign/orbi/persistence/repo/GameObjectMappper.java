@@ -2,6 +2,7 @@ package foundation.softwaredesign.orbi.persistence.repo;
 
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
+import foundation.softwaredesign.orbi.model.Rotation;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
@@ -26,6 +27,8 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.getGeoPosition().setLatitude(cubeEntity.getLatitude());
         gameObject.getGeoPosition().setLongitude(cubeEntity.getLongitude());
         gameObject.getGeoPosition().setAltitude(cubeEntity.getAltitude());
+        gameObject.setRotation(new Rotation());
+        gameObject.getRotation().setY(cubeEntity.getRotationY());
         gameObject.setPrefab(cubeEntity.getPrefab());
 
         gameObject.setName(cubeEntity.getName());

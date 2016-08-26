@@ -4,6 +4,7 @@ import foundation.softwaredesign.orbi.model.*;
 import foundation.softwaredesign.orbi.service.ElevationService;
 import foundation.softwaredesign.orbi.service.GameObjectService;
 import foundation.softwaredesign.orbi.service.PlayerService;
+import foundation.softwaredesign.orbi.service.WorldService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -31,6 +32,9 @@ public class PlayerRestApi {
 
     @Inject
     GameObjectService gameObjectService;
+
+    @Inject
+    WorldService worldService;
 
     @POST
     @Path("/altitude")

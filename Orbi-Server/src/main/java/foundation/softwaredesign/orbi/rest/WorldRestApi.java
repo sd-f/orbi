@@ -8,6 +8,7 @@ import foundation.softwaredesign.orbi.service.WorldService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -50,6 +51,13 @@ public class WorldRestApi {
     @Path("/around")
     public World world(@NotNull Player player) {
         return worldService.getWorld(player.getGeoPosition());
+    }
+
+    @POST
+    @Path("/objects/destroy")
+    @Transactional
+    public World delete(@NotNull Player player) {
+        return worldService.delete(player);
     }
 
 

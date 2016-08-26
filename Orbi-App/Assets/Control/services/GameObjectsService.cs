@@ -37,7 +37,7 @@ namespace Assets.Control.services
         public void RefreshWorld(Player player, World world)
         {
             // TODO update instead of deleta and create
-            UnityEngine.GameObject[] oldCubes = UnityEngine.GameObject.FindGameObjectsWithTag("dynamicGameObject");
+            UnityEngine.GameObject[] oldCubes = UnityEngine.GameObject.FindGameObjectsWithTag("DynamicGameObject");
             foreach (UnityEngine.GameObject cube in oldCubes)
             {
                 UnityEngine.GameObject.Destroy(cube);
@@ -46,11 +46,34 @@ namespace Assets.Control.services
 
             foreach (Model.GameObject gameObject in world.gameObjects)
             {
-                UnityEngine.GameObject newObject = GameObjectTypes.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, true);
+                UnityEngine.GameObject newObject = GameObjectTypes.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, true, "DynamicGameObject");
                 Game.GetInstance().GetAdapter().ToVirtual(gameObject.geoPosition, player);
                 newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
+                GameObjectTypes.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float) gameObject.rotation.y, 0);
 
             }
+        }
+
+        public IEnumerator RequestDestroy(CraftContainerScript craftContainerScript)
+        {
+            WWW request = Request("world/objects/destroy", JsonUtility.ToJson(Game.GetInstance().player));
+            yield return request;
+            if (request.error == null)
+            {
+                World world = JsonUtility.FromJson<World>(request.text);
+                Game.GetInstance().GetGameObjectsService().RefreshWorld(Game.GetInstance().player, world);
+
+                //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
+                Info.Show("Destroyed!");
+
+                IndicateRequestFinished();
+            }
+            else
+            {
+                IndicateRequestFinished();
+                Error.Show(request.error);
+            }
+            craftContainerScript.ClearContainer();
         }
     }
 }

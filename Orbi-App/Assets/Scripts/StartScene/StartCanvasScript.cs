@@ -26,6 +26,11 @@ public class StartCanvasScript : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        CancelInvoke();
+    }
+
 
 }
 	

@@ -38,20 +38,58 @@ namespace Assets.Control.services
         public void RefreshWorld(Player player, World world)
         {
             // TODO update instead of deleta and create
-            UnityEngine.GameObject[] oldCubes = UnityEngine.GameObject.FindGameObjectsWithTag("DynamicGameObject");
-            foreach (UnityEngine.GameObject cube in oldCubes)
-            {
-                UnityEngine.GameObject.Destroy(cube);
-            }
+            UnityEngine.GameObject[] oldObjects = UnityEngine.GameObject.FindGameObjectsWithTag("DynamicGameObject");
+            // delete removed objects
+            bool found = false;
+            long id;
+            // match all existing objects
+
 
 
             foreach (Model.GameObject gameObject in world.gameObjects)
             {
-                UnityEngine.GameObject newObject = GameObjectTypes.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, true, "DynamicGameObject");
-                Game.GetInstance().GetAdapter().ToVirtual(gameObject.geoPosition, player);
-                newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
-                GameObjectTypes.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float) gameObject.rotation.y, 0);
+                foreach (UnityEngine.GameObject oldObject in oldObjects)
+                {
+                    id = Convert.ToInt64(oldObject.gameObject.name.Replace("container_", ""));
+                    if (id.Equals(gameObject.id))
+                    {
+                        gameObject.gameObject = oldObject;
+                    }
+                }
+                
+            }
+            foreach (Model.GameObject gameObject in world.gameObjects)
+            {
+                if (gameObject.gameObject == null)
+                {
+                    UnityEngine.GameObject newObject = GameObjectTypes.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, true, "DynamicGameObject");
+                    Game.GetInstance().GetAdapter().ToVirtual(gameObject.geoPosition, player);
+                    newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
+                    GameObjectTypes.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.rotation.y, 0);
+                } else
+                {
+                    Game.GetInstance().GetAdapter().ToVirtual(gameObject.geoPosition, player);
+                    gameObject.gameObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
+                    GameObjectTypes.GetObject(gameObject.gameObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.rotation.y, 0);
+                }
+            }
 
+            // delete all not existing
+            foreach (UnityEngine.GameObject oldObject in oldObjects)
+            {
+                found = false;
+                id = Convert.ToInt64(oldObject.gameObject.name.Replace("container_", ""));
+                foreach (Model.GameObject gameObject in world.gameObjects)
+                {
+                    if (id.Equals(gameObject.id))
+                    {
+                        found = true;
+                    }
+                }
+                if (!found)
+                {
+                    UnityEngine.GameObject.Destroy(oldObject);
+                }
             }
         }
 

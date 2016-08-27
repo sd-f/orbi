@@ -12,6 +12,8 @@ namespace Assets.Model
         public GeoPosition geoPosition;
         public Position position;
         public Rotation rotation;
+        [NonSerialized]
+        public UnityEngine.GameObject gameObject = null;
         
         public override string ToString()
         {

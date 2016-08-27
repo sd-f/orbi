@@ -154,7 +154,7 @@ public class MenuScript : MonoBehaviour {
 
     public void OnDestroyingCancel()
     {
-        Game.GetInstance().SetWorldUpdatePaused(true);
+        Game.GetInstance().SetWorldUpdatePaused(false);
         buttonDelete.GetComponent<Button>().interactable = true;
         buttonDelete.GetComponent<Image>().enabled = true;
         imageButtonDelete.GetComponent<Image>().enabled = true;

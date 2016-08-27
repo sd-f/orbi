@@ -7,6 +7,6 @@ public class Info
 {
     public static void Show(string message)
     {
-        ImageMessageScript.ShowInfo(message);
+        Message.MESSAGES.Add(new Message(message, Color.green, Color.black));
     }
 }

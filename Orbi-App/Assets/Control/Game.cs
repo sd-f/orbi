@@ -31,7 +31,7 @@ namespace Assets.Control
             player.geoPosition = Server.START_POSITION;
         }
 
-        public void ResetServices()
+        public void Reset()
         {
             gameObjectsService = new GameObjectsService();
             playerService = new PlayerService();

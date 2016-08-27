@@ -9,6 +9,7 @@ using Assets.Model;
 public class CraftContainerScript : MonoBehaviour {
 
     private UnityEngine.GameObject container;
+    private UnityEngine.GameObject outerContainer;
     private MenuScript menu;
     private Vector3 firstpoint;
     private Vector3 secondpoint;
@@ -22,7 +23,7 @@ public class CraftContainerScript : MonoBehaviour {
     private Vector3 tmpLocalPosition;
     private Vector3 tmpPosition;
 
-    private float KEY_ROTATION_SPEED = 7.0F;
+    private float KEY_ROTATION_SPEED = 70.0F;
 
     UnityEngine.GameObject newObject;
     UnityEngine.GameObject effectGameObject;
@@ -32,7 +33,9 @@ public class CraftContainerScript : MonoBehaviour {
     void Awake () {
         menu = UnityEngine.GameObject.Find("Menu").GetComponent<MenuScript>();
         container = this.gameObject;
-	}
+        outerContainer = this.gameObject.transform.parent.gameObject;
+
+    }
 	
     public void StartDestroying() { 
         ClearContainer();
@@ -74,7 +77,7 @@ public class CraftContainerScript : MonoBehaviour {
         //container.transform.localPosition = new Vector3(0, 0, 6);
         effectGameObject = UnityEngine.GameObject.Instantiate(Resources.Load<UnityEngine.GameObject>("Prefabs/CraftingEffect"));
         effectGameObject.transform.parent = container.transform;
-        
+        effectGameObject.name = "CraftingEffect";
         newObject = GameObjectTypes.CreateObject(container.transform, Game.GetInstance().GetCraftPrefab(), -1, gameObject.name, false, "ObjectToCraft");
         GameObjectTypes.SetLayer(newObject, LayerMask.NameToLayer("Default"));
         newObject.transform.localPosition = new Vector3(0, 0, 7);
@@ -115,8 +118,10 @@ public class CraftContainerScript : MonoBehaviour {
         {
             tmpPosition = newObject.transform.position;
             newObject.transform.position = Vector3.SmoothDamp(tmpPosition, new Vector3(tmpPosition.x, GetMinHeightForObject(newObject), tmpPosition.z), ref velocityDown, 0.1f);
+
             //newObject.transform.rotation = Quaternion.Euler(0, newObject.transform.rotation.y, 0);
-            container.transform.localRotation = Quaternion.Euler(new Vector3(0.0f, 0.0f, 0.0f));
+            container.transform.rotation = Quaternion.Euler(new Vector3(0.0f, container.transform.eulerAngles.y, 0.0f));
+            //container.transform.rotation = Quaternion.Lerp(container.transform.rotation, Quaternion.Euler(new Vector3(0.0f, outerContainer.transform.rotation.y, 0.0f)), 1f);
             // container.transform.localPosition = new Vector3(0, 0, 7);
             //newObject.transform.position = new Vector3(newObject.transform.position.x, GetMinHeightForObject(newObject), newObject.transform.position.z);
             //Info.Show(tmpPosition.x + "," + tmpPosition.z + " - " + GetHeight(tmpPosition.x, tmpPosition.z));
@@ -135,7 +140,7 @@ public class CraftContainerScript : MonoBehaviour {
         if (d > 0f)
             objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y, tmpLocalPosition.z + (KEY_ROTATION_SPEED * Time.deltaTime));
         else if (d < 0f)
-            objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y, tmpLocalPosition.z + (KEY_ROTATION_SPEED * Time.deltaTime));
+            objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y, tmpLocalPosition.z - (KEY_ROTATION_SPEED * Time.deltaTime));
 
         tmpLocalPosition = objectToMove.transform.localPosition;
         if (Input.GetKey(KeyCode.KeypadPlus))
@@ -143,9 +148,15 @@ public class CraftContainerScript : MonoBehaviour {
         if (Input.GetKey(KeyCode.KeypadMinus))
             objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y,  tmpLocalPosition.z - (KEY_ROTATION_SPEED * Time.deltaTime));
         if (Input.GetKey(KeyCode.KeypadDivide))
-            objectToMove.transform.Rotate(new Vector3(0, -(KEY_ROTATION_SPEED*10) * Time.deltaTime, 0));
+        {
+            objectToMove.transform.Rotate(new Vector3(0.0f, -(KEY_ROTATION_SPEED) * Time.deltaTime, 0.0f));
+        }
+            
         if (Input.GetKey(KeyCode.KeypadMultiply))
-            objectToMove.transform.Rotate(new Vector3(0, (KEY_ROTATION_SPEED*10) * Time.deltaTime, 0));
+        {
+            objectToMove.transform.Rotate(new Vector3(0.0f, (KEY_ROTATION_SPEED) * Time.deltaTime, 0.0f));
+        }
+            
     }
 
     void touchObjectMovement(UnityEngine.GameObject objectToMove)

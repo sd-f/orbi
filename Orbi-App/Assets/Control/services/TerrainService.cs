@@ -45,12 +45,12 @@ namespace Assets.Control.services
         public IEnumerator RequestTerrain(Player player)
         {
             World generatedWorld = GenerateDummyWorldArround(player);
+            generatedWorld.clientVersion = Game.GetInstance().player.clientVersion;
             WWW request = Request("world/terrain", JsonUtility.ToJson(generatedWorld));
             yield return request;
             if (request.error == null)
             {
                 World terrainWorld = JsonUtility.FromJson<World>(request.text);
-                terrainWorld.clientVersion = Game.GetInstance().player.clientVersion;
                 try
                 {
                     IndicateRequestFinished();

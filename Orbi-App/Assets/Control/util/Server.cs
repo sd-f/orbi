@@ -9,7 +9,7 @@ namespace Assets.Control
         public static string SERVER_URL = "https://softwaredesign.foundation/orbi/api";
         public static string SERVER_DEV_URL = "https://softwaredesign.foundation/orbi-dev/api";
         public static string SERVER_LOCALHOST_URL = "http://localhost:8080/api";
-        public static GeoPosition START_POSITION = new GeoPosition(47.0678d, 15.5552d,511.0d);
+        public static GeoPosition START_POSITION = new GeoPosition(47.073158d, 15.438000d, 2.0d); // schlossberg
 
         public static bool RequestsRunning()
         {

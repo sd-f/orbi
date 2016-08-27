@@ -10,7 +10,7 @@ public class ImageMessageScript : MonoBehaviour {
     private static ImageMessageScript INSTANCE;
     Vector2 lastScreenSize = new Vector2(1920, 1080);
 
-    void Awake () {
+    void Start () {
         INSTANCE = this;
         bgImage = GetComponent<Image>();
         text = GameObject.Find("TextMessage").GetComponent<Text>();
@@ -51,6 +51,21 @@ public class ImageMessageScript : MonoBehaviour {
         } else
         {
             Hide();
+            Message nextMessage = null;
+            foreach (Message message in Message.MESSAGES)
+            {
+                
+                nextMessage = message;
+                break;
+            }
+            if (nextMessage != null)
+            {
+                Message.MESSAGES.RemoveAll(message => message.GetId().Equals(nextMessage.GetId()));
+                INSTANCE.bgImage.color = nextMessage.GetColor();
+                INSTANCE.text.color = nextMessage.GetTextColor();
+                INSTANCE.text.text = nextMessage.GetText();
+                SHOW_FOR_SECONDS = 3;
+            }
         }
         Invoke("CheckToShow", 1);
     }

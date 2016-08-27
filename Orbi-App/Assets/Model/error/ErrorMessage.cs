@@ -8,7 +8,7 @@ namespace Assets.Model
     [Serializable]
     class ErrorMessage
     {
-        public String message;
+        public String message = "Unknown error";
         public long status = 1;
     }
 }

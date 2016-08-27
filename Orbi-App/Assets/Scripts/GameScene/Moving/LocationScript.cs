@@ -6,9 +6,10 @@ public class LocationScript : MonoBehaviour {
 
     IEnumerator CheckGps()
     {
+        Game.GetInstance().player.geoPosition = Server.START_POSITION;
+        yield return new WaitForSeconds(1);
         if (Game.GetInstance().server.Equals(ServerType.LOCAL))
         {
-
             Warning.Show("Location running in static mode");
             Game.GetInstance().SetLocationReady(true);
             yield break;
@@ -18,8 +19,8 @@ public class LocationScript : MonoBehaviour {
         if (!Input.location.isEnabledByUser)
         {
             Error.Show("Please enable GPS");
-            yield return new WaitForSeconds(3);
-            Application.Quit();
+            Warning.Show("You will get static location");
+            Game.GetInstance().SetLocationReady(true);
             yield break;
         }
         
@@ -31,18 +32,19 @@ public class LocationScript : MonoBehaviour {
         int maxWait = 20;
         while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
         {
-            
-                
-           yield return new WaitForSeconds(1);
+            Warning.Show("Waiting for location service to start...");
+            yield return new WaitForSeconds(1);
            maxWait--;
         }
 
         // Service didn't initialize in 20 seconds
         if (maxWait < 1)
         {
+           
             Error.Show("Waiting for GPS timed out");
             yield return new WaitForSeconds(3);
-            Error.Show("You will get static location");
+            Game.GetInstance().SetLocationReady(true);
+            Warning.Show("You will get static location");
             yield break;
         }
 
@@ -67,8 +69,12 @@ public class LocationScript : MonoBehaviour {
 
     void UpdateLocation()
     {
-        Game.GetInstance().player.geoPosition.latitude = Input.location.lastData.latitude;
-        Game.GetInstance().player.geoPosition.longitude = Input.location.lastData.longitude;
+        // fix pc position always 0,0
+        if ((Input.location.lastData.latitude) != 0 && (Input.location.lastData.longitude != 0))
+        {
+            Game.GetInstance().player.geoPosition.latitude = Input.location.lastData.latitude;
+            Game.GetInstance().player.geoPosition.longitude = Input.location.lastData.longitude;
+        }
         Game.GetInstance().SetLocationReady(true);
         //Game.GetInstance().player.geoPosition.altitude = Input.location.lastData.altitude;
     }
@@ -76,5 +82,6 @@ public class LocationScript : MonoBehaviour {
     void OnDestroy()
     {
         Input.location.Stop();
+        CancelInvoke();
     }
 }

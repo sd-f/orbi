@@ -13,7 +13,7 @@ public class GameScript : MonoBehaviour {
     void Start () {
         Server.RUNNING_REQUESTS = 0;
         Game.GetInstance().SetServer(StartInitScript.server);
-        Game.GetInstance().ResetServices();
+        Game.GetInstance().Reset();
         terrain = UnityEngine.GameObject.Find("Terrain").GetComponent<Terrain>();
         // // TODO InvokeRepeating
         service = new WorldService(terrain);
@@ -32,7 +32,7 @@ public class GameScript : MonoBehaviour {
     {
         if (!Game.GetInstance().IsLocationReady())
         {
-            Invoke("WaitForLocation", 0);
+            Invoke("WaitForLocation", 1);
             Info.Show("Waiting for location...");
         } else
             Invoke("UpdateWorld", 1);
@@ -41,7 +41,7 @@ public class GameScript : MonoBehaviour {
     void UpdateWorld()
     {
         if (!Game.GetInstance().IsLocationReady())
-            Invoke("WaitForLocation", 0);
+            Invoke("WaitForLocation", 1);
         else { 
             if (!Server.RequestsRunning() && !Game.GetInstance().IsWorldUpdatedPaused())
                 StartCoroutine(service.UpdateWorld(Game.GetInstance().player));

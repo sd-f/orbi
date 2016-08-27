@@ -43,7 +43,7 @@ public class GameScript : MonoBehaviour {
         if (!Game.GetInstance().IsLocationReady())
             Invoke("WaitForLocation", 0);
         else { 
-            if (!Server.RequestsRunning())
+            if (!Server.RequestsRunning() && !Game.GetInstance().IsWorldUpdatedPaused())
                 StartCoroutine(service.UpdateWorld(Game.GetInstance().player));
             Invoke("UpdateWorld", 2);
         }

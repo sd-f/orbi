@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using Assets.Control;
 
 public class MenuScript : MonoBehaviour {
 
@@ -114,6 +115,7 @@ public class MenuScript : MonoBehaviour {
     public void OnCraftingCancel()
     {
         this.crafting = false;
+        Game.GetInstance().SetWorldUpdatePaused(false);
         buttonCraft.GetComponent<Button>().interactable = true;
         buttonCraft.GetComponent<Image>().enabled = true;
         imageButtonCraft.GetComponent<Image>().enabled = true;
@@ -133,6 +135,7 @@ public class MenuScript : MonoBehaviour {
     public void OnCraftingStart()
     {
         this.crafting = true;
+        Game.GetInstance().SetWorldUpdatePaused(true);
         buttonCraft.GetComponent<Button>().interactable = false;
         buttonCraft.GetComponent<Image>().enabled = false;
         imageButtonCraft.GetComponent<Image>().enabled = false;
@@ -151,7 +154,7 @@ public class MenuScript : MonoBehaviour {
 
     public void OnDestroyingCancel()
     {
-
+        Game.GetInstance().SetWorldUpdatePaused(true);
         buttonDelete.GetComponent<Button>().interactable = true;
         buttonDelete.GetComponent<Image>().enabled = true;
         imageButtonDelete.GetComponent<Image>().enabled = true;
@@ -170,6 +173,7 @@ public class MenuScript : MonoBehaviour {
 
     public void OnDestroyingStart()
     {
+        Game.GetInstance().SetWorldUpdatePaused(true);
         buttonDelete.GetComponent<Button>().interactable = false;
         buttonDelete.GetComponent<Image>().enabled = false;
         imageButtonDelete.GetComponent<Image>().enabled = false;

@@ -9,6 +9,8 @@ namespace Assets.Control
     class Game
     {
         private static Game INSTANCE = new Game();
+        private bool worldUpdatePaused = false;
+
 
         public Player player = new Player();
         public World world = new World();
@@ -110,6 +112,16 @@ namespace Assets.Control
         public WorldAdapter GetAdapter()
         {
             return this.adapter;
+        }
+
+        public bool IsWorldUpdatedPaused()
+        {
+            return this.worldUpdatePaused;
+        }
+
+        public void SetWorldUpdatePaused(bool worldUpdatePaused)
+        {
+            this.worldUpdatePaused = worldUpdatePaused;
         }
 
     }

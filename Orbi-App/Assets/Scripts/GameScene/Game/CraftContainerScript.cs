@@ -5,6 +5,7 @@ using Assets.Control.util;
 using Assets.Control.services;
 using Assets.Model;
 
+[AddComponentMenu("Game/Game/Craft Container")]
 public class CraftContainerScript : MonoBehaviour {
 
     private UnityEngine.GameObject container;
@@ -51,6 +52,7 @@ public class CraftContainerScript : MonoBehaviour {
         if (Game.GetInstance().player.selectedObjectId == 0)
         {
             Error.Show("Nothing selected");
+            ClearContainer();
         } else
         {
             StartCoroutine(Game.GetInstance().GetGameObjectsService().RequestDestroy(this));

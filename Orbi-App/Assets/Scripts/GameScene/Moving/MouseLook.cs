@@ -14,14 +14,11 @@ using System.Collections;
 /// - Create a camera. Make the camera a child of the capsule. Reset it's transform.
 /// - Add a MouseLook script to the camera.
 ///   -> Set the mouse look to use LookY. (You want the camera to tilt up and down like a head. The character already turns.)
-[AddComponentMenu("Camera-Control/Mouse Look")]
+[AddComponentMenu("Game/Moving/Mouse Look")]
 public class MouseLook : MonoBehaviour {
 
 	public float sensitivityX = 1F;
 	public float sensitivityY = 1F;
-
-	private float minimumX = -360F;
-	private float maximumX = 360F;
 
 	private float minimumY = -60F;
     private float maximumY = 60F;

@@ -3,8 +3,8 @@ using System.Collections;
 using Assets.Control;
 using System;
 
+[AddComponentMenu("Game/Game/Beam Hits Object")]
 public class BeamHitsObjectsScript : MonoBehaviour {
-
 
     void OnParticleCollision(GameObject collisionObject)
     {

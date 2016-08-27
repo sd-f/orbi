@@ -24,7 +24,7 @@ public class GameScript : MonoBehaviour {
     }
 	
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && (SystemInfo.deviceType == DeviceType.Handheld))
             Application.Quit();
     }
 

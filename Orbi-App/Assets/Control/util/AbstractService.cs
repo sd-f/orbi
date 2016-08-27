@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -31,6 +32,18 @@ namespace Assets.Control
             }
             //Debug.Log(uri);
             return www;
+        }
+
+        public void HandleError(WWW request)
+        {
+            IndicateRequestFinished();
+            ErrorMessage message = JsonUtility.FromJson<ErrorMessage>(request.text);
+            if (message != null)
+                Error.Show(message.status + ": " + message.message);
+            else
+                Error.Show(request.error);
+           
+            
         }
 
         public void IndicateRequestStart()

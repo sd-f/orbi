@@ -13,6 +13,7 @@ namespace Assets.Model
         public GeoPosition geoPosition;
         public GameObject gameObjectToCraft;
         public long selectedObjectId;
+        public long clientVersion = 1;
 
     }
 }

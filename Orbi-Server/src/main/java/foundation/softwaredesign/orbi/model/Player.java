@@ -10,6 +10,7 @@ public class Player {
     private GeoPosition geoPosition;
     private GameObject gameObjectToCraft;
     private Long selectedObjectId;
+    private Long clientVersion;
 
     public GameObject getGameObjectToCraft() {
         return gameObjectToCraft;
@@ -33,5 +34,13 @@ public class Player {
 
     public void setSelectedObjectId(Long selectedObjectId) {
         this.selectedObjectId = selectedObjectId;
+    }
+
+    public Long getClientVersion() {
+        return clientVersion;
+    }
+
+    public void setClientVersion(Long clientVersion) {
+        this.clientVersion = clientVersion;
     }
 }

@@ -37,10 +37,13 @@ public class CraftContainerScript : MonoBehaviour {
         ClearContainer();
         Game.GetInstance().player.selectedObjectId = 0;
         selectorEffectGameObject = UnityEngine.GameObject.Instantiate(Resources.Load<UnityEngine.GameObject>("Prefabs/SelectLaserEffect"));
-        selectorEffectGameObject.transform.localPosition = new Vector3(0, 0, 0);
+        
         selectorEffectGameObject.name = "SelectLaser";
         selectorEffectGameObject.transform.parent = container.transform;
-        
+        selectorEffectGameObject.transform.localPosition = new Vector3(0, -1, 0);
+        selectorEffectGameObject.transform.localRotation = Quaternion.Euler(0,0,0);
+
+
     }
 
     public void DoDestroy()
@@ -126,6 +129,12 @@ public class CraftContainerScript : MonoBehaviour {
 
     void keyboardObjectMovement(UnityEngine.GameObject objectToMove)
     {
+        var d = Input.GetAxis("Mouse ScrollWheel");
+        if (d > 0f)
+            objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y, tmpLocalPosition.z + (KEY_ROTATION_SPEED * Time.deltaTime));
+        else if (d < 0f)
+            objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y, tmpLocalPosition.z + (KEY_ROTATION_SPEED * Time.deltaTime));
+
         tmpLocalPosition = objectToMove.transform.localPosition;
         if (Input.GetKey(KeyCode.KeypadPlus))
             objectToMove.transform.localPosition = new Vector3(0, tmpLocalPosition.y,  tmpLocalPosition.z + (KEY_ROTATION_SPEED * Time.deltaTime));

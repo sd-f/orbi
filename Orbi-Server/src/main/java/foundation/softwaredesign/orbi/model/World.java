@@ -9,6 +9,7 @@ import java.util.List;
 @XmlRootElement
 public class World {
 
+    private Long clientVersion;
     private List<GameObject> gameObjects;
 
     public List<GameObject> getGameObjects() {
@@ -17,5 +18,13 @@ public class World {
 
     public void setGameObjects(List<GameObject> gameObjects) {
         this.gameObjects = gameObjects;
+    }
+
+    public Long getClientVersion() {
+        return clientVersion;
+    }
+
+    public void setClientVersion(Long clientVersion) {
+        this.clientVersion = clientVersion;
     }
 }

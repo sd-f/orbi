@@ -8,6 +8,7 @@ public class MenuScript : MonoBehaviour {
     private Renderer cameraPlaneRenderer;
     private WebCamTexture cameraTexture;
     private Image imageButtonSwitchView;
+    private GameObject buttonSwitchView;
 
     private bool crafting = false;
 
@@ -43,6 +44,7 @@ public class MenuScript : MonoBehaviour {
         cameraPlaneRenderer.material.mainTexture = cameraTexture;
         imageButtonSwitchView = GameObject.Find("ImageButtonSwitchView").GetComponent<Image>();
         imageButtonSwitchView.sprite = cameraSprite;
+        buttonSwitchView = GameObject.Find("ButtonSwitchView");
 
         buttonCraft = GameObject.Find("ButtonCraft");
         imageButtonCraft = GameObject.Find("ImageButtonCraft");
@@ -59,8 +61,40 @@ public class MenuScript : MonoBehaviour {
         imageButtonDeleteCancel = GameObject.Find("ImageButtonDeleteCancel");
     }
 
+    void Update()
+    {
+        if (SystemInfo.deviceType == DeviceType.Desktop)
+        {
+            if (Input.GetKey(KeyCode.C))
+                buttonCraft.GetComponent<Button>().onClick.Invoke();
+            if (Input.GetKey(KeyCode.D))
+                buttonDelete.GetComponent<Button>().onClick.Invoke();
+
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                if (buttonCraftCancel.GetComponent<Button>() && buttonCraftCancel.GetComponent<Button>().interactable)
+                    buttonCraftCancel.GetComponent<Button>().onClick.Invoke();
+                if (buttonDeleteCancel.GetComponent<Button>() && buttonDeleteCancel.GetComponent<Button>().interactable)
+                    buttonDeleteCancel.GetComponent<Button>().onClick.Invoke();
+            }
+            if (Input.GetKey(KeyCode.Return))
+            {
+                if (buttonCraftOk.GetComponent<Button>() && buttonCraftOk.GetComponent<Button>().interactable)
+                    buttonCraftOk.GetComponent<Button>().onClick.Invoke();
+                if (buttonDeleteOk.GetComponent<Button>() && buttonDeleteOk.GetComponent<Button>().interactable)
+                    buttonDeleteOk.GetComponent<Button>().onClick.Invoke();
+            }
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (buttonSwitchView.GetComponent<Button>() && buttonSwitchView.GetComponent<Button>().interactable)
+                    buttonSwitchView.GetComponent<Button>().onClick.Invoke();
+            }
+
+        }
+    }
+
     // camera, terrain switch
-	public void OnSwitchView()
+    public void OnSwitchView()
     {
         if (mainCamera.cullingMask == layersWithTerrain)
         {

@@ -1,10 +1,7 @@
 package foundation.softwaredesign.orbi.rest;
 
 import foundation.softwaredesign.orbi.model.*;
-import foundation.softwaredesign.orbi.service.ElevationService;
-import foundation.softwaredesign.orbi.service.GameObjectService;
-import foundation.softwaredesign.orbi.service.PlayerService;
-import foundation.softwaredesign.orbi.service.WorldService;
+import foundation.softwaredesign.orbi.service.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -26,19 +23,19 @@ public class PlayerRestApi {
 
     @Inject
     ElevationService elevationService;
-
     @Inject
     PlayerService playerService;
-
     @Inject
     GameObjectService gameObjectService;
-
     @Inject
     WorldService worldService;
+    @Inject
+    ServerService serverService;
 
     @POST
     @Path("/altitude")
     public Player elevation(@NotNull Player player) {
+        serverService.checkVersion(player.getClientVersion());
         elevationService.addAltitude(player.getGeoPosition());
         return player;
     }
@@ -47,6 +44,7 @@ public class PlayerRestApi {
     @Path("/craft")
     @Transactional
     public World create(@NotNull Player player) {
+        serverService.checkVersion(player.getClientVersion());
         return playerService.craftGameObject(player);
     }
 

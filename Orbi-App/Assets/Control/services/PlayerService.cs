@@ -22,21 +22,16 @@ namespace Assets.Control.services
             yield return request;
             if (request.error == null)
             {
+                IndicateRequestFinished();
                 Player newPlayer = JsonUtility.FromJson<Player>(request.text);
                 GeoPosition newPosition = new GeoPosition();
                 newPosition.altitude = newPlayer.geoPosition.altitude;
                 Game.GetInstance().GetAdapter().ToVirtual(newPosition);
                 newPlayer.geoPosition.altitude = newPosition.altitude;
                 camera.transform.position = new Vector3(0, (float)newPlayer.geoPosition.altitude + 2.0f, 0);
-
-                //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
-                IndicateRequestFinished();
             }
             else
-            {
-                IndicateRequestFinished();
-                Error.Show(request.error);
-            }
+                HandleError(request);
                
         }
 
@@ -46,19 +41,17 @@ namespace Assets.Control.services
             yield return request;
             if (request.error == null)
             {
+                IndicateRequestFinished();
                 World world = JsonUtility.FromJson<World>(request.text);
                 Game.GetInstance().GetGameObjectsService().RefreshWorld(Game.GetInstance().player, world);
 
                 //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
                 Info.Show("Yeah!");
-                
-                IndicateRequestFinished();
+
+
             }
             else
-            {
-                IndicateRequestFinished();
-                Error.Show(request.error);
-            }
+                HandleError(request);
             script.ClearContainer();
 
         }

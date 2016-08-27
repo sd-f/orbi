@@ -50,8 +50,10 @@ namespace Assets.Control.services
             if (request.error == null)
             {
                 World terrainWorld = JsonUtility.FromJson<World>(request.text);
+                terrainWorld.clientVersion = Game.GetInstance().player.clientVersion;
                 try
                 {
+                    IndicateRequestFinished();
                     AdjustTerrainHeights(terrainWorld, player);
                     AddStaticAlpha();
                     t.Flush();
@@ -61,9 +63,9 @@ namespace Assets.Control.services
                 }    
             }
             else
-                Error.Show(request.error);
+                HandleError(request);
             
-            IndicateRequestFinished();
+            
         }
 
         public double getMinHeight()

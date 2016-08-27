@@ -25,12 +25,13 @@ namespace Assets.Control.services
             yield return request;
             if (request.error == null)
             {
+                IndicateRequestFinished();
                 World newWorld = JsonUtility.FromJson<World>(request.text);
                 RefreshWorld(Game.GetInstance().player, newWorld);
             }
             else
-                Error.Show(request.error);
-            IndicateRequestFinished();
+                HandleError(request);
+            
 
         }
 
@@ -60,19 +61,15 @@ namespace Assets.Control.services
             yield return request;
             if (request.error == null)
             {
+                IndicateRequestFinished();
                 World world = JsonUtility.FromJson<World>(request.text);
                 Game.GetInstance().GetGameObjectsService().RefreshWorld(Game.GetInstance().player, world);
 
                 //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
                 Info.Show("Destroyed!");
-
-                IndicateRequestFinished();
             }
             else
-            {
-                IndicateRequestFinished();
-                Error.Show(request.error);
-            }
+                HandleError(request);
             craftContainerScript.ClearContainer();
         }
     }

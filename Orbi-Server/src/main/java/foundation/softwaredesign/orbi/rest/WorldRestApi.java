@@ -3,6 +3,7 @@ package foundation.softwaredesign.orbi.rest;
 import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.ElevationService;
+import foundation.softwaredesign.orbi.service.ServerService;
 import foundation.softwaredesign.orbi.service.WorldFactory;
 import foundation.softwaredesign.orbi.service.WorldService;
 
@@ -31,6 +32,8 @@ public class WorldRestApi {
     ElevationService elevationService;
     @Inject
     WorldService worldService;
+    @Inject
+    ServerService serverService;
 
     @GET
     @Path("/reset")
@@ -43,6 +46,7 @@ public class WorldRestApi {
     @POST
     @Path("/terrain")
     public World terrain(@NotNull World terrain) {
+        serverService.checkVersion(terrain.getClientVersion());
         elevationService.addAltitude(terrain);
         return terrain;
     }
@@ -50,6 +54,7 @@ public class WorldRestApi {
     @POST
     @Path("/around")
     public World world(@NotNull Player player) {
+        serverService.checkVersion(player.getClientVersion());
         return worldService.getWorld(player.getGeoPosition());
     }
 
@@ -57,6 +62,7 @@ public class WorldRestApi {
     @Path("/objects/destroy")
     @Transactional
     public World delete(@NotNull Player player) {
+        serverService.checkVersion(player.getClientVersion());
         return worldService.delete(player);
     }
 

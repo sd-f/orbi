@@ -19,7 +19,7 @@ public class MainCameraScript : MonoBehaviour {
         // keyboard rotation - debug only
         if (SystemInfo.deviceType == DeviceType.Desktop)
         {
-           KeyboardRotation();
+           //KeyboardRotation(); // other script
         }
         else
             GyroRotation();

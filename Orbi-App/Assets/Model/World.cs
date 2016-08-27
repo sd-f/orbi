@@ -9,6 +9,7 @@ namespace Assets.Model
     class World
     {
         public List<GameObject> gameObjects = new List<GameObject>();
+        public long clientVersion;
 
         public void ReplaceGameObjects(List<GameObject> gameObjects)
         {

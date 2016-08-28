@@ -14,7 +14,7 @@ public class CanvasBackgroundImageScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void CheckIfLoaded () {
-	    if (!Server.RequestsRunning())
+	    if (!Assets.Control.util.Server.RequestsRunning())
         {
             image.enabled = false;
         } else

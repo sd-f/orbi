@@ -1,11 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using Assets.Control;
 
 public class GameCanvasScript : MonoBehaviour {
 
+    private GameController.Player player;
     Vector2 lastScreenSize = new Vector2(1920, 1080);
     RectTransform bgImageRectTransform;
+
+    void Start()
+    {
+        player = GameController.Game.GetPlayer();
+    }
 
     // Use this for initialization
     void Awake()

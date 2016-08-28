@@ -2,7 +2,9 @@
 using System.Collections;
 using Assets.Model;
 using Assets.Control;
+using Assets.Control.util;
 using System;
+using CanvasUtility;
 
 public class GameScript : MonoBehaviour {
 
@@ -11,8 +13,8 @@ public class GameScript : MonoBehaviour {
     private Terrain terrain;
 
     void Start () {
-        Server.RUNNING_REQUESTS = 0;
-        Game.GetInstance().SetServer(StartInitScript.server);
+        Assets.Control.util.Server.RUNNING_REQUESTS = 0;
+        //Game.GetInstance().SetServer(StartInitScript.server);
         Game.GetInstance().Reset();
         terrain = UnityEngine.GameObject.Find("Terrain").GetComponent<Terrain>();
         // // TODO InvokeRepeating
@@ -43,7 +45,7 @@ public class GameScript : MonoBehaviour {
         if (!Game.GetInstance().IsLocationReady())
             Invoke("WaitForLocation", 1);
         else { 
-            if (!Server.RequestsRunning() && !Game.GetInstance().IsWorldUpdatedPaused())
+            if (!Assets.Control.util.Server.RequestsRunning() && !Game.GetInstance().IsWorldUpdatedPaused())
                 StartCoroutine(service.UpdateWorld(Game.GetInstance().player));
             Invoke("UpdateWorld", 2);
         }

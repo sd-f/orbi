@@ -1,4 +1,5 @@
 ﻿using Assets.Model;
+using CanvasUtility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,13 +49,13 @@ namespace Assets.Control
 
         public void IndicateRequestStart()
         {
-            Server.RUNNING_REQUESTS++;
+            Assets.Control.util.Server.RUNNING_REQUESTS++;
         }
 
         public void IndicateRequestFinished()
         {
-            if (Server.RUNNING_REQUESTS > 0)
-                Server.RUNNING_REQUESTS--;
+            if (Assets.Control.util.Server.RUNNING_REQUESTS > 0)
+                Assets.Control.util.Server.RUNNING_REQUESTS--;
         }
     }
 }

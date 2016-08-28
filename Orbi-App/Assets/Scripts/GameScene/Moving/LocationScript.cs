@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Control;
+using CanvasUtility;
 
 public class LocationScript : MonoBehaviour {
 
     IEnumerator CheckGps()
     {
-        Game.GetInstance().player.geoPosition = Server.START_POSITION;
+       // TODO Game.GetInstance().player.geoPosition = Game.START_POSITION;
         yield return new WaitForSeconds(1);
-        if (Game.GetInstance().server.Equals(ServerType.LOCAL))
+        if (Game.GetInstance().server.Equals(GameController.ServerType.LOCAL))
         {
             Warning.Show("Location running in static mode");
             Game.GetInstance().SetLocationReady(true);

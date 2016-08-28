@@ -2,6 +2,7 @@
 using Assets.Control.services;
 using Assets.Control.util;
 using Assets.Model;
+using GameController;
 using UnityEngine;
 
 namespace Assets.Control
@@ -12,8 +13,8 @@ namespace Assets.Control
         private bool worldUpdatePaused = false;
 
 
-        public Player player = new Player();
-        public World world = new World();
+        public Model.Player player = new Model.Player();
+        public Model.World world = new Model.World();
         public ServerType server = ServerType.LOCAL;
 
         private WorldAdapter adapter;
@@ -28,7 +29,7 @@ namespace Assets.Control
 
         public Game()
         {
-            player.geoPosition = Server.START_POSITION;
+            //player.geoPosition = Assets.Control.util.Server.START_POSITION;
         }
 
         public void Reset()
@@ -76,7 +77,7 @@ namespace Assets.Control
 
         public string GetServerUrl()
         {
-            return Server.GetServerUrl(INSTANCE.server);
+            return ServerConstants.GetServerUrl(INSTANCE.server);
         }
 
         public void SetCraftPrefab(string prefab)

@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using System;
+using CanvasUtility;
 
 namespace Assets.Control.services
 {

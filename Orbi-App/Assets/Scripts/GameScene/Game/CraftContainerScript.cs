@@ -4,6 +4,7 @@ using Assets.Control;
 using Assets.Control.util;
 using Assets.Control.services;
 using Assets.Model;
+using CanvasUtility;
 
 [AddComponentMenu("Game/Game/Craft Container")]
 public class CraftContainerScript : MonoBehaviour {

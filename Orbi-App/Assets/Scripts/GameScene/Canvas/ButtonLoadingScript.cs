@@ -17,7 +17,7 @@ public class ButtonLoadingScript : MonoBehaviour {
 	
     void CheckIfRequestsRunning()
     {
-        if (Server.RequestsRunning())
+        if (Assets.Control.util.Server.RequestsRunning())
         {
             bgIcon.enabled = true;
             refreshIcon.enabled = true;

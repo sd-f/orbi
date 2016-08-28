@@ -1,5 +1,6 @@
 ﻿using GameController.Services;
 using ServerModel;
+using System;
 using UnityEngine;
 
 namespace GameController
@@ -11,6 +12,7 @@ namespace GameController
         private GeoPosition geoPosition;
         private PlayerService playerService = new PlayerService();
         private AuthService authService = new AuthService();
+        private Boolean loggedIn = false;
 
         public Player()
         {
@@ -25,6 +27,16 @@ namespace GameController
         public AuthService GetAuthService()
         {
             return authService;
+        }
+
+        public void SetLoggedIn(Boolean loggedIn)
+        {
+            this.loggedIn = loggedIn;
+        }
+
+        public Boolean IsLoggedIn()
+        {
+            return this.loggedIn;
         }
 
         public ServerModel.Player ToServerModel()

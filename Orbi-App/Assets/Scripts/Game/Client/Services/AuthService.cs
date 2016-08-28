@@ -3,6 +3,7 @@ using ServerModel;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace GameController.Services
 {
@@ -21,6 +22,7 @@ namespace GameController.Services
                     SceneManager.LoadScene("GameScene");
                 }
                 Info.Show("Logged in successful");
+                Game.GetPlayer().SetLoggedIn(true);
                 // no errors
                 IndicateRequestFinished();
             }
@@ -39,6 +41,8 @@ namespace GameController.Services
                 if (authInfo.token != null && authInfo.token != "")
                 {
                     Game.GetGame().GetSettings().SetToken(authInfo.token);
+                    Game.GetPlayer().SetLoggedIn(true);
+                    UnityEngine.GameObject.Find("ButtonLogin").GetComponent<Button>().interactable = false;
                 }
                 if (SceneManager.GetActiveScene().name != "GameScene")
                 {

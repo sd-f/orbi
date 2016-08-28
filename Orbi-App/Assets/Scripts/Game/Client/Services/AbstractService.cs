@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace GameController.Services
 {
@@ -48,6 +49,8 @@ namespace GameController.Services
                     {
                         SceneManager.LoadScene("StartScene");
                     }
+                    Game.GetGame().GetSettings().SetToken("");
+                    UnityEngine.GameObject.Find("ButtonLogin").GetComponent<Button>().interactable = true;
                 }
             } catch (Exception ex)
             {

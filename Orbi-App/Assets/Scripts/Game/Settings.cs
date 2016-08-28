@@ -70,9 +70,9 @@ namespace GameController
             return this.data.satelliteOverlayEnabled;
         }
 
-        public bool GetToken()
+        public string GetToken()
         {
-            return this.data.satelliteOverlayEnabled;
+            return this.data.token;
         }
 
         public void Load()

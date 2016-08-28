@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameController.Services;
+using UnityEngine;
 
 namespace GameController
 {
@@ -13,6 +14,7 @@ namespace GameController
         private static Player PLAYER;
         private static World WORLD;
         private Ui ui = new Ui();
+        private ServerService serverService = new ServerService();
 
         // settings
         private Settings settings = new Settings();
@@ -20,6 +22,11 @@ namespace GameController
         void Start()
         {
             DontDestroyOnLoad(gameObject);
+        }
+
+        public ServerService GetServerService()
+        {
+            return this.serverService;
         }
 
         public Ui GetUi()

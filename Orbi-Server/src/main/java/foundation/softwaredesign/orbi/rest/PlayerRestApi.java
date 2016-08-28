@@ -1,23 +1,27 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.*;
-import foundation.softwaredesign.orbi.service.*;
+import foundation.softwaredesign.orbi.model.Player;
+import foundation.softwaredesign.orbi.model.World;
+import foundation.softwaredesign.orbi.service.ElevationService;
+import foundation.softwaredesign.orbi.service.PlayerService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static javax.ws.rs.core.MediaType.APPLICATION_XML;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Path("/player")
-@Produces({APPLICATION_XML, APPLICATION_JSON})
-@Consumes({APPLICATION_XML, APPLICATION_JSON})
+@Produces({APPLICATION_JSON})
+@Consumes({APPLICATION_JSON})
 @RequestScoped
 public class PlayerRestApi {
 
@@ -25,17 +29,10 @@ public class PlayerRestApi {
     ElevationService elevationService;
     @Inject
     PlayerService playerService;
-    @Inject
-    GameObjectService gameObjectService;
-    @Inject
-    WorldService worldService;
-    @Inject
-    ServerService serverService;
 
     @POST
     @Path("/altitude")
     public Player elevation(@NotNull Player player) {
-        serverService.checkVersion(player.getClientVersion());
         elevationService.addAltitude(player.getGeoPosition());
         return player;
     }
@@ -44,7 +41,6 @@ public class PlayerRestApi {
     @Path("/craft")
     @Transactional
     public World create(@NotNull Player player) {
-        serverService.checkVersion(player.getClientVersion());
         return playerService.craftGameObject(player);
     }
 

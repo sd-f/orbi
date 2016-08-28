@@ -18,10 +18,9 @@ namespace Assets.Scripts.Scenes.Start
             Game.GetGame().GetSettings().SetClientVersion(Client.VERSION);
 
             // check client version
-
-
-
+            StartCoroutine(Game.GetGame().GetServerService().RequestVersion());
             // check logged in
+            StartCoroutine(Game.GetPlayer().GetAuthService().LoadGameIfAuthorized());
 
         }
 

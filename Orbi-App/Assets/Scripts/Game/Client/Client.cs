@@ -1,17 +1,18 @@
 ﻿using Assets.Control.util;
+using GameController.Services;
 using UnityEngine;
 
 namespace GameController
 {
 
     [AddComponentMenu("App/Game/Client")]
-    public class Client : MonoBehaviour
+    class Client : MonoBehaviour
     {
 
         // prod server, dev server or localhost
-        public static ServerType SERVER_TYPE = ServerType.PROD;
+        public ServerType serverType = ServerType.LOCAL;
         public static int VERSION = 2;
-
+        //private AuthService authService = new AuthService();
         private int runningRequests = 0;
 
         public void IncRunningRequests()

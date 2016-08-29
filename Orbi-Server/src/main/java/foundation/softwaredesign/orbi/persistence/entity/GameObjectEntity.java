@@ -1,38 +1,44 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Entity
-@Table(name = "game_object")
+@Table(name = "game_object", schema = "public")
 public class GameObjectEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "game_object_id_gen")
     private Long id;
-
     @Column
-    String name;
-
+    @NotNull
+    private String name;
     @Column
+    @NotNull
     private Long userId;
-
-    @Column(precision = 12, scale = 6, nullable = false)
+    @Column(precision = 12, scale = 6)
+    @NotNull
     private Double latitude;
-
-    @Column(precision = 12, scale = 6, nullable = false)
+    @Column(precision = 12, scale = 6)
+    @NotNull
     private Double longitude;
-
-    @Column(precision = 12, scale = 6, nullable = false)
+    @Column(precision = 12, scale = 6)
+    @NotNull
     private Double altitude;
-
     @Column
+    @NotNull
     private Double rotationY;
-
     @Column
+    @NotNull
     private String prefab;
+    @Column(insertable = false, updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @NotNull
+    private Date createDate;
 
     public Long getId() {
         return id;
@@ -96,5 +102,13 @@ public class GameObjectEntity {
 
     public void setPrefab(String prefab) {
         this.prefab = prefab;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

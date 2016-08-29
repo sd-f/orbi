@@ -1,14 +1,15 @@
 package foundation.softwaredesign.orbi.rest;
 
 import foundation.softwaredesign.orbi.model.auth.AuthorizationInfo;
+import foundation.softwaredesign.orbi.model.auth.LoginUserInfo;
+import foundation.softwaredesign.orbi.model.auth.RegisterUserInfo;
 import foundation.softwaredesign.orbi.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.validation.constraints.NotNull;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -26,16 +27,23 @@ public class AuthorizationRestApi {
 
     @GET
     @Path("/user")
-    public AuthorizationInfo user() {
-        return userService.getAuthorizationInfo();
+    public Response user() {
+        // will fail if not authorized - filter
+        return Response.status(Response.Status.OK).build();
     }
 
-    @GET
+    @POST
     @Path("/login")
-    public AuthorizationInfo login() {
-        AuthorizationInfo newAuthInfo = new AuthorizationInfo();
-        newAuthInfo.setToken("TODO");
-        return newAuthInfo;
+    public AuthorizationInfo login(@NotNull LoginUserInfo loginUserInfo) {
+        return userService.login(loginUserInfo);
     }
+
+    @POST
+    @Path("/requestpassword")
+    public Response register(@NotNull RegisterUserInfo registerUserInfo) {
+        userService.requestPassword(registerUserInfo);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
 
 }

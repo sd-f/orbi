@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.model.auth;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -8,6 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AuthorizationInfo {
 
+    @NotNull
     private String token;
 
     public String getToken() {

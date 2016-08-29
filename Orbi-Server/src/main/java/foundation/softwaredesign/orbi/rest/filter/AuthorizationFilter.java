@@ -33,7 +33,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String path = requestContext.getUriInfo().getPath();
-        if (path.equals("server/version") || path.equals("auth/login")) {
+        if (path.equals("server/version") || path.equals("auth/login") || path.equals("auth/requestpassword")) {
             return;
         }
         String bearerString = requestContext.getHeaderString("Authorization");

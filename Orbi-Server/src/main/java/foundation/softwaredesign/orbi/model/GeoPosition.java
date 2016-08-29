@@ -2,6 +2,7 @@ package foundation.softwaredesign.orbi.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -10,8 +11,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class GeoPosition {
 
+    @NotNull
     private Double latitude;
+    @NotNull
     private Double longitude;
+    @NotNull
     private Double altitude;
 
     public GeoPosition() {

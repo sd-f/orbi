@@ -2,22 +2,28 @@ package foundation.softwaredesign.orbi.persistence.entity;
 
 import org.eclipse.persistence.annotations.ReadOnly;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Entity
 @ReadOnly
-@Table(name = "elevation")
+@Table(name = "elevation", schema = "public")
 public class ElevationEntity {
 
     @Id
-    Integer rid;
-    Long latitude;
-    Long longitude;
+    private Integer rid;
+    @Column
+    @NotNull
+    private Long latitude;
+    @Column
+    @NotNull
+    private Long longitude;
 
     public Integer getRid() {
         return rid;

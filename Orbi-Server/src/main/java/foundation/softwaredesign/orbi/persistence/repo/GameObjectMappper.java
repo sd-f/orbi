@@ -20,18 +20,19 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     }
 
     @Override
-    protected GameObject toDto(GameObjectEntity cubeEntity) {
+    protected GameObject toDto(GameObjectEntity objectEntity) {
         GameObject gameObject = new GameObject();
-        gameObject.setId(cubeEntity.getId());
+        gameObject.setId(objectEntity.getId());
         gameObject.setGeoPosition(new GeoPosition());
-        gameObject.getGeoPosition().setLatitude(cubeEntity.getLatitude());
-        gameObject.getGeoPosition().setLongitude(cubeEntity.getLongitude());
-        gameObject.getGeoPosition().setAltitude(cubeEntity.getAltitude());
+        gameObject.getGeoPosition().setLatitude(objectEntity.getLatitude());
+        gameObject.getGeoPosition().setLongitude(objectEntity.getLongitude());
+        gameObject.getGeoPosition().setAltitude(objectEntity.getAltitude());
         gameObject.setRotation(new Rotation());
-        gameObject.getRotation().setY(cubeEntity.getRotationY());
-        gameObject.setPrefab(cubeEntity.getPrefab());
+        gameObject.getRotation().setY(objectEntity.getRotationY());
+        gameObject.setPrefab(objectEntity.getPrefab());
+        gameObject.setCreateDate(objectEntity.getCreateDate());
 
-        gameObject.setName(cubeEntity.getName());
+        gameObject.setName(objectEntity.getName());
         return gameObject;
     }
 

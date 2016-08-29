@@ -2,6 +2,8 @@ package foundation.softwaredesign.orbi.model;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.util.Date;
+
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
@@ -12,6 +14,7 @@ public class GameObject {
     private Rotation rotation;
     private String name;
     private String prefab;
+    private Date createDate;
 
     public String getName() {
         return name;
@@ -56,5 +59,13 @@ public class GameObject {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

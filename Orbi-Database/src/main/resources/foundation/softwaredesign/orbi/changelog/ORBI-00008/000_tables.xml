@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <changeSet id="add_game_object_create_date" author="Lucas Reeh">
+        <addColumn tableName="game_object" schemaName="public">
+            <column name="create_date" type="date" defaultValueComputed="now()"></column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="game_object" schemaName="public" columnName="create_date"></dropColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_identity" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.identity
+            (
+            id bigint NOT NULL,
+            email character varying(1000) NOT NULL,
+            tmp_password chkpass,
+            token chkpass,
+            latitude numeric(12,6) NOT NULL,
+            longitude numeric(12,6) NOT NULL,
+            elevation numeric(12,6) NOT NULL,
+            rotation_y numeric NOT NULL default 0.0,
+            rotation_x numeric NOT NULL default 0.0,
+            last_seen timestamp without time zone NOT NULL default now(),
+            CONSTRAINT identity_pkey PRIMARY KEY (id),
+            UNIQUE (email)
+            );
+        </sql>
+        <rollback>
+            <dropTable tableName="identity" schemaName="public"></dropTable>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_identity_sequence_id" author="Lucas Reeh">
+        <createSequence sequenceName="identity_id_seq" schemaName="public"></createSequence>
+        <rollback>
+            <dropSequence sequenceName="identity_id_seq" schemaName="public"></dropSequence>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_table_identity_indeces" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX identity_id_idx
+            ON public.identity (id);
+        </sql>
+        <sql>
+            CREATE INDEX identity_latitude_idx
+            ON public.identity (latitude);
+        </sql>
+        <sql>
+            CREATE INDEX identity_longitude_idx
+            ON public.identity (longitude);
+        </sql>
+        <sql>
+            CREATE INDEX identity_email_idx
+            ON public.identity (email);
+        </sql>
+        <rollback>
+            <dropIndex indexName="identity_email_idx" tableName="identity" schemaName="public"></dropIndex>
+            <dropIndex indexName="identity_longitude_idx" tableName="identity" schemaName="public"></dropIndex>
+            <dropIndex indexName="identity_latitude_idx" tableName="identity" schemaName="public"></dropIndex>
+            <dropIndex indexName="identity_id_idx" tableName="identity" schemaName="public"></dropIndex>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="table_game_object_indeces_update" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX game_object_latitude_idx
+            ON public.game_object (latitude);
+        </sql>
+        <sql>
+            CREATE INDEX game_object_longitude_idx
+            ON public.game_object (longitude);
+        </sql>
+        <rollback>
+            <dropIndex indexName="game_object_longitude_idx" tableName="identity" schemaName="public"></dropIndex>
+            <dropIndex indexName="game_object_latitude_idx" tableName="identity" schemaName="public"></dropIndex>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="table_elevation_indeces_update" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX elevation_latitude_idx
+            ON public.elevation (latitude);
+        </sql>
+        <sql>
+            CREATE INDEX elevation_longitude_idx
+            ON public.elevation (longitude);
+        </sql>
+        <rollback>
+            <dropIndex indexName="elevation_longitude_idx" tableName="identity" schemaName="public"></dropIndex>
+            <dropIndex indexName="elevation_latitude_idx" tableName="identity" schemaName="public"></dropIndex>
+        </rollback>
+    </changeSet>
+
+    <!-- next time update when default user is there
+    <changeSet id="add_game_object_identity_id" author="Lucas Reeh">
+        <addColumn tableName="game_object" schemaName="public">
+            <column name="identity_id" type="numeric">
+                <constraints nullable="false" foreignKeyName="game_object_identity_id_fk" referencedTableName="identity" referencedColumnNames="id"></constraints>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="game_object" schemaName="public" columnName="identity_id"></dropColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="drop_game_object_user_id" author="Lucas Reeh">
+        <dropColumn tableName="game_object" schemaName="public" columnName="user_id"></dropColumn>
+        <rollback>
+        </rollback>
+    </changeSet>
+    -->
+</databaseChangeLog>

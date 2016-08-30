@@ -15,6 +15,7 @@ public class GameObject {
     private String name;
     private String prefab;
     private Date createDate;
+    private Long identityId;
 
     public String getName() {
         return name;
@@ -67,5 +68,13 @@ public class GameObject {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public Long getIdentityId() {
+        return identityId;
+    }
+
+    public void setIdentityId(Long identityId) {
+        this.identityId = identityId;
     }
 }

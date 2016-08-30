@@ -17,9 +17,6 @@ public class GameObjectEntity {
     @Column
     @NotNull
     private String name;
-    @Column
-    @NotNull
-    private Long userId;
     @Column(precision = 12, scale = 6)
     @NotNull
     private Double latitude;
@@ -40,6 +37,10 @@ public class GameObjectEntity {
     @NotNull
     private Date createDate;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotNull
+    private IdentityEntity identity;
+
     public Long getId() {
         return id;
     }
@@ -54,14 +55,6 @@ public class GameObjectEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public Double getLatitude() {
@@ -110,5 +103,13 @@ public class GameObjectEntity {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public IdentityEntity getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(IdentityEntity identity) {
+        this.identity = identity;
     }
 }

@@ -1,11 +1,13 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
+import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.persistence.types.ChkPass;
 import foundation.softwaredesign.orbi.persistence.types.ChkPassConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -45,6 +47,9 @@ public class IdentityEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date lastSeen;
+
+    @OneToMany(mappedBy = "identity", fetch = FetchType.LAZY)
+    private List<GameObjectEntity> objects;
 
 
     public Long getId() {
@@ -125,5 +130,13 @@ public class IdentityEntity {
 
     public void setLastSeen(Date lastSeen) {
         this.lastSeen = lastSeen;
+    }
+
+    public List<GameObjectEntity> getObjects() {
+        return objects;
+    }
+
+    public void setObjects(List<GameObjectEntity> objects) {
+        this.objects = objects;
     }
 }

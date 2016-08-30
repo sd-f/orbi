@@ -4,7 +4,10 @@ import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Rotation;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
+import foundation.softwaredesign.orbi.service.UserService;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
+
+import javax.inject.Inject;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -13,6 +16,9 @@ import static java.util.Objects.nonNull;
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEntity, GameObject> {
+
+    @Inject
+    UserService userService;
 
     @Override
     protected Object getPrimaryKey(GameObject gameObject) {
@@ -31,7 +37,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.getRotation().setY(objectEntity.getRotationY());
         gameObject.setPrefab(objectEntity.getPrefab());
         gameObject.setCreateDate(objectEntity.getCreateDate());
-
+        gameObject.setIdentityId(objectEntity.getIdentity().getId());
         gameObject.setName(objectEntity.getName());
         return gameObject;
     }
@@ -41,6 +47,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         GameObjectEntity newGameObjectEntity = gameObjectEntity;
         if (isNull(newGameObjectEntity)) {
             newGameObjectEntity = new GameObjectEntity();
+            newGameObjectEntity.setIdentity(userService.getIdentity());
         }
         if (nonNull(gameObject.getGeoPosition())) {
             newGameObjectEntity.setLatitude(gameObject.getGeoPosition().getLatitude());
@@ -51,7 +58,6 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
             newGameObjectEntity.setRotationY(gameObject.getRotation().getY());
         }
         newGameObjectEntity.setPrefab(gameObject.getPrefab());
-        newGameObjectEntity.setUserId(new Long(1));
         newGameObjectEntity.setName(gameObject.getName());
         return newGameObjectEntity;
     }

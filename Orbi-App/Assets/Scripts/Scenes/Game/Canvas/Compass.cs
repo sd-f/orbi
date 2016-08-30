@@ -14,6 +14,9 @@ namespace GameScene
 
         void Update()
         {
+            Text text = GameObject.Find("DebugText").GetComponent<Text>();
+            text.text = "location: " + Game.GetLocation().GetGeoLocation() + "\n"
+                + "heading: " + Game.GetLocation().GetHeading();
             float heading = Game.GetLocation().GetHeading();
             compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, heading), Time.deltaTime * 2);
             if (isHeadingNorth())

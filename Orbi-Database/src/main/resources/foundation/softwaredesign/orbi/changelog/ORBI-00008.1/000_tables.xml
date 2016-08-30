@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <!-- needs identity 0 -->
+
+    <changeSet id="game_object_remove_unused_index" author="Lucas Reeh">
+        <dropIndex tableName="game_object" schemaName="public" indexName="game_object_id_idx"></dropIndex>
+        <rollback>
+            <sql>
+                CREATE INDEX game_object_id_idx
+                ON public.game_object (id);
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="identity_remove_unused_index" author="Lucas Reeh">
+        <dropIndex tableName="game_object" schemaName="public" indexName="identity_id_idx"></dropIndex>
+        <rollback>
+            <sql>
+                CREATE INDEX identity_id_idx
+                ON public.identity (id);
+            </sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="add_game_object_identity_id" author="Lucas Reeh">
+        <sql>
+            ALTER TABLE public.game_object ADD COLUMN identity_id bigint DEFAULT 0;
+        </sql>
+        <rollback>
+            <dropColumn tableName="game_object" schemaName="public" columnName="identity_id"></dropColumn>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="add_game_object_identity_id_fk" author="Lucas Reeh">
+        <sql>
+            ALTER TABLE public.game_object
+            ADD CONSTRAINT game_object_identity_id_fk
+            FOREIGN KEY (identity_id)
+            REFERENCES public.identity (id) MATCH FULL;
+        </sql>
+        <rollback>
+            <sql>ALTER TABLE public.game_object DROP CONSTRAINT game_object_identity_id_fk</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="add_game_object_identity_id_fk_idx" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX game_object_identity_id_idx
+            ON public.game_object (identity_id);
+        </sql>
+        <rollback>
+            <dropIndex tableName="game_object" schemaName="public" indexName="game_object_identity_id_idx"></dropIndex>
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="drop_game_object_user_id" author="Lucas Reeh">
+        <dropColumn tableName="game_object" schemaName="public" columnName="user_id"></dropColumn>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

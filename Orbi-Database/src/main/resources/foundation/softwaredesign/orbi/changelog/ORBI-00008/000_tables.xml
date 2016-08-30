@@ -101,22 +101,4 @@
         </rollback>
     </changeSet>
 
-    <!-- next time update when default user is there
-    <changeSet id="add_game_object_identity_id" author="Lucas Reeh">
-        <addColumn tableName="game_object" schemaName="public">
-            <column name="identity_id" type="numeric">
-                <constraints nullable="false" foreignKeyName="game_object_identity_id_fk" referencedTableName="identity" referencedColumnNames="id"></constraints>
-            </column>
-        </addColumn>
-        <rollback>
-            <dropColumn tableName="game_object" schemaName="public" columnName="identity_id"></dropColumn>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="drop_game_object_user_id" author="Lucas Reeh">
-        <dropColumn tableName="game_object" schemaName="public" columnName="user_id"></dropColumn>
-        <rollback>
-        </rollback>
-    </changeSet>
-    -->
 </databaseChangeLog>

@@ -22,7 +22,7 @@ namespace GameController.Services
                 {
                     SceneManager.LoadScene("GameScene");
                 }
-                Info.Show("Logged in successful");
+                //Info.Show("Logged in successful");
                 Game.GetPlayer().SetLoggedIn(true);
                 // no errors
                 IndicateRequestFinished();

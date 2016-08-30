@@ -65,7 +65,6 @@ namespace GameController.Services
                 {
                     Game.GetGame().GetSettings().SetToken(authInfo.token);
                     Game.GetPlayer().SetLoggedIn(true);
-                    UnityEngine.GameObject.Find("ButtonLogin").GetComponent<Button>().interactable = false;
                 }
                 if (SceneManager.GetActiveScene().name != "GameScene")
                 {

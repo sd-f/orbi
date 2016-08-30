@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Assets.Scripts.Scenes.Settings
+namespace SettingsScene
 {
     [AddComponentMenu("App/Scenes/Settings/Canvas")]
     public class Canvas : MonoBehaviour

@@ -27,36 +27,7 @@ public class LocationScript : MonoBehaviour {
         
 
         // Start service before querying location
-        Input.location.Start();
-
-        // Wait until service initializes
-        int maxWait = 20;
-        while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
-        {
-            Warning.Show("Waiting for location service to start...");
-            yield return new WaitForSeconds(1);
-           maxWait--;
-        }
-
-        // Service didn't initialize in 20 seconds
-        if (maxWait < 1)
-        {
-           
-            Error.Show("Waiting for GPS timed out");
-            yield return new WaitForSeconds(3);
-            Game.GetInstance().SetLocationReady(true);
-            Warning.Show("You will get static location");
-            yield break;
-        }
-
-        // Connection has failed
-        if (Input.location.status == LocationServiceStatus.Failed)
-        {
-            Error.Show("Unable to determine device location, GPS error");
-            yield return new WaitForSeconds(3);
-            Application.Quit();
-            yield break;
-        }
+        
         // Stop service if there is no need to query location updates continuously
         InvokeRepeating("UpdateLocation", 0, 1);
         //Debug.Log("location started...");

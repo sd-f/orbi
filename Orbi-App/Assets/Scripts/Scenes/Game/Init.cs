@@ -1,10 +1,9 @@
 ﻿using UnityEngine;
-using GameController;
 using UnityEngine.SceneManagement;
 
-namespace SettingsScene
+namespace GameScene
 {
-    [AddComponentMenu("App/Scenes/Settings/Init")]
+    [AddComponentMenu("App/Scenes/Game/Init")]
     class Init : MonoBehaviour
     {
         void Awake()
@@ -16,8 +15,8 @@ namespace SettingsScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("GameScene");
+                SceneManager.LoadScene("SettingsScene");
         }
-
+        
     }
 }

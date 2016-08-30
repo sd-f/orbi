@@ -45,12 +45,11 @@ namespace GameController.Services
                 message = JsonUtility.FromJson<ErrorMessage>(request.text);
                 if (message.status == 401)
                 {
-                    if (SceneManager.GetActiveScene().name != "StartScene")
+                    if (SceneManager.GetActiveScene().name != "AuthorizationScene")
                     {
-                        SceneManager.LoadScene("StartScene");
+                        SceneManager.LoadScene("AuthorizationScene");
                     }
                     Game.GetGame().GetSettings().SetToken(null);
-                    UnityEngine.GameObject.Find("ButtonLogin").GetComponent<Button>().interactable = true;
                 }
             } catch (Exception ex)
             {

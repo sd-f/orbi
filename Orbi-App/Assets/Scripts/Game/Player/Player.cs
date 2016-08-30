@@ -8,16 +8,10 @@ namespace GameController
     [AddComponentMenu("App/Game/Player")]
     class Player : MonoBehaviour
     {
-        private static GeoPosition START_POSITION = new GeoPosition(47.073158d, 15.438000d, 2.0d); // schlossberg
-        private GeoPosition geoPosition;
+        private GeoPosition geoPosition = Game.FALLBACK_START_POSITION;
         private PlayerService playerService = new PlayerService();
         private AuthService authService = new AuthService();
         private Boolean loggedIn = false;
-
-        public Player()
-        {
-            this.geoPosition = START_POSITION;
-        }
 
         public PlayerService GetPlayerService()
         {

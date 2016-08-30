@@ -1,16 +1,15 @@
-﻿using CanvasUtility;
-using GameController;
+﻿using UnityEngine;
 using System.Collections;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+using GameController;
+using CanvasUtility;
 
-namespace Assets.Scripts.Scenes.Start
+namespace StartScene
 {
     [AddComponentMenu("App/Scenes/Start/Init")]
     class Init : MonoBehaviour
     {
 
-        void Awake()
+        void Start()
         {
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
@@ -27,17 +26,17 @@ namespace Assets.Scripts.Scenes.Start
             // check client version
             yield return Game.GetGame().GetServerService().RequestVersion();
 
-
-            // TODO wait for location
-
+            // boot gps location
+            yield return Game.GetLocation().Boot();
 
             // check logged in
             yield return Game.GetPlayer().GetAuthService().LoadGameIfAuthorized();
+        }
 
-            // if scene has not changed activate login form
-            if (SceneManager.GetActiveScene().name == "StartScene") {
-                GameObject.Find("Menu").SendMessage("SetFormEnabled", true);
-            }
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+                Application.Quit();
         }
 
     }

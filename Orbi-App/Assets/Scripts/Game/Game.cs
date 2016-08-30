@@ -1,4 +1,5 @@
 ﻿using GameController.Services;
+using ServerModel;
 using UnityEngine;
 
 namespace GameController
@@ -7,12 +8,15 @@ namespace GameController
     [AddComponentMenu("App/Game/Game")]
     class Game : MonoBehaviour
     {
+        public static GeoPosition FALLBACK_START_POSITION = new GeoPosition(47.073158d, 15.438000d, 0.0d); // Schlossberg, Graz, Austria
 
+        private GeoPosition geoPosition;
         // holding all scene persistent objects
         private static Game GAME;
         private static Client CLIENT;
         private static Player PLAYER;
         private static World WORLD;
+        private static Location LOCATION;
         private Ui ui = new Ui();
         private ServerService serverService = new ServerService();
 
@@ -59,10 +63,15 @@ namespace GameController
             return LoadAndGetWorld();
         }
 
+        public static Location GetLocation()
+        {
+            return LoadAndGetLocation();
+        }
+
         private static Game LoadAndGetGame()
         {
             if (GAME == null)
-                GAME = GameObject.Find("Game").GetComponent<Game>();
+                GAME = UnityEngine.GameObject.Find("Game").GetComponent<Game>();
             return GAME;
         }
 
@@ -71,6 +80,13 @@ namespace GameController
             if (CLIENT == null)
                 CLIENT = LoadAndGetGame().transform.Find("Client").GetComponent<Client>();
             return CLIENT;
+        }
+
+        private static Location LoadAndGetLocation()
+        {
+            if (LOCATION == null)
+                LOCATION = LoadAndGetGame().transform.Find("Location").GetComponent<Location>();
+            return LOCATION;
         }
 
         private static Player LoadAndGetPlayer()

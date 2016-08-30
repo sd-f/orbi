@@ -40,9 +40,9 @@
     </changeSet>
 
     <changeSet id="create_table_identity_sequence_id" author="Lucas Reeh">
-        <createSequence sequenceName="identity_id_seq" schemaName="public"></createSequence>
+        <createSequence sequenceName="identity_id_gen" schemaName="public" incrementBy="1" startValue="100"></createSequence>
         <rollback>
-            <dropSequence sequenceName="identity_id_seq" schemaName="public"></dropSequence>
+            <dropSequence sequenceName="identity_id_gen" schemaName="public"></dropSequence>
         </rollback>
     </changeSet>
 

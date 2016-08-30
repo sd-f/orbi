@@ -1,4 +1,5 @@
-﻿using GameController;
+﻿using CanvasUtility;
+using GameController;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -23,21 +24,25 @@ namespace Assets.Scripts.Scenes.Settings
 
         public void OnHeightsEnabled(bool enabled)
         {
+            Info.Show("Settings saved");
             Game.GetGame().GetSettings().SetHeightsEnabled(enabled);
         }
 
         public void OnSatelliteOverlayEnabled(bool enabled)
         {
+            Info.Show("Settings saved");
             Game.GetGame().GetSettings().SetSatelliteOverlayEnabled(enabled);
         }
 
         public void OnHandheldInputEnabled(bool enabled)
         {
+            Info.Show("Settings saved");
             Game.GetGame().GetSettings().SetHandheldInputEnabled(enabled);
         }
 
         public void OnDesktopInputEnabled(bool enabled)
         {
+            Info.Show("Settings saved");
             Game.GetGame().GetSettings().SetDesktopInputEnabled(enabled);
         }
 

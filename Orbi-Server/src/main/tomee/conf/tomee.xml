@@ -6,4 +6,14 @@
         UserName    orbi
         Password    orbi
     </Resource>
+
+    <Resource id="SDFMail" type="javax.mail.Session">
+        mail.smtp.host=smtp.gmail.com
+        mail.smtp.port=587
+        mail.smtp.starttls.enable=true
+        mail.smtp.auth=true
+        mail.smtp.user=${smtp.user}
+        password=${smtp.password}
+    </Resource>
+
 </tomee>

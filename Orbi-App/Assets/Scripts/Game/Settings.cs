@@ -75,6 +75,17 @@ namespace GameController
             return this.data.token;
         }
 
+        public string GetEmail()
+        {
+            return this.data.email;
+        }
+
+        public void SetEmail(String email)
+        {
+            this.data.email = email;
+            Save();
+        }
+
         public void Load()
         {
             if (File.Exists(Application.persistentDataPath + SETTINGS_FILE_PATH))
@@ -121,7 +132,8 @@ namespace GameController
         public Boolean satelliteOverlayEnabled = false;
         public Boolean handheldInputEnabled = false;
         public Boolean desktopInputEnabled = true;
-        public String token = "";
+        public String token;
         public int clientVersion;
+        public String email;
     }
 }

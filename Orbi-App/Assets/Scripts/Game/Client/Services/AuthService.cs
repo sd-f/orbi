@@ -1,5 +1,6 @@
 ﻿using CanvasUtility;
 using ServerModel;
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,9 +32,31 @@ namespace GameController.Services
                
         }
 
-        public IEnumerator RequestLogin()
+        public IEnumerator RequestCode(String email)
         {
-            WWW request = Request("auth/login", null);
+            RequestCodeInfo info = new RequestCodeInfo();
+            info.email = email;
+            info.player = Game.GetPlayer().ToServerModel();
+            WWW request = Request("auth/requestcode", JsonUtility.ToJson(info));
+            yield return request;
+            if (request.error == null)
+            {
+                Info.Show("Code has been sent - check your mail");
+                // no errors
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+
+        }
+
+        public IEnumerator RequestLogin(String email, String password)
+        {
+            LoginInfo info = new LoginInfo();
+            info.email = email;
+            info.password = password;
+            info.player = Game.GetPlayer().ToServerModel();
+            WWW request = Request("auth/login", JsonUtility.ToJson(info));
             yield return request;
             if (request.error == null)
             {

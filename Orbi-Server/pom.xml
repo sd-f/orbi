@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.tomee</groupId>
+            <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
@@ -79,7 +79,16 @@
     </dependencies>
 
     <build>
-
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/tomee</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.basedir}/target/tomee</targetPath>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -107,6 +116,7 @@
                     <tomeeVersion>7.0.1</tomeeVersion>
                     <tomeeClassifier>plus</tomeeClassifier>
                     <reloadOnUpdate>true</reloadOnUpdate>
+                    <config>${project.basedir}/target/tomee/conf</config>
                     <libs>
                         <lib>org.eclipse.persistence:eclipselink:${eclipselink.version}</lib>
                         <lib>org.postgresql:postgresql:9.4.1209</lib>

@@ -59,6 +59,3 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
-
-# tomee.xml since contains local passwords
-Orbi-Server/src/main/tomee/conf/tomee.xml

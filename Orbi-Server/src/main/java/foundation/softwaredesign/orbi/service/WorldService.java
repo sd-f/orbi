@@ -4,7 +4,6 @@ import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
-import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -31,6 +30,7 @@ public class WorldService {
     }
 
     public World delete(Player player) {
+
         gameObjectService.delete(player.getSelectedObjectId());
         return getWorld(player.getGeoPosition());
     }

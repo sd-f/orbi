@@ -49,7 +49,7 @@ namespace GameController.Services
                     {
                         SceneManager.LoadScene("StartScene");
                     }
-                    Game.GetGame().GetSettings().SetToken("");
+                    Game.GetGame().GetSettings().SetToken(null);
                     UnityEngine.GameObject.Find("ButtonLogin").GetComponent<Button>().interactable = true;
                 }
             } catch (Exception ex)

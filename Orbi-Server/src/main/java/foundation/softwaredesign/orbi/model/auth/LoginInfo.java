@@ -9,12 +9,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @XmlRootElement
-public class RegisterUserInfo {
+public class LoginInfo {
 
     @NotNull
     private String email;
     @NotNull
+    private String password;
+    @NotNull
     private Player player;
+
 
     public String getEmail() {
         return email;
@@ -22,6 +25,14 @@ public class RegisterUserInfo {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Player getPlayer() {

@@ -1,6 +1,8 @@
 ﻿using CanvasUtility;
 using GameController;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Scenes.Start
 {
@@ -17,11 +19,25 @@ namespace Assets.Scripts.Scenes.Start
             // udpating game settings
             Game.GetGame().GetSettings().SetClientVersion(Client.VERSION);
 
-            // check client version
-            StartCoroutine(Game.GetGame().GetServerService().RequestVersion());
-            // check logged in
-            StartCoroutine(Game.GetPlayer().GetAuthService().LoadGameIfAuthorized());
+            StartCoroutine(Boot());
+        }
 
+        IEnumerator Boot()
+        {
+            // check client version
+            yield return Game.GetGame().GetServerService().RequestVersion();
+
+
+            // TODO wait for location
+
+
+            // check logged in
+            yield return Game.GetPlayer().GetAuthService().LoadGameIfAuthorized();
+
+            // if scene has not changed activate login form
+            if (SceneManager.GetActiveScene().name == "StartScene") {
+                GameObject.Find("Menu").SendMessage("SetFormEnabled", true);
+            }
         }
 
     }

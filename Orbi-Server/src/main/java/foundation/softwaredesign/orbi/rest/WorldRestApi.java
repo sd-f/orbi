@@ -1,8 +1,10 @@
 package foundation.softwaredesign.orbi.rest;
 
+import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.ElevationService;
+import foundation.softwaredesign.orbi.service.UserService;
 import foundation.softwaredesign.orbi.service.WorldFactory;
 import foundation.softwaredesign.orbi.service.WorldService;
 
@@ -30,6 +32,8 @@ public class WorldRestApi {
     ElevationService elevationService;
     @Inject
     WorldService worldService;
+    @Inject
+    UserService userService;
 
     @GET
     @Path("/reset")
@@ -48,14 +52,16 @@ public class WorldRestApi {
 
     @POST
     @Path("/around")
-    public World world(@NotNull Player player) {
-        return worldService.getWorld(player.getGeoPosition());
+    public World world(@NotNull GeoPosition position) {
+        userService.updatePosition(position);
+        return worldService.getWorld(position);
     }
 
     @POST
     @Path("/objects/destroy")
     @Transactional
     public World delete(@NotNull Player player) {
+        userService.updatePosition(player.getGeoPosition());
         return worldService.delete(player);
     }
 

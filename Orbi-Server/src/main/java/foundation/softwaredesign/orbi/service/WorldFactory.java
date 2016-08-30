@@ -6,6 +6,7 @@ import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class WorldFactory {
             GameObject gameObject = new GameObject();
             gameObject.setGeoPosition(entry.getValue());
             gameObject.setName(entry.getKey());
-
+            gameObject.setCreateDate(new Date());
             gameObject.setPrefab("ScifiCrate/ScifiCrate_1");
             if (gameObject.getName().contains("1")) {
                 gameObject.setPrefab("ScifiCrate/ScifiCrate_2");

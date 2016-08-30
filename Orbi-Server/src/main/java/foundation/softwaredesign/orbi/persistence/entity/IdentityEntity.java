@@ -15,7 +15,7 @@ import java.util.Date;
 public class IdentityEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_id_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_id_seq")
     private Long id;
     @Column
     @NotNull

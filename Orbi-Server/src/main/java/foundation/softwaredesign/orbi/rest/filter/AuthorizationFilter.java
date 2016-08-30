@@ -1,12 +1,13 @@
 package foundation.softwaredesign.orbi.rest.filter;
 
 import foundation.softwaredesign.orbi.model.exception.ErrorMessage;
-import foundation.softwaredesign.orbi.service.authorization.TokenThreadLocal;
+import foundation.softwaredesign.orbi.persistence.repo.IdentityRepository;
+import foundation.softwaredesign.orbi.service.UserService;
 
 import javax.annotation.Priority;
-import javax.ws.rs.BadRequestException;
+import javax.inject.Inject;
+import javax.persistence.NoResultException;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -30,6 +31,12 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Consumes({APPLICATION_JSON})
 public class AuthorizationFilter implements ContainerRequestFilter {
 
+    @Inject
+    UserService userService;
+
+    @Inject
+    IdentityRepository identityRepository;
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String path = requestContext.getUriInfo().getPath();
@@ -38,30 +45,34 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         String bearerString = requestContext.getHeaderString("Authorization");
         if (Objects.isNull(bearerString)) {
-            abort(requestContext);
+            abort(requestContext, "Please log in");
             return;
         }
         String[] berearStringSplitted = bearerString.split(" ");
         if (Objects.isNull(berearStringSplitted) || (berearStringSplitted.length < 2)) {
-            abort(requestContext);
+            abort(requestContext, "Please log in");
             return;
         }
         if (Objects.isNull(berearStringSplitted[0]) || Objects.isNull(berearStringSplitted[1])) {
-            abort(requestContext);
+            abort(requestContext, "Please log in");
             return;
         }
         if (berearStringSplitted[0].isEmpty() || berearStringSplitted[1].isEmpty()) {
-            abort(requestContext);
+            abort(requestContext, "Please log in");
             return;
         }
-
-        TokenThreadLocal.set(berearStringSplitted[1]);
+        try {
+            Long id = identityRepository.findIdentityIdByToken(berearStringSplitted[1]);
+            userService.setIdentityEntity(identityRepository.findBy(id));
+        } catch (NoResultException ex) {
+            abort(requestContext, "Please log in");
+        }
     }
 
-    private void abort(ContainerRequestContext requestContext) {
+    private void abort(ContainerRequestContext requestContext, String text) {
         ErrorMessage message = new ErrorMessage();
         message.setStatus(Response.Status.UNAUTHORIZED.getStatusCode());
-        message.setMessage("Unauthorized - Please log in");
+        message.setMessage("Unauthorized - " + text);
         requestContext.abortWith(Response
                 .status(Response.Status.UNAUTHORIZED)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON)

@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @Repository
-public abstract class UserRepository extends AbstractEntityRepository<IdentityEntity, Long> {
+public abstract class IdentityRepository extends AbstractEntityRepository<IdentityEntity, Long> {
 
 
     public abstract IdentityEntity findByToken(@NotNull ChkPass token);

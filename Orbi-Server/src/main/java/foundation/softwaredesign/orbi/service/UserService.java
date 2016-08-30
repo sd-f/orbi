@@ -5,12 +5,10 @@ import foundation.softwaredesign.orbi.model.auth.AuthorizationInfo;
 import foundation.softwaredesign.orbi.model.auth.LoginInfo;
 import foundation.softwaredesign.orbi.model.auth.RequestCodeInfo;
 import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
-import foundation.softwaredesign.orbi.persistence.repo.UserRepository;
+import foundation.softwaredesign.orbi.persistence.repo.IdentityRepository;
 import foundation.softwaredesign.orbi.persistence.types.ChkPass;
-import foundation.softwaredesign.orbi.service.authorization.TokenThreadLocal;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -24,7 +22,6 @@ import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -36,31 +33,18 @@ import java.util.logging.Logger;
 @RequestScoped
 public class UserService {
 
-    private AuthorizationInfo authorizationInfo;
+    private AuthorizationInfo authorizationInfo = new AuthorizationInfo();
     private IdentityEntity identityEntity = null;
 
     @Resource(mappedName = "java:comp/env/SDFMail")
     private Session smtpSession;
 
     @Inject
-    UserRepository userRepository;
+    IdentityRepository identityRepository;
 
-    @PostConstruct
-    public void init() {
-        this.authorizationInfo = new AuthorizationInfo();
-        authorizationInfo.setToken(TokenThreadLocal.get());
-        if (Objects.nonNull(authorizationInfo)
-                && Objects.nonNull(authorizationInfo.getToken())
-                && !authorizationInfo.getToken().isEmpty()) {
-            try {
-                Long id = userRepository.findIdentityIdByToken(authorizationInfo.getToken());
-                this.identityEntity = userRepository.findBy(id);
-            } catch (NoResultException ex) {
-                throw new NotAuthorizedException("Token not valid");
-            }
-        }
+    public void setIdentityEntity(IdentityEntity identityEntity) {
+        this.identityEntity = identityEntity;
     }
-
     public IdentityEntity getIdentity() {
         return this.identityEntity;
     }
@@ -70,7 +54,7 @@ public class UserService {
     }
 
     public void requestPassword(@Valid @NotNull RequestCodeInfo requestCodeInfo) {
-        IdentityEntity identityEntity = userRepository.findByEmail(requestCodeInfo.getEmail());
+        IdentityEntity identityEntity = identityRepository.findByEmail(requestCodeInfo.getEmail());
         if (Objects.isNull(identityEntity)) {
             identityEntity = new IdentityEntity();
             identityEntity.setEmail(requestCodeInfo.getEmail());
@@ -91,13 +75,13 @@ public class UserService {
 
     public AuthorizationInfo login(@Valid @NotNull LoginInfo loginInfo) {
 
-        IdentityEntity identityEntity = userRepository.findByEmail(loginInfo.getEmail());
+        IdentityEntity identityEntity = identityRepository.findByEmail(loginInfo.getEmail());
         if (Objects.isNull(identityEntity)) {
             throw new InternalServerErrorException("Email not registered");
         }
         try {
-            Long id = userRepository.findIdentityIdByEmailAndPassword(identityEntity.getEmail(), loginInfo.getPassword());
-            identityEntity = userRepository.findBy(id);
+            Long id = identityRepository.findIdentityIdByEmailAndPassword(identityEntity.getEmail(), loginInfo.getPassword());
+            identityEntity = identityRepository.findBy(id);
         } catch (NoResultException ex) {
             throw new InternalServerErrorException("Email or Password incorrect");
         }
@@ -130,7 +114,7 @@ public class UserService {
     }
 
     private void saveUser(IdentityEntity identity) {
-        userRepository.save(identity);
+        identityRepository.save(identity);
     }
 
     private Boolean sendPasswordMail(String email, String password) {

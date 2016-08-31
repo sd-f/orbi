@@ -13,7 +13,6 @@ namespace GameController
     {
         // Schlossberg, Graz, Austria
         private GeoPosition position = Game.FALLBACK_START_POSITION;
-        private float heading = 0.0f;
 
         public void StartUpdatingLocation()
         {
@@ -25,16 +24,10 @@ namespace GameController
             return this.position;
         }
 
-        public float GetHeading()
-        {
-            return this.heading;
-        }
-
         void UpdateLocation()
         {
             position.latitude = Input.location.lastData.latitude;
             position.longitude = Input.location.lastData.longitude;
-            this.heading = Input.compass.magneticHeading;
         }
 
         void OnDestroy()
@@ -52,6 +45,7 @@ namespace GameController
             }
 
             Input.location.Start();
+            
 
             // Wait until service initializes
             int maxWait = 20;
@@ -78,6 +72,14 @@ namespace GameController
                 yield return new WaitForSeconds(3);
                 Application.Quit();
                 yield break;
+            }
+            Input.compass.enabled = true;
+            if (!SystemInfo.supportsGyroscope)
+            {
+                Warning.Show("No Gyroscope available");
+            } else
+            {
+                Input.gyro.enabled = true;
             }
             Info.Show("Location initialized");
             StartUpdatingLocation();

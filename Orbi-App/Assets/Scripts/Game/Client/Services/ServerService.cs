@@ -33,6 +33,7 @@ namespace GameController.Services
                     {
                         Application.OpenURL("https://softwaredesign.foundation/orbi/");
                     }
+                    Application.Quit();
                 }
                 catch (Exception ex)
                 {

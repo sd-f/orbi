@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace GameScene
 {
@@ -9,6 +10,11 @@ namespace GameScene
         void Awake()
         {
 
+        }
+
+        public void OnSettings()
+        {
+            SceneManager.LoadScene("SettingsScene");
         }
 
     }

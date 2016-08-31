@@ -24,26 +24,28 @@ namespace SettingsScene
 
         public void OnHeightsEnabled(bool enabled)
         {
-            Info.Show("Settings saved");
-            Game.GetGame().GetSettings().SetHeightsEnabled(enabled);
+            if (Game.GetGame().GetSettings().IsHeightsEnabled() != enabled)
+                Game.GetGame().GetSettings().SetHeightsEnabled(enabled);
         }
 
         public void OnSatelliteOverlayEnabled(bool enabled)
         {
-            Info.Show("Settings saved");
-            Game.GetGame().GetSettings().SetSatelliteOverlayEnabled(enabled);
+            if (Game.GetGame().GetSettings().IsSatelliteOverlayEnabled() != enabled)
+                Game.GetGame().GetSettings().SetSatelliteOverlayEnabled(enabled);
         }
 
         public void OnHandheldInputEnabled(bool enabled)
         {
-            Info.Show("Settings saved");
-            Game.GetGame().GetSettings().SetHandheldInputEnabled(enabled);
+            toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = !enabled;
+            if (Game.GetGame().GetSettings().IsHandheldInputEnabled() != enabled)
+                Game.GetGame().GetSettings().SetHandheldInputEnabled(enabled);
         }
 
         public void OnDesktopInputEnabled(bool enabled)
         {
-            Info.Show("Settings saved");
-            Game.GetGame().GetSettings().SetDesktopInputEnabled(enabled);
+            toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = !enabled;
+            if (Game.GetGame().GetSettings().IsDesktopInputEnabled() != enabled)
+                Game.GetGame().GetSettings().SetDesktopInputEnabled(enabled);
         }
 
 

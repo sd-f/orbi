@@ -13,6 +13,20 @@ namespace GameController
         private AuthService authService = new AuthService();
         private Boolean loggedIn = false;
 
+        void Start()
+        {
+        }
+
+        void Awake()
+        {
+            InvokeRepeating("CheckIfOutOfBounds", 0, 0.5f);
+        }
+
+        void CheckIfOutOfBounds()
+        {
+            // TODO
+        }
+
         public PlayerService GetPlayerService()
         {
             return playerService;
@@ -38,6 +52,11 @@ namespace GameController
             ServerModel.Player playerModel = new ServerModel.Player();
             playerModel.geoPosition = geoPosition;
             return playerModel;
+        }
+
+        void OnDestroy()
+        {
+            CancelInvoke();
         }
 
     }

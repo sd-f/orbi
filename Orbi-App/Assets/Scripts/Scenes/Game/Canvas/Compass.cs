@@ -10,37 +10,46 @@ namespace GameScene
     {
         public Image compassImage;
         public Image buttonBackground;
-        private Boolean headingNorth = false;
+        private Boolean headingNorth = true;
+        public GameObject playerCamera;
+        private FloatFilter magneticFilter = new AngleFilter(10);
+
+        void Start()
+        {
+            Sensor.Activate(Sensor.Type.MagneticField);
+            Sensor.Activate(Sensor.Type.Accelerometer);
+        }
 
         void Update()
         {
             Text text = GameObject.Find("DebugText").GetComponent<Text>();
             text.text = "location: " + Game.GetLocation().GetGeoLocation() + "\n"
-                + "heading: " + Game.GetLocation().GetHeading();
-            float heading = Game.GetLocation().GetHeading();
-            compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, heading), Time.deltaTime * 2);
-            if (isHeadingNorth())
-            {
+                + "gyro: " + Game.GetPlayer().GetRotation();
+
+
+            compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
+            if (isNorth())
                 if (!headingNorth)
                 {
                     headingNorth = true;
                     buttonBackground.color = Color.green;
                 }
-            }
             else
-            {
                 if (headingNorth)
                 {
                     headingNorth = false;
                     buttonBackground.color = Color.white;
                 }
-            }
         }
 
-        private bool isHeadingNorth()
+        public void OnCalibrate()
         {
-            float heading = Game.GetLocation().GetHeading();
-            return ((heading) < 5.0f) && ((heading) > -5.0f);
+            playerCamera.SendMessage("UpdateDeltaCompass");
+        }
+
+        private bool isNorth()
+        {
+            return ((magneticFilter.Value) < 5.0f) && ((magneticFilter.Value) > -5.0f);
         }
 
     }

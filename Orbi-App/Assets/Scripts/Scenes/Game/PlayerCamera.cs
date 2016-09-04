@@ -12,43 +12,18 @@ namespace GameScene
         private Quaternion gyroRotation;
         private float deltaCompass = 0.0f;
 
-        // mouse/keyboard
-        private float speedH = 1.5f;
-        private float speedV = 1.5f;
-        private float yaw = 0.0f;
-        private float pitch = 0.0f;
-        private float speed = 2f;
-        private float spacing = 1.0f;
-        private Vector3 positionTmp;
-
         public GameObject frontOfCamera;
-        public GameObject behindOfCamera;
-        public GameObject rightOfCamera;
-        public GameObject leftOfCamera;
 
         void Start()
         {
             SensorHelper.ActivateRotation();
         }
 
-        void Awake()
-        {
-            yaw = 0.0f;
-            pitch = 0.0f;
-        }
-
-        public void ResetPosition()
-        {
-            positionTmp = transform.position;
-        }
-
         void Update()
         {
-            
             if (Game.GetGame().GetSettings().IsDesktopInputEnabled())
             {
-                ApplyMouseRotation();
-                ApplyKeyboardMove();
+                // fps controller
             } 
             else 
                 ApplyGyroRotation();
@@ -67,31 +42,50 @@ namespace GameScene
             , Time.deltaTime * 10f);
         }
 
-        void ApplyMouseRotation()
-        {
-            yaw += speedH * Input.GetAxis("Mouse X");
-            pitch -= speedV * Input.GetAxis("Mouse Y");
-
-            transform.eulerAngles = new Vector3(pitch, yaw, 0.0f);
-        }
-
-        void ApplyKeyboardMove()
-        {
-            if (Input.GetKey(KeyCode.W))
-                transform.position = Vector3.MoveTowards(transform.position, MoveToPositionWithHeight(frontOfCamera.transform.position), speed * Time.deltaTime);
-            if (Input.GetKey(KeyCode.S))
-                transform.position = Vector3.MoveTowards(transform.position, MoveToPositionWithHeight(behindOfCamera.transform.position), speed * Time.deltaTime);
-            if (Input.GetKey(KeyCode.A))
-                transform.position = Vector3.MoveTowards(transform.position, MoveToPositionWithHeight(leftOfCamera.transform.position), speed * Time.deltaTime);
-            if (Input.GetKey(KeyCode.D))
-                transform.position = Vector3.MoveTowards(transform.position, MoveToPositionWithHeight(rightOfCamera.transform.position), speed * Time.deltaTime);
-        }
-
         Vector3 MoveToPositionWithHeight(Vector3 moveToPosition)
         {
             Vector3 newMoveToPosition = moveToPosition;
-            moveToPosition.y = Game.GetWorld().GetHeight(moveToPosition.x, moveToPosition.z);
+            newMoveToPosition.y = GetHeight(moveToPosition.x, moveToPosition.z) + Player.HEIGHT;
             return newMoveToPosition;
+        }
+
+        // player box todo collider
+        private float GetHeight(float x, float z)
+        {
+            float newHeight = 0.0f;
+            float height = 0.0f;
+            height = Game.GetWorld().GetHeight(x, z);
+            newHeight = Game.GetWorld().GetHeight(x - 0.5f, z - 0.5f);
+            if (newHeight > height)
+                height = newHeight;
+            newHeight = Game.GetWorld().GetHeight(x + 0.5f, z - 0.5f);
+            if (newHeight > height)
+                height = newHeight;
+            newHeight = Game.GetWorld().GetHeight(x - 0.5f, z + 0.5f);
+            if (newHeight > height)
+                height = newHeight;
+            newHeight = Game.GetWorld().GetHeight(x + 0.5f, z + 0.5f);
+            if (newHeight > height)
+                height = newHeight;
+            return height;
+        }
+
+        public void AdjustHeight()
+        {
+            
+            transform.position = MoveToPositionWithHeight(transform.position);
+            
+        }
+
+        public void MoveToPosition(Vector3 moveToPosition)
+        {
+            transform.position = MoveToPositionWithHeight(moveToPosition);
+            
+        }
+
+        public void ResetPosition()
+        {
+            MoveToPosition(new Vector3(0, Player.HEIGHT, 0));
         }
 
     }

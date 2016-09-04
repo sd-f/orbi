@@ -25,13 +25,18 @@ namespace SettingsScene
         public void OnHeightsEnabled(bool enabled)
         {
             if (Game.GetGame().GetSettings().IsHeightsEnabled() != enabled)
+            {
                 Game.GetGame().GetSettings().SetHeightsEnabled(enabled);
+            }
+                
         }
 
         public void OnSatelliteOverlayEnabled(bool enabled)
         {
             if (Game.GetGame().GetSettings().IsSatelliteOverlayEnabled() != enabled)
+            {
                 Game.GetGame().GetSettings().SetSatelliteOverlayEnabled(enabled);
+            }
         }
 
         public void OnHandheldInputEnabled(bool enabled)
@@ -51,12 +56,12 @@ namespace SettingsScene
 
         public void OnBack()
         {
-            SceneManager.LoadScene("GameScene");
+            SceneManager.LoadScene("LoadingScene");
         }
 
         public void OnExit()
         {
-            Application.Quit();
+            Game.GetGame().Quit();
         }
 
     }

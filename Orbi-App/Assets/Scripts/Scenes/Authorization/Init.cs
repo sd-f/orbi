@@ -10,10 +10,16 @@ namespace AuthorizationScene
     class Init : MonoBehaviour
     {
 
+        void Start()
+        {
+            // screen always awake
+            Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
+        }
+
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("StartScene");
+                Game.GetGame().Quit();
         }
 
     }

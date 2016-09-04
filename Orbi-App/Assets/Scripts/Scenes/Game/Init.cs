@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameController;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace GameScene
@@ -10,6 +11,7 @@ namespace GameScene
         {
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
+            Game.GetPlayer().AdjustHeight();
         }
 
         void Update()

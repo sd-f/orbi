@@ -1,78 +1,95 @@
-﻿using Assets.Model;
+﻿using ClientModel;
+using ServerModel;
 using System;
 using UnityEngine;
 
 namespace GameController
 {
-    class WorldAdapter
+    public static class WorldAdapter
     {
 
         private static int TILE_SIZE = 256;
-        private double pixelsPerLonDegree;
-        private double pixelsPerLonRadian;
+        private static double PIXEL_PER_LON_DEGREE;
+        private static double PIXEL_PER_LON_RADIAN;
         public static int ZOOM = 18;
-        public static long SCALE = (long)Math.Pow(2, ZOOM);
-        private double scale = SCALE / 2.5d;
+        public static long MAPS_SCALE = (long)Math.Pow(2, ZOOM);
+        private static double SCALE = MAPS_SCALE / 2.5d;
+        private static double SCALE_Y = MAPS_SCALE / 3.6d;
 
-        public WorldAdapter()
+        static WorldAdapter()
         {
-            pixelsPerLonDegree = TILE_SIZE / 360.0d;
-            pixelsPerLonRadian = TILE_SIZE / (2.0d * Math.PI);
+            PIXEL_PER_LON_DEGREE = TILE_SIZE / 360.0d;
+            PIXEL_PER_LON_RADIAN = TILE_SIZE / (2.0d * Math.PI);
         }
 
-        public void ToVirtual(GeoPosition geoPosition)
+        public static void ToVirtual(Position virtualPosition)
         {
-            geoPosition.longitude = geoPosition.longitude * scale;
-            geoPosition.latitude = geoPosition.latitude * scale;
+            virtualPosition.x = virtualPosition.x * SCALE;
+            virtualPosition.z = virtualPosition.z * SCALE_Y;
 
-            double siny = Math.Sin(DegreesToRadians(geoPosition.latitude));
-            geoPosition.longitude = (geoPosition.longitude * pixelsPerLonDegree);
-            geoPosition.latitude = -((.5 * Math.Log((1 + siny) / (1 - siny)) * -pixelsPerLonRadian));
+            double siny = Math.Sin(DegreesToRadians(virtualPosition.z));
+            virtualPosition.x = (virtualPosition.x * PIXEL_PER_LON_DEGREE);
 
-            Vector3 pos = geoPosition.ToPosition().ToVector3();
-            geoPosition.altitude = geoPosition.altitude + Game.GetWorld().GetTerrainHeight(pos.x,pos.z);
+
+            virtualPosition.z = -((.5 * Math.Log((1 + siny) / (1 - siny)) * -PIXEL_PER_LON_RADIAN));
+
+            virtualPosition.y = virtualPosition.y + Game.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
         }
 
-        public void ToVirtual(GeoPosition position, GeoPosition center)
+        public static Position ToVirtualRelative(GeoPosition realPosition)
         {
-            position.latitude = position.latitude - center.latitude;
-            position.longitude = position.longitude - center.longitude;
-            ToVirtual(position);
+            Position virtualPosition = new Position(realPosition.longitude, realPosition.altitude, realPosition.latitude);
+
+            // translate
+            GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
+            virtualPosition.z = virtualPosition.z - center.latitude;
+            virtualPosition.x = virtualPosition.x - center.longitude;
+
+            // scale
+            ToVirtual(virtualPosition);
+            return virtualPosition;
         }
 
 
-        public void ToReal(GeoPosition geoPosition)
+        public static void ToReal(GeoPosition virtualPosition)
         {
-            Vector3 pos = geoPosition.ToPosition().ToVector3();
-            geoPosition.altitude = geoPosition.altitude - Game.GetWorld().GetTerrainHeight(pos.x, pos.z);
+            virtualPosition.altitude = virtualPosition.altitude - Game.GetWorld().GetTerrainHeight(virtualPosition.longitude, virtualPosition.latitude);
 
-            geoPosition.longitude = (geoPosition.longitude) / pixelsPerLonDegree;
-            geoPosition.longitude = geoPosition.longitude / scale;
+            virtualPosition.longitude = (virtualPosition.longitude) / PIXEL_PER_LON_DEGREE;
 
-            double latRadians = (geoPosition.latitude) / -pixelsPerLonRadian;
-            geoPosition.latitude = -(RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
-            geoPosition.latitude = geoPosition.latitude / scale;
+            double latRadians = (virtualPosition.latitude) / -PIXEL_PER_LON_RADIAN;
+            virtualPosition.latitude = -(RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
+
+            virtualPosition.longitude = virtualPosition.longitude / SCALE;
+            virtualPosition.latitude = virtualPosition.latitude / SCALE_Y;
         }
 
-        public void ToReal(GeoPosition position, GeoPosition center)
+        public static GeoPosition ToRealRelative(Position virtualPosition)
         {
-            ToReal(position);
-            position.latitude = position.latitude + center.latitude;
-            position.longitude = position.longitude + center.longitude;
+            GeoPosition realPosition = new GeoPosition(virtualPosition.z, virtualPosition.x, virtualPosition.y);
+
+            // scale
+            ToReal(realPosition);
+
+            // translate
+            GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
+            realPosition.latitude = realPosition.latitude + center.latitude;
+            realPosition.longitude = realPosition.longitude + center.longitude;
+            return realPosition;
 
         }
 
-        public double DegreesToRadians(double deg)
+        private static double DegreesToRadians(double deg)
         {
             return deg * Math.PI / 180.0;
         }
 
-        public static double RadiansToDegrees(double rads)
+        private static double RadiansToDegrees(double rads)
         {
             return rads * 180.0 / Math.PI;
         }
 
-        public static double Bound(double value, double min, double max)
+        private static double Bound(double value, double min, double max)
         {
             value = Math.Min(value, max);
             return Math.Max(value, min);

@@ -16,7 +16,7 @@ namespace SettingsScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("GameScene");
+                SceneManager.LoadScene("LoadingScene");
         }
 
     }

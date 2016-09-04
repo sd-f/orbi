@@ -17,8 +17,8 @@ namespace Assets.Control
         public Model.World world = new Model.World();
         public ServerType server = ServerType.LOCAL;
 
-        private WorldAdapter adapter;
-        private TerrainService terrainService;
+        private Assets.Control.services.WorldAdapter adapter;
+        private services.TerrainService terrainService;
         private GameObjectsService gameObjectsService = new GameObjectsService();
         private PlayerService playerService = new PlayerService();
         private GoogleMapsService googleMapsService = new GoogleMapsService();
@@ -46,8 +46,8 @@ namespace Assets.Control
 
         public void InitTerrain(Terrain terrain)
         {
-            terrainService = new TerrainService(terrain);
-            adapter = new WorldAdapter(terrainService);
+            terrainService = new services.TerrainService(terrain);
+            adapter = new Assets.Control.services.WorldAdapter(terrainService);
         }
 
         public void SetServer(ServerType serverType)
@@ -90,7 +90,7 @@ namespace Assets.Control
             return this.craftPrefab;
         }
 
-        public TerrainService GetTerrainService()
+        public services.TerrainService GetTerrainService()
         {
             return this.terrainService;
         }
@@ -110,7 +110,7 @@ namespace Assets.Control
             return this.gameObjectsService;
         }
 
-        public WorldAdapter GetAdapter()
+        public Assets.Control.services.WorldAdapter GetAdapter()
         {
             return this.adapter;
         }

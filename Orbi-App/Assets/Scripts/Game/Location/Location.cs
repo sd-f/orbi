@@ -12,16 +12,29 @@ namespace GameController
     class Location : MonoBehaviour
     {
         // Schlossberg, Graz, Austria
-        private GeoPosition position = Game.FALLBACK_START_POSITION;
+        private GeoPosition position;
+
+        void Start()
+        {
+            position = Game.FALLBACK_START_POSITION;
+        }
 
         public void StartUpdatingLocation()
         {
-            InvokeRepeating("UpdateLocation", 0, 0.1f);
+            UpdateLocation();
+            Game.GetWorld().SetCenterGeoPosition(position);
+            InvokeRepeating("UpdateLocation", 0.1f, 0.1f);
         }
 
         public GeoPosition GetGeoLocation()
         {
             return this.position;
+        }
+
+        public void UpdateLocation(double latitude, double longitude)
+        {
+            position.latitude = latitude;
+            position.longitude = longitude;
         }
 
         void UpdateLocation()
@@ -40,6 +53,8 @@ namespace GameController
         {
             if (Game.GetClient().serverType == ServerType.LOCAL)
             {
+                //Debug.Log(Game.FALLBACK_START_POSITION);
+                Game.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);
                 Warning.Show("Location running in LOCAL-mode");
                 yield break;
             }

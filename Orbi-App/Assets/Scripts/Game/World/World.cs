@@ -1,5 +1,8 @@
-﻿using ServerModel;
+﻿using System;
+using ServerModel;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace GameController
 {
@@ -10,11 +13,45 @@ namespace GameController
         public LayerMask terrainLayer;
         public LayerMask terrainObjectsLayer;
         public Terrain terrain;
+        public LayerMask backgroundLayersTerrain;
+        public LayerMask backgroundLayersCamera;
+        private TerrainService terrainService;
         private GeoPosition centerGeoPosition;
+        private GoogleMapsService textureService;
 
-        void Awake()
+        void Start()
         {
+            this.terrainService = new TerrainService(terrain);
+            this.textureService = new GoogleMapsService();
+        }
 
+        public TerrainService GetTerrainService()
+        {
+            return this.terrainService;
+        }
+
+        public IEnumerator UpdateWorld()
+        {
+            yield return textureService.LoadTextures();
+            if (Game.GetGame().GetSettings().IsHeightsEnabled())
+            {
+                //Debug.Log("heights");
+                yield return terrainService.RequestTerrain();
+            }
+            else
+            {
+                yield return terrainService.ResetTerrain();
+            }
+        }
+
+        public void SetCenterGeoPosition(GeoPosition centerGeoPosition)
+        {
+            this.centerGeoPosition = centerGeoPosition;
+        }
+
+        public GeoPosition GetCenterGeoPostion()
+        {
+            return this.centerGeoPosition;
         }
 
         public float GetMinHeightForObject(UnityEngine.GameObject objectToMove)
@@ -52,9 +89,19 @@ namespace GameController
             return height + 0.0000001f;
         }
 
+        public float GetHeight(double x, double z)
+        {
+            return GetHeight((float)x, (float)z);
+        }
+
         public float GetHeight(float x, float z)
         {
             return GetHeight(x, z, terrainObjectsLayer);
+        }
+
+        public float GetTerrainHeight(double x, double z)
+        {
+            return GetTerrainHeight((float)x, (float)z);
         }
 
         public float GetTerrainHeight(float x, float z)
@@ -64,15 +111,25 @@ namespace GameController
 
         private float GetHeight(float x, float z, LayerMask mask)
         {
-            Vector3 rayOrigin = new Vector3(x, 110, z);
-
+            Vector3 rayOrigin = new Vector3(x, 300, z);
+            
             Ray ray = new Ray(rayOrigin, Vector3.down);
-            float distanceToCheck = 120f;
+            float distanceToCheck = 400f;
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, distanceToCheck, mask))
+            {
                 return hit.point.y;
+            }
+                
             return 0.0f;
         }
+
+        void OnDestroy()
+        {
+            // cleanup dynamic splats
+            GetTerrainService().SetMapsSplats(new SortedList<int, SplatPrototype>());
+        }
+
 
     }
 

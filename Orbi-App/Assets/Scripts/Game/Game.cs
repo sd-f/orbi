@@ -1,6 +1,7 @@
 ﻿using GameController.Services;
 using ServerModel;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace GameController
 {
@@ -8,9 +9,8 @@ namespace GameController
     [AddComponentMenu("App/Game/Game")]
     class Game : MonoBehaviour
     {
-        public static GeoPosition FALLBACK_START_POSITION = new GeoPosition(47.073158d, 15.438000d, 0.0d); // Schlossberg, Graz, Austria
+        public static GeoPosition FALLBACK_START_POSITION; // Schlossberg, Graz, Austria
 
-        private GeoPosition geoPosition;
         // holding all scene persistent objects
         private static Game GAME;
         private static Client CLIENT;
@@ -18,7 +18,7 @@ namespace GameController
         private static World WORLD;
         private static Location LOCATION;
         private Ui ui = new Ui();
-        private ServerService serverService = new ServerService();
+        private ServerService serverService;
 
         // settings
         private Settings settings = new Settings();
@@ -26,6 +26,8 @@ namespace GameController
         void Start()
         {
             DontDestroyOnLoad(gameObject);
+            serverService = new ServerService();
+            FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); //47.073158d, 15.438000d, 0.0d);
         }
 
         public ServerService GetServerService()
@@ -71,7 +73,10 @@ namespace GameController
         private static Game LoadAndGetGame()
         {
             if (GAME == null)
+            {
                 GAME = UnityEngine.GameObject.Find("Game").GetComponent<Game>();
+            }
+                
             return GAME;
         }
 
@@ -101,6 +106,12 @@ namespace GameController
             if (WORLD == null)
                 WORLD = LoadAndGetGame().transform.Find("World").GetComponent<World>();
             return WORLD;
+        }
+
+        public void Quit()
+        {
+            CancelInvoke();
+            Application.Quit();
         }
 
     }

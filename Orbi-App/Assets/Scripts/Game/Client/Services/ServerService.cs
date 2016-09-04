@@ -32,8 +32,9 @@ namespace GameController.Services
                     if (message.status == 505)
                     {
                         Application.OpenURL("https://softwaredesign.foundation/orbi/");
+                        Application.Quit();
                     }
-                    Application.Quit();
+                    
                 }
                 catch (Exception ex)
                 {

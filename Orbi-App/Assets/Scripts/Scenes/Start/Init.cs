@@ -36,7 +36,7 @@ namespace StartScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                Application.Quit();
+                Game.GetGame().Quit();
         }
 
     }

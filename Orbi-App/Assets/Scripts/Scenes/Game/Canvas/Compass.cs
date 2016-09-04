@@ -10,12 +10,14 @@ namespace GameScene
     {
         public Image compassImage;
         public Image buttonBackground;
-        private Boolean headingNorth = true;
         public GameObject playerCamera;
+
         private FloatFilter magneticFilter = new AngleFilter(10);
+        private bool headingNorth;
 
         void Start()
         {
+            headingNorth = true;
             Sensor.Activate(Sensor.Type.MagneticField);
             Sensor.Activate(Sensor.Type.Accelerometer);
         }
@@ -23,23 +25,25 @@ namespace GameScene
         void Update()
         {
             Text text = GameObject.Find("DebugText").GetComponent<Text>();
-            text.text = "location: " + Game.GetLocation().GetGeoLocation() + "\n"
-                + "gyro: " + Game.GetPlayer().GetRotation();
+            text.text = "location: " + Game.GetLocation().GetGeoLocation() + "\n";
 
 
             compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
             if (isNorth())
-                if (!headingNorth)
+                if (headingNorth)
                 {
                     headingNorth = true;
                     buttonBackground.color = Color.green;
                 }
+                else
+                    Debug.Log("Still");
             else
                 if (headingNorth)
-                {
-                    headingNorth = false;
-                    buttonBackground.color = Color.white;
-                }
+            {
+                headingNorth = false;
+                buttonBackground.color = Color.white;
+            }
+            
         }
 
         public void OnCalibrate()

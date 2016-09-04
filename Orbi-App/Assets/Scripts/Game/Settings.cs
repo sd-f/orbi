@@ -67,7 +67,7 @@ namespace GameController
 
         public bool IsDesktopInputEnabled()
         {
-            return this.data.satelliteOverlayEnabled;
+            return this.data.desktopInputEnabled;
         }
 
         public string GetToken()

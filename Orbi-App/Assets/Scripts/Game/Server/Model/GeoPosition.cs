@@ -1,4 +1,5 @@
 ﻿using ClientModel;
+using GameController;
 using System;
 using UnityEngine;
 
@@ -22,10 +23,34 @@ namespace ServerModel
         {
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !(obj is GeoPosition))
+                return false;
+            else
+            {
+                GeoPosition geoObj = obj as GeoPosition;
+                return ((geoObj.latitude == this.latitude)
+                    && (geoObj.longitude == this.longitude)
+                    && (geoObj.altitude == this.altitude));
+            }
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public Position ToPosition()
         {
-            return new Position(this.longitude, this.altitude, this.latitude);
+            return WorldAdapter.ToVirtualRelative(this);
         }
+
+        public override string ToString()
+        {
+            return "(" + this.latitude + "," + this.longitude + "," + this.altitude + ")";
+        }
+
 
     }
 }

@@ -11,6 +11,8 @@ namespace GameController
 {
     public class TerrainService: AbstractService
     {
+        public static int TEXTURE_RASTER_SIZE = 2;
+
         private static int HEIGHTMAP_SIZE_SERVER = 33;
 
         private double heightMax = 0d;
@@ -151,7 +153,6 @@ namespace GameController
             newSplats.Add(splats[0]); // grass
             foreach (KeyValuePair<int, SplatPrototype> pair in prototypes)
             {
-                Debug.Log(pair);
                 newSplats.Add(pair.Value);
             }
             
@@ -225,12 +226,12 @@ namespace GameController
                     for (int zusetzenderLayer = 1; zusetzenderLayer <= 4; zusetzenderLayer++)
                     {
                         if (zusetzenderLayer == (vermeindlicherLayer))
-                            maps[x, y, zusetzenderLayer] = 0.8f;
+                            maps[y,x, zusetzenderLayer] = 0.9f;
                         else
-                            maps[x, y, zusetzenderLayer] = 0f;
+                            maps[y,x, zusetzenderLayer] = 0f;
                     }
                    
-                    maps[x, y, 0] = 0.2f;
+                    maps[x, y, 0] = 0.1f;
                 }
             }
             t.terrainData.SetAlphamaps(0, 0, maps);

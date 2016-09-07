@@ -27,7 +27,8 @@ namespace GameController
         {
             DontDestroyOnLoad(gameObject);
             serverService = new ServerService();
-            FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); //47.073158d, 15.438000d, 0.0d);
+            FALLBACK_START_POSITION = new GeoPosition(47.073158d, 15.438000d, 0.0d); // schlossberg
+            // FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); // marakesh
         }
 
         public ServerService GetServerService()

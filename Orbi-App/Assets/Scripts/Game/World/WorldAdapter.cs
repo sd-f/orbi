@@ -7,92 +7,72 @@ namespace GameController
 {
     public static class WorldAdapter
     {
-
-        private static int TILE_SIZE = 256;
-        private static double PIXEL_PER_LON_DEGREE;
-        private static double PIXEL_PER_LON_RADIAN;
+        static GoogleMapsApiProjection projection;
         public static int ZOOM = 18;
-        public static long MAPS_SCALE = (long)Math.Pow(2, ZOOM);
-        private static double SCALE = MAPS_SCALE / 2.5d;
-        private static double SCALE_Y = MAPS_SCALE / 3.6d;
 
         static WorldAdapter()
         {
-            PIXEL_PER_LON_DEGREE = TILE_SIZE / 360.0d;
-            PIXEL_PER_LON_RADIAN = TILE_SIZE / (2.0d * Math.PI);
+            projection = new GoogleMapsApiProjection();
         }
 
-        public static void ToVirtual(Position virtualPosition)
+        public static Position ToVirtual(GeoPosition realPosition)
         {
-            virtualPosition.x = virtualPosition.x * SCALE;
-            virtualPosition.z = virtualPosition.z * SCALE_Y;
+            Position virtualPosition = new Position(realPosition.longitude, realPosition.altitude, realPosition.latitude);
 
-            double siny = Math.Sin(DegreesToRadians(virtualPosition.z));
-            virtualPosition.x = (virtualPosition.x * PIXEL_PER_LON_DEGREE);
-
-
-            virtualPosition.z = -((.5 * Math.Log((1 + siny) / (1 - siny)) * -PIXEL_PER_LON_RADIAN));
+            PointF point = projection.fromLatLngToPoint(virtualPosition.z, virtualPosition.x);
 
             virtualPosition.y = virtualPosition.y + Game.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
+            return virtualPosition;
         }
 
         public static Position ToVirtualRelative(GeoPosition realPosition)
         {
-            Position virtualPosition = new Position(realPosition.longitude, realPosition.altitude, realPosition.latitude);
+            GeoPosition relativeRealPosition = new GeoPosition();
 
             // translate
             GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
-            virtualPosition.z = virtualPosition.z - center.latitude;
-            virtualPosition.x = virtualPosition.x - center.longitude;
-
+            relativeRealPosition.latitude = realPosition.latitude - center.latitude;
+            relativeRealPosition.longitude = realPosition.longitude - center.longitude;
+            
             // scale
-            ToVirtual(virtualPosition);
+            Position virtualPosition = ToVirtual(relativeRealPosition);
             return virtualPosition;
         }
 
 
-        public static void ToReal(GeoPosition virtualPosition)
+        public static GeoPosition ToReal(Position virtualPosition)
         {
-            virtualPosition.altitude = virtualPosition.altitude - Game.GetWorld().GetTerrainHeight(virtualPosition.longitude, virtualPosition.latitude);
+            // scale to map pixel -> move to positive
+            Position pixelPosition = new Position();
+            pixelPosition.z = virtualPosition.z;
+            pixelPosition.x = virtualPosition.x;
+            pixelPosition.y = virtualPosition.y;
 
-            virtualPosition.longitude = (virtualPosition.longitude) / PIXEL_PER_LON_DEGREE;
+            GeoPosition realPosition = new GeoPosition(pixelPosition.z, pixelPosition.x, pixelPosition.y);
+            realPosition.altitude = realPosition.altitude - Game.GetWorld().GetTerrainHeight(realPosition.longitude, realPosition.latitude);
 
-            double latRadians = (virtualPosition.latitude) / -PIXEL_PER_LON_RADIAN;
-            virtualPosition.latitude = -(RadiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
+            //PointF point = projection.toReal(new PointF((float)realPosition.longitude, (float)realPosition.latitude));
+            PointF point = projection.fromPointToLatLng(new PointF((float)realPosition.longitude, (float)realPosition.latitude));
+            //PointF point = projection.TileToWorldPos(realPosition.latitude, realPosition.longitude);
+            realPosition.longitude = point.x;
+            realPosition.latitude = point.y;
 
-            virtualPosition.longitude = virtualPosition.longitude / SCALE;
-            virtualPosition.latitude = virtualPosition.latitude / SCALE_Y;
+            Debug.Log(virtualPosition + " -> " + pixelPosition + " -> " + realPosition);
+            return realPosition;
         }
 
         public static GeoPosition ToRealRelative(Position virtualPosition)
         {
-            GeoPosition realPosition = new GeoPosition(virtualPosition.z, virtualPosition.x, virtualPosition.y);
-
             // scale
-            ToReal(realPosition);
+            GeoPosition realPosition = ToReal(virtualPosition);
 
             // translate
             GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
-            realPosition.latitude = realPosition.latitude + center.latitude;
-            realPosition.longitude = realPosition.longitude + center.longitude;
+            realPosition.latitude = center.latitude - realPosition.latitude;
+            realPosition.longitude = center.longitude - realPosition.longitude;
+
             return realPosition;
 
-        }
-
-        private static double DegreesToRadians(double deg)
-        {
-            return deg * Math.PI / 180.0;
-        }
-
-        private static double RadiansToDegrees(double rads)
-        {
-            return rads * 180.0 / Math.PI;
-        }
-
-        private static double Bound(double value, double min, double max)
-        {
-            value = Math.Min(value, max);
-            return Math.Max(value, min);
         }
 
         

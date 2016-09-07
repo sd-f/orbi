@@ -6,6 +6,7 @@ import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.ForbiddenException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,13 +19,18 @@ public class WorldFactory {
 
     @Inject
     GameObjectRepository gameObjectRepository;
-
     @Inject
     ElevationService elevationService;
+    @Inject
+    UserService userService;
 
     Map<String, GeoPosition> initialObjects;
 
     public void reset() {
+        if (!userService.getIdentity().getId().equals(0)) {
+            throw new ForbiddenException("You need more rights to do that");
+        }
+
         initialObjects = new HashMap<>();
         Double right = 15.5554; // E
         Double left = 15.5550; // W

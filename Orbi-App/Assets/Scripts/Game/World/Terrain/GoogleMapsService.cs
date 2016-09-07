@@ -19,7 +19,7 @@ namespace GameController
             + "&scale=2"
             + "&format=PNG"
             //+ "&sensor=false"
-            + "&size=1024x1024"
+            + "&size=512x512"
             + "&center=";
         private static string URL_WITH_PARAMETERS = URL + "?" + PARAMETERS;
         private SortedList<int, SplatPrototype> splats;
@@ -30,13 +30,13 @@ namespace GameController
             if (Game.GetGame().GetSettings().IsSatelliteOverlayEnabled())
                 mapType = "satellite";
             else
-                mapType = "terrain";
+                mapType = "roadmap";
 
             
             string url = URL_WITH_PARAMETERS
                 + WWW.EscapeURL(geoPosition.latitude + "," + geoPosition.longitude)
                 + "&maptype=" + mapType;
-            //Debug.Log(url);
+            Debug.Log(url);
             WWW request = new WWW(url);
             yield return request;
             if (request.error == null)
@@ -57,32 +57,40 @@ namespace GameController
         {
             splats = new SortedList<int, SplatPrototype>();
             int offset_x;
-            int offset_y;
+            int offset_z;
             Position position;
             int splatIndex = 1;
-            for (int x = 0; x <= 1; x++)
+            String gout = "";
+            for (int x = 0; x <= 1; x++) // W, E -> x
             {
-                for (int y = 0; y <= 1; y++)
+                for (int z = 0; z <= 1; z++) // S, N -> z 
                 {
                     offset_x = x * 256;
-                    offset_y = y * 256;
-                    
-                    // 1 --> x: -128, z: -128
-                    // 2 --> x: -128, z: 128
-                    // 3 --> x: 128, z: -128
-                    // 4 --> x: 128, z: 128
+                    offset_z = z * 256;
 
+                    // 1 --> x: -128, z: -128 SW
+                    // 3 --> x:  128, z: -128 SE
+                    // 2 --> x: -128, z:  128 NW
+                    // 4 --> x:  128, z:  128 NE
+                    
                     SplatPrototype prototype = new SplatPrototype();
-                    prototype.tileOffset = new Vector2(offset_x, offset_y);
+                    prototype.tileOffset = new Vector2(0, 0);
                     prototype.tileSize = new Vector2(256, 256);
                     
-                    position = new Position(offset_x - 128f, 0f, offset_y - 128f);
-                    Debug.Log("loading: " + offset_x + "," + offset_y + "@" + position + " - " + position.ToGeoPosition());
+                    position = new Position(offset_x - 128f, 0f, offset_z - 128f);
+                    Debug.Log("loading: " + offset_x + "," + offset_z + "@" + position + " - " + position.ToGeoPosition());
+                    gout = gout + "new google.maps.LatLng("+ position.ToGeoPosition().latitude+ ","+ position.ToGeoPosition().longitude+ "),\n";
+                    UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    cube.transform.position = position.ToVector3();
+                    cube.transform.name = "c" + splatIndex;
+                    cube.transform.SetParent(Game.GetGame().transform);
+
                     yield return RequestMapData(position.ToGeoPosition(), prototype);
                     splats.Add(splatIndex, prototype);
                     splatIndex++;
                 }
             }
+            Debug.Log(gout);
             Game.GetWorld().GetTerrainService().SetMapsSplats(splats);
 
 

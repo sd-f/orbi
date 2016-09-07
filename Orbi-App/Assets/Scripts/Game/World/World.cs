@@ -19,6 +19,7 @@ namespace GameController
         private GeoPosition centerGeoPosition;
         private GoogleMapsService textureService;
 
+
         void Start()
         {
             this.terrainService = new TerrainService(terrain);

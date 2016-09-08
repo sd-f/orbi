@@ -8,8 +8,8 @@ namespace ClientModel
     [Serializable]
     public class Position: AbstractModel
     {
-        public double x = 0.0d;
-        public double y = 0.0d;
+        public double x = 0.0d; // longitude
+        public double y = 0.0d; // latitude
         public double z = 0.0d;
 
         public Position()
@@ -43,7 +43,7 @@ namespace ClientModel
 
         public override string ToString()
         {
-            return "(" + this.z + "," + this.x + "," + this.y + ")";
+            return "(" + this.z + ", " + this.x + ", " + this.y + ")";
         }
     }
 }

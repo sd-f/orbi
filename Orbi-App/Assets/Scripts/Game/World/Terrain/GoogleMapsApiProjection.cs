@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ClientModel;
+using ServerModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,11 +14,11 @@ namespace GameController
         private PointF _pixelOrigin;
         private double _pixelsPerLonDegree;
         private double _pixelsPerLonRadian;
-        private int NUM_TILES = (int)Math.Pow(2, ZOOM) * 2;
+        public static int NUM_TILES = (int)Math.Pow(2, ZOOM);
 
         public GoogleMapsApiProjection()
         {
-            this._pixelOrigin = new PointF(0d, 0d); // new PointF(TILE_SIZE/2d, TILE_SIZE/2d);
+            this._pixelOrigin = new PointF(TILE_SIZE/2, TILE_SIZE/2); // new PointF(TILE_SIZE/2d, TILE_SIZE/2d);
             this._pixelsPerLonDegree = TILE_SIZE / 360.0d;
             this._pixelsPerLonRadian = TILE_SIZE / (2d * Math.PI);
         }
@@ -39,63 +41,33 @@ namespace GameController
             return rad / (Math.PI / 180d);
         }
 
-        public PointF fromLatLngToPoint(double lat, double lng)
+        public Position fromLatLngToPoint(GeoPosition original)
         {
-            PointF point = new PointF(0d, 0d);
-
-            point.x = lng * _pixelsPerLonDegree;
-
+            // latitude  --> z 
+            // longitude --> x
+            // altitude  --> y
+            Position point = new Position(original.longitude, original.altitude, original.latitude);
+            point.x = point.x * _pixelsPerLonDegree;
             // Truncating to 0.9999 effectively limits latitude to 89.189. This is
             // about a third of a tile past the edge of the world tile.
             //double siny = bound(Math.Sin(degreesToRadians(lat)), -0.9999d, 0.9999d);
-            double siny = Math.Sin(degreesToRadians(lat));
-            point.y = - ((.5 * Math.Log((1 + siny) / (1 - siny)) * _pixelsPerLonRadian));
-            //point.y = 0.5 * Math.Log((1 + siny) / (1 - siny)) * -_pixelsPerLonRadian;
-
+            double siny = Math.Sin(degreesToRadians(point.z));
+            point.z = -((.5d * Math.Log((1d + siny) / (1d - siny)) * -_pixelsPerLonRadian));
             return point;
         }
 
-        public PointF toReal(PointF pixelPoint)
+        public GeoPosition fromPointToLatLng(Position original)
         {
-            PointF point = new PointF(pixelPoint.x, pixelPoint.y);
-            var lng = point.x / 256 * 360 - 180;
-            var n = Math.PI - 2 * Math.PI * point.y / 256;
-            var lat = (180 / Math.PI * Math.Atan(0.5 * (Math.Exp(n) - Math.Exp(-n))));
-            return new PointF(lat, lng);
+            // z --> latitude
+            // x --> longitude
+            // y --> altitude
+            GeoPosition point = new GeoPosition(original.z, original.x, original.y);
+            point.longitude = point.longitude / _pixelsPerLonDegree;
+            double latRadians = point.latitude / _pixelsPerLonRadian;
+            point.latitude = radiansToDegrees(2d * Math.Atan(Math.Exp(latRadians)) - Math.PI / 2d);
+            return point;
         }
 
-        public PointF fromPointToLatLng(PointF pixelPoint)
-        {
-            PointF point = new PointF(pixelPoint.x / NUM_TILES, pixelPoint.y / NUM_TILES);
-            double lng = point.x / _pixelsPerLonDegree;
-            double latRadians = point.y / _pixelsPerLonRadian;
-            //double lat = radiansToDegrees(2d * Math.Atan(Math.Exp(latRadians)) - Math.PI / 2d);
-            double lat = (radiansToDegrees(Math.Atan(Math.Sinh(latRadians))));
-            return new PointF(lat * NUM_TILES, lng * NUM_TILES);
-        }
-
-
-        public PointF WorldToTilePos(double lon, double lat)
-        {
-            PointF p = new PointF();
-            p.x = ((lon + 180.0) / 360.0 * (1 << ZOOM));
-            p.y = (((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) +
-                1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << ZOOM)));
-
-            return p;
-        }
-
-        public PointF TileToWorldPos(double tile_x, double tile_y)
-        {
-            PointF p = new PointF();
-            // pi - (2pi * x) / tiles
-            double n = Math.PI - ((2.0d * Math.PI * tile_y) / (Math.Pow(2.0d, ZOOM) * 256d));
-
-            p.x = ((tile_x / (Math.Pow(2.0d, ZOOM)*256d) * 360.0d));
-            p.y = (180.0d / Math.PI * Math.Atan(Math.Sinh(n)));
-
-            return p;
-        }
     }
 
     public class PointF

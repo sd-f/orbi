@@ -14,6 +14,8 @@ namespace GameController
     {
         private GeoPosition geoPosition = Game.FALLBACK_START_POSITION;
         private PlayerService playerService = new PlayerService();
+        private Vector3 positionBeforeOutOfBounds = new Vector3(0, 0, 0);
+        private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
         private AuthService authService = new AuthService();
         private Boolean loggedIn = false;
         public static float HEIGHT = 3.0f;
@@ -28,22 +30,27 @@ namespace GameController
             InvokeRepeating("CheckGPSPosition", 0, 3f);
         }
 
-        public void AdjustHeight()
+        internal void RestoreRotation()
         {
-            if (UnityEngine.GameObject.Find("PlayerCamera") != null)
+            if (GetPlayerBody() != null)
             {
-                UnityEngine.GameObject.Find("PlayerCamera").SendMessage("AdjustHeight");
+                GetPlayerBody().transform.rotation = rotationBeforeOutOfBounds;
             }
+        }
+
+        public Vector3 GetPositionBeforeOutOfBounds()
+        {
+            return this.positionBeforeOutOfBounds;
         }
 
         public void CheckGPSPosition()
         {
-            if (UnityEngine.GameObject.Find("PlayerCamera") != null)
+            if (GetPlayerBody() != null)
             {
                 if (!Game.GetLocation().GetGeoLocation().Equals(geoPosition))
                 {
                     this.geoPosition = Game.GetLocation().GetGeoLocation();
-                    GetPlayerCamera().MoveToPosition(this.geoPosition.ToPosition().ToVector3());
+                    GetPlayerBody().transform.position = (this.geoPosition.ToPosition().ToVector3());
                     
                     //Debug.Log("Player gps update " + this.geoPosition.ToPosition());
                 }
@@ -52,29 +59,31 @@ namespace GameController
 
         void CheckIfOutOfBounds()
         {
-            if (GetCamera() != null)
+            if (GetPlayerBody() != null)
             {
-                Vector3 playerPosition = GetCamera().transform.position;
+                Vector3 playerPosition = GetPlayerBody().transform.position;
                 // 50 meter radius
                 if ((playerPosition.x > 128)
                     || (playerPosition.x < -128)
                     || (playerPosition.z > 128)
                     || (playerPosition.z < -128))
                 {
+                    this.rotationBeforeOutOfBounds = GetPlayerBody().transform.rotation;
+                    this.positionBeforeOutOfBounds = GetPlayerBody().transform.position;
                     SceneManager.LoadScene("LoadingScene");
                 }
                 
             }
         }
 
-        public PlayerCamera GetPlayerCamera()
+        public PlayerBodyController GetPlayerBodyController()
         {
-            return GetCamera().GetComponent<PlayerCamera>();
+            return GetPlayerBody().GetComponent<PlayerBodyController>();
         }
 
-        public UnityEngine.GameObject GetCamera()
+        public UnityEngine.GameObject GetPlayerBody()
         {
-            return UnityEngine.GameObject.Find("PlayerCamera");
+            return UnityEngine.GameObject.Find("PlayerBody");
         }
 
         public PlayerService GetPlayerService()

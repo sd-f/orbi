@@ -12,6 +12,8 @@ namespace AuthorizationScene
 
         void Start()
         {
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
         }

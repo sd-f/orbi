@@ -4,8 +4,8 @@ using GameController;
 
 namespace GameScene
 {
-    [AddComponentMenu("App/Scenes/Game/PlayerCamera")]
-    class PlayerCamera : MonoBehaviour
+    [AddComponentMenu("App/Scenes/Game/PlayerBodyController")]
+    class PlayerBodyController : MonoBehaviour
     {
 
         // handheld movement
@@ -25,8 +25,11 @@ namespace GameScene
             {
                 // fps controller
             } 
-            else 
+            else
+            {
                 ApplyGyroRotation();
+            }
+                
         }
 
         public void UpdateDeltaCompass()
@@ -40,13 +43,6 @@ namespace GameScene
             transform.rotation = Quaternion.Slerp(transform.rotation,
             Quaternion.Euler(gyroRotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, 0.0f)
             , Time.deltaTime * 10f);
-        }
-
-        Vector3 MoveToPositionWithHeight(Vector3 moveToPosition)
-        {
-            Vector3 newMoveToPosition = moveToPosition;
-            newMoveToPosition.y = GetHeight(moveToPosition.x, moveToPosition.z) + Player.HEIGHT;
-            return newMoveToPosition;
         }
 
         // player box todo collider
@@ -70,22 +66,9 @@ namespace GameScene
             return height;
         }
 
-        public void AdjustHeight()
-        {
-            
-            transform.position = MoveToPositionWithHeight(transform.position);
-            
-        }
-
-        public void MoveToPosition(Vector3 moveToPosition)
-        {
-            transform.position = MoveToPositionWithHeight(moveToPosition);
-            
-        }
-
         public void ResetPosition()
         {
-            MoveToPosition(new Vector3(0, Player.HEIGHT, 0));
+            transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
         }
 
     }

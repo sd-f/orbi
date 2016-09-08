@@ -11,6 +11,9 @@ namespace StartScene
 
         void Start()
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
             // load settings

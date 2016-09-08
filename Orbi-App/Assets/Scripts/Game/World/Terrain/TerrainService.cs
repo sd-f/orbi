@@ -57,7 +57,6 @@ namespace GameController
                     AddStaticAlpha();
                     
                     t.Flush();
-                    Game.GetPlayer().AdjustHeight();
                 }
                 catch (Exception ex) {
                     Error.Show(ex.Message);
@@ -165,11 +164,8 @@ namespace GameController
         {
             SetHeightMin(0.0f);
             SetHeightsToMin();
-
-            t.Flush();
             AddStaticAlpha();
             t.Flush();
-            Game.GetPlayer().AdjustHeight();
             yield return null;
         }
 

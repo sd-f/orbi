@@ -2,6 +2,7 @@
 using GameController;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using ClientModel;
 
 namespace LoadingScene
 {
@@ -10,12 +11,14 @@ namespace LoadingScene
     {
         void Awake()
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
 
             // set center
 
-            StartCoroutine(UpdateWorld());
+            StartCoroutine(Load());
 
             // load textures 
             // load terrain
@@ -25,8 +28,10 @@ namespace LoadingScene
             
         }
 
-        IEnumerator UpdateWorld()
+        IEnumerator Load()
         {
+            Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
+            Debug.Log(Game.GetWorld().GetCenterGeoPostion());
             yield return Game.GetWorld().UpdateWorld();
             SceneManager.LoadScene("GameScene");
         }
@@ -34,7 +39,7 @@ namespace LoadingScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("GameScene");
+                SceneManager.LoadScene("SettingsScene");
         }
 
     }

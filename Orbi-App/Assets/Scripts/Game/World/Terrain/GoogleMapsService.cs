@@ -79,8 +79,8 @@ namespace GameController
                     
                     position = new Position(offset_z - 128f, 0f, offset_x - 128f);
                     GeoPosition pos_g = position.ToGeoPosition();
-                    Debug.Log("loading: " + offset_x + "," + offset_z + "@" + position + " - " + pos_g);
-                    gout = gout + "new google.maps.LatLng("+ pos_g.latitude+ ","+ pos_g.longitude+ "),\n";
+                    //Debug.Log("loading: " + offset_x + "," + offset_z + "@" + position + " - " + pos_g);
+                    //gout = gout + "new google.maps.LatLng("+ pos_g.latitude+ ","+ pos_g.longitude+ "),\n";
                     UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
                     cube.transform.position = position.ToVector3();
                     cube.transform.name = "c" + splatIndex;
@@ -91,7 +91,7 @@ namespace GameController
                     splatIndex++;
                 }
             }
-            Debug.Log(gout);
+            //Debug.Log(gout);
             Game.GetWorld().GetTerrainService().SetMapsSplats(splats);
 
 

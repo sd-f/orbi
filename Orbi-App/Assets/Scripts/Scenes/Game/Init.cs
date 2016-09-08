@@ -11,7 +11,7 @@ namespace GameScene
         {
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
-            Game.GetPlayer().AdjustHeight();
+            Game.GetPlayer().RestoreRotation();
         }
 
         void Update()

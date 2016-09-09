@@ -17,13 +17,17 @@ namespace GameController
         public LayerMask backgroundLayersCamera;
         private TerrainService terrainService;
         private GeoPosition centerGeoPosition;
-        private GoogleMapsService textureService;
+        private MapTextureService textureService;
+        public LayerMask backGroundLayerMask;
+        
 
 
         void Start()
         {
+            this.backGroundLayerMask = backgroundLayersTerrain;
             this.terrainService = new TerrainService(terrain);
-            this.textureService = new GoogleMapsService();
+            this.textureService = new MapTextureService();
+            
         }
 
         public TerrainService GetTerrainService()

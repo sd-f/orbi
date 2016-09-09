@@ -7,12 +7,12 @@ namespace GameController
 {
     public static class WorldAdapter
     {
-        static GoogleMapsApiProjection projection;
+        static Projection projection;
         public static int ZOOM = 18;
 
         static WorldAdapter()
         {
-            projection = new GoogleMapsApiProjection();
+            projection = new Projection();
         }
 
         public static Position ToVirtualRelative(GeoPosition original_g)
@@ -67,8 +67,8 @@ namespace GameController
             //Debug.Log(" -> pos_p " + position);
 
             // pos_p -> pos_pn  (zoom)
-            position.z = position.z / GoogleMapsApiProjection.NUM_TILES;
-            position.x = position.x / GoogleMapsApiProjection.NUM_TILES;
+            position.z = position.z / Projection.NUM_TILES;
+            position.x = position.x / Projection.NUM_TILES;
 
             //Debug.Log(" -> pos_pn " + position);
 
@@ -92,8 +92,8 @@ namespace GameController
             //Debug.Log(" <- pos_pn " + virtualPosition);
 
             // pos_pn -> pos_p  (zoom)
-            virtualPosition.z = virtualPosition.z * GoogleMapsApiProjection.NUM_TILES;
-            virtualPosition.x = virtualPosition.x * GoogleMapsApiProjection.NUM_TILES;
+            virtualPosition.z = virtualPosition.z * Projection.NUM_TILES;
+            virtualPosition.x = virtualPosition.x * Projection.NUM_TILES;
 
             //Debug.Log(" <- pos_p " + virtualPosition);
 

@@ -30,6 +30,7 @@ namespace GameController
             InvokeRepeating("CheckGPSPosition", 0, 3f);
         }
 
+
         internal void RestoreRotation()
         {
             if (GetPlayerBody() != null)

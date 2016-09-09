@@ -11,8 +11,6 @@ namespace LoadingScene
     {
         void Awake()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
 
@@ -31,15 +29,14 @@ namespace LoadingScene
         IEnumerator Load()
         {
             Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
-            Debug.Log(Game.GetWorld().GetCenterGeoPostion());
             yield return Game.GetWorld().UpdateWorld();
-            SceneManager.LoadScene("GameScene");
+            Game.GetGame().LoadScene(Game.GameScene.GameScene);
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("SettingsScene");
+                Game.GetGame().LoadScene(Game.GameScene.SettingsScene);
         }
 
     }

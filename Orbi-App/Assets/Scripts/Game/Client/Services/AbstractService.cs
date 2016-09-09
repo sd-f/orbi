@@ -45,9 +45,9 @@ namespace GameController.Services
                 message = JsonUtility.FromJson<ErrorMessage>(request.text);
                 if (message.status == 401)
                 {
-                    if (SceneManager.GetActiveScene().name != "AuthorizationScene")
+                    if (SceneManager.GetActiveScene().name != Game.GameScene.AuthorizationScene.ToString())
                     {
-                        SceneManager.LoadScene("AuthorizationScene");
+                        Game.GetGame().LoadScene(Game.GameScene.AuthorizationScene);
                     }
                     Game.GetGame().GetSettings().SetToken(null);
                 }

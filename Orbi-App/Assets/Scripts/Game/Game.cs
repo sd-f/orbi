@@ -1,7 +1,9 @@
 ﻿using GameController.Services;
+using GameScene;
 using ServerModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace GameController
 {
@@ -19,9 +21,18 @@ namespace GameController
         private static Location LOCATION;
         private Ui ui = new Ui();
         private ServerService serverService;
+        private GameScene currentScene = GameScene.StartScene;
 
         // settings
         private Settings settings = new Settings();
+
+        public enum GameScene {
+            SettingsScene,
+            GameScene,
+            StartScene,
+            AuthorizationScene,
+            LoadingScene
+        }
 
         void Start()
         {
@@ -29,6 +40,16 @@ namespace GameController
             serverService = new ServerService();
             FALLBACK_START_POSITION = new GeoPosition(47.073158d, 15.438000d, 0.0d); // schlossberg
             // FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); // marakesh
+        }
+
+        public void LoadScene(GameScene scene)
+        {
+            if (currentScene == GameScene.GameScene)
+            {
+                //UnityEngine.GameObject.Find("ButtonSwitchView").GetComponent<ViewSwitcher>().StopWebCam();
+            }
+            currentScene = scene;
+            SceneManager.LoadScene(scene.ToString());
         }
 
         public ServerService GetServerService()

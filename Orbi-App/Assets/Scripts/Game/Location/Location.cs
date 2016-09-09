@@ -66,7 +66,7 @@ namespace GameController
             int maxWait = 20;
             while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
             {
-                Info.Show("Waiting for location service to start...");
+                //Info.Show("Waiting for location service to start...");
                 yield return new WaitForSeconds(1);
                 maxWait--;
             }

@@ -11,8 +11,6 @@ namespace StartScene
 
         void Start()
         {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
 
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
@@ -41,6 +39,5 @@ namespace StartScene
             if (Input.GetKeyDown(KeyCode.Escape))
                 Game.GetGame().Quit();
         }
-
     }
 }

@@ -17,7 +17,7 @@ namespace GameController.Services
             yield return request;
             if (request.error == null)
             {
-                Info.Show("Application is up-to-date");
+                //Info.Show("Application is up-to-date");
                 // no errors
                 IndicateRequestFinished();
             }

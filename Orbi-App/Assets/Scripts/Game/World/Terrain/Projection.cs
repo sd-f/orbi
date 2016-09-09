@@ -7,7 +7,7 @@ using System.Text;
 
 namespace GameController
 {
-    public class GoogleMapsApiProjection
+    public class Projection
     {
         private readonly int TILE_SIZE = 256;
         private static readonly int ZOOM = WorldAdapter.ZOOM;
@@ -16,7 +16,7 @@ namespace GameController
         private double _pixelsPerLonRadian;
         public static int NUM_TILES = (int)Math.Pow(2, ZOOM);
 
-        public GoogleMapsApiProjection()
+        public Projection()
         {
             this._pixelOrigin = new PointF(TILE_SIZE/2, TILE_SIZE/2); // new PointF(TILE_SIZE/2d, TILE_SIZE/2d);
             this._pixelsPerLonDegree = TILE_SIZE / 360.0d;
@@ -68,7 +68,31 @@ namespace GameController
             return point;
         }
 
+        public PointF WorldToTilePos(double lon, double lat)
+        {
+            PointF p = new PointF();
+            p.x = (float)((lon + 180.0) / 360.0 * (1 << ZOOM));
+            p.y = (float)((1.0 - Math.Log(Math.Tan(lat * Math.PI / 180.0) +
+                1.0 / Math.Cos(lat * Math.PI / 180.0)) / Math.PI) / 2.0 * (1 << ZOOM));
+
+            return p;
+        }
+
+        public PointF TileToWorldPos(double tile_x, double tile_y)
+        {
+            PointF p = new PointF();
+            double n = Math.PI - ((2.0 * Math.PI * tile_y) / Math.Pow(2.0, ZOOM));
+
+            p.x = (float)((tile_x / Math.Pow(2.0, ZOOM) * 360.0) - 180.0);
+            p.y = (float)(180.0 / Math.PI * Math.Atan(Math.Sinh(n)));
+
+            return p;
+        }
+
     }
+
+    
+
 
     public class PointF
     {

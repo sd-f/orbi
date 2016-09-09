@@ -18,7 +18,7 @@ namespace GameController.Services
             yield return request;
             if (request.error == null)
             {
-                SceneManager.LoadScene("LoadingScene");
+                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 //Info.Show("Logged in successful");
                 Game.GetPlayer().SetLoggedIn(true);
                 // no errors
@@ -63,7 +63,7 @@ namespace GameController.Services
                     Game.GetGame().GetSettings().SetToken(authInfo.token);
                     Game.GetPlayer().SetLoggedIn(true);
                 }
-                SceneManager.LoadScene("LoadingScene");
+                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 Info.Show("Login successful");
                 // no errors
                 IndicateRequestFinished();

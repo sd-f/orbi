@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameController;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace GameScene
@@ -7,14 +8,9 @@ namespace GameScene
     public class Canvas : MonoBehaviour
     {
 
-        void Awake()
-        {
-
-        }
-
         public void OnSettings()
         {
-            SceneManager.LoadScene("SettingsScene");
+            Game.GetGame().LoadScene(Game.GameScene.SettingsScene);
         }
 
     }

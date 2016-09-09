@@ -10,9 +10,9 @@ namespace AuthorizationScene
     class Init : MonoBehaviour
     {
 
-        void Start()
+        void Awake()
         {
-            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
@@ -22,6 +22,11 @@ namespace AuthorizationScene
         {
             if (Input.GetKeyDown(KeyCode.Escape))
                 Game.GetGame().Quit();
+        }
+
+        void OnDestroy()
+        {
+            Cursor.lockState = CursorLockMode.None;
         }
 
     }

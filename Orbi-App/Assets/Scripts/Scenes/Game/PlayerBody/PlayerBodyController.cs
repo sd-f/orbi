@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using GameController;
+using System;
 
 namespace GameScene
 {
@@ -11,9 +12,15 @@ namespace GameScene
         // handheld movement
         private Quaternion gyroRotation;
         private float deltaCompass = 0.0f;
+        private bool gyroEnabled = false;
 
         public GameObject frontOfCamera;
+        public Camera cam;
 
+        void Awake()
+        {
+            gyroEnabled = Game.GetGame().GetSettings().IsHandheldInputEnabled();
+        }
         void Start()
         {
             SensorHelper.ActivateRotation();
@@ -21,14 +28,8 @@ namespace GameScene
 
         void Update()
         {
-            if (Game.GetGame().GetSettings().IsDesktopInputEnabled())
-            {
-                // fps controller
-            } 
-            else
-            {
+            if (gyroEnabled)
                 ApplyGyroRotation();
-            }
                 
         }
 
@@ -41,8 +42,27 @@ namespace GameScene
         {
             gyroRotation = SensorHelper.rotation;
             transform.rotation = Quaternion.Slerp(transform.rotation,
-            Quaternion.Euler(gyroRotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, 0.0f)
+            Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, 0.0f)
             , Time.deltaTime * 10f);
+            cam.transform.rotation = ClampRotationAroundXAxis(Quaternion.Slerp(cam.transform.rotation,
+            Quaternion.Euler(gyroRotation.eulerAngles.x, cam.transform.rotation.eulerAngles.y, 0.0f)
+            , Time.deltaTime * 10f));
+        }
+
+        Quaternion ClampRotationAroundXAxis(Quaternion q)
+        {
+            q.x /= q.w;
+            q.y /= q.w;
+            q.z /= q.w;
+            q.w = 1.0f;
+
+            float angleX = 2.0f * Mathf.Rad2Deg * Mathf.Atan(q.x);
+
+            angleX = Mathf.Clamp(angleX, -45f, 90f);
+
+            q.x = Mathf.Tan(0.5f * Mathf.Deg2Rad * angleX);
+
+            return q;
         }
 
         // player box todo collider

@@ -18,6 +18,10 @@ namespace GameScene
         {
             webcamTexture = new WebCamTexture();
             image.material.mainTexture = webcamTexture;
+            if (Game.GetWorld().backGroundLayerMask == Game.GetWorld().backgroundLayersCamera)
+            {
+                OnSwitchView();
+            }
         }
 
         // camera, terrain switch
@@ -29,6 +33,7 @@ namespace GameScene
                 webcamTexture.Play();
                 playerCamera.cullingMask = Game.GetWorld().backgroundLayersCamera;
                 playerCamera.clearFlags = CameraClearFlags.Depth;
+                Game.GetWorld().backGroundLayerMask = Game.GetWorld().backgroundLayersCamera;
             }
             else
             {
@@ -36,16 +41,14 @@ namespace GameScene
                 webcamTexture.Stop();
                 playerCamera.cullingMask = Game.GetWorld().backgroundLayersTerrain;
                 playerCamera.clearFlags = CameraClearFlags.Skybox;
+                Game.GetWorld().backGroundLayerMask = Game.GetWorld().backgroundLayersTerrain;
             }
         }
 
 
         void OnDestroy()
         {
-            if (webcamTexture.isPlaying)
-            {
-                webcamTexture.Stop();
-            }
+            webcamTexture.Stop();
         }
 
     }

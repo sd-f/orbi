@@ -9,7 +9,7 @@ namespace SettingsScene
     {
         void Awake()
         {
-            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
@@ -18,7 +18,7 @@ namespace SettingsScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                SceneManager.LoadScene("LoadingScene");
+                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
         }
 
     }

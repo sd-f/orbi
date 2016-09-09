@@ -56,7 +56,7 @@ namespace SettingsScene
 
         public void OnBack()
         {
-            SceneManager.LoadScene("LoadingScene");
+            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
         }
 
         public void OnExit()

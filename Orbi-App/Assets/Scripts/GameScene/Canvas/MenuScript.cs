@@ -41,7 +41,7 @@ public class MenuScript : MonoBehaviour {
         mainCamera = GameObject.Find("MainCamera").GetComponent<Camera>();
         mainCamera.cullingMask = layersWithTerrain;
         cameraPlaneRenderer = GameObject.Find("CameraPlane").GetComponent<Renderer>();
-        cameraTexture = new WebCamTexture();
+        //cameraTexture = new WebCamTexture();
         cameraPlaneRenderer.material.mainTexture = cameraTexture;
         imageButtonSwitchView = GameObject.Find("ImageButtonSwitchView").GetComponent<Image>();
         imageButtonSwitchView.sprite = cameraSprite;

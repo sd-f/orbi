@@ -29,10 +29,6 @@ public class GameObjectService {
         GeoPosition south = adapterService.toGeo(new Position(0d,0d,-128d), geoPosition);
         GeoPosition west = adapterService.toGeo(new Position(-128d,0d,0d), geoPosition);
         GeoPosition east = adapterService.toGeo(new Position(128d,0d,0d), geoPosition);
-        System.out.println("north: " + north);
-        System.out.println("south: " + south);
-        System.out.println("west: " + west);
-        System.out.println("east: " + east);
         return gameObjectRepository.findGameObjectsAround(north.getLatitude(),south.getLatitude(),west.getLongitude(),east.getLongitude());
     }
 

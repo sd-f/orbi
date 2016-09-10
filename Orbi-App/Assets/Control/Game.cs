@@ -19,7 +19,7 @@ namespace Assets.Control
 
         private Assets.Control.services.WorldAdapter adapter;
         private services.TerrainService terrainService;
-        private GameObjectsService gameObjectsService = new GameObjectsService();
+        private services.GameObjectsService gameObjectsService = new services.GameObjectsService();
         private PlayerService playerService = new PlayerService();
         private GoogleMapsService googleMapsService = new GoogleMapsService();
 

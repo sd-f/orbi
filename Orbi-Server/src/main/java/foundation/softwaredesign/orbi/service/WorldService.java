@@ -34,4 +34,5 @@ public class WorldService {
         gameObjectService.delete(player.getSelectedObjectId());
         return getWorld(player.getGeoPosition());
     }
+
 }

@@ -15,19 +15,30 @@ namespace GameController
         public Terrain terrain;
         public LayerMask backgroundLayersTerrain;
         public LayerMask backgroundLayersCamera;
+        public LayerMask backGroundLayerMask;
         private TerrainService terrainService;
         private GeoPosition centerGeoPosition;
         private MapTextureService textureService;
-        public LayerMask backGroundLayerMask;
-        
-
+        private GameObjectService gameObjectService;
 
         void Start()
         {
             this.backGroundLayerMask = backgroundLayersTerrain;
             this.terrainService = new TerrainService(terrain);
             this.textureService = new MapTextureService();
-            
+            this.gameObjectService = new GameObjectService();
+            InvokeRepeating("RefreshObjects", 1f, 2f);
+        }
+
+        public IEnumerator UpdateObjects()
+        {
+            yield return gameObjectService.RequestGameObjects();
+        }
+
+        public void RefreshObjects()
+        {
+            if (Game.GetLocation().IsReady())
+                StartCoroutine(UpdateObjects());
         }
 
         public TerrainService GetTerrainService()

@@ -13,6 +13,8 @@ namespace GameController
     {
         // Schlossberg, Graz, Austria
         private GeoPosition position;
+        private bool paused = false;
+        private bool ready = false;
 
         void Start()
         {
@@ -23,7 +25,13 @@ namespace GameController
         {
             UpdateLocation();
             Game.GetWorld().SetCenterGeoPosition(position);
+            ready = true;
             InvokeRepeating("UpdateLocation", 0.1f, 0.1f);
+        }
+
+        public bool IsReady()
+        {
+            return !paused && ready;
         }
 
         public GeoPosition GetGeoLocation()
@@ -33,14 +41,27 @@ namespace GameController
 
         public void UpdateLocation(double latitude, double longitude)
         {
-            position.latitude = latitude;
-            position.longitude = longitude;
+            if (!paused)
+            {
+                position.latitude = latitude;
+                position.longitude = longitude;
+            }
         }
 
         void UpdateLocation()
         {
             position.latitude = Input.location.lastData.latitude;
             position.longitude = Input.location.lastData.longitude;
+        }
+
+        public void Pause()
+        {
+            this.paused = true;
+        }
+
+        public void Resume()
+        {
+            this.paused = false;
         }
 
         void OnDestroy()
@@ -55,6 +76,8 @@ namespace GameController
             {
                 //Debug.Log(Game.FALLBACK_START_POSITION);
                 Game.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);
+                this.ready = true;
+                Game.GetPlayer().GetModel().geoPosition = Game.FALLBACK_START_POSITION;
                 Warning.Show("Location running in LOCAL-mode");
                 yield break;
             }

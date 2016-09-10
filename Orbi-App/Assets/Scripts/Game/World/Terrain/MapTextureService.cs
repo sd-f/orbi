@@ -55,6 +55,7 @@ namespace GameController
 
         public IEnumerator LoadTextures()
         {
+            Projection projection = new Projection();
             splats = new SortedList<int, SplatPrototype>();
             int offset_x;
             int offset_z;
@@ -79,12 +80,13 @@ namespace GameController
 
                     position = new Position(offset_z - 128f, 0f, offset_x - 128f);
                     GeoPosition pos_g = position.ToGeoPosition();
+                    //Debug.Log(projection.WorldToTilePos(pos_g.longitude, pos_g.latitude)); // for open street maps
                     //Debug.Log("loading: " + offset_x + "," + offset_z + "@" + position + " - " + pos_g);
                     //gout = gout + "new google.maps.LatLng("+ pos_g.latitude+ ","+ pos_g.longitude+ "),\n";
-                    UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
-                    cube.transform.position = position.ToVector3();
-                    cube.transform.name = "c" + splatIndex;
-                    cube.transform.SetParent(Game.GetGame().transform);
+                    //UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
+                    //cube.transform.position = position.ToVector3();
+                    //cube.transform.name = "c" + splatIndex;
+                    //cube.transform.SetParent(Game.GetGame().transform);
 
                     yield return RequestMapData(position.ToGeoPosition(), prototype);
                     splats.Add(splatIndex, prototype);

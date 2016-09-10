@@ -23,7 +23,7 @@ public interface GameObjectRepository extends EntityRepository<GameObject, Long>
 
     @Query(" select e" +
             "  from GameObjectEntity e" +
-            " where ( e.longitude between (?2 - 0.002) and (?2 + 0.002))" +
-            "   and ( e.latitude between (?1 - 0.002) and (?1 + 0.002))")
-    List<GameObject> findGameObjectsAround(Double latitude, Double longitude);
+            " where ( e.longitude between (?3) and (?4))" +
+            "   and ( e.latitude between (?2) and (?1))")
+    List<GameObject> findGameObjectsAround(Double north, Double south, Double west, Double east);
 }

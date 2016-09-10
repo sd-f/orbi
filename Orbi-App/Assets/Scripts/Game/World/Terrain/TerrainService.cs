@@ -195,6 +195,20 @@ namespace GameController
             SetHeights();
         }
 
+        private void AddStaticAlpha2()
+        {
+            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, amSize, amSize);
+            for (int y = 0; y < amSize; y++)
+            {
+                for (int x = 0; x < amSize; x++)
+                {
+                    maps[x, y, 1] = 0.9f;
+                    maps[x, y, 0] = 0.1f;
+                }
+            }
+            t.terrainData.SetAlphamaps(0, 0, maps);
+        }
+
         private void AddStaticAlpha()
         {
             float[,,] maps = t.terrainData.GetAlphamaps(0, 0, amSize, amSize);

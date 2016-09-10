@@ -33,7 +33,7 @@ namespace GameController.Services
         {
             RequestCodeInfo info = new RequestCodeInfo();
             info.email = email;
-            info.player = Game.GetPlayer().ToServerModel();
+            info.player = Game.GetPlayer().GetModel();
             WWW request = Request("auth/requestcode", JsonUtility.ToJson(info));
             yield return request;
             if (request.error == null)
@@ -52,7 +52,7 @@ namespace GameController.Services
             LoginInfo info = new LoginInfo();
             info.email = email;
             info.password = password;
-            info.player = Game.GetPlayer().ToServerModel();
+            info.player = Game.GetPlayer().GetModel();
             WWW request = Request("auth/login", JsonUtility.ToJson(info));
             yield return request;
             if (request.error == null)

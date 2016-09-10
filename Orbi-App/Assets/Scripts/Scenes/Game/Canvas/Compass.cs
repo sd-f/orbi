@@ -10,50 +10,59 @@ namespace GameScene
     {
         public Image compassImage;
         public Image buttonBackground;
-        public GameObject playerCamera;
+        public GameObject playerBody;
 
         private FloatFilter magneticFilter = new AngleFilter(10);
-        private bool headingNorth;
+        private bool headingNorth = false;
 
-        void Start()
+        void Awake()
         {
-            headingNorth = true;
             Sensor.Activate(Sensor.Type.MagneticField);
             Sensor.Activate(Sensor.Type.Accelerometer);
+            headingNorth = false;
+            InvokeRepeating("CheckIfNorth", 1, 0.1f);
         }
 
         void Update()
         {
             Text text = GameObject.Find("DebugText").GetComponent<Text>();
             text.text = "location: " + Game.GetLocation().GetGeoLocation() + "\n";
-
-
             compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
+        }
+
+        void CheckIfNorth() {
             if (isNorth())
-                if (headingNorth)
+            {
+                if (!headingNorth)
                 {
                     headingNorth = true;
                     buttonBackground.color = Color.green;
                 }
-                else
-                    Debug.Log("Still");
-            else
-                if (headingNorth)
-            {
-                headingNorth = false;
-                buttonBackground.color = Color.white;
             }
-            
+            else
+            {
+                if (headingNorth)
+                {
+                    headingNorth = false;
+                    buttonBackground.color = Color.white;
+                }
+            }
+
         }
 
         public void OnCalibrate()
         {
-            playerCamera.SendMessage("UpdateDeltaCompass");
+            playerBody.GetComponent<PlayerBodyController>().UpdateDeltaCompass();
         }
 
         private bool isNorth()
         {
             return ((magneticFilter.Value) < 5.0f) && ((magneticFilter.Value) > -5.0f);
+        }
+
+        void OnDestroy()
+        {
+            CancelInvoke();
         }
 
     }

@@ -36,5 +36,5 @@ public class Player {
     public void setSelectedObjectId(Long selectedObjectId) {
         this.selectedObjectId = selectedObjectId;
     }
-    
+
 }

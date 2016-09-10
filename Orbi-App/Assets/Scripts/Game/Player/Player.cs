@@ -12,16 +12,18 @@ namespace GameController
     [AddComponentMenu("App/Game/Player")]
     class Player : MonoBehaviour
     {
-        private GeoPosition geoPosition = Game.FALLBACK_START_POSITION;
         private PlayerService playerService = new PlayerService();
         private Vector3 positionBeforeOutOfBounds = new Vector3(0, 0, 0);
         private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
         private AuthService authService = new AuthService();
         private Boolean loggedIn = false;
+        private ServerModel.Player player = new ServerModel.Player();
         public static float HEIGHT = 3.0f;
+
 
         void Start()
         {
+            player.geoPosition = Game.FALLBACK_START_POSITION;
         }
 
         void Awake()
@@ -30,6 +32,10 @@ namespace GameController
             InvokeRepeating("CheckGPSPosition", 0, 3f);
         }
 
+        public ServerModel.Player GetModel()
+        {
+            return this.player;
+        }
 
         internal void RestoreRotation()
         {
@@ -48,10 +54,10 @@ namespace GameController
         {
             if (GetPlayerBody() != null)
             {
-                if (!Game.GetLocation().GetGeoLocation().Equals(geoPosition))
+                if (!Game.GetLocation().GetGeoLocation().Equals(player.geoPosition))
                 {
-                    this.geoPosition = Game.GetLocation().GetGeoLocation();
-                    GetPlayerBody().transform.position = (this.geoPosition.ToPosition().ToVector3());
+                    this.player.geoPosition = Game.GetLocation().GetGeoLocation();
+                    GetPlayerBody().transform.position = (this.player.geoPosition.ToPosition().ToVector3());
                     
                     //Debug.Log("Player gps update " + this.geoPosition.ToPosition());
                 }
@@ -71,7 +77,7 @@ namespace GameController
                 {
                     this.rotationBeforeOutOfBounds = GetPlayerBody().transform.rotation;
                     this.positionBeforeOutOfBounds = GetPlayerBody().transform.position;
-                    SceneManager.LoadScene("LoadingScene");
+                    Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 }
                 
             }
@@ -105,13 +111,6 @@ namespace GameController
         public Boolean IsLoggedIn()
         {
             return this.loggedIn;
-        }
-
-        public ServerModel.Player ToServerModel()
-        {
-            ServerModel.Player playerModel = new ServerModel.Player();
-            playerModel.geoPosition = geoPosition;
-            return playerModel;
         }
 
         void OnDestroy()

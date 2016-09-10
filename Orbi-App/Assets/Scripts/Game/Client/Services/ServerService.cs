@@ -13,7 +13,7 @@ namespace GameController.Services
 
         public IEnumerator RequestVersion()
         {
-            WWW request = Request("server/version", JsonUtility.ToJson(Game.GetPlayer().ToServerModel()));
+            WWW request = Request("server/version", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
             yield return request;
             if (request.error == null)
             {

@@ -14,6 +14,8 @@ namespace ServerModel
         public Rotation rotation;
         [NonSerialized]
         public Position position;
-        
+        [NonSerialized]
+        public UnityEngine.GameObject gameObject;
+
     }
 }

@@ -11,14 +11,12 @@ namespace GameController
     {
         private readonly int TILE_SIZE = 256;
         private static readonly int ZOOM = WorldAdapter.ZOOM;
-        private PointF _pixelOrigin;
         private double _pixelsPerLonDegree;
         private double _pixelsPerLonRadian;
         public static int NUM_TILES = (int)Math.Pow(2, ZOOM);
 
         public Projection()
         {
-            this._pixelOrigin = new PointF(TILE_SIZE/2, TILE_SIZE/2); // new PointF(TILE_SIZE/2d, TILE_SIZE/2d);
             this._pixelsPerLonDegree = TILE_SIZE / 360.0d;
             this._pixelsPerLonRadian = TILE_SIZE / (2d * Math.PI);
         }
@@ -108,6 +106,11 @@ namespace GameController
         {
             this.x = x;
             this.y = y;
+        }
+
+        public override string ToString()
+        {
+            return "PointF(" + x + "," + y + ")";
         }
     }
 }

@@ -15,6 +15,8 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
+import java.util.Objects;
+
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -52,9 +54,13 @@ public class WorldRestApi {
 
     @POST
     @Path("/around")
-    public World world(@NotNull GeoPosition position) {
-        userService.updatePosition(position);
-        return worldService.getWorld(position);
+    public World world(@NotNull Player player) {
+        if (Objects.isNull(player.getGeoPosition())) {
+            return new World();
+        }
+
+        userService.updatePosition(player.getGeoPosition());
+        return worldService.getWorld(player.getGeoPosition());
     }
 
     @POST

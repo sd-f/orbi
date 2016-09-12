@@ -7,11 +7,14 @@ import foundation.softwaredesign.orbi.model.auth.RequestCodeInfo;
 import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
 import foundation.softwaredesign.orbi.persistence.repo.IdentityRepository;
 import foundation.softwaredesign.orbi.persistence.types.ChkPass;
+import foundation.softwaredesign.orbi.service.authorization.IdentityThreadLocal;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Scope;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -34,7 +37,7 @@ import java.util.logging.Logger;
 public class UserService {
 
     private AuthorizationInfo authorizationInfo = new AuthorizationInfo();
-    private IdentityEntity identityEntity = null;
+    private IdentityEntity identityEntity;
 
     @Resource(mappedName = "java:comp/env/SDFMail")
     private Session smtpSession;
@@ -42,9 +45,11 @@ public class UserService {
     @Inject
     IdentityRepository identityRepository;
 
-    public void setIdentityEntity(IdentityEntity identityEntity) {
-        this.identityEntity = identityEntity;
+    @PostConstruct
+    public void init() {
+        this.identityEntity = IdentityThreadLocal.get();
     }
+
     public IdentityEntity getIdentity() {
         return this.identityEntity;
     }

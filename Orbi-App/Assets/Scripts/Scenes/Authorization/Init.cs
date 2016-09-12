@@ -1,8 +1,5 @@
-﻿using CanvasUtility;
-using GameController;
-using System.Collections;
+﻿using GameController;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace AuthorizationScene
 {
@@ -12,6 +9,8 @@ namespace AuthorizationScene
 
         void Awake()
         {
+            Game.GetLocation().Pause();
+            Game.GetPlayer().Freeze();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             // screen always awake

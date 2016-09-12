@@ -20,9 +20,10 @@ public class GameObjectService {
 
     @Inject
     GameObjectRepository gameObjectRepository;
-
     @Inject
     WorldAdapterService adapterService;
+    @Inject
+    UserService userService;
 
     public List<GameObject> getObjectAround(GeoPosition geoPosition) {
         GeoPosition north = adapterService.toGeo(new Position(0d,0d,128d), geoPosition);
@@ -38,5 +39,14 @@ public class GameObjectService {
             throw new NotFoundException();
         }
         gameObjectRepository.remove(gameObject);
+    }
+
+    public void save(GameObject gameObject) {
+        gameObject.setIdentityId(userService.getIdentity().getId());
+        gameObjectRepository.save(gameObject);
+    }
+
+    public void deleteAll() {
+        gameObjectRepository.deleteAll();
     }
 }

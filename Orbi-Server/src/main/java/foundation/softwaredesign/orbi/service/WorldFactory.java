@@ -2,6 +2,7 @@ package foundation.softwaredesign.orbi.service;
 
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
+import foundation.softwaredesign.orbi.model.Rotation;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
@@ -18,7 +19,7 @@ import java.util.Map;
 public class WorldFactory {
 
     @Inject
-    GameObjectRepository gameObjectRepository;
+    GameObjectService gameObjectService;
     @Inject
     ElevationService elevationService;
     @Inject
@@ -27,7 +28,7 @@ public class WorldFactory {
     Map<String, GeoPosition> initialObjects;
 
     public void reset() {
-        if (!userService.getIdentity().getId().equals(0)) {
+        if (userService.getIdentity().getId() != 0) {
             throw new ForbiddenException("You need more rights to do that");
         }
 
@@ -57,18 +58,20 @@ public class WorldFactory {
         initialObjects.put("test_calibration_NW_1", new GeoPosition(top, left, 0.0000001)); // NW
         initialObjects.put("test_calibration_100M", new GeoPosition(middle, 15.5540, 0.0000001)); // NW
 
-        gameObjectRepository.deleteAll();
+        gameObjectService.deleteAll();
 
         for (Map.Entry<String, GeoPosition> entry : initialObjects.entrySet()) {
             GameObject gameObject = new GameObject();
             gameObject.setGeoPosition(entry.getValue());
             gameObject.setName(entry.getKey());
             gameObject.setCreateDate(new Date());
+            gameObject.setIdentityId(userService.getIdentity().getId());
+            gameObject.setRotation(new Rotation(0d,0d,0d));
             gameObject.setPrefab("ScifiCrate/ScifiCrate_1");
             if (gameObject.getName().contains("1")) {
                 gameObject.setPrefab("ScifiCrate/ScifiCrate_2");
             }
-            gameObjectRepository.save(gameObject);
+            gameObjectService.save(gameObject);
         }
     }
 

@@ -55,8 +55,8 @@ public class WorldAdapterService {
     public Position toVirtual(GeoPosition original, GeoPosition center) {
         GeoPosition position = new GeoPosition();
         // translate
-        position.setLatitude(center.getLatitude() - original.getLatitude());
-        position.setLongitude(center.getLongitude() - original.getLongitude());
+        position.setLatitude(original.getLatitude() - center.getLatitude());
+        position.setLongitude(original.getLongitude() - center.getLongitude());
         position.setAltitude(original.getAltitude());
 
         return fromGeoToVirtual(position);

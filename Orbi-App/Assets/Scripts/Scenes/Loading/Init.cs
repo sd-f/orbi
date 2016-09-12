@@ -13,23 +13,16 @@ namespace LoadingScene
         {
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
-
-            // set center
-
             StartCoroutine(Load());
-
-            // load textures 
-            // load terrain
-            // reset player
-
-            // finish loading animation
-            
+            // TODO loading animation
         }
 
         IEnumerator Load()
         {
             Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
             yield return Game.GetWorld().UpdateWorld();
+            Game.GetLocation().Resume();
+            Game.GetPlayer().Unfreeze();
             Game.GetGame().LoadScene(Game.GameScene.GameScene);
         }
 

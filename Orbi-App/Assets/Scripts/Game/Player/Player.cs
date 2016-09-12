@@ -19,6 +19,7 @@ namespace GameController
         private Boolean loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
         public static float HEIGHT = 3.0f;
+        private bool frozen = true;
 
 
         void Start()
@@ -30,6 +31,16 @@ namespace GameController
         {
             InvokeRepeating("CheckIfOutOfBounds", 0, 0.5f);
             InvokeRepeating("CheckGPSPosition", 0, 3f);
+        }
+
+        public void Freeze()
+        {
+            this.frozen = true;
+        }
+
+        public void Unfreeze()
+        {
+            this.frozen = false;
         }
 
         public ServerModel.Player GetModel()
@@ -54,12 +65,14 @@ namespace GameController
         {
             if (GetPlayerBody() != null)
             {
-                if (!Game.GetLocation().GetGeoLocation().Equals(player.geoPosition))
+                Info.Show("debug check gps");
+                if (!Game.GetLocation().GetGeoLocation().Equals(player.geoPosition) && !frozen)
                 {
+                    Info.Show("debug check gps update");
                     this.player.geoPosition = Game.GetLocation().GetGeoLocation();
                     GetPlayerBody().transform.position = (this.player.geoPosition.ToPosition().ToVector3());
                     
-                    //Debug.Log("Player gps update " + this.geoPosition.ToPosition());
+                    Debug.Log("Player gps update " + this.player.geoPosition.ToPosition());
                 }
             }
         }
@@ -70,13 +83,15 @@ namespace GameController
             {
                 Vector3 playerPosition = GetPlayerBody().transform.position;
                 // 50 meter radius
-                if ((playerPosition.x > 128)
-                    || (playerPosition.x < -128)
-                    || (playerPosition.z > 128)
-                    || (playerPosition.z < -128))
+                if ((playerPosition.x > 120)
+                    || (playerPosition.x < -120)
+                    || (playerPosition.z > 120)
+                    || (playerPosition.z < -120))
                 {
+                    Freeze();
                     this.rotationBeforeOutOfBounds = GetPlayerBody().transform.rotation;
                     this.positionBeforeOutOfBounds = GetPlayerBody().transform.position;
+                    
                     Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 }
                 

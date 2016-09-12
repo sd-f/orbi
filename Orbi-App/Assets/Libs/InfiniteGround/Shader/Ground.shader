@@ -1,47 +1,36 @@
 Shader "InfiniteGrass/Ground" {
-Properties {
-    _Color ("Ground Color", Color) = (1,1,1,1)
-	_MainTex ("Ground Texture", 2D) = ""
-}
+	Properties{
+		_Color("Ground Color", Color) = (1,1,1,1)
+		_MainTex("Ground Texture", 2D) = ""
+	}
 
- 
 
-Category {
-	Tags {"Queue"="Transparent" "IgnoreProjector"="True"}
-    ZWrite Off
-    Blend SrcAlpha OneMinusSrcAlpha 
 
- SubShader {
- 	Pass {
-        GLSLPROGRAM
-        varying mediump vec2 uv;
-        #ifdef VERTEX
-        uniform mediump vec4 _MainTex_ST;
-        void main() {
-			gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-            uv = gl_MultiTexCoord0.xy * _MainTex_ST.xy + _MainTex_ST.zw;
-        }
-		#endif
-        #ifdef FRAGMENT
-        uniform lowp sampler2D _MainTex;
-        uniform lowp vec4 _Color;
-        void main() {
-            gl_FragColor = texture2D(_MainTex, uv) * _Color;
-        }
+	SubShader
+	{
+		Tags{ "Queue" = "Transparent" "RenderType" = "Transparent" }
+		Pass
+	{
+		ZWrite Off
+		Blend SrcAlpha OneMinusSrcAlpha
 
-        #endif      
-        ENDGLSL
-    }
- }
+		CGPROGRAM
+		#pragma vertex vert_img
+		#pragma fragment frag
+		#pragma fragmentoption ARB_precision_hint_fastest
+		#include "UnityCG.cginc"    
 
-    SubShader {Pass {
+			uniform sampler2D _MainTex;
+		uniform fixed4 _Color;
 
-        SetTexture[_MainTex] {Combine texture * constant ConstantColor[_Color]}
+		fixed4 frag(v2f_img i) : SV_Target
+		{
+			return tex2D(_MainTex, i.uv) * _Color;
+		}
+		ENDCG
+	}
+		
 
-    }}
-
-}
-
- 
+	}
 
 }

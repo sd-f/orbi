@@ -48,9 +48,6 @@ public class IdentityEntity {
     @NotNull
     private Date lastSeen;
 
-    @OneToMany(mappedBy = "identity", fetch = FetchType.LAZY)
-    private List<GameObjectEntity> objects;
-
 
     public Long getId() {
         return id;
@@ -130,13 +127,5 @@ public class IdentityEntity {
 
     public void setLastSeen(Date lastSeen) {
         this.lastSeen = lastSeen;
-    }
-
-    public List<GameObjectEntity> getObjects() {
-        return objects;
-    }
-
-    public void setObjects(List<GameObjectEntity> objects) {
-        this.objects = objects;
     }
 }

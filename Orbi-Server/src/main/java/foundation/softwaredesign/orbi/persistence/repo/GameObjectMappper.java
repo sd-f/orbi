@@ -9,6 +9,8 @@ import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
 import javax.inject.Inject;
 
+import java.util.Date;
+
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -45,10 +47,11 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     @Override
     protected GameObjectEntity toEntity(GameObjectEntity gameObjectEntity, GameObject gameObject) {
         GameObjectEntity newGameObjectEntity = gameObjectEntity;
-        if (isNull(newGameObjectEntity)) {
-            newGameObjectEntity = new GameObjectEntity();
+        if (isNull(newGameObjectEntity.getId())) {
             newGameObjectEntity.setIdentity(userService.getIdentity());
+            newGameObjectEntity.setCreateDate(new Date());
         }
+
         if (nonNull(gameObject.getGeoPosition())) {
             newGameObjectEntity.setLatitude(gameObject.getGeoPosition().getLatitude());
             newGameObjectEntity.setLongitude(gameObject.getGeoPosition().getLongitude());

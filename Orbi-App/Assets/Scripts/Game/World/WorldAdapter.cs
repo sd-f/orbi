@@ -22,8 +22,8 @@ namespace GameController
             GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
 
             // translate
-            pos_g.latitude = center.latitude - original_g.latitude;
-            pos_g.longitude = center.longitude - original_g.longitude;
+            pos_g.latitude = original_g.latitude - center.latitude;
+            pos_g.longitude = original_g.longitude - center.longitude;
             pos_g.altitude = original_g.altitude;
 
             // to virtual

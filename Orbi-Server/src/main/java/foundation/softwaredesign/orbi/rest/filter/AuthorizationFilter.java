@@ -1,8 +1,9 @@
 package foundation.softwaredesign.orbi.rest.filter;
 
 import foundation.softwaredesign.orbi.model.exception.ErrorMessage;
+import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
 import foundation.softwaredesign.orbi.persistence.repo.IdentityRepository;
-import foundation.softwaredesign.orbi.service.UserService;
+import foundation.softwaredesign.orbi.service.authorization.IdentityThreadLocal;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -32,9 +33,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class AuthorizationFilter implements ContainerRequestFilter {
 
     @Inject
-    UserService userService;
-
-    @Inject
     IdentityRepository identityRepository;
 
     @Override
@@ -61,12 +59,15 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             abort(requestContext, "Please log in");
             return;
         }
+        IdentityEntity identityEntity = null;
         try {
             Long id = identityRepository.findIdentityIdByToken(berearStringSplitted[1]);
-            userService.setIdentityEntity(identityRepository.findBy(id));
+            identityEntity = identityRepository.findBy(id);
+
         } catch (NoResultException ex) {
             abort(requestContext, "Please log in");
         }
+        IdentityThreadLocal.set(identityEntity);
     }
 
     private void abort(ContainerRequestContext requestContext, String text) {

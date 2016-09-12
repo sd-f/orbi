@@ -13,6 +13,7 @@ namespace GameScene
         private Quaternion gyroRotation;
         private float deltaCompass = 0.0f;
         private bool gyroEnabled = false;
+        private Vector3 targetPosition = new Vector3(0, 0, 0);
 
         public GameObject frontOfCamera;
         public Camera cam;
@@ -28,9 +29,20 @@ namespace GameScene
 
         void Update()
         {
+            if (!Game.GetPlayer().IsFrozen() && gyroEnabled)
+            {
+                this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
+            }
             if (gyroEnabled)
                 ApplyGyroRotation();
                 
+        }
+
+        public void SetTargetPosition(Vector3 targetPosition)
+        {
+            this.targetPosition.x = targetPosition.x;
+            this.targetPosition.z = targetPosition.z;
+            this.targetPosition.y = this.transform.position.y;
         }
 
         public void UpdateDeltaCompass()

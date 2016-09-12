@@ -30,7 +30,12 @@ namespace GameController
         void Awake()
         {
             InvokeRepeating("CheckIfOutOfBounds", 0, 0.5f);
-            InvokeRepeating("CheckGPSPosition", 0, 3f);
+            InvokeRepeating("CheckGPSPosition", 0, 1f);
+        }
+
+        internal bool IsFrozen()
+        {
+            return this.frozen;
         }
 
         public void Freeze()
@@ -65,14 +70,11 @@ namespace GameController
         {
             if (GetPlayerBody() != null)
             {
-                Info.Show("debug check gps");
-                if (!Game.GetLocation().GetGeoLocation().Equals(player.geoPosition) && !frozen)
+                //Info.Show("debug check gps");
+                if (!frozen)
                 {
-                    Info.Show("debug check gps update");
                     this.player.geoPosition = Game.GetLocation().GetGeoLocation();
-                    GetPlayerBody().transform.position = (this.player.geoPosition.ToPosition().ToVector3());
-                    
-                    Debug.Log("Player gps update " + this.player.geoPosition.ToPosition());
+                    GetPlayerBodyController().SetTargetPosition(this.player.geoPosition.ToPosition().ToVector3());
                 }
             }
         }

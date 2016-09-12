@@ -41,17 +41,18 @@ namespace GameController
 
         public void UpdateLocation(double latitude, double longitude)
         {
-            if (!paused)
-            {
-                position.latitude = latitude;
-                position.longitude = longitude;
-            }
+
+            position.latitude = latitude;
+            position.longitude = longitude;
         }
 
         void UpdateLocation()
         {
-            position.latitude = Input.location.lastData.latitude;
-            position.longitude = Input.location.lastData.longitude;
+            if (!paused)
+            {
+                position.latitude = Input.location.lastData.latitude;
+                position.longitude = Input.location.lastData.longitude;
+            }
         }
 
         public void Pause()

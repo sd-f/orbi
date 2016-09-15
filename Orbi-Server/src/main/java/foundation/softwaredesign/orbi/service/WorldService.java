@@ -2,11 +2,11 @@ package foundation.softwaredesign.orbi.service;
 
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
-import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,10 +29,13 @@ public class WorldService {
         return world;
     }
 
-    public World delete(Player player) {
+    public void create(GameObject gameObject) {
+        gameObject.setCreateDate(new Date());
+        gameObjectService.save(gameObject);
+    }
 
-        gameObjectService.delete(player.getSelectedObjectId());
-        return getWorld(player.getGeoPosition());
+    public void delete(Long gameObjectId) {
+        gameObjectService.delete(gameObjectId);
     }
 
 }

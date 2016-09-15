@@ -12,8 +12,6 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 
-import java.util.List;
-
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -41,7 +39,15 @@ public class PlayerRestApi {
     @Path("/craft")
     @Transactional
     public World create(@NotNull Player player) {
-        return playerService.craftGameObject(player);
+        return playerService.craft(player);
+    }
+
+
+    @POST
+    @Path("/destroy")
+    @Transactional
+    public World delete(@NotNull Player player) {
+        return playerService.destroy(player);
     }
 
     @GET

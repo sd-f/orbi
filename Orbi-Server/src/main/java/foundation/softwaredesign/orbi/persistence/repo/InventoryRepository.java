@@ -28,6 +28,6 @@ public abstract class InventoryRepository extends AbstractEntityRepository<Inven
             " where e.id.identityId = ?1" +
             "   and e.id.gameObjectTypeId = ?2",
             singleResult = SingleResultType.OPTIONAL)
-    public abstract InventoryEntity findByIdentityIdAndGameObjectTypeId(@NotNull Long identityId,
-                                                                        @NotNull Long gameObjectTypeId);
+    public abstract InventoryEntity findByIdentAndType(@NotNull Long identityId,
+                                                       @NotNull Long gameObjectTypeId);
 }

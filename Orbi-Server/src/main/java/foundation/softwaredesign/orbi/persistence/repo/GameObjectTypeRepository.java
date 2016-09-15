@@ -15,5 +15,5 @@ import java.util.List;
 @Repository
 public abstract class GameObjectTypeRepository extends AbstractEntityRepository<GameObjectTypeEntity, Long> {
 
-    public abstract GameObjectTypeEntity findByPrefab();
+    public abstract GameObjectTypeEntity findByPrefab(@NotNull String prefab);
 }

@@ -1,14 +1,11 @@
 package foundation.softwaredesign.orbi.service;
 
 import foundation.softwaredesign.orbi.model.*;
-import foundation.softwaredesign.orbi.persistence.entity.InventoryEntity;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
-import foundation.softwaredesign.orbi.persistence.repo.InventoryRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -17,27 +14,28 @@ import java.util.List;
 public class PlayerService {
 
     @Inject
-    GameObjectRepository gameObjectRepository;
+    WorldService world;
     @Inject
-    WorldService worldService;
+    UserService user;
     @Inject
-    UserService userService;
-    @Inject
-    InventoryService inventoryService;
+    InventoryService inventory;
 
-    private void saveGameObject(GameObject gameObject) {
-        gameObject.setCreateDate(new Date());
-        gameObjectRepository.saveAndFlush(gameObject);
+    public World craft(Player player) {
+        user.updatePosition(player.getGeoPosition());
+        inventory.use(player.getGameObjectToCraft());
+        player.getGameObjectToCraft().setIdentityId(user.getIdentity().getId());
+        world.create(player.getGameObjectToCraft());
+        return world.getWorld(player.getGeoPosition());
     }
 
-    public World craftGameObject(Player player) {
-        userService.updatePosition(player.getGeoPosition());
-        saveGameObject(player.getGameObjectToCraft());
-        return worldService.getWorld(player.getGeoPosition());
+    public World destroy(Player player) {
+        world.delete(player.getSelectedObjectId());
+        return world.getWorld(player.getGeoPosition());
     }
 
     public Inventory getInventory() {
-        inventoryService.checkRestock();
-        return inventoryService.getInventory();
+        inventory.checkRestock();
+        return inventory.getInventory();
     }
+
 }

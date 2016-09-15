@@ -4,6 +4,7 @@ import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Rotation;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
+import foundation.softwaredesign.orbi.service.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.UserService;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
@@ -24,7 +25,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     @Inject
     UserService userService;
     @Inject
-    GameObjectTypeRepository gameObjectTypeRepository;
+    GameObjectTypeService gameObjectType;
 
     @Override
     protected Object getPrimaryKey(GameObject gameObject) {
@@ -64,12 +65,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         if (nonNull(gameObject.getRotation())) {
             newGameObjectEntity.setRotationY(gameObject.getRotation().getY());
         }
-        try {
-            newGameObjectEntity.setGameObjectType(gameObjectTypeRepository.findByPrefab());
-        }catch (NoResultException ex) {
-            throw new BadRequestException("Invalid prefab");
-        }
-
+        newGameObjectEntity.setGameObjectType(gameObjectType.loadByPrefab(gameObject.getPrefab()));
 
         newGameObjectEntity.setName(gameObject.getName());
         return newGameObjectEntity;

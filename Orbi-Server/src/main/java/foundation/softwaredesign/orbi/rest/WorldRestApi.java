@@ -61,13 +61,4 @@ public class WorldRestApi {
         return worldService.getWorld(player.getGeoPosition());
     }
 
-    @POST
-    @Path("/objects/destroy")
-    @Transactional
-    public World delete(@NotNull Player player) {
-        userService.updatePosition(player.getGeoPosition());
-        return worldService.delete(player);
-    }
-
-
 }

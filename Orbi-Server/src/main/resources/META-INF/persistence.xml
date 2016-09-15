@@ -8,7 +8,7 @@
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="eclipselink.session.customizer"
-                      value="foundation.softwaredesign.orbi.persistence.CamelCaseSessionCustomizer"/>
+                      value="foundation.softwaredesign.orbi.persistence.CamelNamingStrategy"/>
             <!--<property name="eclipselink.logging.level.sql" value="FINE"/>-->
             <!--<property name="eclipselink.logging.parameters" value="true"/>-->
         </properties>

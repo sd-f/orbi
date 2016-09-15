@@ -29,17 +29,18 @@ public class GameObjectEntity {
     @Column
     @NotNull
     private Double rotationY;
-    @Column
-    @NotNull
-    private String prefab;
     @Column(insertable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date createDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @NotNull
     private IdentityEntity identity;
+
+    @ManyToOne
+    @NotNull
+    private GameObjectTypeEntity gameObjectType;
 
     public Long getId() {
         return id;
@@ -89,14 +90,6 @@ public class GameObjectEntity {
         this.rotationY = rotationY;
     }
 
-    public String getPrefab() {
-        return prefab;
-    }
-
-    public void setPrefab(String prefab) {
-        this.prefab = prefab;
-    }
-
     public Date getCreateDate() {
         return createDate;
     }
@@ -111,5 +104,13 @@ public class GameObjectEntity {
 
     public void setIdentity(IdentityEntity identity) {
         this.identity = identity;
+    }
+
+    public GameObjectTypeEntity getGameObjectType() {
+        return gameObjectType;
+    }
+
+    public void setGameObjectType(GameObjectTypeEntity gameObjectType) {
+        this.gameObjectType = gameObjectType;
     }
 }

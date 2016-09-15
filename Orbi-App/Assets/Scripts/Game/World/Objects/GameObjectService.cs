@@ -85,7 +85,7 @@ namespace GameController
             }
         }
 
-        public IEnumerator RequestDestroy(CraftContainerScript craftContainerScript)
+        public IEnumerator RequestDestroy()
         {
             WWW request = Request("world/objects/destroy", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
             yield return request;
@@ -100,7 +100,7 @@ namespace GameController
             }
             else
                 HandleError(request);
-            craftContainerScript.ClearContainer();
+            //craftContainerScript.ClearContainer();
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Assets.Control.services
                
         }
 
-        public IEnumerator RequestCraft(CraftContainerScript script)
+        public IEnumerator RequestCraft()
         {
             WWW request = Request("player/craft", JsonUtility.ToJson(Game.GetInstance().player));
             yield return request;
@@ -53,7 +53,7 @@ namespace Assets.Control.services
             }
             else
                 HandleError(request);
-            script.ClearContainer();
+            //script.ClearContainer();
 
         }
 

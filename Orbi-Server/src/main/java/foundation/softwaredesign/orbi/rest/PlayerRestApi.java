@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.rest;
 
+import foundation.softwaredesign.orbi.model.Inventory;
 import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.ElevationService;
@@ -9,10 +10,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+
+import java.util.List;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
@@ -42,6 +42,12 @@ public class PlayerRestApi {
     @Transactional
     public World create(@NotNull Player player) {
         return playerService.craftGameObject(player);
+    }
+
+    @GET
+    @Path("/inventory")
+    public Inventory inventory() {
+        return playerService.getInventory();
     }
 
 }

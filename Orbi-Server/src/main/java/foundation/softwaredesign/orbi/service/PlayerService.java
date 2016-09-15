@@ -1,13 +1,14 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.GameObject;
-import foundation.softwaredesign.orbi.model.Player;
-import foundation.softwaredesign.orbi.model.World;
+import foundation.softwaredesign.orbi.model.*;
+import foundation.softwaredesign.orbi.persistence.entity.InventoryEntity;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
+import foundation.softwaredesign.orbi.persistence.repo.InventoryRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -21,6 +22,8 @@ public class PlayerService {
     WorldService worldService;
     @Inject
     UserService userService;
+    @Inject
+    InventoryService inventoryService;
 
     private void saveGameObject(GameObject gameObject) {
         gameObject.setCreateDate(new Date());
@@ -31,5 +34,10 @@ public class PlayerService {
         userService.updatePosition(player.getGeoPosition());
         saveGameObject(player.getGameObjectToCraft());
         return worldService.getWorld(player.getGeoPosition());
+    }
+
+    public Inventory getInventory() {
+        inventoryService.checkRestock();
+        return inventoryService.getInventory();
     }
 }

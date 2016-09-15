@@ -8,6 +8,8 @@ import foundation.softwaredesign.orbi.service.UserService;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
 import javax.inject.Inject;
+import javax.persistence.NoResultException;
+import javax.ws.rs.BadRequestException;
 
 import java.util.Date;
 
@@ -21,6 +23,8 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
 
     @Inject
     UserService userService;
+    @Inject
+    GameObjectTypeRepository gameObjectTypeRepository;
 
     @Override
     protected Object getPrimaryKey(GameObject gameObject) {
@@ -37,7 +41,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.getGeoPosition().setAltitude(objectEntity.getAltitude());
         gameObject.setRotation(new Rotation());
         gameObject.getRotation().setY(objectEntity.getRotationY());
-        gameObject.setPrefab(objectEntity.getPrefab());
+        gameObject.setPrefab(objectEntity.getGameObjectType().getPrefab());
         gameObject.setCreateDate(objectEntity.getCreateDate());
         gameObject.setIdentityId(objectEntity.getIdentity().getId());
         gameObject.setName(objectEntity.getName());
@@ -60,7 +64,13 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         if (nonNull(gameObject.getRotation())) {
             newGameObjectEntity.setRotationY(gameObject.getRotation().getY());
         }
-        newGameObjectEntity.setPrefab(gameObject.getPrefab());
+        try {
+            newGameObjectEntity.setGameObjectType(gameObjectTypeRepository.findByPrefab());
+        }catch (NoResultException ex) {
+            throw new BadRequestException("Invalid prefab");
+        }
+
+
         newGameObjectEntity.setName(gameObject.getName());
         return newGameObjectEntity;
     }

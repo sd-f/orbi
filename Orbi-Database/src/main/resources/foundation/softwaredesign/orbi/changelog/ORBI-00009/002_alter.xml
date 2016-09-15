@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <changeSet id="add_game_object_type_id" author="Lucas Reeh">
+        <sql>
+            ALTER TABLE public.game_object ADD COLUMN game_object_type_id bigint DEFAULT 0;
+        </sql>
+        <sql>
+            update public.game_object o
+               set game_object_type_id = ( select t.id from public.game_object_type t where t.prefab = o.prefab );
+        </sql>
+        <sql>
+            ALTER TABLE public.game_object
+            ADD CONSTRAINT game_object_game_object_type_id_fk
+            FOREIGN KEY (game_object_type_id)
+            REFERENCES public.game_object_type (id) MATCH FULL;
+        </sql>
+        <sql>
+            CREATE INDEX game_object_game_object_type_id_idx
+            ON public.game_object (game_object_type_id);
+        </sql>
+        <dropColumn tableName="game_object" schemaName="public" columnName="prefab"></dropColumn>
+        <rollback>
+            <sql>ALTER TABLE public.game_object ADD COLUMN prefab character varying(1000) DEFAULT 'ScifiCrate/ScifiCrate_1'::character varying;</sql>
+            <dropIndex tableName="game_object" schemaName="public" indexName="game_object_game_object_type_id_idx"></dropIndex>
+            <sql>ALTER TABLE public.game_object DROP CONSTRAINT game_object_game_object_type_id_fk</sql>
+            <sql>
+                update public.game_object o
+                set prefab = ( select t.prefab from public.game_object_type t where t.id = o.game_object_type_id );
+            </sql>
+            <dropColumn tableName="game_object" schemaName="public" columnName="game_object_type_id"></dropColumn>
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>

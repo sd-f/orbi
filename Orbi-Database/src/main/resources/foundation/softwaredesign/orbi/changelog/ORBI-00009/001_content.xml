@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <changeSet id="create_table_game_object_type" author="Lucas Reeh">
+        <insert tableName="game_object_type" schemaName="public">
+            <column name="id" value="1"></column>
+            <column name="prefab" value="ScifiCrate/ScifiCrate_1"></column>
+        </insert>
+        <insert tableName="game_object_type" schemaName="public">
+            <column name="id" value="2"></column>
+            <column name="prefab" value="ScifiCrate/ScifiCrate_2"></column>
+        </insert>
+        <rollback>
+            <delete tableName="game_object_type" schemaName="public">
+                <where>id = 2</where>
+            </delete>
+            <delete tableName="game_object_type" schemaName="public">
+                <where>id = 1</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

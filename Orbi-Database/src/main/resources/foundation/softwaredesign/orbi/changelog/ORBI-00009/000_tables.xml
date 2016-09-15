@@ -28,7 +28,7 @@
             (
             game_object_type_id bigint NOT NULL,
             identity_id bigint NOT NULL,
-            count bigint NOT NULL DEFAULT 0,
+            amount bigint NOT NULL DEFAULT 0,
             CONSTRAINT inventory_pkey PRIMARY KEY (game_object_type_id, identity_id)
             );
         </sql>

@@ -10,18 +10,21 @@ namespace GameController
     [AddComponentMenu("App/Game/World")]
     public class World : MonoBehaviour
     {
+        
         public LayerMask terrainLayer;
         public LayerMask terrainObjectsLayer;
         public Terrain terrain;
         public LayerMask backgroundLayersTerrain;
         public LayerMask backgroundLayersCamera;
         public LayerMask backGroundLayerMask;
+
+        private bool skipRefresh = false;
         private TerrainService terrainService;
         private GeoPosition centerGeoPosition;
         private MapTextureService textureService;
         private GameObjectService gameObjectService;
 
-        void Start()
+        void Awake()
         {
             this.backGroundLayerMask = backgroundLayersTerrain;
             this.terrainService = new TerrainService(terrain);
@@ -48,15 +51,21 @@ namespace GameController
 
         public IEnumerator UpdateWorld()
         {
-            yield return textureService.LoadTextures();
-            if (Game.GetGame().GetSettings().IsHeightsEnabled())
+            if (skipRefresh)
             {
-                //Debug.Log("heights");
-                yield return terrainService.RequestTerrain();
-            }
-            else
+                skipRefresh = false;
+            } else
             {
-                yield return terrainService.ResetTerrain();
+                yield return textureService.LoadTextures();
+                if (Game.GetGame().GetSettings().IsHeightsEnabled())
+                {
+                    //Debug.Log("heights");
+                    yield return terrainService.RequestTerrain();
+                }
+                else
+                {
+                    yield return terrainService.ResetTerrain();
+                }
             }
         }
 
@@ -138,6 +147,11 @@ namespace GameController
             }
                 
             return 0.0f;
+        }
+
+        public void SkipRefreshOnNextLoading()
+        {
+            this.skipRefresh = true;
         }
 
         void OnDestroy()

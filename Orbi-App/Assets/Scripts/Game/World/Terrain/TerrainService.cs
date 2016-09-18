@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace GameController
 {
-    public class TerrainService: AbstractService
+    public class TerrainService: AbstractHttpService
     {
         public static int TEXTURE_RASTER_SIZE = 2;
 

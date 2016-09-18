@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GameController
 {
-    class GameObjectService: AbstractService
+    class GameObjectService: AbstractHttpService
     {
 
         GameObject gameObjectsContainer;
@@ -56,7 +56,7 @@ namespace GameController
             {
                 if (gameObject.gameObject == null)
                 {
-                    GameObject newObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, true, "DynamicGameObject");
+                    GameObject newObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, "DynamicGameObject");
                     newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
                     GameObjectFactory.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.rotation.y, 0);
                 } else
@@ -87,7 +87,7 @@ namespace GameController
 
         public IEnumerator RequestDestroy()
         {
-            WWW request = Request("world/objects/destroy", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
+            WWW request = Request("player/destroy", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
             yield return request;
             if (request.error == null)
             {
@@ -102,5 +102,6 @@ namespace GameController
                 HandleError(request);
             //craftContainerScript.ClearContainer();
         }
+
     }
 }

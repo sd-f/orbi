@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace GameController
 {
-    class MapTextureService: AbstractService
+    class MapTextureService: AbstractHttpService
     {
         public static bool satellite = false;
 

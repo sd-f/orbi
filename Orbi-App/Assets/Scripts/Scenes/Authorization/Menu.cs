@@ -47,13 +47,13 @@ namespace StartScene
 
         private IEnumerator RequestCode()
         {
-            yield return Game.GetPlayer().GetAuthService().RequestCode(emailField.text);
+            yield return Game.GetGame().GetAuthService().RequestCode(emailField.text);
             SetFormEnabled(true);
         }
 
         private IEnumerator Login()
         {
-            yield return Game.GetPlayer().GetAuthService().RequestLogin(emailField.text, codeField.text);
+            yield return Game.GetGame().GetAuthService().RequestLogin(emailField.text, codeField.text);
             SetFormEnabled(true);
         }
 

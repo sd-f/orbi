@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 namespace GameController.Services
 {
 
-    public class ServerService: AbstractService
+    public class ServerService: AbstractHttpService
     {
 
         public IEnumerator RequestVersion()

@@ -20,6 +20,7 @@ namespace GameController
         private static World WORLD;
         private static Location LOCATION;
         private Ui ui = new Ui();
+        private AuthService authService;
         private ServerService serverService;
         private GameScene currentScene = GameScene.StartScene;
 
@@ -31,13 +32,15 @@ namespace GameController
             GameScene,
             StartScene,
             AuthorizationScene,
-            LoadingScene
+            LoadingScene,
+            InventoryScene
         }
 
         void Start()
         {
             DontDestroyOnLoad(gameObject);
             serverService = new ServerService();
+            authService = new AuthService();
             //FALLBACK_START_POSITION = new GeoPosition(47.073158d, 15.438000d, 0.0d); // schlossberg
             // FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); // marakesh
             FALLBACK_START_POSITION = new GeoPosition(47.0678d, 15.5552d, 0.0d); // lahö
@@ -129,6 +132,12 @@ namespace GameController
             if (WORLD == null)
                 WORLD = LoadAndGetGame().transform.Find("World").GetComponent<World>();
             return WORLD;
+        }
+
+
+        public AuthService GetAuthService()
+        {
+            return authService;
         }
 
         public void Quit()

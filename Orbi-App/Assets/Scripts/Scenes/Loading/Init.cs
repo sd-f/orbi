@@ -21,8 +21,10 @@ namespace LoadingScene
         {
             Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
             yield return Game.GetWorld().UpdateWorld();
+            yield return Game.GetPlayer().LoadInventory();
             Game.GetLocation().Resume();
             Game.GetPlayer().Unfreeze();
+            
             Game.GetGame().LoadScene(Game.GameScene.GameScene);
         }
 

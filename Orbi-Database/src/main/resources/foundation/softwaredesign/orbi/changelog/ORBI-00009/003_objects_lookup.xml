@@ -8,64 +8,64 @@
 
 
     <changeSet id="add_ public.game_object_type_orbi-00009" author="Lucas Reeh">
-        <sql>insert into  public.game_object_type (id, prefab) values ( 3 ,'CartoonTrees/co_Bush01.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 4 ,'CartoonTrees/co_Bush02.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 5 ,'CartoonTrees/co_Bush03.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 6 ,'CartoonTrees/co_Bush04.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 7 ,'CartoonTrees/co_Bush05.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 8 ,'CartoonTrees/co_Bush06.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 9 ,'CartoonTrees/co_Bush07.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 10 ,'CartoonTrees/co_Bush08.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 11 ,'CartoonTrees/co_PalmTree01.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 12 ,'CartoonTrees/co_PalmTree02.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 13 ,'CartoonTrees/co_PalmTree03.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 14 ,'CartoonTrees/co_PineTree.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 15 ,'CartoonTrees/co_Stone01.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 16 ,'CartoonTrees/co_Stone02.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 17 ,'CartoonTrees/co_Stone03.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 18 ,'CartoonTrees/co_Stone04.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 19 ,'CartoonTrees/co_Stone05.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 20 ,'CartoonTrees/co_Stone06.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 21 ,'CartoonTrees/co_Tree01.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 22 ,'CartoonTrees/co_Tree02.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 23 ,'CartoonTrees/co_Tree03.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 24 ,'CartoonTrees/co_Tree04.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 25 ,'CartoonTrees/co_Tree05.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 26 ,'CartoonTrees/co_Tree06.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 27 ,'CartoonTrees/co_Tree07.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 28 ,'CartoonTrees/co_Tree08.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 29 ,'CartoonTrees/co_Tree12.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 30 ,'CartoonTrees/co_Tree13.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 31 ,'CartoonTrees/co_Tree14.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 32 ,'CartoonTrees/co_Tree15.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 33 ,'CartoonTrees/co_Tree16.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 34 ,'Cubes/Bricks.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 35 ,'Cubes/Cold lava.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 36 ,'Cubes/Concrete 2.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 37 ,'Cubes/Concrete 3.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 38 ,'Cubes/Concrete.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 39 ,'Cubes/Crate.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 40 ,'Cubes/Crystal.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 41 ,'Cubes/Earth.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 42 ,'Cubes/Foliage.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 43 ,'Cubes/Grass.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 44 ,'Cubes/Hexagonal.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 45 ,'Cubes/Ice.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 46 ,'Cubes/Lava.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 47 ,'Cubes/Marble.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 48 ,'Cubes/Metal.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 49 ,'Cubes/Ornament 1.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 50 ,'Cubes/Ornament.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 51 ,'Cubes/Ornament2.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 52 ,'Cubes/Pavement.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 53 ,'Cubes/Rock.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 54 ,'Cubes/Rooftop.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 55 ,'Cubes/Sand.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 56 ,'Cubes/Top grass.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 57 ,'Cubes/Top Ice.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 58 ,'Cubes/Top lava.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 59 ,'Cubes/Top pavement.prefab');</sql>
-        <sql>insert into  public.game_object_type (id, prefab) values ( 60 ,'Cubes/Water.prefab');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 3 ,'CartoonTrees/co_Bush01');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 4 ,'CartoonTrees/co_Bush02');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 5 ,'CartoonTrees/co_Bush03');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 6 ,'CartoonTrees/co_Bush04');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 7 ,'CartoonTrees/co_Bush05');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 8 ,'CartoonTrees/co_Bush06');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 9 ,'CartoonTrees/co_Bush07');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 10 ,'CartoonTrees/co_Bush08');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 11 ,'CartoonTrees/co_PalmTree01');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 12 ,'CartoonTrees/co_PalmTree02');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 13 ,'CartoonTrees/co_PalmTree03');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 14 ,'CartoonTrees/co_PineTree');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 15 ,'CartoonTrees/co_Stone01');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 16 ,'CartoonTrees/co_Stone02');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 17 ,'CartoonTrees/co_Stone03');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 18 ,'CartoonTrees/co_Stone04');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 19 ,'CartoonTrees/co_Stone05');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 20 ,'CartoonTrees/co_Stone06');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 21 ,'CartoonTrees/co_Tree01');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 22 ,'CartoonTrees/co_Tree02');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 23 ,'CartoonTrees/co_Tree03');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 24 ,'CartoonTrees/co_Tree04');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 25 ,'CartoonTrees/co_Tree05');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 26 ,'CartoonTrees/co_Tree06');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 27 ,'CartoonTrees/co_Tree07');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 28 ,'CartoonTrees/co_Tree08');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 29 ,'CartoonTrees/co_Tree12');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 30 ,'CartoonTrees/co_Tree13');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 31 ,'CartoonTrees/co_Tree14');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 32 ,'CartoonTrees/co_Tree15');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 33 ,'CartoonTrees/co_Tree16');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 34 ,'Cubes/Bricks');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 35 ,'Cubes/Cold_lava');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 36 ,'Cubes/Concrete_2');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 37 ,'Cubes/Concrete_3');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 38 ,'Cubes/Concrete');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 39 ,'Cubes/Crate');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 40 ,'Cubes/Crystal');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 41 ,'Cubes/Earth');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 42 ,'Cubes/Foliage');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 43 ,'Cubes/Grass');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 44 ,'Cubes/Hexagonal');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 45 ,'Cubes/Ice');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 46 ,'Cubes/Lava');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 47 ,'Cubes/Marble');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 48 ,'Cubes/Metal');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 49 ,'Cubes/Ornament_1');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 50 ,'Cubes/Ornament');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 51 ,'Cubes/Ornament2');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 52 ,'Cubes/Pavement');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 53 ,'Cubes/Rock');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 54 ,'Cubes/Rooftop');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 55 ,'Cubes/Sand');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 56 ,'Cubes/Top_grass');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 57 ,'Cubes/Top_Ice');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 58 ,'Cubes/Top_lava');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 59 ,'Cubes/Top_pavement');</sql>
+        <sql>insert into  public.game_object_type (id, prefab) values ( 60 ,'Cubes/Water');</sql>
         <rollback>
             <sql>delete from  public.game_object_type where id =  60 ;</sql>
             <sql>delete from  public.game_object_type where id =  59 ;</sql>

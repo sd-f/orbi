@@ -13,5 +13,18 @@ namespace GameScene
             Game.GetGame().LoadScene(Game.GameScene.SettingsScene);
         }
 
+        public void OnInventory()
+        {
+            Game.GetGame().LoadScene(Game.GameScene.InventoryScene);
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                Game.GetGame().LoadScene(Game.GameScene.InventoryScene);
+            }
+        }
+
     }
 }

@@ -4,6 +4,7 @@ using GameController.Services;
 using GameScene;
 using ServerModel;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,12 +16,13 @@ namespace GameController
         private PlayerService playerService = new PlayerService();
         private Vector3 positionBeforeOutOfBounds = new Vector3(0, 0, 0);
         private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
-        private AuthService authService = new AuthService();
         private Boolean loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
-        public static float HEIGHT = 3.0f;
         private bool frozen = true;
+        private ServerModel.Inventory inventory = new Inventory();
+        private String selectedPrefab;
 
+        public static float HEIGHT = 3.0f;
 
         void Start()
         {
@@ -46,6 +48,26 @@ namespace GameController
         public void Unfreeze()
         {
             this.frozen = false;
+        }
+
+        public ServerModel.Inventory GetInventory()
+        {
+            return this.inventory;
+        }
+
+        public void SetInventory(ServerModel.Inventory inventory)
+        {
+            // select first item
+            if (GetSelectedPrefab() == null)
+            {
+                foreach(InventoryItem item in inventory.items)
+                {
+                    SetSelectedPrefab(item.prefab);
+                    break;
+                }
+            }
+            
+            this.inventory = inventory;
         }
 
         public ServerModel.Player GetModel()
@@ -115,11 +137,6 @@ namespace GameController
             return playerService;
         }
 
-        public AuthService GetAuthService()
-        {
-            return authService;
-        }
-
         public void SetLoggedIn(Boolean loggedIn)
         {
             this.loggedIn = loggedIn;
@@ -128,6 +145,21 @@ namespace GameController
         public Boolean IsLoggedIn()
         {
             return this.loggedIn;
+        }
+
+        public String GetSelectedPrefab()
+        {
+            return this.selectedPrefab;
+        }
+
+        public void SetSelectedPrefab(String selectedPrefab)
+        {
+            this.selectedPrefab = selectedPrefab;
+        }
+
+        public IEnumerator LoadInventory()
+        {
+            yield return Game.GetPlayer().GetPlayerService().RequestInventory();
         }
 
         void OnDestroy()

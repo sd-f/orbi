@@ -19,7 +19,8 @@ public abstract class InventoryRepository extends AbstractEntityRepository<Inven
     @Query(value = "" +
             "Select e" +
             "  from InventoryEntity e" +
-            " where e.id.identityId = ?1")
+            " where e.id.identityId = ?1" +
+            " order by e.id.gameObjectTypeId")
     public abstract List<InventoryEntity> findByIdentityId(@NotNull Long identityId);
 
     @Query(value = "" +

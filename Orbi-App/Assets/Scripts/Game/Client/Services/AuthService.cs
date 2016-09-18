@@ -9,7 +9,7 @@ using UnityEngine.UI;
 namespace GameController.Services
 {
 
-    public class AuthService: AbstractService
+    public class AuthService: AbstractHttpService
     {
 
         public IEnumerator RequestAuthUser()

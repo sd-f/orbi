@@ -31,7 +31,7 @@ namespace StartScene
             yield return Game.GetLocation().Boot();
 
             // check logged in
-            yield return Game.GetPlayer().GetAuthService().LoadGameIfAuthorized();
+            yield return Game.GetGame().GetAuthService().LoadGameIfAuthorized();
         }
 
         void Update()

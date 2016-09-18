@@ -15,19 +15,25 @@ namespace GameController
             return Resources.Load<GameObject>("Game/Prefabs/" + prefab) as GameObject;
         }
 
-        public static GameObject CreateObject(Transform parent, string prefab, long id, string name, bool dynamic, string tag)
+        public static GameObject CreateObject(Transform parent, string prefab, long id, string name, string tag)
+        {
+            return CreateObject(parent, prefab, id, name, tag, LayerMask.NameToLayer("Objects"));
+        }
+
+        public static GameObject CreateObject(Transform parent, string prefab, long id, string name, string tag, int layer)
         {
             GameObject container = new GameObject();
-            container.tag = tag;
+            if (tag != null)
+                container.tag = tag;
             container.name = "container_" + id;
             container.transform.parent = parent;
+
             GameObject newObject = GameObject.Instantiate(GetPrefab(prefab)) as GameObject;
             newObject.transform.parent = container.transform;
             newObject.name = "object_" + id;
-            Vector3 boundsSize = newObject.GetComponentInChildren<Collider>().bounds.size;
-            newObject.transform.localPosition = new Vector3(0, (boundsSize.y / 2f), 0);
-
-            SetLayer(container, LayerMask.NameToLayer("Objects"));
+            // max bounds
+            Vector3 boundsSize = new Vector3(0, 0, 0);
+            SetLayer(container, layer);
             return container;
         }
 

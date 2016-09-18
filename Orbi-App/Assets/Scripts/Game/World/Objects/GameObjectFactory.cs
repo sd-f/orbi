@@ -12,6 +12,11 @@ namespace GameController
 
         public static GameObject GetPrefab(string prefab)
         {
+            return Resources.Load<GameObject>(prefab) as GameObject;
+        }
+
+        public static GameObject GetGamePrefab(string prefab)
+        {
             return Resources.Load<GameObject>("Game/Prefabs/" + prefab) as GameObject;
         }
 
@@ -28,7 +33,7 @@ namespace GameController
             container.name = "container_" + id;
             container.transform.parent = parent;
 
-            GameObject newObject = GameObject.Instantiate(GetPrefab(prefab)) as GameObject;
+            GameObject newObject = GameObject.Instantiate(GetGamePrefab(prefab)) as GameObject;
             newObject.transform.parent = container.transform;
             newObject.name = "object_" + id;
             // max bounds

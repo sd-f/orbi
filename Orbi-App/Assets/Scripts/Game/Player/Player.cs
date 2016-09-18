@@ -132,6 +132,11 @@ namespace GameController
             return UnityEngine.GameObject.Find("PlayerBody");
         }
 
+        public UnityEngine.GameObject GetInFrontOfCameraContainer()
+        {
+            return UnityEngine.GameObject.Find("InFrontOfCameraContainer");
+        }
+
         public PlayerService GetPlayerService()
         {
             return playerService;

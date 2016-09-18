@@ -21,9 +21,8 @@ namespace GameScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.I))
-            {
                 Game.GetGame().LoadScene(Game.GameScene.InventoryScene);
-            }
+
         }
 
     }

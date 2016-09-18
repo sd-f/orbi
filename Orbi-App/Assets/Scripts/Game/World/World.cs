@@ -41,7 +41,10 @@ namespace GameController
         public void RefreshObjects()
         {
             if (Game.GetLocation().IsReady())
+            {
                 StartCoroutine(UpdateObjects());
+            }
+                
         }
 
         public TerrainService GetTerrainService()

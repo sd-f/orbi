@@ -58,6 +58,12 @@
 
     <include file="ORBI-00009/002_alter.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00009_003_objects_lookup" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00009_003_objects_lookup" />
+    </changeSet>
+
+    <include file="ORBI-00009/003_objects_lookup.xml" relativeToChangelogFile="true"/>
+
     <changeSet id="end" author="Lucas Reeh">
         <tagDatabase tag="end" />
     </changeSet>

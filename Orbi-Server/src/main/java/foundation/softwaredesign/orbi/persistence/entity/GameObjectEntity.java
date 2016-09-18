@@ -39,6 +39,7 @@ public class GameObjectEntity {
     private IdentityEntity identity;
 
     @ManyToOne
+    @JoinColumn(name = "game_object_type_id")
     @NotNull
     private GameObjectTypeEntity gameObjectType;
 

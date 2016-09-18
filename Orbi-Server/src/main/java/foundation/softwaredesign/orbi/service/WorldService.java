@@ -20,7 +20,6 @@ public class WorldService {
     @Inject
     ElevationService elevationService;
 
-
     public World getWorld(GeoPosition geoPosition) {
         World world = new World();
         List<GameObject> gameObjectList = gameObjectService.getObjectAround(geoPosition);

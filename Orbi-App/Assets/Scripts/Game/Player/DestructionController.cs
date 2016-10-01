@@ -7,12 +7,8 @@ using UnityEngine;
 
 namespace GameController
 {
-    class Destruction
+    class DestructionController
     {
-
-        public void Shoot(PlayerDestructionController controller)
-        {
-        }
 
     }
 }

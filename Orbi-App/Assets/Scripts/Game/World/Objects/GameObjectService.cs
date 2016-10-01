@@ -57,6 +57,7 @@ namespace GameController
                 if (gameObject.gameObject == null)
                 {
                     GameObject newObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, "DynamicGameObject");
+                    GameObjectUtility.Freeze(newObject);
                     newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
                     GameObjectFactory.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.rotation.y, 0);
                 } else

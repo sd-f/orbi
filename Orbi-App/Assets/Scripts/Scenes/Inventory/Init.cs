@@ -32,12 +32,13 @@ namespace InventoryScene
             int id = 0;
             int preselected = 0;
             // create inventory objects
-            foreach (ServerModel.InventoryItem item in Game.GetPlayer().GetInventory().items) {
+            foreach (ServerModel.InventoryItem item in Game.GetPlayer().GetCraftingController().GetInventory().items) {
                 canvasScript.GetObjectsList().Add(id, item);
-                if (item.prefab == Game.GetPlayer().GetSelectedPrefab())
+                if (item.prefab == Game.GetPlayer().GetCraftingController().GetSelectedPrefab())
                     preselected = id;
                 GameObject newObject = GameObjectFactory.CreateObject(parent.transform, item.prefab, id, "inventoryItem_" + id, null, LayerMask.NameToLayer("Default"));
-                newObject.transform.position = new Vector3(id * OBJECT_PADDING, newObject.transform.position.y, 5f);
+                GameObjectUtility.Freeze(newObject);
+                newObject.transform.localPosition = new Vector3(id * OBJECT_PADDING, 0f, 0f);
                 id++;
             }
             canvasScript.SetSelected(preselected);

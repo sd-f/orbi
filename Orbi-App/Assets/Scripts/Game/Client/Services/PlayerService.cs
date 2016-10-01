@@ -13,7 +13,7 @@ namespace GameController.Services
             if (request.error == null)
             {
                 ServerModel.Inventory inventory = JsonUtility.FromJson<ServerModel.Inventory>(request.text);
-                Game.GetPlayer().SetInventory(inventory);
+                Game.GetPlayer().GetCraftingController().SetInventory(inventory);
                 IndicateRequestFinished();
             }
             else

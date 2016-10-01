@@ -13,14 +13,14 @@ namespace InventoryScene
     {
         private int currentIndex = 0;
         private SortedList<int, InventoryItem> objectsList = new SortedList<int, InventoryItem>();
-        private CameraScript cameraScript;
-        public Camera camera;
+        private InventoryObjects inventoryObjectsScript;
+        public UnityEngine.GameObject inventoryObjectsContainer;
         public Text amountText;
         
 
         void Awake()
         {
-            this.cameraScript = camera.GetComponent<CameraScript>();
+            this.inventoryObjectsScript = inventoryObjectsContainer.GetComponent<InventoryObjects>();
         }
 
         public void SetSelected(int selectedIndex)
@@ -28,7 +28,7 @@ namespace InventoryScene
             currentIndex = selectedIndex;
             InventoryItem item = objectsList[currentIndex];
             SetAmountText(item.amount);
-            cameraScript.MoveToPosition(currentIndex * Init.OBJECT_PADDING);
+            inventoryObjectsScript.MoveToPosition(currentIndex * Init.OBJECT_PADDING);
         }
 
         public void OnLeft()
@@ -48,8 +48,20 @@ namespace InventoryScene
             amountText.text = "x " + amount;
         }
 
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.LeftArrow))
+                OnLeft();
+            if (Input.GetKeyDown(KeyCode.RightArrow))
+                OnRight();
+            if (Input.GetKeyDown(KeyCode.Return))
+                OnOk();
+        }
+
         public void OnOk()
         {
+            InventoryItem item = objectsList[currentIndex];
+            Game.GetPlayer().GetCraftingController().SetSelectedPrefab(item.prefab);
             Game.GetWorld().SkipRefreshOnNextLoading();
             Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
         }

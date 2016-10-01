@@ -1,12 +1,8 @@
-﻿using CanvasUtility;
-using ClientModel;
-using GameController.Services;
+﻿using GameController.Services;
 using GameScene;
-using ServerModel;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace GameController
 {
@@ -16,11 +12,12 @@ namespace GameController
         private PlayerService playerService = new PlayerService();
         private Vector3 positionBeforeOutOfBounds = new Vector3(0, 0, 0);
         private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
-        private Boolean loggedIn = false;
+        private bool loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
         private bool frozen = true;
-        private ServerModel.Inventory inventory = new Inventory();
-        private String selectedPrefab;
+        
+        private CraftingController craftingController = new CraftingController();
+        private DestructionController destructionController = new DestructionController();
 
         public static float HEIGHT = 3.0f;
 
@@ -50,24 +47,14 @@ namespace GameController
             this.frozen = false;
         }
 
-        public ServerModel.Inventory GetInventory()
+        public CraftingController GetCraftingController()
         {
-            return this.inventory;
+            return this.craftingController;
         }
 
-        public void SetInventory(ServerModel.Inventory inventory)
+        public DestructionController GetDestructionController()
         {
-            // select first item
-            if (GetSelectedPrefab() == null)
-            {
-                foreach(InventoryItem item in inventory.items)
-                {
-                    SetSelectedPrefab(item.prefab);
-                    break;
-                }
-            }
-            
-            this.inventory = inventory;
+            return this.destructionController;
         }
 
         public ServerModel.Player GetModel()
@@ -132,11 +119,6 @@ namespace GameController
             return UnityEngine.GameObject.Find("PlayerBody");
         }
 
-        public UnityEngine.GameObject GetInFrontOfCameraContainer()
-        {
-            return UnityEngine.GameObject.Find("InFrontOfCameraContainer");
-        }
-
         public PlayerService GetPlayerService()
         {
             return playerService;
@@ -150,16 +132,6 @@ namespace GameController
         public Boolean IsLoggedIn()
         {
             return this.loggedIn;
-        }
-
-        public String GetSelectedPrefab()
-        {
-            return this.selectedPrefab;
-        }
-
-        public void SetSelectedPrefab(String selectedPrefab)
-        {
-            this.selectedPrefab = selectedPrefab;
         }
 
         public IEnumerator LoadInventory()

@@ -29,24 +29,16 @@ public class PlayerRestApi {
     PlayerService playerService;
 
     @POST
-    @Path("/altitude")
-    public Player elevation(@NotNull Player player) {
-        elevationService.addAltitude(player.getGeoPosition());
-        return player;
-    }
-
-    @POST
     @Path("/craft")
     @Transactional
-    public World create(@NotNull Player player) {
+    public World craft(@NotNull Player player) {
         return playerService.craft(player);
     }
-
 
     @POST
     @Path("/destroy")
     @Transactional
-    public World delete(@NotNull Player player) {
+    public World destroy(@NotNull Player player) {
         return playerService.destroy(player);
     }
 

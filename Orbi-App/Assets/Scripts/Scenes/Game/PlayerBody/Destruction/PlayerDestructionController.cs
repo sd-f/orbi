@@ -10,7 +10,6 @@ namespace GameScene
     {
         public GameObject Shot1;
         public GameObject Wave;
-        Destruction destruction = new Destruction();
         private bool isDesktopMode = false;
         
 
@@ -23,7 +22,7 @@ namespace GameScene
         {
             //create BasicBeamShot
 
-            if (Input.GetButtonDown("Fire1") && isDesktopMode)
+            if (Input.GetButtonDown("Fire2") && isDesktopMode)
             {
                 Shoot();
             }

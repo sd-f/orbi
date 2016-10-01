@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 
 namespace InventoryScene
 {
-    [AddComponentMenu("App/Scenes/Inventory/Camera")]
-    public class CameraScript : MonoBehaviour
+    [AddComponentMenu("App/Scenes/Inventory/InventoryObjects")]
+    public class InventoryObjects : MonoBehaviour
     {
-        private Vector3 targetPosition = new Vector3(0f,2f,-7f);
+        private Vector3 targetPosition = new Vector3(0f,0f,10f);
 
         public void SetTargetPosition(Vector3 targetPosition)
         {
@@ -23,7 +23,7 @@ namespace InventoryScene
 
         public void MoveToPosition(float x)
         {
-            this.targetPosition = new Vector3(x, this.targetPosition.y, this.targetPosition.z);
+            this.targetPosition = new Vector3(-x, this.targetPosition.y, this.targetPosition.z);
         }
 
     }

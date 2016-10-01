@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
 using GameController;
-using System;
 
 namespace GameScene
 {
@@ -14,8 +12,6 @@ namespace GameScene
         private float deltaCompass = 0.0f;
         private bool gyroEnabled = false;
         private Vector3 targetPosition = new Vector3(0, 0, 0);
-
-        public GameObject frontOfCamera;
         public Camera cam;
 
         void Awake()

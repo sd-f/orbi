@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using GameController;
+using System;
+using UnityEngine.UI;
 
 namespace GameScene
 {
@@ -10,6 +12,7 @@ namespace GameScene
         // handheld movement
         private Quaternion gyroRotation;
         private float deltaCompass = 0.0f;
+        private float compassValue = 0.0f;
         private bool gyroEnabled = false;
         private Vector3 targetPosition = new Vector3(0, 0, 0);
         public Camera cam;
@@ -21,6 +24,8 @@ namespace GameScene
         void Start()
         {
             SensorHelper.ActivateRotation();
+            if (gyroEnabled)
+                InvokeRepeating("UpdateDeltaCompass", 1f, 5f);
         }
 
         void Update()
@@ -43,7 +48,7 @@ namespace GameScene
 
         public void UpdateDeltaCompass()
         {
-            deltaCompass = gyroRotation.eulerAngles.y;
+            deltaCompass = gyroRotation.eulerAngles.y - compassValue;
         }
 
         void ApplyGyroRotation()
@@ -51,10 +56,15 @@ namespace GameScene
             gyroRotation = SensorHelper.rotation;
             transform.rotation = Quaternion.Slerp(transform.rotation,
             Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, 0.0f)
-            , Time.deltaTime * 10f);
+            , Time.deltaTime * 5f);
             cam.transform.rotation = ClampRotationAroundXAxis(Quaternion.Slerp(cam.transform.rotation,
             Quaternion.Euler(gyroRotation.eulerAngles.x, cam.transform.rotation.eulerAngles.y, 0.0f)
-            , Time.deltaTime * 10f));
+            , Time.deltaTime * 5f));
+        }
+
+        internal void SetCompassValue(float value)
+        {
+            this.compassValue = value;
         }
 
         Quaternion ClampRotationAroundXAxis(Quaternion q)

@@ -20,7 +20,7 @@ namespace GameScene
             Sensor.Activate(Sensor.Type.MagneticField);
             Sensor.Activate(Sensor.Type.Accelerometer);
             headingNorth = false;
-            InvokeRepeating("CheckIfNorth", 1, 0.1f);
+            //InvokeRepeating("CheckIfNorth", 1, 0.1f);
         }
 
         void Update()
@@ -32,7 +32,9 @@ namespace GameScene
                 + "player: " + Game.GetPlayer().GetPlayerBody().transform.position + "\n"
                 + "selected: " + Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
                 */
+            
             compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
+            playerBody.GetComponent<PlayerBodyController>().SetCompassValue(compassImage.transform.eulerAngles.z);
         }
 
         void CheckIfNorth() {
@@ -57,7 +59,7 @@ namespace GameScene
 
         public void OnCalibrate()
         {
-            playerBody.GetComponent<PlayerBodyController>().UpdateDeltaCompass();
+            //playerBody.GetComponent<PlayerBodyController>().UpdateDeltaCompass();
         }
 
         private bool isNorth()

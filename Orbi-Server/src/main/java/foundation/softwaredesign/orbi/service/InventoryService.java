@@ -16,7 +16,7 @@ import java.util.Objects;
 @RequestScoped
 public class InventoryService {
 
-    private static final Long ALWAYS_RESTOCK_OBJECT_TYPE_ID = new Long(34);
+    private static final String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
     @Inject
     InventoryRepository repository;
     @Inject
@@ -24,26 +24,14 @@ public class InventoryService {
     @Inject
     GameObjectTypeService gameObjectType;
 
-    public void checkRestock() {
+    public void checkBasicInventoryAndRestock() {
         InventoryEntity inventoryEntity =
                 repository.findByIdentAndType(userService.getIdentity().getId(),
-                        ALWAYS_RESTOCK_OBJECT_TYPE_ID);
+                        gameObjectType.loadByPrefab(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB).getId());
 
         if (Objects.isNull(inventoryEntity) || (Objects.nonNull(inventoryEntity) && inventoryEntity.getAmount().longValue() <= 0)) {
-            restock(inventoryEntity);
+            addItem(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB, new Long(100));
         }
-    }
-
-    private void restock(InventoryEntity inventoryEntity) {
-        InventoryEntity inventoryEntityRestocked = inventoryEntity;
-        if (Objects.isNull(inventoryEntityRestocked)) {
-            inventoryEntityRestocked = new InventoryEntity();
-            inventoryEntityRestocked.setGameObjectType(gameObjectType.load(ALWAYS_RESTOCK_OBJECT_TYPE_ID));
-            inventoryEntityRestocked.setIdentity(userService.getIdentity());
-            inventoryEntityRestocked.setAmount(new Long(0));
-        }
-        inventoryEntityRestocked.setAmount(inventoryEntityRestocked.getAmount() + 100);
-        repository.saveAndFlush(inventoryEntityRestocked);
     }
 
     public Inventory getInventory() {
@@ -61,6 +49,20 @@ public class InventoryService {
         }
         toUse.setAmount(toUse.getAmount() - 1);
         repository.save(toUse);
+    }
+
+    public void addItem(String prefab, Long amount) {
+        // get object type by prefab
+        GameObjectTypeEntity objectTypeEntity = gameObjectType.loadByPrefab(prefab);
+        InventoryEntity inventory = repository.findByIdentAndType(userService.getIdentity().getId(),objectTypeEntity.getId());
+        if (Objects.isNull(inventory)) {
+            inventory = new InventoryEntity();
+            inventory.setGameObjectType(objectTypeEntity);
+            inventory.setIdentity(userService.getIdentity());
+            inventory.setAmount(new Long(0));
+        }
+        inventory.setAmount(inventory.getAmount() + amount);
+        repository.saveAndFlush(inventory);
     }
 
     private InventoryEntity getInventoryItemsByPrefab(String prefab) {

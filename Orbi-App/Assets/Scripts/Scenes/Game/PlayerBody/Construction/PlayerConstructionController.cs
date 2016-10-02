@@ -59,7 +59,7 @@ namespace GameScene
                 if (Input.GetTouch(0).phase == TouchPhase.Moved)
                 {
                     secondpoint = Input.GetTouch(0).position;
-                    rotation.y += (secondpoint.x - firstpoint.x) / Screen.width * 180.0f;
+                    rotation.y += (secondpoint.x - firstpoint.x) / Screen.width * 45.0f;
                     if ((distance <= 50f) && (distance >= 5f))
                         distance += (secondpoint.y - firstpoint.y) / Screen.height;
                 }

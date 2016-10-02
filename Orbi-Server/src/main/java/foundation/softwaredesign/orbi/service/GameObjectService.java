@@ -31,11 +31,16 @@ public class GameObjectService {
     }
 
     public void delete(Long id) {
+        GameObject gameObject = this.findById(id);
+        repository.remove(gameObject);
+    }
+
+    public GameObject findById(Long id) {
         GameObject gameObject = repository.findBy(id);
         if (Objects.isNull(gameObject)) {
             throw new NotFoundException();
         }
-        repository.remove(gameObject);
+        return gameObject;
     }
 
     public void save(GameObject gameObject) {

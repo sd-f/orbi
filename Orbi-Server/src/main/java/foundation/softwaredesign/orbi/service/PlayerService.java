@@ -1,11 +1,9 @@
 package foundation.softwaredesign.orbi.service;
 
 import foundation.softwaredesign.orbi.model.*;
-import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.Date;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -19,6 +17,8 @@ public class PlayerService {
     UserService user;
     @Inject
     InventoryService inventory;
+    @Inject
+    GameObjectService gameObjectService;
 
     public World craft(Player player) {
         user.updatePosition(player.getGeoPosition());
@@ -29,12 +29,15 @@ public class PlayerService {
     }
 
     public World destroy(Player player) {
-        world.delete(player.getSelectedObjectId());
+        Long id = player.getSelectedObjectId();
+        GameObject object = gameObjectService.findById(id);
+        inventory.addItem(object.getPrefab(), new Long(1));
+        world.delete(object.getId());
         return world.getWorld(player.getGeoPosition());
     }
 
     public Inventory getInventory() {
-        inventory.checkRestock();
+        inventory.checkBasicInventoryAndRestock();
         return inventory.getInventory();
     }
 

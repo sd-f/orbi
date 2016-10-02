@@ -12,29 +12,37 @@ namespace GameScene
         public Image buttonBackground;
         public GameObject playerBody;
 
-        private FloatFilter magneticFilter = new AngleFilter(10);
+        private float heading = 0.0f;
+        private float headingVelocity = 0.0f;
         private bool headingNorth = false;
+
+        void Start()
+        {
+            Input.gyro.enabled = true;
+            Input.compass.enabled = true;
+            //Sensor.Activate(Sensor.Type.MagneticField);
+            //Sensor.Activate(Sensor.Type.Accelerometer);
+            //SensorHelper.ActivateRotation();
+            headingNorth = false;
+            //InvokeRepeating("CheckIfNorth", 1, 0.1f);
+        }
 
         void Awake()
         {
-            Sensor.Activate(Sensor.Type.MagneticField);
-            Sensor.Activate(Sensor.Type.Accelerometer);
+            Input.gyro.enabled = true;
+            Input.compass.enabled = true;
+            //Sensor.Activate(Sensor.Type.MagneticField);
+            //Sensor.Activate(Sensor.Type.Accelerometer);
+            //SensorHelper.ActivateRotation();
             headingNorth = false;
             //InvokeRepeating("CheckIfNorth", 1, 0.1f);
         }
 
         void Update()
         {
-            /*
-            Text text = GameObject.Find("DebugText").GetComponent<Text>();
-            text.text = "center-pos: " + Game.GetLocation().GetGeoLocation() + "\n"
-                + "player-pos: " + Game.GetPlayer().GetModel().geoPosition + " (frozen=" + Game.GetPlayer().IsFrozen() + ")\n"
-                + "player: " + Game.GetPlayer().GetPlayerBody().transform.position + "\n"
-                + "selected: " + Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
-                */
-            
-            compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
-            playerBody.GetComponent<PlayerBodyController>().SetCompassValue(compassImage.transform.eulerAngles.z);
+            heading = Mathf.LerpAngle(heading, Input.compass.trueHeading, Time.deltaTime * 1f);
+            compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, heading), Time.deltaTime * 2);
+            Game.GetLocation().SetCompassValue(heading);
         }
 
         void CheckIfNorth() {
@@ -59,12 +67,12 @@ namespace GameScene
 
         public void OnCalibrate()
         {
-            //playerBody.GetComponent<PlayerBodyController>().UpdateDeltaCompass();
+            playerBody.GetComponent<PlayerBodyController>().UpdateDeltaCompass();
         }
 
         private bool isNorth()
         {
-            return ((magneticFilter.Value) < 5.0f) && ((magneticFilter.Value) > -5.0f);
+            return ((heading) < 5.0f) && ((heading) > -5.0f);
         }
 
         void OnDestroy()

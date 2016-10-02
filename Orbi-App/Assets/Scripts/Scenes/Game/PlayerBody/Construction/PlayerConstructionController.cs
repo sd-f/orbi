@@ -60,8 +60,9 @@ namespace GameScene
                 {
                     secondpoint = Input.GetTouch(0).position;
                     rotation.y += (secondpoint.x - firstpoint.x) / Screen.width * 45.0f;
-                    if ((distance <= 50f) && (distance >= 5f))
-                        distance += (secondpoint.y - firstpoint.y) / Screen.height;
+                    float newDistance = (secondpoint.y - firstpoint.y) / Screen.height;
+                    if (((newDistance < 0f) && (distance >= 5f)) || ((newDistance > 0f) && (distance <= 50f)))
+                        distance += newDistance;
                 }
             }
         }
@@ -88,6 +89,7 @@ namespace GameScene
 
         public void StartCrafting()
         {
+            Game.GetPlayer().Freeze();
             CreateObjectToCraft();
             transform.localPosition = new Vector3(0,0,distance);
             newObject.transform.position = CheckFloor(transform.position);
@@ -97,6 +99,7 @@ namespace GameScene
 
         public void StopCrafting()
         {
+            Game.GetPlayer().Unfreeze();
             this.crafting = false;
             Game.GetPlayer().GetCraftingController().SetCrafting(false, null);
             CleanUp();
@@ -113,7 +116,9 @@ namespace GameScene
             effect.transform.position = newObject.transform.position;
             GameObject.Destroy(effect, 1.5f);
             yield return Game.GetPlayer().GetCraftingController().Craft(newObject);
+            
             CleanUp();
+            Game.GetPlayer().Unfreeze();
         }
 
 

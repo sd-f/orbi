@@ -14,6 +14,8 @@ namespace GameController
         private GeoPosition position;
         private bool paused = false;
         private bool ready = false;
+        private float compassValue = 0.0f;
+        private float compassDelta = 0.0f;
 
         void Start()
         {
@@ -122,6 +124,26 @@ namespace GameController
             }
             Info.Show("Location initialized");
             StartUpdatingLocation();
+        }
+
+        public float GetCompassValue()
+        {
+            return this.compassValue;
+        }
+
+        public void SetCompassValue(float value)
+        {
+            this.compassValue = value;
+        }
+
+        public float GetCompassDelta()
+        {
+            return this.compassDelta;
+        }
+
+        public void SetCompassDelta(float delta)
+        {
+            this.compassDelta = delta;
         }
     }
 

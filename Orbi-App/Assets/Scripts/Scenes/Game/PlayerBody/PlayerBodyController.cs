@@ -10,22 +10,23 @@ namespace GameScene
     {
 
         // handheld movement
-        private Quaternion gyroRotation;
-        private float deltaCompass = 0.0f;
-        private float compassValue = 0.0f;
+        private Vector3 gyroRotation = new Vector3(0,0,0);
         private bool gyroEnabled = false;
         private Vector3 targetPosition = new Vector3(0, 0, 0);
         public Camera cam;
 
         void Awake()
         {
+            Input.gyro.enabled = true;
+            //SensorHelper.ActivateRotation();
             gyroEnabled = Game.GetGame().GetSettings().IsHandheldInputEnabled();
+            InvokeRepeating("UpdateDeltaCompass", 0.5f, 5f);
         }
+
         void Start()
         {
-            SensorHelper.ActivateRotation();
-            if (gyroEnabled)
-                InvokeRepeating("UpdateDeltaCompass", 1f, 5f);
+            Input.gyro.enabled = true;
+            //SensorHelper.ActivateRotation();
         }
 
         void Update()
@@ -48,23 +49,33 @@ namespace GameScene
 
         public void UpdateDeltaCompass()
         {
-            deltaCompass = gyroRotation.eulerAngles.y - compassValue;
+            if (!Game.GetPlayer().IsFrozen())
+                gyroRotation.y = Game.GetLocation().GetCompassValue();
         }
 
         void ApplyGyroRotation()
         {
-            gyroRotation = SensorHelper.rotation;
-            transform.rotation = Quaternion.Slerp(transform.rotation,
-            Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.eulerAngles.y - deltaCompass, 0.0f)
-            , Time.deltaTime * 5f);
-            cam.transform.rotation = ClampRotationAroundXAxis(Quaternion.Slerp(cam.transform.rotation,
-            Quaternion.Euler(gyroRotation.eulerAngles.x, cam.transform.rotation.eulerAngles.y, 0.0f)
-            , Time.deltaTime * 5f));
-        }
+            gyroRotation.x -= Input.gyro.rotationRate.x;
+            gyroRotation.y -= Input.gyro.rotationRate.y;
+            /*
+            Text text = GameObject.Find("DebugText").GetComponent<Text>();
+            text.text = "gyroRotation.eulerAngles: " + gyroRotation
+                + "\nGetCompassValue: " + Game.GetLocation().GetCompassValue();
+                */
+            // y on body
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.y - Game.GetLocation().GetCompassDelta(), 0.0f)
+                , Time.deltaTime * 5f);
 
-        internal void SetCompassValue(float value)
-        {
-            this.compassValue = value;
+            // x on cam
+            cam.transform.rotation = ClampRotationAroundXAxis(
+                Quaternion.Slerp(
+                    cam.transform.rotation,
+                    Quaternion.Euler(gyroRotation.x, cam.transform.rotation.eulerAngles.y, 0.0f),
+                    Time.deltaTime * 5f
+                    )
+            );
         }
 
         Quaternion ClampRotationAroundXAxis(Quaternion q)

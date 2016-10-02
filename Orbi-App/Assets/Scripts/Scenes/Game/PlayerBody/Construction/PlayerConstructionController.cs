@@ -15,6 +15,8 @@ namespace GameScene
         private Rigidbody body;
         private Vector3 rotation = new Vector3(0, 0, 0);
         private float distance = 10f;
+        private Vector3 firstpoint;
+        private Vector3 secondpoint;
 
         void Start()
         {
@@ -31,18 +33,9 @@ namespace GameScene
             if (crafting)
             {
                 if (isDesktopMode)
-                {
-                    if (Input.GetKeyDown(KeyCode.Q))
-                        rotation.y = rotation.y - 10f;
-                    if (Input.GetKeyDown(KeyCode.E))
-                        rotation.y = rotation.y + 10f;
-                    // object distance
-                    float d = Input.GetAxis("Mouse ScrollWheel");
-                    if ((d > 0f) && (distance <= 50f))
-                        distance += 0.25f;
-                    else if ((d < 0f) && (distance >= 5f))
-                        distance -= 0.25f;
-                }
+                    desktopMovement();
+                else
+                    mobileMovement();
                 newObject.transform.position = Vector3.Lerp(newObject.transform.position, 
                     CheckFloor(transform.position), Time.deltaTime * 20f);
                 //newObject.transform.localPosition = Vector3.Lerp(newObject.transform.position, CheckFloor(transform.position), Time.deltaTime * 20f);
@@ -53,6 +46,38 @@ namespace GameScene
             }
             
             
+        }
+
+        private void mobileMovement()
+        {
+            if (Input.touchCount > 0)
+            {
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+                    firstpoint = Input.GetTouch(0).position;
+                }
+                if (Input.GetTouch(0).phase == TouchPhase.Moved)
+                {
+                    secondpoint = Input.GetTouch(0).position;
+                    rotation.y += (secondpoint.x - firstpoint.x) / Screen.width * 180.0f;
+                    if ((distance <= 50f) && (distance >= 5f))
+                        distance += (secondpoint.y - firstpoint.y) / Screen.height;
+                }
+            }
+        }
+
+        private void desktopMovement()
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+                rotation.y = rotation.y - 10f;
+            if (Input.GetKeyDown(KeyCode.E))
+                rotation.y = rotation.y + 10f;
+            // object distance
+            float d = Input.GetAxis("Mouse ScrollWheel");
+            if ((d > 0f) && (distance <= 50f))
+                distance += 0.25f;
+            else if ((d < 0f) && (distance >= 5f))
+                distance -= 0.25f;
         }
 
         public Vector3 CheckFloor(Vector3 newPosition)

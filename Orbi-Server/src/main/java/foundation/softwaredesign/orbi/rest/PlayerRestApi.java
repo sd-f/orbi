@@ -5,6 +5,7 @@ import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.ElevationService;
 import foundation.softwaredesign.orbi.service.PlayerService;
+import foundation.softwaredesign.orbi.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

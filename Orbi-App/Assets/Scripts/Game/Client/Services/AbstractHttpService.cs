@@ -58,7 +58,7 @@ namespace GameController.Services
             }
             
             if (message != null)
-                Error.Show(message.message);
+                Error.Show("Error: " + message.message);
             else
                 Error.Show(request.error);
            

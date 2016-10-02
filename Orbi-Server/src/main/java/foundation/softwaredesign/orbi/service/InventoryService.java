@@ -8,7 +8,11 @@ import foundation.softwaredesign.orbi.persistence.repo.InventoryRepository;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -17,6 +21,8 @@ import java.util.Objects;
 public class InventoryService {
 
     private static final String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
+    private static final String GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX = "ScifiCrate/ScifiCrate_";
+    private static final String GIFT_CHEST_OBJECT_TYPE_PREFAB = "ScifiCrate/ScifiCrate_1";
     @Inject
     InventoryRepository repository;
     @Inject
@@ -24,18 +30,35 @@ public class InventoryService {
     @Inject
     GameObjectTypeService gameObjectType;
 
+    public void checkForGiftChest(GameObject object) {
+        if (object.getPrefab().startsWith(GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX)) {
+            List<GameObjectTypeEntity> types = gameObjectType.loadAll();
+            for (int i = 0; i < 3; i++) {
+                Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size() + 1);
+                addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,10)));
+            }
+        }
+    }
+
+
     public void checkBasicInventoryAndRestock() {
         InventoryEntity inventoryEntity =
                 repository.findByIdentAndType(userService.getIdentity().getId(),
                         gameObjectType.loadByPrefab(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB).getId());
 
         if (Objects.isNull(inventoryEntity) || (Objects.nonNull(inventoryEntity) && inventoryEntity.getAmount().longValue() <= 0)) {
-            addItem(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB, new Long(100));
+            addItem(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB, new Long(25));
         }
     }
 
     public Inventory getInventory() {
         Inventory inventory = new Inventory();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.HOUR, -3);
+        if (userService.getIdentity().getLastSeen().before(cal.getTime())) {
+            addItem(GIFT_CHEST_OBJECT_TYPE_PREFAB,new Long(1));
+        }
+
         for (InventoryEntity inventoryEntity: repository.findByIdentityId(userService.getIdentity().getId())) {
             inventory.getItems().add(new InventoryItem(inventoryEntity.getGameObjectType().getPrefab(), inventoryEntity.getAmount()));
         }

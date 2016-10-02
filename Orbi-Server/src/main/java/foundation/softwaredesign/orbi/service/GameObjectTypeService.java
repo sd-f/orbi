@@ -7,6 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.ws.rs.BadRequestException;
+import java.util.List;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -23,6 +24,10 @@ public class GameObjectTypeService {
         } catch (NoResultException ex) {
             throw new BadRequestException("Invalid prefab");
         }
+    }
+
+    public List<GameObjectTypeEntity> loadAll() {
+        return repository.findAll();
     }
 
     public GameObjectTypeEntity loadByPrefab(String prefab) {

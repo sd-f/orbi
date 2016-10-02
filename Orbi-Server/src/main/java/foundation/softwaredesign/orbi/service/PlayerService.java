@@ -32,6 +32,7 @@ public class PlayerService {
         Long id = player.getSelectedObjectId();
         GameObject object = gameObjectService.findById(id);
         inventory.addItem(object.getPrefab(), new Long(1));
+        inventory.checkForGiftChest(object);
         world.delete(object.getId());
         return world.getWorld(player.getGeoPosition());
     }

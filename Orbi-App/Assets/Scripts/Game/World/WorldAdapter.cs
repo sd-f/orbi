@@ -20,14 +20,25 @@ namespace GameController
             GeoPosition pos_g = new GeoPosition();
             // get geo center
             GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
+            Position centerVirtual = FromGeoToVirtual(center);
 
-            // translate
-            pos_g.latitude = original_g.latitude - center.latitude;
-            pos_g.longitude = original_g.longitude - center.longitude;
+            pos_g.latitude = original_g.latitude;
+            pos_g.longitude = original_g.longitude;
             pos_g.altitude = original_g.altitude;
+
 
             // to virtual
             Position virtualPosition = FromGeoToVirtual(pos_g);
+
+            // translate
+            virtualPosition.z = virtualPosition.z - centerVirtual.z;
+            virtualPosition.x = virtualPosition.x - centerVirtual.x;
+            // y (altitude)
+            virtualPosition.y = virtualPosition.y + Game.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
+            //virtualPosition.y = virtualPosition.y;
+
+            //Debug.Log("r->v" + original_g + "(" + pos_g + ")" + "<" + virtualPosition);
+
             return virtualPosition;
         }
 
@@ -48,6 +59,9 @@ namespace GameController
 
             // to real
             GeoPosition realPosition = FromVirtualToGeo(pos_v);
+
+            //Debug.Log("v->r" + original_v + ">" + realPosition);
+
             return realPosition;
         }
 
@@ -63,6 +77,7 @@ namespace GameController
             // pos_v  -> pos_p  (2)
             position.z = original.z * 2d;
             position.x = original.x * 2d;
+            position.y = original.y;
 
             //Debug.Log(" -> pos_p " + position);
 
@@ -103,8 +118,6 @@ namespace GameController
 
             //Debug.Log(" <- pos_v " + virtualPosition);
 
-            // y (altitude)
-            virtualPosition.y = virtualPosition.y + Game.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
 
             return virtualPosition;
         }

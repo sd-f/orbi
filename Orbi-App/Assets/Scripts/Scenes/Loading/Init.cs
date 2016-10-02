@@ -21,7 +21,7 @@ namespace LoadingScene
         {
             Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
             yield return Game.GetWorld().UpdateWorld();
-            yield return Game.GetPlayer().LoadInventory();
+            yield return Game.GetPlayer().GetCraftingController().LoadInventory();
             Game.GetLocation().Resume();
             Game.GetPlayer().Unfreeze();
             

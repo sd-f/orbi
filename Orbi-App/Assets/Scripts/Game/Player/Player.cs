@@ -134,11 +134,6 @@ namespace GameController
             return this.loggedIn;
         }
 
-        public IEnumerator LoadInventory()
-        {
-            yield return Game.GetPlayer().GetPlayerService().RequestInventory();
-        }
-
         void OnDestroy()
         {
             CancelInvoke();

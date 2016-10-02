@@ -146,7 +146,7 @@ namespace GameController
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, distanceToCheck, mask))
             {
-                Debug.DrawLine(rayOrigin, hit.point, Color.cyan);
+                //Debug.DrawLine(rayOrigin, hit.point, Color.cyan);
                 return hit.point.y;
             }
             

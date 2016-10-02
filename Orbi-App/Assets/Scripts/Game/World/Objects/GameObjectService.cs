@@ -86,23 +86,5 @@ namespace GameController
             }
         }
 
-        public IEnumerator RequestDestroy()
-        {
-            WWW request = Request("player/destroy", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
-            yield return request;
-            if (request.error == null)
-            {
-                IndicateRequestFinished();
-                ServerModel.World world = JsonUtility.FromJson<ServerModel.World>(request.text);
-                RefreshWorld(Game.GetPlayer().GetModel(), world);
-
-                //Debug.Log("Update terrain took " + (DateTime.Now - startTime));
-                Info.Show("Destroyed!");
-            }
-            else
-                HandleError(request);
-            //craftContainerScript.ClearContainer();
-        }
-
     }
 }

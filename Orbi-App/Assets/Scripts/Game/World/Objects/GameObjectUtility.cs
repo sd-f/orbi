@@ -41,10 +41,24 @@ namespace GameController
 
         internal static void Freeze(GameObject obj)
         {
-            if (GetRigidBody(obj) != null)
+            if (obj.GetComponent<Rigidbody>() != null)
             {
-                GetRigidBody(obj).constraints = RigidbodyConstraints.FreezeAll;
+                obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             }
+            foreach (Transform child in obj.transform)
+            {
+                Freeze(child.gameObject);
+            }
+        }
+
+        internal static long GetId(GameObject obj)
+        {
+            if (obj.name.Contains("container_"))
+            {
+                string id = obj.name.Replace("container_", "");
+                return (long) Convert.ToDouble(id);
+            }
+            return 0;
         }
     }
 }

@@ -20,5 +20,32 @@ namespace GameController.Services
                 HandleError(request);
 
         }
+
+        public IEnumerator RequestCraft(ServerModel.Player player)
+        {
+            WWW request = Request("player/craft", JsonUtility.ToJson(player));
+            yield return request;
+            if (request.error == null)
+            {
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+
+        }
+
+        public IEnumerator RequestDestroy(ServerModel.Player player)
+        {
+            WWW request = Request("player/destroy", JsonUtility.ToJson(player));
+            yield return request;
+            if (request.error == null)
+            {
+                //
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+
+        }
     }
 }

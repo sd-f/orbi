@@ -25,11 +25,13 @@ namespace GameScene
 
         void Update()
         {
+            /*
             Text text = GameObject.Find("DebugText").GetComponent<Text>();
             text.text = "center-pos: " + Game.GetLocation().GetGeoLocation() + "\n"
                 + "player-pos: " + Game.GetPlayer().GetModel().geoPosition + " (frozen=" + Game.GetPlayer().IsFrozen() + ")\n"
                 + "player: " + Game.GetPlayer().GetPlayerBody().transform.position + "\n"
                 + "selected: " + Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
+                */
             compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, magneticFilter.Update(Sensor.GetOrientation().x)), Time.deltaTime * 2);
         }
 

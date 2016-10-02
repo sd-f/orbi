@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using GameScene;
 
 public class BeamCollision : MonoBehaviour {
 	
@@ -12,11 +13,17 @@ public class BeamCollision : MonoBehaviour {
 
 	private BeamParam BP;
 
+    private GameObject destructionContainer;
+    private PlayerDestructionController controller;
+
 	// Use this for initialization
 	void Start () {
 		BL = (BeamLine)this.gameObject.transform.FindChild("BeamLine").GetComponent<BeamLine>();
 		BP = this.transform.root.gameObject.GetComponent<BeamParam>();
-	}
+        destructionContainer = GameObject.Find("DestructionContainer");
+        controller = destructionContainer.GetComponent<PlayerDestructionController>();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -45,8 +52,12 @@ public class BeamCollision : MonoBehaviour {
 				obj.GetComponent<BeamParam>().SetBeamParam(BP);
 				obj.transform.localScale = this.transform.localScale;
 			}
-			//print("find" + hit.collider.gameObject.name);
+
+            controller.Destroy(hit.collider.gameObject);
+            
 		}
+
+
 		/*
 		if(bHit && BL != null)
 		{
@@ -54,4 +65,6 @@ public class BeamCollision : MonoBehaviour {
 		}
 		*/
 	}
+
+    
 }

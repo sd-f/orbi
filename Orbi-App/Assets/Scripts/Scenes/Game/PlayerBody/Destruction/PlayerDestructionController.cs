@@ -10,6 +10,7 @@ namespace GameScene
     {
         public GameObject Shot1;
         public GameObject Wave;
+        public GameObject explosionEffect;
         private bool isDesktopMode = false;
         
 
@@ -39,5 +40,41 @@ namespace GameScene
             wav.GetComponent<BeamWave>().col = this.GetComponent<BeamParam>().BeamColor;
         }
 
+        public void Destroy(GameObject objectToDestroy)
+        {
+            GameObject realContainer = FindObject(objectToDestroy);
+            if (realContainer != null)
+            {
+                // start effect
+                long id = GameObjectUtility.GetId(realContainer);
+                if (id != 0)
+                {
+                    GameObject effect = GameObject.Instantiate(explosionEffect) as GameObject;
+                    effect.transform.position = realContainer.transform.position;
+                    GameObject.Destroy(effect, 3f);
+                    GameObject.Destroy(realContainer);
+                    StartCoroutine(Game.GetPlayer().GetDestructionController().Destroy(id));
+                }
+                    
+            }
+        }
+
+        private GameObject FindObject(GameObject gameObject)
+        {
+            if (gameObject.tag == "DynamicGameObject")
+            {
+                return gameObject;
+            }
+            else
+            {
+                if (gameObject.transform.parent != null)
+                {
+                    return FindObject(gameObject.transform.parent.gameObject);
+                }
+            }
+            return null;
+        }
     }
+
+    
 }

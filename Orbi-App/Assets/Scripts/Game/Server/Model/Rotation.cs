@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace ServerModel
 {
@@ -8,6 +9,13 @@ namespace ServerModel
         public double x = 0.0d;
         public double y = 0.0d;
         public double z = 0.0d;
+
+        public Rotation(Vector3 rotation)
+        {
+            this.x = rotation.x;
+            this.y = rotation.y;
+            this.z = rotation.z;
+        }
 
         public Rotation(int x, int y, int z)
         {

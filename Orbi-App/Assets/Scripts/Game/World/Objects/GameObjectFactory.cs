@@ -8,7 +8,7 @@ namespace GameController
 {
     class GameObjectFactory
     {
-        public static string DEFAULT = "ScifiCrate/ScifiCrate_1";
+        public static string DEFAULT = "Cubes/Bricks";
 
         public static GameObject GetPrefab(string prefab)
         {

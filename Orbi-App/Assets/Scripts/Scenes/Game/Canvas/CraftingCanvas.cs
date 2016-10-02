@@ -47,21 +47,12 @@ namespace GameScene
             {
                 if (Input.GetKeyDown(KeyCode.C))
                     if (!Game.GetPlayer().GetCraftingController().IsCrafting())
-                        StartCrafting();
+                        OnCraft();
                     else
-                        StopCrafting();
-                if (Input.GetKeyDown(KeyCode.Return))
+                        OnCraftCancel();
+                if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Fire1"))
                     if (Game.GetPlayer().GetCraftingController().IsCrafting())
-                    {
-                        controller.Craft();
-                        StopCrafting();
-                    }
-                if (Input.GetButtonDown("Fire1"))
-                    if (Game.GetPlayer().GetCraftingController().IsCrafting())
-                    {
-                        controller.Craft();
-                        StopCrafting();
-                    }
+                        OnCraftOk();
             }
             
         }

@@ -1,6 +1,7 @@
 ﻿using GameScene;
 using ServerModel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -70,6 +71,27 @@ namespace GameController
         public bool IsColliding()
         {
             return this.collission;
+        }
+
+        public IEnumerator LoadInventory()
+        {
+            yield return Game.GetPlayer().GetPlayerService().RequestInventory();
+        }
+
+        public IEnumerator Craft(UnityEngine.GameObject gameObject)
+        {
+            ServerModel.GameObject newObject = new ServerModel.GameObject();
+            newObject.id = -1;
+            newObject.name = "new";
+            newObject.prefab = Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
+            newObject.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
+
+            newObject.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
+            
+            ServerModel.Player player = Game.GetPlayer().GetModel();
+            player.gameObjectToCraft = newObject;
+            yield return Game.GetPlayer().GetPlayerService().RequestCraft(player);
+            yield return Game.GetWorld().UpdateObjects();
         }
 
     }

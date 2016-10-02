@@ -16,7 +16,7 @@ import java.util.Objects;
 @RequestScoped
 public class InventoryService {
 
-    private static final Long ALWAYS_RESTOCK_OBJECT_TYPE_ID = new Long(1);
+    private static final Long ALWAYS_RESTOCK_OBJECT_TYPE_ID = new Long(34);
     @Inject
     InventoryRepository repository;
     @Inject

@@ -11,7 +11,7 @@ import javax.ws.rs.InternalServerErrorException;
 @RequestScoped
 public class ServerService {
 
-    private static Long SERVER_VERSION = new Long(3);
+    private static Long SERVER_VERSION = new Long(4);
 
     public Long getVersion() {
         return SERVER_VERSION;

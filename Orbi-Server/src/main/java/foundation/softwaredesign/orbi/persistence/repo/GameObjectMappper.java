@@ -52,6 +52,10 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     @Override
     protected GameObjectEntity toEntity(GameObjectEntity gameObjectEntity, GameObject gameObject) {
         GameObjectEntity newGameObjectEntity = gameObjectEntity;
+        if (isNull(gameObjectEntity)) {
+            newGameObjectEntity = new GameObjectEntity();
+        }
+
         if (isNull(newGameObjectEntity.getId())) {
             newGameObjectEntity.setIdentity(userService.getIdentity());
             newGameObjectEntity.setCreateDate(new Date());

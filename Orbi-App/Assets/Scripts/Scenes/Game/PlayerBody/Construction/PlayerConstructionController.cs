@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using GameController;
+using System.Collections;
 
 namespace GameScene
 {
@@ -7,6 +8,7 @@ namespace GameScene
     class PlayerConstructionController : MonoBehaviour
     {
         public GameObject camera;
+        public GameObject effectPrefab;
         private bool isDesktopMode = false;
         private bool crafting = false;
         private GameObject newObject;
@@ -36,10 +38,10 @@ namespace GameScene
                         rotation.y = rotation.y + 10f;
                     // object distance
                     float d = Input.GetAxis("Mouse ScrollWheel");
-                    if ((d > 0f) && (distance >= 5f))
-                        distance -= 0.25f;
-                    else if ((d < 0f) && (distance <= 100f))
+                    if ((d > 0f) && (distance <= 50f))
                         distance += 0.25f;
+                    else if ((d < 0f) && (distance >= 5f))
+                        distance -= 0.25f;
                 }
                 newObject.transform.position = Vector3.Lerp(newObject.transform.position, 
                     CheckFloor(transform.position), Time.deltaTime * 20f);
@@ -57,17 +59,13 @@ namespace GameScene
         {
             float height = Game.GetWorld().GetMinHeightForObject(newObject);
             return new Vector3(newPosition.x, height, newPosition.z);
-            //return newPosition;
         }
 
         public void StartCrafting()
         {
             CreateObjectToCraft();
-            //this.body = GameObjectUtility.GetRigidBody(newObject);
             transform.localPosition = new Vector3(0,0,distance);
             newObject.transform.position = CheckFloor(transform.position);
-            //this.body.velocity = new Vector3(1,1,1);
-            //this.body.constraints = RigidbodyConstraints.FreezeRotation;
             Game.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
             this.crafting = true;
         }
@@ -81,7 +79,16 @@ namespace GameScene
 
         public void Craft()
         {
-            Debug.Log("Not implemented, TODO");
+            StartCoroutine(CraftingProcess());
+        }
+
+        IEnumerator CraftingProcess()
+        {
+            GameObject effect = GameObject.Instantiate(effectPrefab) as GameObject;
+            effect.transform.position = newObject.transform.position;
+            GameObject.Destroy(effect, 1.5f);
+            yield return Game.GetPlayer().GetCraftingController().Craft(newObject);
+            CleanUp();
         }
 
 

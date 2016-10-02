@@ -80,6 +80,7 @@ namespace GameController
 
                     position = new Position(offset_z - 128f, 0f, offset_x - 128f);
                     GeoPosition pos_g = position.ToGeoPosition();
+                    //Debug.Log("back: " + pos_g.ToPosition());
                     //Debug.Log(projection.WorldToTilePos(pos_g.longitude, pos_g.latitude)); // for open street maps
                     //Debug.Log("loading: " + offset_x + "," + offset_z + "@" + position + " - " + pos_g);
                     //gout = gout + "new google.maps.LatLng("+ pos_g.latitude+ ","+ pos_g.longitude+ "),\n";

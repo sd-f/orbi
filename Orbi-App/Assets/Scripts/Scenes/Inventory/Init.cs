@@ -22,7 +22,7 @@ namespace InventoryScene
 
         IEnumerator LoadInventory()
         {
-            yield return Game.GetPlayer().LoadInventory();
+            yield return Game.GetPlayer().GetCraftingController().LoadInventory();
 
             GameObject parent = GameObject.Find("InventoryGameObjects");
             GameObjectUtility.DestroyAllChildObjects(parent);

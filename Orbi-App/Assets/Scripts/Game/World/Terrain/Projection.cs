@@ -50,7 +50,7 @@ namespace GameController
             // about a third of a tile past the edge of the world tile.
             //double siny = bound(Math.Sin(degreesToRadians(lat)), -0.9999d, 0.9999d);
             double siny = Math.Sin(degreesToRadians(point.z));
-            point.z = -((.5d * Math.Log((1d + siny) / (1d - siny)) * -_pixelsPerLonRadian));
+            point.z = (.5d * Math.Log((1d + siny) / (1d - siny)) * _pixelsPerLonRadian);
             return point;
         }
 

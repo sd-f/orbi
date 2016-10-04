@@ -13,12 +13,13 @@ namespace GameScene
         private Vector3 gyroRotation = new Vector3(0,0,0);
         private bool gyroEnabled = false;
         private Vector3 targetPosition = new Vector3(0, 0, 0);
+        private float deltaCompass = 0.0f;
         public Camera cam;
 
         void Awake()
         {
             Input.gyro.enabled = true;
-            
+            SensorHelper.ActivateRotation();
             //SensorHelper.ActivateRotation();
             gyroEnabled = Game.GetGame().GetSettings().IsHandheldInputEnabled();
 
@@ -58,25 +59,27 @@ namespace GameScene
 
         public void UpdateDeltaCompass()
         {
-            if (!Game.GetPlayer().IsFrozen())
-                gyroRotation.y = Game.GetLocation().GetCompassValue();
+            Game.GetLocation().SetCompassDelta(gyroRotation.y - Game.GetLocation().GetCompassValue());
+            deltaCompass = Game.GetLocation().GetCompassDelta();
         }
 
         void ApplyGyroRotation()
         {
-            gyroRotation.x -= Input.gyro.rotationRate.x;
-            gyroRotation.y -= Input.gyro.rotationRate.y;
+            gyroRotation.x = SensorHelper.rotation.eulerAngles.x;
+            gyroRotation.y = SensorHelper.rotation.eulerAngles.y;
 
             
             
             Text text = GameObject.Find("DebugText").GetComponent<Text>();
             text.text = "Input.gyro.attitude.eulerAngles: " + Input.gyro.attitude.eulerAngles
-                + "\nGetCompassValue: " + Game.GetLocation().GetCompassValue();
-            
+                + "\nGetCompassValue: " + Game.GetLocation().GetCompassValue()
+                + "\nSensorHelper.rotation.eulerAngles: " + SensorHelper.rotation.eulerAngles
+                + "\ndeltaCompass: " + deltaCompass;
+
             // y on body
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
-                Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.y - Game.GetLocation().GetCompassDelta(), 0.0f)
+                Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.y - deltaCompass, 0.0f)
                 , Time.deltaTime * 5f);
 
             // x on cam

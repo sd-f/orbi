@@ -20,12 +20,12 @@ namespace GameController
             return Resources.Load<GameObject>("Game/Prefabs/" + prefab) as GameObject;
         }
 
-        public static GameObject CreateObject(Transform parent, string prefab, long id, string name, string tag)
+        public static GameObject CreateObject(Transform parent, string prefab, long id, string tag)
         {
-            return CreateObject(parent, prefab, id, name, tag, LayerMask.NameToLayer("Objects"));
+            return CreateObject(parent, prefab, id, tag, LayerMask.NameToLayer("Objects"));
         }
 
-        public static GameObject CreateObject(Transform parent, string prefab, long id, string name, string tag, int layer)
+        public static GameObject CreateObject(Transform parent, string prefab, long id, string tag, int layer)
         {
             GameObject container = new GameObject();
             if (tag != null)

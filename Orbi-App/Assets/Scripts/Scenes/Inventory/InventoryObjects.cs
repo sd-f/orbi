@@ -9,7 +9,7 @@ namespace InventoryScene
     [AddComponentMenu("App/Scenes/Inventory/InventoryObjects")]
     public class InventoryObjects : MonoBehaviour
     {
-        private Vector3 targetPosition = new Vector3(-250f,0f,10f);
+        private Vector3 targetPosition = new Vector3(-250f,0f,15f);
 
         public void SetTargetPosition(Vector3 targetPosition)
         {

@@ -44,7 +44,7 @@ namespace GameController
             {
                 foreach (GameObject oldObject in oldObjects)
                 {
-                    id = Convert.ToInt64(oldObject.gameObject.name.Replace("container_", ""));
+                    id = GameObjectUtility.GetId(oldObject.gameObject);
                     if (id.Equals(gameObject.id))
                     {
                         gameObject.gameObject = oldObject;
@@ -56,7 +56,7 @@ namespace GameController
             {
                 if (gameObject.gameObject == null)
                 {
-                    GameObject newObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, gameObject.name, "DynamicGameObject");
+                    GameObject newObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, "DynamicGameObject");
                     GameObjectUtility.Freeze(newObject);
                     newObject.transform.position = gameObject.geoPosition.ToPosition().ToVector3();
                     GameObjectFactory.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.rotation.y, 0);
@@ -71,7 +71,7 @@ namespace GameController
             foreach (UnityEngine.GameObject oldObject in oldObjects)
             {
                 found = false;
-                id = Convert.ToInt64(oldObject.gameObject.name.Replace("container_", ""));
+                id = GameObjectUtility.GetId(oldObject.gameObject);
                 foreach (ServerModel.GameObject gameObject in world.gameObjects)
                 {
                     if (id.Equals(gameObject.id))

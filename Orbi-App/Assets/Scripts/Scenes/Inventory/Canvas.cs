@@ -1,4 +1,5 @@
-﻿using GameController;
+﻿using CanvasUtility;
+using GameController;
 using ServerModel;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,9 @@ namespace InventoryScene
         private int currentIndex = 0;
         private SortedList<int, InventoryItem> objectsList = new SortedList<int, InventoryItem>();
         private InventoryObjects inventoryObjectsScript;
+        private Vector3 firstpoint;
+        private Vector3 secondpoint;
+        private bool isDesktopMode = false;
         public UnityEngine.GameObject inventoryObjectsContainer;
         public Text amountText;
         
@@ -21,6 +25,7 @@ namespace InventoryScene
         void Awake()
         {
             this.inventoryObjectsScript = inventoryObjectsContainer.GetComponent<InventoryObjects>();
+            isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
         }
 
         public void SetSelected(int selectedIndex)
@@ -50,12 +55,77 @@ namespace InventoryScene
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-                OnLeft();
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-                OnRight();
-            if (Input.GetKeyDown(KeyCode.Return))
-                OnOk();
+            if (isDesktopMode)
+            {
+                if (Input.GetKeyDown(KeyCode.LeftArrow))
+                    OnLeft();
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                    OnRight();
+                if (Input.GetKeyDown(KeyCode.Return))
+                    OnOk();
+            }
+            else
+            {
+                if (Input.touchCount > 0)
+                {
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    {
+                        firstpoint = Input.GetTouch(0).position;
+                    }
+                    if (Input.GetTouch(0).phase == TouchPhase.Ended)
+                    {
+
+                        secondpoint = Input.GetTouch(0).position;
+                        float moved = (secondpoint.x - firstpoint.x) / Screen.width * 20;
+                        /*
+                        Text text = UnityEngine.GameObject.Find("DebugText").GetComponent<Text>();
+                        text.text = "secondpoint.x: " + secondpoint.x
+                            + "\nmoved: " + moved; */
+                        if (moved >= 5)
+                            OnLeft();
+                        if (moved <= -5)
+                            OnRight();
+                        if (moved > -5 && moved < 5)
+                        {
+                            checkTouchObjectSingleTouch(secondpoint);
+                        }
+                    }
+                    
+
+                }
+            }
+        }
+
+        private void checkTouchObjectSingleTouch(Vector2 position)
+        {
+            RaycastHit hit = new RaycastHit();
+            Ray ray = Camera.main.ScreenPointToRay(position);
+            if (Physics.Raycast(ray, out hit))
+            {
+                UnityEngine.GameObject container = GameObjectUtility.GetObjectContainer(hit.transform.gameObject);
+                container.SendMessage("OnTouched", this);
+            }
+        }
+
+        private void checkTouchObject()
+        {
+            int touchCorrection = 1;
+            Info.Show("checkTouchObject");
+            RaycastHit hit = new RaycastHit();
+            for (int i = 0; i + touchCorrection < Input.touchCount; ++i)
+            {
+                Info.Show("checkTouchObject touch");
+                if (Input.GetTouch(i).phase.Equals(TouchPhase.Ended))
+                {
+                    Info.Show("checkTouchObject ended");
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(i).position);
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        Info.Show("checkTouchObject hit");
+                        hit.transform.gameObject.SendMessage("OnTouched");
+                    }
+                }
+            }
         }
 
         public void OnOk()

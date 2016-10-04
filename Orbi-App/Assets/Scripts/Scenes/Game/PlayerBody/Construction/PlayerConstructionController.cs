@@ -124,7 +124,7 @@ namespace GameScene
 
         private void CreateObjectToCraft()
         {
-            newObject = GameObjectFactory.CreateObject(transform, Game.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, "new_", null, LayerMask.NameToLayer("Default"));
+            newObject = GameObjectFactory.CreateObject(transform, Game.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, null, LayerMask.NameToLayer("Default"));
             newObject.transform.rotation = Quaternion.Euler(rotation);
             GameObjectUtility.Freeze(newObject);
             Game.GetPlayer().GetCraftingController().SetCrafting(true, newObject);

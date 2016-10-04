@@ -51,6 +51,22 @@ namespace GameController
             }
         }
 
+
+        internal static GameObject GetObjectContainer(GameObject obj)
+        {
+            return GetObjectContainer(obj, "container_");
+        }
+
+        internal static GameObject GetObjectContainer(GameObject obj, string prefix)
+        {
+            if (obj.name.Contains(prefix))
+                return obj;
+            if (obj.transform.parent != null)
+                if (obj.transform.parent.gameObject != null)
+                    return GetObjectContainer(obj.transform.parent.gameObject, prefix);
+            return null;
+        }
+
         internal static long GetId(GameObject obj)
         {
             if (obj.name.Contains("container_"))

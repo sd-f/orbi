@@ -18,9 +18,18 @@ namespace GameScene
         void Awake()
         {
             Input.gyro.enabled = true;
+            
             //SensorHelper.ActivateRotation();
             gyroEnabled = Game.GetGame().GetSettings().IsHandheldInputEnabled();
-            InvokeRepeating("UpdateDeltaCompass", 0.5f, 5f);
+
+            if (gyroEnabled)
+            {
+                // TODO iphone initial attitude maybe different
+                gyroRotation.x = Input.gyro.attitude.eulerAngles.y - 90f;
+                //gyroRotation.y = Input.gyro.attitude.eulerAngles.z;
+            }
+
+            Invoke("UpdateDeltaCompass", 0.5f);
         }
 
         void Start()
@@ -57,11 +66,13 @@ namespace GameScene
         {
             gyroRotation.x -= Input.gyro.rotationRate.x;
             gyroRotation.y -= Input.gyro.rotationRate.y;
-            /*
+
+            
+            
             Text text = GameObject.Find("DebugText").GetComponent<Text>();
-            text.text = "gyroRotation.eulerAngles: " + gyroRotation
+            text.text = "Input.gyro.attitude.eulerAngles: " + Input.gyro.attitude.eulerAngles
                 + "\nGetCompassValue: " + Game.GetLocation().GetCompassValue();
-                */
+            
             // y on body
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,

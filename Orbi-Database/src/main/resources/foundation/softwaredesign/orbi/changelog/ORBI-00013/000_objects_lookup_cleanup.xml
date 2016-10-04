@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <!-- attention - not revertable -->
+    <changeSet id="cleanup_objects" author="Lucas Reeh">
+        <sql>delete from  public.game_object where game_object_type_id =  3 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  3 ;</sql>
+        <sql>delete from  public.game_object_type where id =  3 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  4 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  4 ;</sql>
+        <sql>delete from  public.game_object_type where id =  4 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id = 5 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  5 ;</sql>
+        <sql>delete from  public.game_object_type where id =  5 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  6 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  6 ;</sql>
+        <sql>delete from  public.game_object_type where id =  6 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  7 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  7 ;</sql>
+        <sql>delete from  public.game_object_type where id =  7 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  8 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  8 ;</sql>
+        <sql>delete from  public.game_object_type where id =  8 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  10 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  10 ;</sql>
+        <sql>delete from  public.game_object_type where id =  10 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  15 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  15 ;</sql>
+        <sql>delete from  public.game_object_type where id =  15 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  16 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  16 ;</sql>
+        <sql>delete from  public.game_object_type where id =  16 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  17 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  17 ;</sql>
+        <sql>delete from  public.game_object_type where id =  17 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  18 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  18 ;</sql>
+        <sql>delete from  public.game_object_type where id =  18 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  19 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  19 ;</sql>
+        <sql>delete from  public.game_object_type where id =  19 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  20 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  20 ;</sql>
+        <sql>delete from  public.game_object_type where id =  20 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  35 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  35 ;</sql>
+        <sql>delete from  public.game_object_type where id =  35 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  36 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  36 ;</sql>
+        <sql>delete from  public.game_object_type where id =  36 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  37 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  37 ;</sql>
+        <sql>delete from  public.game_object_type where id =  37 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  38 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  38 ;</sql>
+        <sql>delete from  public.game_object_type where id =  38 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  39 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  39 ;</sql>
+        <sql>delete from  public.game_object_type where id =  39 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  42 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  42 ;</sql>
+        <sql>delete from  public.game_object_type where id =  42 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  43 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  43 ;</sql>
+        <sql>delete from  public.game_object_type where id =  43 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  44 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  44 ;</sql>
+        <sql>delete from  public.game_object_type where id =  44 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  45 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  45 ;</sql>
+        <sql>delete from  public.game_object_type where id =  45 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  46 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  46 ;</sql>
+        <sql>delete from  public.game_object_type where id =  46 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  47 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  47 ;</sql>
+        <sql>delete from  public.game_object_type where id =  47 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  48 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  48 ;</sql>
+        <sql>delete from  public.game_object_type where id =  48 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  49 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  49 ;</sql>
+        <sql>delete from  public.game_object_type where id =  49 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  50 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  50 ;</sql>
+        <sql>delete from  public.game_object_type where id =  50 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  51 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  51 ;</sql>
+        <sql>delete from  public.game_object_type where id =  51 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  52 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  52 ;</sql>
+        <sql>delete from  public.game_object_type where id =  52 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  54 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  54 ;</sql>
+        <sql>delete from  public.game_object_type where id =  54 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  55 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  55 ;</sql>
+        <sql>delete from  public.game_object_type where id =  55 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  56 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  56 ;</sql>
+        <sql>delete from  public.game_object_type where id =  56 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  57 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  57 ;</sql>
+        <sql>delete from  public.game_object_type where id =  57 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  58 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  58 ;</sql>
+        <sql>delete from  public.game_object_type where id =  58 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  59 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  59 ;</sql>
+        <sql>delete from  public.game_object_type where id =  59 ;</sql>
+
+        <sql>delete from  public.game_object where game_object_type_id =  60 ;</sql>
+        <sql>delete from  public.inventory where game_object_type_id =  60 ;</sql>
+        <sql>delete from  public.game_object_type where id =  60 ;</sql>
+
+    </changeSet>
+
+</databaseChangeLog>

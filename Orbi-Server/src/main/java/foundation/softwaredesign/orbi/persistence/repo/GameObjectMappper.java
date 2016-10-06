@@ -36,12 +36,10 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     protected GameObject toDto(GameObjectEntity objectEntity) {
         GameObject gameObject = new GameObject();
         gameObject.setId(objectEntity.getId());
-        gameObject.setGeoPosition(new GeoPosition());
-        gameObject.getGeoPosition().setLatitude(objectEntity.getLatitude());
-        gameObject.getGeoPosition().setLongitude(objectEntity.getLongitude());
-        gameObject.getGeoPosition().setAltitude(objectEntity.getAltitude());
-        gameObject.setRotation(new Rotation());
-        gameObject.getRotation().setY(objectEntity.getRotationY());
+        gameObject.getTransform().getGeoPosition().setLatitude(objectEntity.getLatitude());
+        gameObject.getTransform().getGeoPosition().setLongitude(objectEntity.getLongitude());
+        gameObject.getTransform().getGeoPosition().setAltitude(objectEntity.getAltitude());
+        gameObject.getTransform().getRotation().setY(objectEntity.getRotationY());
         gameObject.setPrefab(objectEntity.getGameObjectType().getPrefab());
         gameObject.setCreateDate(objectEntity.getCreateDate());
         gameObject.setIdentityId(objectEntity.getIdentity().getId());
@@ -60,15 +58,17 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
             newGameObjectEntity.setIdentity(userService.getIdentity());
             newGameObjectEntity.setCreateDate(new Date());
         }
+        if (nonNull(gameObject.getTransform())){
+            if (nonNull(gameObject.getTransform().getGeoPosition())) {
+                newGameObjectEntity.setLatitude(gameObject.getTransform().getGeoPosition().getLatitude());
+                newGameObjectEntity.setLongitude(gameObject.getTransform().getGeoPosition().getLongitude());
+                newGameObjectEntity.setAltitude(gameObject.getTransform().getGeoPosition().getAltitude());
+            }
+            if (nonNull(gameObject.getTransform().getRotation())) {
+                newGameObjectEntity.setRotationY(gameObject.getTransform().getRotation().getY());
+            }
+        }
 
-        if (nonNull(gameObject.getGeoPosition())) {
-            newGameObjectEntity.setLatitude(gameObject.getGeoPosition().getLatitude());
-            newGameObjectEntity.setLongitude(gameObject.getGeoPosition().getLongitude());
-            newGameObjectEntity.setAltitude(gameObject.getGeoPosition().getAltitude());
-        }
-        if (nonNull(gameObject.getRotation())) {
-            newGameObjectEntity.setRotationY(gameObject.getRotation().getY());
-        }
         newGameObjectEntity.setGameObjectType(gameObjectType.loadByPrefab(gameObject.getPrefab()));
 
         newGameObjectEntity.setName(gameObject.getName());

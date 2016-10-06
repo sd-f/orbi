@@ -2,10 +2,7 @@ package foundation.softwaredesign.orbi.rest;
 
 import foundation.softwaredesign.orbi.model.Player;
 import foundation.softwaredesign.orbi.model.World;
-import foundation.softwaredesign.orbi.service.ElevationService;
-import foundation.softwaredesign.orbi.service.UserService;
-import foundation.softwaredesign.orbi.service.WorldFactory;
-import foundation.softwaredesign.orbi.service.WorldService;
+import foundation.softwaredesign.orbi.service.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,8 +10,8 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -34,6 +31,23 @@ public class WorldRestApi {
     WorldService worldService;
     @Inject
     UserService userService;
+    @Inject
+    CharacterService characterService;
+
+    private void checkPlayerParameter(Player player) {
+        if (isNull(player)) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter())) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter().getTransform())) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter().getTransform().getGeoPosition())) {
+            throw new BadRequestException();
+        }
+    }
 
     @GET
     @Path("/reset")
@@ -51,14 +65,12 @@ public class WorldRestApi {
     }
 
     @POST
+    @Transactional
     @Path("/around")
     public World world(@NotNull Player player) {
-        if (Objects.isNull(player.getGeoPosition())) {
-            return new World();
-        }
-
-        userService.updatePosition(player.getGeoPosition());
-        return worldService.getWorld(player.getGeoPosition());
+        checkPlayerParameter(player);
+        characterService.updateTransform(player.getCharacter().getTransform());
+        return worldService.getWorld(player.getCharacter().getTransform().getGeoPosition());
     }
 
 }

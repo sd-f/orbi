@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.service;
 
+import foundation.softwaredesign.orbi.model.Character;
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.World;
@@ -19,12 +20,16 @@ public class WorldService {
     GameObjectService gameObjectService;
     @Inject
     ElevationService elevationService;
+    @Inject
+    CharacterService characterService;
 
     public World getWorld(GeoPosition geoPosition) {
         World world = new World();
         List<GameObject> gameObjectList = gameObjectService.getObjectAround(geoPosition);
         world.setGameObjects(gameObjectList);
         //elevationService.addAltitude(world);
+        List<Character> characterList = characterService.getCharactersAround(geoPosition);
+        world.setCharacters(characterList);
         return world;
     }
 

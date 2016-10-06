@@ -7,7 +7,7 @@ namespace ServerModel
     public class Player: AbstractModel
     {
 
-        public GeoPosition geoPosition;
+        public Character character = new Character();
         public GameObject gameObjectToCraft;
         public long selectedObjectId;
 

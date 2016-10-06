@@ -9,6 +9,7 @@ namespace ServerModel
     {
 
         public List<GameObject> gameObjects = new List<GameObject>();
+        public List<Character> characters = new List<Character>();
 
     }
 

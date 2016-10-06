@@ -30,6 +30,9 @@ namespace StartScene
             // boot gps location
             yield return Game.GetLocation().Boot();
 
+            // init player
+            yield return Game.GetPlayer().GetPlayerService().RequestInit();
+
             // check logged in
             yield return Game.GetGame().GetAuthService().LoadGameIfAuthorized();
         }

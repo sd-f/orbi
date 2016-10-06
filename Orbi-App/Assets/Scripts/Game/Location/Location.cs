@@ -78,7 +78,7 @@ namespace GameController
             {
                 //Debug.Log(Game.FALLBACK_START_POSITION);
                 Game.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);
-                Game.GetPlayer().GetModel().geoPosition = Game.FALLBACK_START_POSITION;
+                Game.GetPlayer().GetModel().character.transform.geoPosition = Game.FALLBACK_START_POSITION;
                 this.ready = true;
                 Resume();
                 Warning.Show("Location running in LOCAL-mode");

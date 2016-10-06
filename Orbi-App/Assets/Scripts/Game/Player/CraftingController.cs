@@ -84,9 +84,9 @@ namespace GameController
             newObject.id = -1;
             newObject.name = "new";
             newObject.prefab = Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
-            newObject.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
+            newObject.transform.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
 
-            newObject.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
+            newObject.transform.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
             
             ServerModel.Player player = Game.GetPlayer().GetModel();
             player.gameObjectToCraft = newObject;

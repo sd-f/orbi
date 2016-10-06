@@ -1,6 +1,5 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.auth.AuthorizationInfo;
 import foundation.softwaredesign.orbi.model.auth.LoginInfo;
 import foundation.softwaredesign.orbi.model.auth.RequestCodeInfo;
@@ -14,7 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Scope;
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
@@ -22,7 +20,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.InternalServerErrorException;
@@ -65,10 +62,7 @@ public class UserService {
             identityEntity = new IdentityEntity();
             identityEntity.setEmail(requestCodeInfo.getEmail());
         }
-
-
-        setPlayerPosition(identityEntity, requestCodeInfo.getPlayer().getGeoPosition());
-        identityEntity.setLastSeen(new Date());
+        identityEntity.setLastInit(new Date());
 
         String password = RandomStringUtils.randomAlphanumeric(20).toUpperCase();
         identityEntity.setTmpPassword(new ChkPass(password));
@@ -92,8 +86,7 @@ public class UserService {
             throw new InternalServerErrorException("Email or Password incorrect");
         }
 
-        setPlayerPosition(identityEntity, loginInfo.getPlayer().getGeoPosition());
-        identityEntity.setLastSeen(new Date());
+        identityEntity.setLastInit(new Date());
 
         String token = RandomStringUtils.randomAlphanumeric(100);
         identityEntity.setToken(new ChkPass(token));
@@ -103,22 +96,6 @@ public class UserService {
 
         saveUser(identityEntity);
         return authorizationInfo;
-    }
-
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void updatePosition(GeoPosition position) {
-        setPlayerPosition(identityEntity, position);
-        identityEntity.setLastSeen(new Date());
-        saveUser(identityEntity);
-    }
-
-
-    private void setPlayerPosition(IdentityEntity identity, GeoPosition position) {
-        identity.setLatitude(position.getLatitude());
-        identity.setLongitude(position.getLongitude());
-        identity.setElevation(position.getAltitude());
-        identity.setRotationX(new Double(0));
-        identity.setRotationY(new Double(0));
     }
 
     private void saveUser(IdentityEntity identity) {

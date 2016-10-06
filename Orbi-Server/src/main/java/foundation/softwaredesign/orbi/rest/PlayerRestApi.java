@@ -1,11 +1,8 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.Inventory;
-import foundation.softwaredesign.orbi.model.Player;
-import foundation.softwaredesign.orbi.model.World;
+import foundation.softwaredesign.orbi.model.*;
 import foundation.softwaredesign.orbi.service.ElevationService;
 import foundation.softwaredesign.orbi.service.PlayerService;
-import foundation.softwaredesign.orbi.service.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -13,6 +10,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
 
+import static java.util.Objects.isNull;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
@@ -29,10 +27,29 @@ public class PlayerRestApi {
     @Inject
     PlayerService playerService;
 
+    private void checkPlayerParameter(Player player) {
+        if (isNull(player)) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter())) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter().getTransform())) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter().getTransform().getGeoPosition())) {
+            throw new BadRequestException();
+        }
+        if (isNull(player.getCharacter().getTransform().getRotation())) {
+            throw new BadRequestException();
+        }
+    }
+
     @POST
     @Path("/craft")
     @Transactional
     public World craft(@NotNull Player player) {
+        checkPlayerParameter(player);
         return playerService.craft(player);
     }
 
@@ -40,6 +57,7 @@ public class PlayerRestApi {
     @Path("/destroy")
     @Transactional
     public World destroy(@NotNull Player player) {
+        checkPlayerParameter(player);
         return playerService.destroy(player);
     }
 
@@ -49,4 +67,10 @@ public class PlayerRestApi {
         return playerService.getInventory();
     }
 
+    @POST
+    @Transactional
+    @Path("/init")
+    public Player player(@NotNull Transform newTransform) {
+        return playerService.init(newTransform);
+    }
 }

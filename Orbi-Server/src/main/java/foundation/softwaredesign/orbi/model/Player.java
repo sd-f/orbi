@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Player {
     @NotNull
-    private GeoPosition geoPosition;
+    private Character character;
     private GameObject gameObjectToCraft;
     private Long selectedObjectId;
 
@@ -21,12 +21,12 @@ public class Player {
         this.gameObjectToCraft = gameObjectToCraft;
     }
 
-    public GeoPosition getGeoPosition() {
-        return geoPosition;
+    public Character getCharacter() {
+        return character;
     }
 
-    public void setGeoPosition(GeoPosition geoPosition) {
-        this.geoPosition = geoPosition;
+    public void setCharacter(Character character) {
+        this.character = character;
     }
 
     public Long getSelectedObjectId() {

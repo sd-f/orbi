@@ -12,11 +12,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class GeoPosition {
 
     @NotNull
-    private Double latitude;
+    private Double latitude = new Double(0);
     @NotNull
-    private Double longitude;
+    private Double longitude = new Double(0);;
     @NotNull
-    private Double altitude;
+    private Double altitude = new Double(0);;
 
     public GeoPosition() {
     }

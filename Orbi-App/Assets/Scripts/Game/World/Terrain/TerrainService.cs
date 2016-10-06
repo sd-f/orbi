@@ -84,7 +84,7 @@ namespace GameController
                     dummyGeoLocation.z = (i - (HEIGHTMAP_SIZE_SERVER / 2)) * factor;
                     dummyGeoLocation.x = (j - (HEIGHTMAP_SIZE_SERVER / 2)) * factor;
                     dummyGeoLocation.y = 0.0d;
-                    dummyGameObject.geoPosition = dummyGeoLocation.ToGeoPosition();
+                    dummyGameObject.transform.geoPosition = dummyGeoLocation.ToGeoPosition();
                     //Debug.Log(dummyGameObject.geoPosition);
                     dummyWorld.gameObjects.Add(dummyGameObject);
                 }
@@ -98,10 +98,10 @@ namespace GameController
             heightMax = 0d;
             foreach (ServerModel.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
-                if (dummyGameObject.geoPosition.altitude < heightMin)
-                    heightMin = dummyGameObject.geoPosition.altitude;
-                if (dummyGameObject.geoPosition.altitude > heightMax)
-                    heightMax = dummyGameObject.geoPosition.altitude;
+                if (dummyGameObject.transform.geoPosition.altitude < heightMin)
+                    heightMin = dummyGameObject.transform.geoPosition.altitude;
+                if (dummyGameObject.transform.geoPosition.altitude > heightMax)
+                    heightMax = dummyGameObject.transform.geoPosition.altitude;
             }
         }
 
@@ -117,8 +117,8 @@ namespace GameController
 
             foreach (ServerModel.GameObject dummyGameObject in dummyWorld.gameObjects)
             {
-                altitude = dummyGameObject.geoPosition.altitude - heightMin;
-                Position pos = dummyGameObject.geoPosition.ToPosition();
+                altitude = dummyGameObject.transform.geoPosition.altitude - heightMin;
+                Position pos = dummyGameObject.transform.geoPosition.ToPosition();
 
                 x = (int)Math.Round(pos.z);
                 y = (int)Math.Round(pos.x);

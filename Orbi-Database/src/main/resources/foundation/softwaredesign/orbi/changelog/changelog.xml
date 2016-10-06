@@ -70,6 +70,12 @@
 
     <include file="ORBI-00013/000_objects_lookup_cleanup.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00014" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00014" />
+    </changeSet>
+
+    <include file="ORBI-00014/000_character.xml" relativeToChangelogFile="true"/>
+
     <changeSet id="end" author="Lucas Reeh">
         <tagDatabase tag="end" />
     </changeSet>

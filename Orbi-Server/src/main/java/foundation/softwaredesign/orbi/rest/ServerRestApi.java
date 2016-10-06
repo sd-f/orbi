@@ -23,7 +23,7 @@ public class ServerRestApi {
 
     @POST
     @Path("/version")
-    public String user() {
+    public String version() {
         return serverService.getVersion().toString();
     }
 

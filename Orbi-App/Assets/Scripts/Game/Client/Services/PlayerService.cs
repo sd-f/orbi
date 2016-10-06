@@ -34,6 +34,23 @@ namespace GameController.Services
 
         }
 
+        public IEnumerator RequestInit()
+        {
+            ClientModel.Transform newTransform = new ClientModel.Transform();
+            newTransform.geoPosition = Game.GetLocation().GetGeoLocation();
+            WWW request = Request("player/init", JsonUtility.ToJson(newTransform));
+            yield return request;
+            if (request.error == null)
+            {
+                ServerModel.Player player = JsonUtility.FromJson<ServerModel.Player>(request.text);
+                Game.GetPlayer().SetModel(player);
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+
+        }
+
         public IEnumerator RequestDestroy(ServerModel.Player player)
         {
             WWW request = Request("player/destroy", JsonUtility.ToJson(player));

@@ -19,11 +19,11 @@ namespace GameController
         private CraftingController craftingController = new CraftingController();
         private DestructionController destructionController = new DestructionController();
 
-        public static float HEIGHT = 3.0f;
+        public static float HEIGHT = 4.0f;
 
         void Start()
         {
-            player.geoPosition = Game.FALLBACK_START_POSITION;
+            player.character.transform.geoPosition = Game.FALLBACK_START_POSITION;
         }
 
         void Awake()
@@ -62,6 +62,11 @@ namespace GameController
             return this.player;
         }
 
+        public void SetModel(ServerModel.Player model)
+        {
+            this.player = model;
+        }
+
         internal void RestoreRotation()
         {
             if (GetPlayerBody() != null)
@@ -82,8 +87,8 @@ namespace GameController
                 //Info.Show("debug check gps");
                 if (!frozen)
                 {
-                    this.player.geoPosition = Game.GetLocation().GetGeoLocation();
-                    GetPlayerBodyController().SetTargetPosition(this.player.geoPosition.ToPosition().ToVector3());
+                    this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
+                    GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
                 }
             }
         }

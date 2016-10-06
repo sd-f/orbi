@@ -1,6 +1,5 @@
 package foundation.softwaredesign.orbi.model;
 
-import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.List;

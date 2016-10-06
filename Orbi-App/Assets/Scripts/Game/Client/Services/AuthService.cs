@@ -73,6 +73,7 @@ namespace GameController.Services
 
         }
 
+
         public IEnumerator LoadGameIfAuthorized()
         {
             yield return RequestAuthUser();

@@ -62,11 +62,11 @@ public class WorldFactory {
 
         for (Map.Entry<String, GeoPosition> entry : initialObjects.entrySet()) {
             GameObject gameObject = new GameObject();
-            gameObject.setGeoPosition(entry.getValue());
+            gameObject.getTransform().setGeoPosition(entry.getValue());
             gameObject.setName(entry.getKey());
             gameObject.setCreateDate(new Date());
             gameObject.setIdentityId(userService.getIdentity().getId());
-            gameObject.setRotation(new Rotation(0d,0d,0d));
+            gameObject.getTransform().setRotation(new Rotation(0d,0d,0d));
             gameObject.setPrefab("ScifiCrate/ScifiCrate_1");
             if (gameObject.getName().contains("1")) {
                 gameObject.setPrefab("ScifiCrate/ScifiCrate_2");

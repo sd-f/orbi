@@ -9,11 +9,11 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Position {
 
     @NotNull
-    private Double x;
+    private Double x = new Double(0);;
     @NotNull
-    private Double y;
+    private Double y = new Double(0);;
     @NotNull
-    private Double z;
+    private Double z = new Double(0);;
 
     public Position() {
     }

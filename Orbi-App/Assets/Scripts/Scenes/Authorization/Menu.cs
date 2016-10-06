@@ -54,6 +54,7 @@ namespace StartScene
         private IEnumerator Login()
         {
             yield return Game.GetGame().GetAuthService().RequestLogin(emailField.text, codeField.text);
+            yield return Game.GetPlayer().GetPlayerService().RequestInit();
             SetFormEnabled(true);
         }
 

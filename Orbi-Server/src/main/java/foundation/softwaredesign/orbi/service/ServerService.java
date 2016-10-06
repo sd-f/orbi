@@ -19,7 +19,7 @@ public class ServerService {
 
     public void checkVersion(Long clientVersion) {
         if (!clientVersion.equals(SERVER_VERSION)) {
-            throw new VersionNotSupportedException("Client version not matching, please update your app");
+            throw new VersionNotSupportedException("Client version does not match, please update your app");
         }
     }
 }

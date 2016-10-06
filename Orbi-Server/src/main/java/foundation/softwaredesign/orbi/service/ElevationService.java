@@ -21,7 +21,7 @@ public class ElevationService {
 
     public void addAltitude(World world) {
         for (GameObject gameObject : world.getGameObjects()) {
-            addAltitude(gameObject.getGeoPosition());
+            addAltitude(gameObject.getTransform().getGeoPosition());
         }
     }
 

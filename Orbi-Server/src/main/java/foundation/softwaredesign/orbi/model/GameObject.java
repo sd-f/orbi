@@ -10,8 +10,7 @@ import java.util.Date;
 public class GameObject {
 
     private Long id;
-    private GeoPosition geoPosition;
-    private Rotation rotation;
+    private Transform transform = new Transform();
     private String name;
     private String prefab;
     private Date createDate;
@@ -25,28 +24,12 @@ public class GameObject {
         this.name = name;
     }
 
-    public GeoPosition getGeoPosition() {
-        return geoPosition;
-    }
-
-    public void setGeoPosition(GeoPosition geoPosition) {
-        this.geoPosition = geoPosition;
-    }
-
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Rotation getRotation() {
-        return rotation;
-    }
-
-    public void setRotation(Rotation rotation) {
-        this.rotation = rotation;
     }
 
     public String getPrefab() {
@@ -76,5 +59,13 @@ public class GameObject {
 
     public void setIdentityId(Long identityId) {
         this.identityId = identityId;
+    }
+
+    public Transform getTransform() {
+        return transform;
+    }
+
+    public void setTransform(Transform transform) {
+        this.transform = transform;
     }
 }

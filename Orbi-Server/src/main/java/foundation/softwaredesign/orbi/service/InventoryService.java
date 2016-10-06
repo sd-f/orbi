@@ -11,7 +11,6 @@ import javax.ws.rs.NotFoundException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -34,7 +33,7 @@ public class InventoryService {
         if (object.getPrefab().startsWith(GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX)) {
             List<GameObjectTypeEntity> types = gameObjectType.loadAll();
             for (int i = 0; i < 3; i++) {
-                Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size() + 1);
+                Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size());
                 addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,10)));
             }
         }
@@ -55,7 +54,7 @@ public class InventoryService {
         Inventory inventory = new Inventory();
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.HOUR, -3);
-        if (userService.getIdentity().getLastSeen().before(cal.getTime())) {
+        if (userService.getIdentity().getLastInit().before(cal.getTime())) {
             addItem(GIFT_CHEST_OBJECT_TYPE_PREFAB,new Long(1));
         }
 

@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Rotation {
 
-    private Double x;
-    private Double y;
-    private Double z;
+    private Double x = new Double(0);;
+    private Double y = new Double(0);;
+    private Double z = new Double(0);;
 
     public Rotation() {
     }

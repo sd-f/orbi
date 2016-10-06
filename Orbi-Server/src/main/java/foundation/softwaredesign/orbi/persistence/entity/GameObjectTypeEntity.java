@@ -2,7 +2,10 @@ package foundation.softwaredesign.orbi.persistence.entity;
 
 import org.eclipse.persistence.annotations.ReadOnly;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 /**

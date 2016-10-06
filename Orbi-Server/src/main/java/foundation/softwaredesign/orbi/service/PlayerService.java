@@ -1,13 +1,10 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.*;
 import foundation.softwaredesign.orbi.model.Character;
+import foundation.softwaredesign.orbi.model.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.BadRequestException;
-
-import static java.util.Objects.isNull;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>

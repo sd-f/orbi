@@ -4,7 +4,6 @@ import foundation.softwaredesign.orbi.model.exception.ErrorMessage;
 import foundation.softwaredesign.orbi.rest.exception.VersionNotSupportedException;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;

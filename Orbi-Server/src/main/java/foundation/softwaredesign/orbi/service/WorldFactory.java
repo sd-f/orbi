@@ -3,7 +3,6 @@ package foundation.softwaredesign.orbi.service;
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Rotation;
-import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

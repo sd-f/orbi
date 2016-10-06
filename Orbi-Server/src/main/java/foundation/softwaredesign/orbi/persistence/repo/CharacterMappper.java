@@ -1,8 +1,6 @@
 package foundation.softwaredesign.orbi.persistence.repo;
 
 import foundation.softwaredesign.orbi.model.Character;
-import foundation.softwaredesign.orbi.model.GeoPosition;
-import foundation.softwaredesign.orbi.model.Rotation;
 import foundation.softwaredesign.orbi.persistence.entity.CharacterEntity;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 

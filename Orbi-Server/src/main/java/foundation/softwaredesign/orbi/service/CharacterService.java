@@ -1,14 +1,15 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.*;
 import foundation.softwaredesign.orbi.model.Character;
+import foundation.softwaredesign.orbi.model.GeoPosition;
+import foundation.softwaredesign.orbi.model.Position;
+import foundation.softwaredesign.orbi.model.Transform;
 import foundation.softwaredesign.orbi.persistence.repo.CharacterRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;

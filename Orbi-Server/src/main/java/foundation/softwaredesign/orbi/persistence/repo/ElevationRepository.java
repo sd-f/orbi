@@ -1,7 +1,10 @@
 package foundation.softwaredesign.orbi.persistence.repo;
 
 import foundation.softwaredesign.orbi.persistence.entity.ElevationEntity;
-import org.apache.deltaspike.data.api.*;
+import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.data.api.Query;
+import org.apache.deltaspike.data.api.Repository;
+import org.apache.deltaspike.data.api.SingleResultType;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>

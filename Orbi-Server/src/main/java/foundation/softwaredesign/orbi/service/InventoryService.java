@@ -1,6 +1,8 @@
 package foundation.softwaredesign.orbi.service;
 
-import foundation.softwaredesign.orbi.model.*;
+import foundation.softwaredesign.orbi.model.GameObject;
+import foundation.softwaredesign.orbi.model.Inventory;
+import foundation.softwaredesign.orbi.model.InventoryItem;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectTypeEntity;
 import foundation.softwaredesign.orbi.persistence.entity.InventoryEntity;
 import foundation.softwaredesign.orbi.persistence.repo.InventoryRepository;

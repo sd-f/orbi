@@ -3,7 +3,6 @@ package foundation.softwaredesign.orbi.rest.exception.mapper;
 import foundation.softwaredesign.orbi.model.exception.ErrorMessage;
 
 import javax.json.JsonException;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.HttpHeaders;

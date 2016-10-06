@@ -1,6 +1,9 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.*;
+import foundation.softwaredesign.orbi.model.Inventory;
+import foundation.softwaredesign.orbi.model.Player;
+import foundation.softwaredesign.orbi.model.Transform;
+import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.ElevationService;
 import foundation.softwaredesign.orbi.service.PlayerService;
 

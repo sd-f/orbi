@@ -1,7 +1,5 @@
 package foundation.softwaredesign.orbi.model;
 
-import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;

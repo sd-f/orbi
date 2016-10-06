@@ -3,7 +3,6 @@ package foundation.softwaredesign.orbi.service;
 import foundation.softwaredesign.orbi.rest.exception.VersionNotSupportedException;
 
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.InternalServerErrorException;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>

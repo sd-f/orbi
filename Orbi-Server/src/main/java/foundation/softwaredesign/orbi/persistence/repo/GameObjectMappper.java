@@ -1,17 +1,12 @@
 package foundation.softwaredesign.orbi.persistence.repo;
 
 import foundation.softwaredesign.orbi.model.GameObject;
-import foundation.softwaredesign.orbi.model.GeoPosition;
-import foundation.softwaredesign.orbi.model.Rotation;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import foundation.softwaredesign.orbi.service.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.UserService;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
-import javax.ws.rs.BadRequestException;
-
 import java.util.Date;
 
 import static java.util.Objects.isNull;

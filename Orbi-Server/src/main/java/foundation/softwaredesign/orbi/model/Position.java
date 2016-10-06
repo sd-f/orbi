@@ -1,7 +1,6 @@
 package foundation.softwaredesign.orbi.model;
 
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>

@@ -3,6 +3,7 @@ using ServerModel;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using GameScene;
 
 namespace GameController
 {
@@ -23,6 +24,7 @@ namespace GameController
         private GeoPosition centerGeoPosition;
         private MapTextureService textureService;
         private GameObjectService gameObjectService;
+        private UMACreator umaCreator;
 
         void Awake()
         {
@@ -30,6 +32,7 @@ namespace GameController
             this.terrainService = new TerrainService(terrain);
             this.textureService = new MapTextureService();
             this.gameObjectService = new GameObjectService();
+            this.umaCreator = this.GetComponent<UMACreator>();
             InvokeRepeating("RefreshObjects", 1f, 2f);
         }
 
@@ -45,6 +48,11 @@ namespace GameController
                 StartCoroutine(UpdateObjects());
             }
                 
+        }
+
+        public UMACreator GetUMACreator()
+        {
+            return this.umaCreator;
         }
 
         public TerrainService GetTerrainService()

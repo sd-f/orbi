@@ -11,10 +11,12 @@ namespace GameController
     {
 
         GameObject gameObjectsContainer;
+        GameObject charactersContainer;
 
         public GameObjectService()
         {
             gameObjectsContainer = GameObject.Find("Objects");
+            charactersContainer = GameObject.Find("Characters");
         }
 
         public IEnumerator RequestGameObjects()
@@ -96,16 +98,17 @@ namespace GameController
 
         void updateAndCreateCharacters(List<ServerModel.Character> characters)
         {
-            foreach (ServerModel.Character gameObject in characters)
+            foreach (ServerModel.Character character in characters)
             {
-                if (gameObject.gameObject == null)
+                if (character.gameObject == null)
                 {
                     GameObject newObject = null; // TODO GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, "DynamicCharacter");
-                    GameObjectUtility.Transform(newObject, gameObject.transform);
+                    Game.GetWorld().GetUMACreator().GenerateUMA(new Uma(), gameObjectsContainer, "uma_" + character.id);
+                    GameObjectUtility.Transform(newObject, character.transform);
                 }
                 else
                 {
-                    GameObjectUtility.Transform(gameObject.gameObject, gameObject.transform);
+                    GameObjectUtility.Transform(character.gameObject, character.transform);
                 }
             }
         }

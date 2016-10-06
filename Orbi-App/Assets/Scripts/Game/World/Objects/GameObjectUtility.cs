@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ClientModel;
 using UnityEngine;
 
 namespace GameController
@@ -65,6 +66,12 @@ namespace GameController
                 if (obj.transform.parent.gameObject != null)
                     return GetObjectContainer(obj.transform.parent.gameObject, prefix);
             return null;
+        }
+
+        internal static void Transform(GameObject newObject, ClientModel.Transform transform)
+        {
+            newObject.transform.position = transform.geoPosition.ToPosition().ToVector3();
+            newObject.transform.localRotation = Quaternion.Euler(0, (float)transform.rotation.y, 0);
         }
 
         internal static long GetId(GameObject obj)

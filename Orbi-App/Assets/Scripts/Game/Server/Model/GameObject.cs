@@ -12,8 +12,6 @@ namespace ServerModel
         public string prefab;
         public ClientModel.Transform transform = new ClientModel.Transform();
         [NonSerialized]
-        public Position position;
-        [NonSerialized]
         public UnityEngine.GameObject gameObject;
 
     }

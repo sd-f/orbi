@@ -37,7 +37,6 @@ namespace InventoryScene
                 if (item.prefab == Game.GetPlayer().GetCraftingController().GetSelectedPrefab())
                     preselected = id;
                 GameObject newObject = GameObjectFactory.CreateObject(parent.transform, item.prefab, id, null, LayerMask.NameToLayer("Default"));
-                GameObjectUtility.Freeze(newObject);
                 newObject.AddComponent<InventoryObjectSelected>();
                 newObject.transform.localPosition = new Vector3(id * OBJECT_PADDING, 0f, 0f);
                 id++;

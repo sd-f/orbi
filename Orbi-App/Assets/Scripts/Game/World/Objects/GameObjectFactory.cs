@@ -39,6 +39,7 @@ namespace GameController
             // max bounds
             Vector3 boundsSize = new Vector3(0, 0, 0);
             SetLayer(container, layer);
+            GameObjectUtility.Freeze(container);
             return container;
         }
 

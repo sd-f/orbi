@@ -2,6 +2,7 @@
 using GameController.Services;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GameController
@@ -32,58 +33,139 @@ namespace GameController
                 HandleError(request);
         }
 
-        public void RefreshWorld(ServerModel.Player player, ServerModel.World world)
+        void matchExisting(List<ServerModel.GameObject> objects, GameObject[] oldObjects)
         {
-            // TODO update instead of deleta and create
-            GameObject[] oldObjects = GameObject.FindGameObjectsWithTag("DynamicGameObject");
-            // delete removed objects
-            bool found = false;
             long id;
             // match all existing objects
-            foreach (ServerModel.GameObject gameObject in world.gameObjects)
-            {
+            foreach (ServerModel.GameObject gameObject in objects)
                 foreach (GameObject oldObject in oldObjects)
                 {
                     id = GameObjectUtility.GetId(oldObject.gameObject);
                     if (id.Equals(gameObject.id))
-                    {
                         gameObject.gameObject = oldObject;
-                    }
                 }
-                
-            }
-            foreach (ServerModel.GameObject gameObject in world.gameObjects)
+        }
+
+        void updateAndCreate(List<ServerModel.GameObject> objects)
+        {
+            foreach (ServerModel.GameObject gameObject in objects)
             {
                 if (gameObject.gameObject == null)
                 {
                     GameObject newObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, "DynamicGameObject");
-                    GameObjectUtility.Freeze(newObject);
-                    newObject.transform.position = gameObject.transform.geoPosition.ToPosition().ToVector3();
-                    GameObjectFactory.GetObject(newObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.transform.rotation.y, 0);
-                } else
+                    GameObjectUtility.Transform(newObject, gameObject.transform);
+                }
+                else
                 {
-                    gameObject.gameObject.transform.position = gameObject.transform.geoPosition.ToPosition().ToVector3();
-                    GameObjectFactory.GetObject(gameObject.gameObject).transform.localRotation = Quaternion.Euler(0, (float)gameObject.transform.rotation.y, 0);
+                    GameObjectUtility.Transform(gameObject.gameObject, gameObject.transform);
                 }
             }
+        }
+
+        void deleteMissing(List<ServerModel.GameObject> objects, GameObject[] oldObjects)
+        {
+            // delete removed objects
+            bool found = false;
+            long id;
 
             // delete all not existing
             foreach (UnityEngine.GameObject oldObject in oldObjects)
             {
                 found = false;
                 id = GameObjectUtility.GetId(oldObject.gameObject);
-                foreach (ServerModel.GameObject gameObject in world.gameObjects)
-                {
+                foreach (ServerModel.GameObject gameObject in objects)
                     if (id.Equals(gameObject.id))
-                    {
                         found = true;
-                    }
-                }
                 if (!found)
-                {
                     UnityEngine.GameObject.Destroy(oldObject);
+            }
+        }
+
+        void matchExistingCharacters(List<ServerModel.Character> characters, GameObject[] oldCharacters)
+        {
+            long id;
+            // match all existing objects
+            foreach (ServerModel.Character gameObject in characters)
+                foreach (GameObject oldObject in oldCharacters)
+                {
+                    id = GameObjectUtility.GetId(oldObject.gameObject);
+                    if (id.Equals(gameObject.id))
+                        gameObject.gameObject = oldObject;
+                }
+        }
+
+        void updateAndCreateCharacters(List<ServerModel.Character> characters)
+        {
+            foreach (ServerModel.Character gameObject in characters)
+            {
+                if (gameObject.gameObject == null)
+                {
+                    GameObject newObject = null; // TODO GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, "DynamicCharacter");
+                    GameObjectUtility.Transform(newObject, gameObject.transform);
+                }
+                else
+                {
+                    GameObjectUtility.Transform(gameObject.gameObject, gameObject.transform);
                 }
             }
+        }
+
+        void deleteMissingCharacters(List<ServerModel.Character> characters, GameObject[] oldCharacters)
+        {
+            // delete removed objects
+            bool found = false;
+            long id;
+
+            // delete all not existing
+            foreach (UnityEngine.GameObject oldObject in oldCharacters)
+            {
+                found = false;
+                id = GameObjectUtility.GetId(oldObject.gameObject);
+                foreach (ServerModel.Character character in characters)
+                    if (id.Equals(character.id))
+                        found = true;
+                if (!found)
+                    UnityEngine.GameObject.Destroy(oldObject);
+            }
+        }
+
+        void UpdateGameObjects(ServerModel.World world)
+        {
+            GameObject[] oldObjects = GameObject.FindGameObjectsWithTag("DynamicGameObject");
+            List<ServerModel.GameObject> newObjects = world.gameObjects;
+
+            // match all existing objects and set transient gameobject
+            matchExisting(newObjects, oldObjects);
+
+            // create all missing and update transform for existing
+            updateAndCreate(newObjects);
+
+            // delete expired objects
+            deleteMissing(newObjects, oldObjects);
+        }
+
+        void UpdateCharacters(ServerModel.World world)
+        {
+            GameObject[] oldCharacters = GameObject.FindGameObjectsWithTag("DynamicCharacter");
+            List<ServerModel.Character> newCharacters = world.characters;
+
+            // match all existing objects and set transient gameobject
+            matchExistingCharacters(newCharacters, oldCharacters);
+
+            // create all missing and update transform for existing
+            updateAndCreateCharacters(newCharacters);
+
+            // delete expired objects
+            deleteMissingCharacters(newCharacters, oldCharacters);
+        }
+
+        public void RefreshWorld(ServerModel.Player player, ServerModel.World world)
+        {
+            // game objects
+            UpdateGameObjects(world);
+            // update characters maybe reduce update interval
+            UpdateCharacters(world);
+            
         }
 
     }

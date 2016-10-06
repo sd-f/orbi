@@ -90,7 +90,7 @@ namespace GameController
             foreach (ServerModel.Character gameObject in characters)
                 foreach (GameObject oldObject in oldCharacters)
                 {
-                    id = GameObjectUtility.GetId(oldObject.gameObject);
+                    id = GameObjectUtility.GetId(oldObject.gameObject, "uma_");
                     if (id.Equals(gameObject.id))
                         gameObject.gameObject = oldObject;
                 }
@@ -102,8 +102,10 @@ namespace GameController
             {
                 if (character.gameObject == null)
                 {
-                    GameObject newObject = null; // TODO GameObjectFactory.CreateObject(gameObjectsContainer.transform, gameObject.prefab, gameObject.id, "DynamicCharacter");
-                    Game.GetWorld().GetUMACreator().GenerateUMA(new Uma(), gameObjectsContainer, "uma_" + character.id);
+                    
+                    GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(new Uma(), charactersContainer, "uma_" + character.id);
+                    newObject.layer = LayerMask.NameToLayer("Objects");
+                    newObject.tag = "DynamicCharacter";
                     GameObjectUtility.Transform(newObject, character.transform);
                 }
                 else
@@ -123,7 +125,7 @@ namespace GameController
             foreach (UnityEngine.GameObject oldObject in oldCharacters)
             {
                 found = false;
-                id = GameObjectUtility.GetId(oldObject.gameObject);
+                id = GameObjectUtility.GetId(oldObject.gameObject, "uma_");
                 foreach (ServerModel.Character character in characters)
                     if (id.Equals(character.id))
                         found = true;

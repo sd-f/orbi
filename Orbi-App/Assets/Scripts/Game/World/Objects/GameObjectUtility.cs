@@ -72,9 +72,14 @@ namespace GameController
 
         internal static long GetId(GameObject obj)
         {
-            if (obj.name.Contains("container_"))
+            return GetId(obj, "container_");
+        }
+
+        internal static long GetId(GameObject obj, string prefix)
+        {
+            if (obj.name.Contains(prefix))
             {
-                string id = obj.name.Replace("container_", "");
+                string id = obj.name.Replace(prefix, "");
                 return (long) Convert.ToDouble(id);
             }
             return 0;

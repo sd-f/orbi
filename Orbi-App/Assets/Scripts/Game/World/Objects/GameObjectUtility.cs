@@ -36,6 +36,15 @@ namespace GameController
             return null;
         }
 
+        public static void SetLayer(GameObject obj, int layer)
+        {
+            obj.layer = layer;
+            foreach (Transform child in obj.transform)
+            {
+                SetLayer(child.gameObject, layer);
+            }
+        }
+
         internal static void Freeze(GameObject obj)
         {
             if (obj.GetComponent<Rigidbody>() != null)
@@ -69,6 +78,8 @@ namespace GameController
             newObject.transform.position = transform.geoPosition.ToPosition().ToVector3();
             newObject.transform.localRotation = Quaternion.Euler(0, (float)transform.rotation.y, 0);
         }
+
+
 
         internal static long GetId(GameObject obj)
         {

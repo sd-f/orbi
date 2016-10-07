@@ -103,8 +103,8 @@ namespace GameController
                 if (character.gameObject == null)
                 {
                     
-                    GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(new Uma(), charactersContainer, "uma_" + character.id);
-                    newObject.layer = LayerMask.NameToLayer("Objects");
+                    GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(charactersContainer, "uma_" + character.id);
+                    GameObjectUtility.SetLayer(newObject, LayerMask.NameToLayer("Objects"));
                     newObject.tag = "DynamicCharacter";
                     GameObjectUtility.Transform(newObject, character.transform);
                 }

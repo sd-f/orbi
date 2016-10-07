@@ -10,6 +10,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +72,10 @@ public class CharacterService {
         GeoPosition west = worldAdapter.toGeo(new Position(-128d,0d,0d), geoPosition);
         GeoPosition east = worldAdapter.toGeo(new Position(128d,0d,0d), geoPosition);
         List<Character> characterList = repository.findCharactersAround(north.getLatitude(),south.getLatitude(),west.getLongitude(),east.getLongitude());
-        characterList.removeIf(character -> character.getId().equals(mySelf.getId()));
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, -1);
+        System.out.println(cal.getTime());
+        characterList.removeIf(character -> (character.getId().equals(mySelf.getId()) || character.getLastSeen().before(cal.getTime())));
         return characterList;
     }
 

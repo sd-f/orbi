@@ -38,21 +38,14 @@ namespace GameController
             newObject.name = "object_" + id;
             // max bounds
             Vector3 boundsSize = new Vector3(0, 0, 0);
-            SetLayer(container, layer);
+            GameObjectUtility.SetLayer(container, layer);
             GameObjectUtility.Freeze(container);
             return container;
         }
 
 
 
-        public static void SetLayer(GameObject obj, int layer)
-        {
-            obj.layer = layer;
-            foreach (Transform child in obj.transform)
-            {
-                SetLayer(child.gameObject, layer);
-            }
-        }
+        
 
         
         public static GameObject GetObject(GameObject obj)

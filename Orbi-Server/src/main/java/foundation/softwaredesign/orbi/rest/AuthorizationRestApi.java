@@ -30,6 +30,7 @@ public class AuthorizationRestApi {
     @Path("/user")
     public Response user() {
         // will fail if not authorized - filter
+        userService.updateLastInit();
         sleep();
         return Response.status(Response.Status.OK).build();
     }

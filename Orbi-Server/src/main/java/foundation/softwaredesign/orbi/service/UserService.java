@@ -121,4 +121,8 @@ public class UserService {
         return true;
     }
 
+    public void updateLastInit() {
+        identityEntity.setLastInit(new Date());
+        saveUser(identityEntity);
+    }
 }

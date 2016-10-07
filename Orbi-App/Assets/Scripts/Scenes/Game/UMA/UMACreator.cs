@@ -15,18 +15,24 @@ namespace GameScene
         public RaceLibrary raceLibrary;
         public RuntimeAnimatorController animController;
 
-        public GameObject GenerateUMA(Uma uma, GameObject parent, string containerName)
+        public GameObject GenerateUMA(GameObject parent, string containerName)
         {
             GameObject container = new GameObject(containerName);
             container.transform.SetParent(parent.transform);
-            
-            uma.umaDynamicAvatar = container.AddComponent<UMADynamicAvatar>();
 
+            GameObject umaObject = new GameObject(containerName + "_dynamic_avatar");
+            umaObject.transform.SetParent(container.transform);
+            
+            Uma uma = umaObject.AddComponent<Uma>();
+            uma.umaDynamicAvatar = umaObject.AddComponent<UMADynamicAvatar>();
+            //uma.umaDynamicAvatar.loadOnStart = true; 
+            
 
             // setup data
             uma.umaDynamicAvatar.Initialize();
-            //uma.umaDynamicAvatar.gameObject.layer = LayerMask.NameToLayer("Objects");
+            
             uma.umaData = uma.umaDynamicAvatar.umaData;
+            uma.umaData.OnCharacterCreated += Created;
 
             // Attach our generator
             uma.umaDynamicAvatar.umaGenerator = generator;
@@ -50,7 +56,13 @@ namespace GameScene
 
             // generate uma
             uma.umaDynamicAvatar.UpdateNewRace();
+            
             return container;
+        }
+
+        void Created(UMAData data)
+        {
+            GameObjectUtility.SetLayer(data.gameObject, LayerMask.NameToLayer("Objects"));
         }
 
         void CreateMale(Uma uma)

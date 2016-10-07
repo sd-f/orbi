@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UMA;
+using UnityEngine;
 
 namespace GameController
 {
-    public class Uma
+    public class Uma : MonoBehaviour
     {
         public UMADynamicAvatar umaDynamicAvatar;
         public UMAData umaData;

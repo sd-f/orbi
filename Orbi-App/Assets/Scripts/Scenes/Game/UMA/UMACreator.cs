@@ -2,6 +2,7 @@
 using System.Collections;
 using UMA;
 using GameController;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace GameScene
 {
@@ -17,12 +18,17 @@ namespace GameScene
 
         public GameObject GenerateUMA(GameObject parent, string containerName)
         {
-            GameObject container = new GameObject(containerName);
+            GameObject container = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Character")) as GameObject;
+            container.name = containerName;
             container.transform.SetParent(parent.transform);
+            container.transform.localPosition = Vector3.zero;
+            container.transform.localRotation = Quaternion.identity;
 
             GameObject umaObject = new GameObject(containerName + "_dynamic_avatar");
             umaObject.transform.SetParent(container.transform);
-            
+            umaObject.transform.localPosition = Vector3.zero;
+            umaObject.transform.localRotation = Quaternion.identity;
+
             Uma uma = umaObject.AddComponent<Uma>();
             uma.umaDynamicAvatar = umaObject.AddComponent<UMADynamicAvatar>();
             //uma.umaDynamicAvatar.loadOnStart = true; 
@@ -63,6 +69,7 @@ namespace GameScene
         void Created(UMAData data)
         {
             GameObjectUtility.SetLayer(data.gameObject, LayerMask.NameToLayer("Objects"));
+            data.gameObject.transform.parent.gameObject.GetComponent<ThirdPersonCharacter>().SetAnimator(data.gameObject.GetComponent<Animator>());
         }
 
         void CreateMale(Uma uma)

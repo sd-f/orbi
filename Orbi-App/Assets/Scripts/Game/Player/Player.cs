@@ -1,5 +1,7 @@
-﻿using GameController.Services;
+﻿using ClientModel;
+using GameController.Services;
 using GameScene;
+using ServerModel;
 using System;
 using System.Collections;
 using UnityEngine;
@@ -19,7 +21,7 @@ namespace GameController
         private CraftingController craftingController = new CraftingController();
         private DestructionController destructionController = new DestructionController();
 
-        public static float HEIGHT = 4.0f;
+        public static float HEIGHT = 0.8f;
 
         void Start()
         {
@@ -88,6 +90,7 @@ namespace GameController
                 if (!frozen)
                 {
                     this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
+                    this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                     GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
                 }
             }
@@ -107,7 +110,8 @@ namespace GameController
                     Freeze();
                     this.rotationBeforeOutOfBounds = GetPlayerBody().transform.rotation;
                     this.positionBeforeOutOfBounds = GetPlayerBody().transform.position;
-                    
+                    Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
+                    Game.GetPlayer().GetModel().character.transform.position = new Position();
                     Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 }
                 

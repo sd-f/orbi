@@ -2,6 +2,8 @@
 using GameController;
 using System;
 using UnityEngine.UI;
+using ServerModel;
+using ClientModel;
 
 namespace GameScene
 {
@@ -30,17 +32,23 @@ namespace GameScene
                 //gyroRotation.y = Input.gyro.attitude.eulerAngles.z;
             }
 
-            Invoke("UpdateDeltaCompass", 0.5f);
+            Invoke("UpdateDeltaCompass", 1f);
+            InvokeRepeating("UpdateTransformInModel", 1f,1f);
         }
 
         void Start()
         {
             Input.gyro.enabled = true;
+            // restore rotation + position
+
+            SetTargetPosition(Game.GetPlayer().GetModel().character.transform.position.ToVector3());
+            SetRotation(Game.GetPlayer().GetModel().character.transform.rotation.ToVector3());
             //SensorHelper.ActivateRotation();
         }
 
         void Update()
         {
+            
             if (!Game.GetPlayer().IsFrozen() && gyroEnabled)
             {
                 this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
@@ -50,11 +58,25 @@ namespace GameScene
                 
         }
 
+        void UpdateTransformInModel()
+        {
+            
+            Game.GetPlayer().GetModel().character.transform.geoPosition = new Position(this.transform.position).ToGeoPosition();
+            Game.GetPlayer().GetModel().character.transform.position = new Position(this.transform.position);
+            Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(cam.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y,0);
+        }
+
         public void SetTargetPosition(Vector3 targetPosition)
         {
             this.targetPosition.x = targetPosition.x;
             this.targetPosition.z = targetPosition.z;
             this.targetPosition.y = this.transform.position.y;
+        }
+
+        public void SetRotation(Vector3 rotation)
+        {
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, rotation.y, 0));
+            cam.transform.rotation = Quaternion.Euler(new Vector3(rotation.x, cam.transform.rotation.eulerAngles.y, 0));
         }
 
         public void UpdateDeltaCompass()
@@ -70,12 +92,12 @@ namespace GameScene
 
             
             
-            Text text = GameObject.Find("DebugText").GetComponent<Text>();
+           /* Text text = GameObject.Find("DebugText").GetComponent<Text>();
             text.text = "Input.gyro.attitude.eulerAngles: " + Input.gyro.attitude.eulerAngles
                 + "\nGetCompassValue: " + Game.GetLocation().GetCompassValue()
                 + "\nSensorHelper.rotation.eulerAngles: " + SensorHelper.rotation.eulerAngles
                 + "\ndeltaCompass: " + deltaCompass;
-
+                */
             // y on body
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
@@ -132,6 +154,11 @@ namespace GameScene
         public void ResetPosition()
         {
             transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
+        }
+
+        void OnDestroy()
+        {
+            CancelInvoke();
         }
 
     }

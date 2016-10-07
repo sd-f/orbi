@@ -8,7 +8,7 @@ namespace GameController
     static class ServerConstants
     {
         public static string SERVER_URL = "https://softwaredesign.foundation/orbi/api";
-        public static string SERVER_DEV_URL = "https://softwaredesign.foundation/orbi-dev/api";
+        public static string SERVER_DEV_URL = "https://softwaredesign.foundation/orbi/api";
         public static string SERVER_LOCALHOST_URL = "http://localhost:8080/api";
 
         public static string GetServerUrl(ServerType type)

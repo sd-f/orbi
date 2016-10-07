@@ -50,6 +50,11 @@ namespace GameController
                 
         }
 
+        internal GameObjectService GetGameObjectService()
+        {
+            return this.gameObjectService;
+        }
+
         public UMACreator GetUMACreator()
         {
             return this.umaCreator;

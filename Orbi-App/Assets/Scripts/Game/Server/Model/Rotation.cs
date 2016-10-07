@@ -14,6 +14,13 @@ namespace ServerModel
         {
         }
 
+        public Rotation(Quaternion rotation)
+        {
+            this.x = rotation.eulerAngles.x;
+            this.y = rotation.eulerAngles.y;
+            this.z = rotation.eulerAngles.z;
+        }
+
         public Rotation(Vector3 rotation)
         {
             this.x = rotation.x;
@@ -21,11 +28,21 @@ namespace ServerModel
             this.z = rotation.z;
         }
 
-        public Rotation(int x, int y, int z)
+        public Rotation(double x, double y, double z)
         {
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public Vector3 ToVector3()
+        {
+            return new Vector3((float)x, (float)y, (float)z);
+        }
+
+        public Quaternion ToQuaternion()
+        {
+            return Quaternion.Euler(this.ToVector3());
         }
     }
 }

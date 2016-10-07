@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace GameController
 {
@@ -90,7 +91,7 @@ namespace GameController
             foreach (ServerModel.Character gameObject in characters)
                 foreach (GameObject oldObject in oldCharacters)
                 {
-                    id = GameObjectUtility.GetId(oldObject.gameObject, "uma_");
+                    id = GameObjectUtility.GetId(oldObject.gameObject, "uma_container_");
                     if (id.Equals(gameObject.id))
                         gameObject.gameObject = oldObject;
                 }
@@ -102,15 +103,36 @@ namespace GameController
             {
                 if (character.gameObject == null)
                 {
-                    
-                    GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(charactersContainer, "uma_" + character.id);
+                    GameObject newObjectContainer = new GameObject();
+                    newObjectContainer.name = "uma_container_" + character.id;
+                    newObjectContainer.transform.SetParent(charactersContainer.transform);
+                    newObjectContainer.tag = "DynamicCharacter";
+                    GameObjectUtility.SetLayer(newObjectContainer, LayerMask.NameToLayer("Objects"));
+                    GameObjectUtility.Transform(newObjectContainer, character.transform);
+
+
+                    GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(newObjectContainer, "uma_" + character.id);
                     GameObjectUtility.SetLayer(newObject, LayerMask.NameToLayer("Objects"));
-                    newObject.tag = "DynamicCharacter";
-                    GameObjectUtility.Transform(newObject, character.transform);
+
+                    GameObject newObjectTarget = new GameObject();
+                    GameObjectUtility.SetLayer(newObjectTarget, LayerMask.NameToLayer("Objects"));
+                    newObjectTarget.name = "uma_target_" + character.id;
+                    newObjectTarget.transform.SetParent(newObjectContainer.transform);
+
+                    newObject.GetComponent<AICharacterControl>().SetTarget(newObjectTarget.transform);
+
+                    //newObject.gameObject.GetComponent<UMAMovement>().SetTransform(newObjectTarget.transform);
                 }
                 else
                 {
-                    GameObjectUtility.Transform(character.gameObject, character.transform);
+                    
+                    
+                    foreach (Transform child in character.gameObject.transform)
+                        if (child.name.Equals("uma_" + character.id))
+                            child.GetComponent<Rigidbody>().MoveRotation(character.transform.rotation.ToQuaternion());
+                    foreach (Transform child in character.gameObject.transform)
+                        if (child.name.Equals("uma_target_" + character.id))
+                            GameObjectUtility.Transform(child.gameObject, character.transform);
                 }
             }
         }
@@ -125,7 +147,7 @@ namespace GameController
             foreach (UnityEngine.GameObject oldObject in oldCharacters)
             {
                 found = false;
-                id = GameObjectUtility.GetId(oldObject.gameObject, "uma_");
+                id = GameObjectUtility.GetId(oldObject.gameObject, "uma_container_");
                 foreach (ServerModel.Character character in characters)
                     if (id.Equals(character.id))
                         found = true;
@@ -151,6 +173,8 @@ namespace GameController
 
         void UpdateCharacters(ServerModel.World world)
         {
+            
+            
             GameObject[] oldCharacters = GameObject.FindGameObjectsWithTag("DynamicCharacter");
             List<ServerModel.Character> newCharacters = world.characters;
 

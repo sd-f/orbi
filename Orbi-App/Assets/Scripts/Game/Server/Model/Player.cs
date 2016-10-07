@@ -8,7 +8,7 @@ namespace ServerModel
     {
 
         public Character character = new Character();
-        public GameObject gameObjectToCraft;
+        public GameObject gameObjectToCraft = new GameObject();
         public long selectedObjectId;
 
     }

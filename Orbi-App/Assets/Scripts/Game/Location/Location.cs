@@ -74,7 +74,7 @@ namespace GameController
 
         public IEnumerator Boot()
         {
-            if (Game.GetClient().serverType == ServerType.LOCAL)
+            if (Game.GetClient().serverType == ServerType.LOCAL || Game.GetClient().serverType == ServerType.DEV)
             {
                 //Debug.Log(Game.FALLBACK_START_POSITION);
                 Game.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);

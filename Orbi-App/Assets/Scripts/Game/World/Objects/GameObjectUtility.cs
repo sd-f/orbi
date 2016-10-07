@@ -1,4 +1,5 @@
 ﻿using System;
+using ClientModel;
 using UnityEngine;
 
 namespace GameController
@@ -8,7 +9,7 @@ namespace GameController
 
         public static void DestroyAllChildObjects(GameObject parent)
         {
-            foreach (Transform child in parent.transform)
+            foreach (UnityEngine.Transform child in parent.transform)
             {
                 GameObject.Destroy(child.gameObject);
             }
@@ -25,7 +26,7 @@ namespace GameController
 
         public static Rigidbody GetRigidBodyInChildren(GameObject obj)
         {
-            foreach (Transform child in obj.transform)
+            foreach (UnityEngine.Transform child in obj.transform)
             {
                 if (child.gameObject.GetComponent<Rigidbody>() != null)
                 {
@@ -39,7 +40,7 @@ namespace GameController
         public static void SetLayer(GameObject obj, int layer)
         {
             obj.layer = layer;
-            foreach (Transform child in obj.transform)
+            foreach (UnityEngine.Transform child in obj.transform)
             {
                 SetLayer(child.gameObject, layer);
             }
@@ -51,7 +52,7 @@ namespace GameController
             {
                 obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
             }
-            foreach (Transform child in obj.transform)
+            foreach (UnityEngine.Transform child in obj.transform)
             {
                 Freeze(child.gameObject);
             }
@@ -73,13 +74,22 @@ namespace GameController
             return null;
         }
 
-        internal static void Transform(GameObject newObject, ClientModel.Transform transform)
+        internal static void Transform(GameObject gameObject, ClientModel.Transform transform)
         {
-            newObject.transform.position = transform.geoPosition.ToPosition().ToVector3();
-            newObject.transform.localRotation = Quaternion.Euler(0, (float)transform.rotation.y, 0);
+            Translate(gameObject, transform.geoPosition);
+            Rotate(gameObject, transform.rotation);
+            
         }
 
+        internal static void Rotate(GameObject gameObject, ServerModel.Rotation rotation)
+        {
+            gameObject.transform.localRotation = Quaternion.Euler(0, (float)rotation.y, 0);
+        }
 
+        internal static void Translate(GameObject gameObject, ServerModel.GeoPosition geoPosition)
+        {
+            gameObject.transform.position = geoPosition.ToPosition().ToVector3();
+        }
 
         internal static long GetId(GameObject obj)
         {
@@ -95,5 +105,7 @@ namespace GameController
             }
             return 0;
         }
+
+        
     }
 }

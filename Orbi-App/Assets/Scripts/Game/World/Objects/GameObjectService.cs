@@ -129,7 +129,7 @@ namespace GameController
 
                     foreach (Transform child in character.gameObject.transform)
                         if (child.name.Equals("uma_" + character.id))
-                            child.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3((float)character.transform.rotation.x, 0f))); // character.transform.rotation.ToQuaternion());
+                            child.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3(0f, (float)character.transform.rotation.y, 0f))); // character.transform.rotation.ToQuaternion());
                     foreach (Transform child in character.gameObject.transform)
                         if (child.name.Equals("uma_target_" + character.id))
                             GameObjectUtility.Transform(child.gameObject, character.transform);

@@ -74,7 +74,6 @@ public class CharacterService {
         List<Character> characterList = repository.findCharactersAround(north.getLatitude(),south.getLatitude(),west.getLongitude(),east.getLongitude());
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.MINUTE, -1);
-        System.out.println(cal.getTime());
         characterList.removeIf(character -> (character.getId().equals(mySelf.getId()) || character.getLastSeen().before(cal.getTime())));
         return characterList;
     }

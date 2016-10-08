@@ -57,7 +57,10 @@ public class CharacterService {
         Long maxXp = statisticsRepository.findMaxXp();
         Long xr = new Long(0);
         if (nonNull(maxXp) && !maxXp.equals(new Long(0)) && !character.getXp().equals(new Long(0))) {
-            xr = (character.getXp() / maxXp) * new Long(100);
+            Double xp = character.getXp().doubleValue();
+            Double maxXPDouble = maxXp.doubleValue();
+            Double percentage = xp / maxXPDouble * 100d;
+            xr = percentage.longValue();
         }
         character.setXr(xr);
     }

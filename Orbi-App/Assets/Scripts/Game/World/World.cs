@@ -26,6 +26,11 @@ namespace GameController
         private GameObjectService gameObjectService;
         private UMACreator umaCreator;
 
+        void Start()
+        {
+            Invoke("RefreshObjects", 2f);
+        }
+
         void Awake()
         {
             this.backGroundLayerMask = backgroundLayersTerrain;
@@ -33,20 +38,21 @@ namespace GameController
             this.textureService = new MapTextureService();
             this.gameObjectService = new GameObjectService();
             this.umaCreator = this.GetComponent<UMACreator>();
-            Invoke("RefreshObjects", 2f);
+            
         }
 
         public IEnumerator UpdateObjects()
         {
-            yield return gameObjectService.RequestGameObjects();
-            Invoke("RefreshObjects", 2f);
+            if (Game.GetLocation().IsReady())
+                yield return gameObjectService.RequestGameObjects();
+            if (!IsInvoking("RefreshObjects"))
+                Invoke("RefreshObjects", 2f);
             
         }
 
         public void RefreshObjects()
         {
-            if (Game.GetLocation().IsReady())
-                StartCoroutine(UpdateObjects());
+           StartCoroutine(UpdateObjects());
         }
 
         internal GameObjectService GetGameObjectService()
@@ -173,6 +179,7 @@ namespace GameController
         void OnDestroy()
         {
             // cleanup dynamic splats
+            CancelInvoke();
             GetTerrainService().SetMapsSplats(new SortedList<int, SplatPrototype>());
         }
 

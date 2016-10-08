@@ -94,7 +94,7 @@ namespace GameController
                     this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                     GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
                 }
-            Invoke("CheckGPSPosition", 1f);
+            Invoke("CheckGPSPosition", 2f);
         }
 
         void CheckIfOutOfBounds()

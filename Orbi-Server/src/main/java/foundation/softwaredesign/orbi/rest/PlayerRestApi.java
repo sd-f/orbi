@@ -103,8 +103,8 @@ public class PlayerRestApi {
 
     @POST
     @Transactional
-    @Path("/init")
-    public Player player(@NotNull Transform newTransform) {
-        return playerService.init(newTransform);
+    @Path("/update")
+    public Player update(@NotNull Transform newTransform) {
+        return playerService.update(newTransform);
     }
 }

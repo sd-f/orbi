@@ -11,7 +11,7 @@ namespace CanvasUtility
     {
         void Awake()
         {
-            InvokeRepeating("CheckForNewMessages", 0, 0.5f);
+            Invoke("CheckForNewMessages", 0.5f);
         }
 
         void CheckForNewMessages()
@@ -25,6 +25,7 @@ namespace CanvasUtility
                     GenerateMessageObject(message);
                 }
             }
+            Invoke("CheckForNewMessages", 0.5f);
         }
 
         void GenerateMessageObject(Message message)

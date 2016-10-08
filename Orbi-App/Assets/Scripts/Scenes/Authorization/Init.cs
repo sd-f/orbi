@@ -15,6 +15,7 @@ namespace AuthorizationScene
             Cursor.visible = true;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
+            Game.GetGame().EnterTypingMode();
         }
 
         void Update()

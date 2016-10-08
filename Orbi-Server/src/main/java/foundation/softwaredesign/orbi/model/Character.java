@@ -13,6 +13,7 @@ public class Character {
     private Long id;
     private String name;
     private Long xp;
+    private Long xr;
     private Transform transform = new Transform();
     @XmlTransient
     private Date lastSeen;
@@ -65,5 +66,13 @@ public class Character {
 
     public void setIdentityId(Long identityId) {
         this.identityId = identityId;
+    }
+
+    public Long getXr() {
+        return xr;
+    }
+
+    public void setXr(Long xr) {
+        this.xr = xr;
     }
 }

@@ -11,6 +11,7 @@ namespace GameScene
         {
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
+            Game.GetGame().LeaveTypingMode();
             Game.GetPlayer().RestoreRotation();
         }
 

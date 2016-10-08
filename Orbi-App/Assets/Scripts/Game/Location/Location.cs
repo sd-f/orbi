@@ -27,7 +27,7 @@ namespace GameController
             UpdateLocation();
             Game.GetWorld().SetCenterGeoPosition(position);
             ready = true;
-            InvokeRepeating("UpdateLocation", 0.1f, 0.1f);
+            Invoke("UpdateLocation", 0.1f);
         }
 
         public bool IsReady()
@@ -42,9 +42,9 @@ namespace GameController
 
         public void UpdateLocation(double latitude, double longitude)
         {
-
             position.latitude = latitude;
             position.longitude = longitude;
+            Invoke("UpdateLocation", 0.1f);
         }
 
         void UpdateLocation()

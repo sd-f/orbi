@@ -24,7 +24,7 @@ namespace GameScene
         {
             if (isDesktopMode)
             {
-                if (Input.GetKeyDown(KeyCode.F))
+                if (Input.GetKeyDown(KeyCode.F) && !Game.GetGame().IsInTypingMode())
                     checkTouchObjectSingleTouch();
             }
             else

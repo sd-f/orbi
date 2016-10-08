@@ -46,12 +46,12 @@ namespace GameScene
         {
             if (isDesktopMode)
             {
-                if (Input.GetKeyDown(KeyCode.C))
+                if (Input.GetKeyDown(KeyCode.C) && !Game.GetGame().IsInTypingMode())
                     if (!Game.GetPlayer().GetCraftingController().IsCrafting())
                         OnCraft();
                     else
                         OnCraftCancel();
-                if (Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Fire1"))
+                if ((Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Fire1")) && !Game.GetGame().IsInTypingMode())
                     if (Game.GetPlayer().GetCraftingController().IsCrafting())
                         OnCraftOk();
             }

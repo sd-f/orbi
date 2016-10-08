@@ -24,7 +24,7 @@ namespace GameScene
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.I))
+            if (Input.GetKeyDown(KeyCode.I) && !Game.GetGame().IsInTypingMode())
                 Game.GetGame().LoadScene(Game.GameScene.InventoryScene);
 
         }

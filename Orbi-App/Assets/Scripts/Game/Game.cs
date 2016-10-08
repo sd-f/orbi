@@ -24,6 +24,8 @@ namespace GameController
         private ServerService serverService;
         private GameScene currentScene = GameScene.StartScene;
 
+        private bool typingMode = false;
+
         // settings
         private Settings settings = new Settings();
 
@@ -134,6 +136,20 @@ namespace GameController
             return WORLD;
         }
 
+        public void EnterTypingMode()
+        {
+            this.typingMode = true;
+        }
+
+        public void LeaveTypingMode()
+        {
+            this.typingMode = false;
+        }
+
+        public bool IsInTypingMode()
+        {
+            return typingMode;
+        }
 
         public AuthService GetAuthService()
         {

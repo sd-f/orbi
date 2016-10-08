@@ -34,8 +34,8 @@ namespace GameController
 
         void Awake()
         {
-            InvokeRepeating("CheckIfOutOfBounds", 0, 0.5f);
-            InvokeRepeating("CheckGPSPosition", 0, 1f);
+            Invoke("CheckIfOutOfBounds", 0.5f);
+            Invoke("CheckGPSPosition", 1f);
         }
 
         internal bool IsFrozen()
@@ -94,6 +94,7 @@ namespace GameController
                     this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                     GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
                 }
+            Invoke("CheckGPSPosition", 1f);
         }
 
         void CheckIfOutOfBounds()
@@ -116,6 +117,7 @@ namespace GameController
                 }
                 
             }
+            Invoke("CheckIfOutOfBounds", 0.5f);
         }
 
         public PlayerBodyController GetPlayerBodyController()

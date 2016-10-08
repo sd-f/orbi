@@ -35,7 +35,7 @@ namespace GameScene
             }
 
             Invoke("UpdateDeltaCompass", 1f);
-            InvokeRepeating("UpdateTransformInModel", 1f,1f);
+            Invoke("UpdateTransformInModel", 1f);
         }
 
         void Start()
@@ -67,8 +67,9 @@ namespace GameScene
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
-                firstPersonController.mouseLook.SetCursorLock(true);
                 firstPersonController.enabled = true;
+                firstPersonController.mouseLook.SetCursorLock(true);
+                
             }
             else
             {
@@ -81,10 +82,10 @@ namespace GameScene
 
         void UpdateTransformInModel()
         {
-            
             Game.GetPlayer().GetModel().character.transform.geoPosition = new Position(this.transform.position).ToGeoPosition();
             Game.GetPlayer().GetModel().character.transform.position = new Position(this.transform.position);
             Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(cam.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y,0);
+            Invoke("UpdateTransformInModel", 1f);
         }
 
         public void SetTargetPosition(Vector3 targetPosition)

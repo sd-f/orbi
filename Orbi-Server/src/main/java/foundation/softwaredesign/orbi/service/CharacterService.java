@@ -5,6 +5,7 @@ import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Position;
 import foundation.softwaredesign.orbi.model.Transform;
 import foundation.softwaredesign.orbi.persistence.repo.CharacterRepository;
+import foundation.softwaredesign.orbi.persistence.repo.CharacterStatisticsRepository;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.enterprise.context.RequestScoped;
@@ -16,14 +17,23 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static java.util.Objects.nonNull;
+
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 @RequestScoped
 public class CharacterService {
 
+    public final static Long XP_DESTROY = new Long(3);
+    public final static Long XP_CRAFT = new Long(10);
+    public final static Long XP_MESSAGE = new Long(2);
+    public final static Long XP_LOGIN = new Long(1);
+
     @Inject
     CharacterRepository repository;
+    @Inject
+    CharacterStatisticsRepository statisticsRepository;
     @Inject
     UserService user;
     @Inject
@@ -41,6 +51,21 @@ public class CharacterService {
         Long identityId = user.getIdentity().getId();
         Character character = createIfNotExists(identityId);
         return character;
+    }
+
+    public void calculateExperienceRank(Character character) {
+        Long maxXp = statisticsRepository.findMaxXp();
+        Long xr = new Long(0);
+        if (nonNull(maxXp) && !maxXp.equals(new Long(0)) && !character.getXp().equals(new Long(0))) {
+            xr = (character.getXp() / maxXp) * new Long(100);
+        }
+        character.setXr(xr);
+    }
+
+    public Character incrementXp(Long by) {
+        Character character = loadCurrent();
+        character.setXp(character.getXp() + by);
+        return repository.saveAndFlushAndRefresh(character);
     }
 
     private Character createIfNotExists(Long identityId) {
@@ -66,7 +91,7 @@ public class CharacterService {
         Character currentCharacter = loadCurrent();
         currentCharacter.setTransform(newTransform);
         currentCharacter.setLastSeen(new Date());
-        return repository.saveAndFlushAndRefresh(currentCharacter);
+        return repository.saveAndFlush(currentCharacter);
     }
 
     public List<Character> getCharactersAround(GeoPosition geoPosition) {

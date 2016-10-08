@@ -10,6 +10,7 @@ namespace ServerModel
         public ClientModel.Transform transform = new ClientModel.Transform();
         public string name;
         public long xp;
+        public long xr;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;
 

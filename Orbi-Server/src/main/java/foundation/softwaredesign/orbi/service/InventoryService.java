@@ -30,6 +30,8 @@ public class InventoryService {
     UserService userService;
     @Inject
     GameObjectTypeService gameObjectType;
+    @Inject
+    CharacterService characterService;
 
     public void checkForGiftChest(GameObject object) {
         if (object.getPrefab().startsWith(GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX)) {
@@ -57,6 +59,7 @@ public class InventoryService {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.HOUR, -3);
         if (userService.getIdentity().getLastInit().before(cal.getTime())) {
+            characterService.incrementXp(CharacterService.XP_LOGIN);
             addItem(GIFT_CHEST_OBJECT_TYPE_PREFAB,new Long(1));
         }
 

@@ -54,7 +54,7 @@ namespace StartScene
         private IEnumerator Login()
         {
             yield return Game.GetGame().GetAuthService().RequestLogin(emailField.text, codeField.text);
-            yield return Game.GetPlayer().GetPlayerService().RequestInit();
+            yield return Game.GetPlayer().GetPlayerService().RequestUpdate();
             SetFormEnabled(true);
         }
 
@@ -65,5 +65,6 @@ namespace StartScene
             codeField.interactable = enabled;
             loginButton.interactable = enabled;
         }
+
     }
 }

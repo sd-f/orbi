@@ -25,12 +25,12 @@ namespace GameScene
 
         void Start()
         {
-            InvokeRepeating("CheckForMessages", 1f, 5f);
+            Invoke("CheckForMessages", 5f);
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.M))
+            if (Input.GetKeyDown(KeyCode.M) && (!Game.GetGame().IsInTypingMode() || isChatWindowActive))
                 ToggleMessagesScrollView();
 
         }
@@ -41,6 +41,7 @@ namespace GameScene
             if (!isChatWindowActive)
             {
                 Read();
+                Game.GetGame().EnterTypingMode();
                 Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
                 
                 GameObjectUtility.DestroyAllChildObjects(messagesContainer);
@@ -52,6 +53,7 @@ namespace GameScene
                 }
             } else
             {
+                Game.GetGame().LeaveTypingMode();
                 Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
             }
             isChatWindowActive = !isChatWindowActive;
@@ -79,16 +81,18 @@ namespace GameScene
 
         void CheckForMessages()
         {
-            StartCoroutine("LoadMessages");
+            StartCoroutine(LoadMessages());
         }
 
         IEnumerator LoadMessages()
         {
             yield return Game.GetPlayer().GetMessageService().RequestMessages(this);
+            Invoke("CheckForMessages", 5f);
         }
 
         public void ShowInteractionForm(string characterName, long characterId)
         {
+            Game.GetGame().EnterTypingMode();
             Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
             this.selectedCharacterId = characterId;
             this.characterNameText.text = characterName;
@@ -97,11 +101,13 @@ namespace GameScene
 
         void CleanupAndHideForm()
         {
+            Game.GetGame().LeaveTypingMode();
             if (!isChatWindowActive)
                 Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
             this.selectedCharacterId = -1;
             this.messageInputField.text = null;
             this.characterNameText.text = "...";
+            isInteractionWindowActive = false;
             this.interactionPanel.SetActive(false);
         }
 

@@ -46,6 +46,7 @@ public class CharacterMessageService {
             throw new WebApplicationException("Character is busy or not available");
         }
         message.setFromCharacterId(character.loadCurrent().getId());
+        character.incrementXp(CharacterService.XP_MESSAGE);
         repository.saveAndFlush(message);
     }
 

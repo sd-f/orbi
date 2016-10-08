@@ -33,21 +33,20 @@ namespace GameController
             this.textureService = new MapTextureService();
             this.gameObjectService = new GameObjectService();
             this.umaCreator = this.GetComponent<UMACreator>();
-            InvokeRepeating("RefreshObjects", 1f, 2f);
+            Invoke("RefreshObjects", 2f);
         }
 
         public IEnumerator UpdateObjects()
         {
             yield return gameObjectService.RequestGameObjects();
+            Invoke("RefreshObjects", 2f);
+            
         }
 
         public void RefreshObjects()
         {
             if (Game.GetLocation().IsReady())
-            {
                 StartCoroutine(UpdateObjects());
-            }
-                
         }
 
         internal GameObjectService GetGameObjectService()

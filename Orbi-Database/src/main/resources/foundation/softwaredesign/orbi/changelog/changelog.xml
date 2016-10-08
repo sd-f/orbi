@@ -10,71 +10,7 @@
         <tagDatabase tag="begin" />
     </changeSet>
 
-    <changeSet id="before_ORBI-00001" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00001" />
-    </changeSet>
-
-    <include file="ORBI-00001/000_tables.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00002" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00002" />
-    </changeSet>
-
-    <include file="ORBI-00002/000_tables.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00003" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00003" />
-    </changeSet>
-
-    <include file="ORBI-00003/000_tables.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00008" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00008" />
-    </changeSet>
-
-    <include file="ORBI-00008/000_tables.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00008.1" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00008.1" />
-    </changeSet>
-
-    <include file="ORBI-00008.1/000_tables.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00009" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00009" />
-    </changeSet>
-
-    <include file="ORBI-00009/000_tables.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00009_001_content" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00009_001_content" />
-    </changeSet>
-
-    <include file="ORBI-00009/001_content.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00009_002_alter" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00009_002_alter" />
-    </changeSet>
-
-    <include file="ORBI-00009/002_alter.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00009_003_objects_lookup" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00009_003_objects_lookup" />
-    </changeSet>
-
-    <include file="ORBI-00009/003_objects_lookup.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00013" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00013" />
-    </changeSet>
-
-    <include file="ORBI-00013/000_objects_lookup_cleanup.xml" relativeToChangelogFile="true"/>
-
-    <changeSet id="before_ORBI-00014" author="Lucas Reeh">
-        <tagDatabase tag="before_ORBI-00014" />
-    </changeSet>
-
-    <include file="ORBI-00014/000_character.xml" relativeToChangelogFile="true"/>
+    <include file="1/0/alpha/changelog.xml" relativeToChangelogFile="true"/>
 
     <changeSet id="end" author="Lucas Reeh">
         <tagDatabase tag="end" />

@@ -27,6 +27,7 @@ namespace GameController.Services
             yield return request;
             if (request.error == null)
             {
+                Game.GetPlayer().GetCraftingController().RemoveInventoryItem(player.gameObjectToCraft.prefab);
                 IndicateRequestFinished();
             }
             else

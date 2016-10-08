@@ -38,6 +38,35 @@ namespace GameController
             return this.selectedPrefab;
         }
 
+        internal bool HasInventoryItem(string prefab)
+        {
+            InventoryItem itemToRemove = GetInventoryItem(prefab);
+            return ((itemToRemove != null) && (itemToRemove.amount > 0));
+        }
+
+        internal void RemoveInventoryItem(string prefab)
+        {
+            InventoryItem itemToRemove = GetInventoryItem(prefab);
+            if ((itemToRemove != null) && (itemToRemove.amount > 0))
+                itemToRemove.amount--;
+        }
+
+        internal InventoryItem GetInventoryItem(string prefab)
+        {
+            foreach(InventoryItem item in inventory.items)
+                if (item.prefab.Equals(prefab))
+                    return item;
+            return null;
+        }
+
+        internal InventoryItem GetNextAvailableItem()
+        {
+            foreach (InventoryItem item in inventory.items)
+                if (item.amount > 0)
+                    return item;
+            return null;
+        }
+
         public void SetSelectedPrefab(String selectedPrefab)
         {
             this.selectedPrefab = selectedPrefab;
@@ -89,6 +118,7 @@ namespace GameController
             ServerModel.Player player = Game.GetPlayer().GetModel();
             player.gameObjectToCraft = newObject;
             yield return Game.GetPlayer().GetPlayerService().RequestCraft(player);
+            yield return LoadInventory();
             yield return Game.GetWorld().UpdateObjects();
         }
 

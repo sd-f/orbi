@@ -1,4 +1,5 @@
-﻿using GameController;
+﻿using CanvasUtility;
+using GameController;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -59,29 +60,21 @@ namespace GameScene
 
         private void StartCrafting()
         { 
-            SetButtonState(craftButton, false);
-            SetButtonState(craftOkButton, true);
-            SetButtonState(craftCancelButton, true);
+            ButtonUtility.SetButtonState(craftButton, false);
+            ButtonUtility.SetButtonState(craftOkButton, true);
+            ButtonUtility.SetButtonState(craftCancelButton, true);
             controller.StartCrafting();
         }
 
         private void StopCrafting()
         {
-            SetButtonState(craftButton, true);
-            SetButtonState(craftOkButton, false);
-            SetButtonState(craftCancelButton, false);
+            ButtonUtility.SetButtonState(craftButton, true);
+            ButtonUtility.SetButtonState(craftOkButton, false);
+            ButtonUtility.SetButtonState(craftCancelButton, false);
             controller.StopCrafting();
         }
 
-        private void SetButtonState(GameObject button, bool state)
-        {
-            button.GetComponent<Button>().interactable = state;
-            button.GetComponent<Image>().enabled = state;
-            foreach(Image image in button.GetComponentsInChildren<Image>())
-            {
-                image.enabled = state;
-            }
-        }
+        
 
     }
 }

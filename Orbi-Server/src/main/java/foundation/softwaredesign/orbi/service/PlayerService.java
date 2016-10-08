@@ -5,6 +5,8 @@ import foundation.softwaredesign.orbi.model.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
+import java.util.logging.Logger;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -35,10 +37,14 @@ public class PlayerService {
     public World destroy(Player player) {
         characterService.updateTransform(player.getCharacter().getTransform());
         Long id = player.getSelectedObjectId();
-        GameObject object = gameObjectService.findById(id);
-        inventory.addItem(object.getPrefab(), new Long(1));
-        inventory.checkForGiftChest(object);
-        world.delete(object.getId());
+        try {
+            GameObject object = gameObjectService.findById(id);
+            inventory.addItem(object.getPrefab(), new Long(1));
+            inventory.checkForGiftChest(object);
+            world.delete(object.getId());
+        } catch (NotFoundException ex) {
+            Logger.getLogger(PlayerService.class.getName()).fine(ex.getMessage());
+        }
         return world.getWorld(player.getCharacter().getTransform().getGeoPosition());
     }
 

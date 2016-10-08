@@ -20,6 +20,8 @@ namespace InventoryScene
         private bool isDesktopMode = false;
         public UnityEngine.GameObject inventoryObjectsContainer;
         public Text amountText;
+        public UnityEngine.GameObject leftButton;
+        public UnityEngine.GameObject rightButton;
         
 
         void Awake()
@@ -33,7 +35,9 @@ namespace InventoryScene
             currentIndex = selectedIndex;
             InventoryItem item = objectsList[currentIndex];
             SetAmountText(item.amount);
+            checkButtons();
             inventoryObjectsScript.MoveToPosition(currentIndex * Init.OBJECT_PADDING);
+            
         }
 
         public void OnLeft()
@@ -139,6 +143,20 @@ namespace InventoryScene
         public SortedList<int, InventoryItem> GetObjectsList()
         {
             return this.objectsList;
+        }
+
+        private void checkButtons()
+        {
+            int left = currentIndex - 1;
+            int right = currentIndex + 1;
+            if (objectsList.ContainsKey(right))
+                ButtonUtility.SetButtonState(rightButton, true);
+            else
+                ButtonUtility.SetButtonState(rightButton, false);
+            if (objectsList.ContainsKey(left))
+                ButtonUtility.SetButtonState(leftButton, true);
+            else
+                ButtonUtility.SetButtonState(leftButton, false);
         }
 
     }

@@ -124,9 +124,17 @@ namespace GameScene
 
         private void CreateObjectToCraft()
         {
+            checkInventory();
             newObject = GameObjectFactory.CreateObject(transform, Game.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, null, LayerMask.NameToLayer("Default"));
             newObject.transform.rotation = Quaternion.Euler(rotation);
             Game.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
+        }
+
+        void checkInventory()
+        {
+            if (!Game.GetPlayer().GetCraftingController().HasInventoryItem(Game.GetPlayer().GetCraftingController().GetSelectedPrefab())) {
+                Game.GetPlayer().GetCraftingController().SetSelectedPrefab(Game.GetPlayer().GetCraftingController().GetNextAvailableItem().prefab);
+            }
         }
 
         private void CleanUp()

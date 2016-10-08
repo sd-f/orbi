@@ -1,9 +1,7 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.Inventory;
-import foundation.softwaredesign.orbi.model.Player;
-import foundation.softwaredesign.orbi.model.Transform;
-import foundation.softwaredesign.orbi.model.World;
+import foundation.softwaredesign.orbi.model.*;
+import foundation.softwaredesign.orbi.service.CharacterMessageService;
 import foundation.softwaredesign.orbi.service.ElevationService;
 import foundation.softwaredesign.orbi.service.PlayerService;
 
@@ -29,6 +27,8 @@ public class PlayerRestApi {
     ElevationService elevationService;
     @Inject
     PlayerService playerService;
+    @Inject
+    CharacterMessageService characterMessageService;
 
     private void checkPlayerParameter(Player player) {
         if (isNull(player)) {
@@ -44,6 +44,21 @@ public class PlayerRestApi {
             throw new BadRequestException();
         }
         if (isNull(player.getCharacter().getTransform().getRotation())) {
+            throw new BadRequestException();
+        }
+    }
+
+    private void checkMessageParameter(CharacterMessage message) {
+        if (isNull(message)) {
+            throw new BadRequestException();
+        }
+        if (isNull(message.getToCharacter())) {
+            throw new BadRequestException();
+        }
+        if (isNull(message.getMessage())) {
+            throw new BadRequestException();
+        }
+        if (message.getMessage().isEmpty()) {
             throw new BadRequestException();
         }
     }
@@ -68,6 +83,22 @@ public class PlayerRestApi {
     @Path("/inventory")
     public Inventory inventory() {
         return playerService.getInventory();
+    }
+
+    @GET
+    @Path("/messages")
+    public CharacterMessages messages() {
+        CharacterMessages messages = new CharacterMessages();
+        messages.getMessages().addAll(characterMessageService.getMessages());
+        return messages;
+    }
+
+    @POST
+    @Transactional
+    @Path("/message")
+    public void message(@NotNull CharacterMessage message) {
+        checkMessageParameter(message);
+        characterMessageService.createMessage(message);
     }
 
     @POST

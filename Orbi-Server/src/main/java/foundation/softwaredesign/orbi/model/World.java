@@ -1,6 +1,7 @@
 package foundation.softwaredesign.orbi.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,8 +10,8 @@ import java.util.List;
 @XmlRootElement
 public class World {
 
-    private List<GameObject> gameObjects;
-    private List<Character> characters;
+    private List<GameObject> gameObjects = new ArrayList<>();
+    private List<Character> characters = new ArrayList<>();
 
     public List<Character> getCharacters() {
         return characters;

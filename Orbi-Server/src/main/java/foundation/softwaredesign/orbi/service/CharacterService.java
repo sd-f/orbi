@@ -33,6 +33,10 @@ public class CharacterService {
         return repository.findByIdentityId(identityId);
     }
 
+    public Character loadById(Long id) {
+        return repository.findBy(id);
+    }
+
     public Character loadCurrent() {
         Long identityId = user.getIdentity().getId();
         Character character = createIfNotExists(identityId);

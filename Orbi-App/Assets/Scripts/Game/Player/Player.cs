@@ -4,6 +4,7 @@ using GameScene;
 using ServerModel;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace GameController
@@ -12,6 +13,7 @@ namespace GameController
     class Player : MonoBehaviour
     {
         private PlayerService playerService = new PlayerService();
+        private MessageService messageService = new MessageService();
         private Vector3 positionBeforeOutOfBounds = new Vector3(0, 0, 0);
         private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
         private bool loggedIn = false;
@@ -20,6 +22,8 @@ namespace GameController
         
         private CraftingController craftingController = new CraftingController();
         private DestructionController destructionController = new DestructionController();
+
+        private List<CharacterMessage> messages = new List<CharacterMessage>();
 
         public static float HEIGHT = 0.8f;
 
@@ -72,9 +76,7 @@ namespace GameController
         internal void RestoreRotation()
         {
             if (GetPlayerBody() != null)
-            {
                 GetPlayerBody().transform.rotation = rotationBeforeOutOfBounds;
-            }
         }
 
         public Vector3 GetPositionBeforeOutOfBounds()
@@ -85,7 +87,6 @@ namespace GameController
         public void CheckGPSPosition()
         {
             if (GetPlayerBody() != null)
-            {
                 //Info.Show("debug check gps");
                 if (!frozen)
                 {
@@ -93,7 +94,6 @@ namespace GameController
                     this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                     GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
                 }
-            }
         }
 
         void CheckIfOutOfBounds()
@@ -133,6 +133,11 @@ namespace GameController
             return playerService;
         }
 
+        public MessageService GetMessageService()
+        {
+            return messageService;
+        }
+
         public void SetLoggedIn(Boolean loggedIn)
         {
             this.loggedIn = loggedIn;
@@ -141,6 +146,11 @@ namespace GameController
         public Boolean IsLoggedIn()
         {
             return this.loggedIn;
+        }
+
+        public List<CharacterMessage> GetMessages()
+        {
+            return this.messages;
         }
 
         void OnDestroy()

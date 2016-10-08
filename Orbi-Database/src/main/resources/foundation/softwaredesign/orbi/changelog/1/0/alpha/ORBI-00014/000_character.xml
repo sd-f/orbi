@@ -66,4 +66,18 @@
         <sql>ALTER TABLE public.identity rename last_seen TO last_init;</sql>
     </changeSet>
 
+    <changeSet id="character_xp_index" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX character_experience_points_idx
+            ON public.character (experience_points);
+        </sql>
+    </changeSet>
+
+    <changeSet id="character_name_index" author="Lucas Reeh">
+        <sql>
+            CREATE INDEX character_name_idx
+            ON public.character (name);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

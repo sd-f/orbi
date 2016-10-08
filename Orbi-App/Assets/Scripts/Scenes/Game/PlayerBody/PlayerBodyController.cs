@@ -4,6 +4,7 @@ using System;
 using UnityEngine.UI;
 using ServerModel;
 using ClientModel;
+using UnityStandardAssets.Characters.FirstPerson;
 
 namespace GameScene
 {
@@ -16,6 +17,7 @@ namespace GameScene
         private bool gyroEnabled = false;
         private Vector3 targetPosition = new Vector3(0, 0, 0);
         private float deltaCompass = 0.0f;
+        private MyFirstPersonController firstPersonController;
         public Camera cam;
 
         void Awake()
@@ -38,6 +40,7 @@ namespace GameScene
 
         void Start()
         {
+            firstPersonController = GetComponent<MyFirstPersonController>();
             Input.gyro.enabled = true;
             // restore rotation + position
 
@@ -56,6 +59,24 @@ namespace GameScene
             if (gyroEnabled)
                 ApplyGyroRotation();
                 
+        }
+
+        public void SetMouseRotationEnabled(bool enabled)
+        {
+            if (enabled)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                firstPersonController.mouseLook.SetCursorLock(true);
+                firstPersonController.enabled = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Confined;
+                Cursor.visible = true;
+                firstPersonController.enabled = false;
+                firstPersonController.mouseLook.SetCursorLock(false);
+            }
         }
 
         void UpdateTransformInModel()

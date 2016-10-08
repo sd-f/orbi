@@ -34,6 +34,9 @@ public class GameObjectEntity {
     @NotNull
     private Date createDate;
 
+    @Column
+    private String userText;
+
     @ManyToOne
     @NotNull
     private IdentityEntity identity;
@@ -113,5 +116,13 @@ public class GameObjectEntity {
 
     public void setGameObjectType(GameObjectTypeEntity gameObjectType) {
         this.gameObjectType = gameObjectType;
+    }
+
+    public String getUserText() {
+        return userText;
+    }
+
+    public void setUserText(String userText) {
+        this.userText = userText;
     }
 }

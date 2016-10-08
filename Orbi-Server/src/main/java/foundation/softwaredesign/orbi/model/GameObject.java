@@ -15,6 +15,7 @@ public class GameObject {
     private String prefab;
     private Date createDate;
     private Long identityId;
+    private String userText;
 
     public String getName() {
         return name;
@@ -67,5 +68,13 @@ public class GameObject {
 
     public void setTransform(Transform transform) {
         this.transform = transform;
+    }
+
+    public String getUserText() {
+        return userText;
+    }
+
+    public void setUserText(String userText) {
+        this.userText = userText;
     }
 }

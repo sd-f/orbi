@@ -8,7 +8,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
     [AddComponentMenu("App/Scenes/Game/RigidbodyFirstPersonController")]
     [RequireComponent(typeof (Rigidbody))]
     [RequireComponent(typeof (CapsuleCollider))]
-    public class RigidbodyFirstPersonController : MonoBehaviour
+    public class MyFirstPersonController : MonoBehaviour
     {
         [Serializable]
         public class MovementSettings

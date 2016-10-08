@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace GameScene
 {
-    [AddComponentMenu("App/Scenes/Game/CraftingCollision")]
+    [AddComponentMenu("App/Scenes/Game/Body/CraftingCollision")]
     class CraftingCollision : MonoBehaviour
     {
 

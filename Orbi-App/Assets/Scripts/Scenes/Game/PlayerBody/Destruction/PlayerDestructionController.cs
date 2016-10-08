@@ -5,7 +5,7 @@ using System;
 
 namespace GameScene
 {
-    [AddComponentMenu("App/Scenes/Game/PlayerDestructionController")]
+    [AddComponentMenu("App/Scenes/Game/Body/PlayerDestructionController")]
     class PlayerDestructionController : MonoBehaviour
     {
         public GameObject Shot1;

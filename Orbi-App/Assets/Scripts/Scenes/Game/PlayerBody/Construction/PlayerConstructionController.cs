@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace GameScene
 {
-    [AddComponentMenu("App/Scenes/Game/PlayerConstructionController")]
+    [AddComponentMenu("App/Scenes/Game/Body/PlayerConstructionController")]
     class PlayerConstructionController : MonoBehaviour
     {
         public GameObject camera;

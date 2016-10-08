@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <changeSet id="create_table_character_message" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.character_message
+            (
+            id bigint NOT NULL,
+            from_character_id bigint NOT NULL,
+            to_character_id bigint NOT NULL,
+            message character varying(1000) NOT NULL,
+            created_on timestamp without time zone NOT NULL default now(),
+            CONSTRAINT character_message_pkey PRIMARY KEY (id)
+            );
+        </sql>
+        <sql>
+            CREATE INDEX character_message_id_idx
+            ON public.character_message (id);
+        </sql>
+        <sql>
+            CREATE INDEX character_message_from_character_id_idx ON public.character_message (from_character_id);
+        </sql>
+        <sql>
+            CREATE INDEX character_message_to_character_id_idx ON public.character_message (to_character_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="create_table_character_message_sequence_id" author="Lucas Reeh">
+        <createSequence sequenceName="character_message_id_gen" schemaName="public" incrementBy="1" startValue="100"></createSequence>
+        <rollback>
+            <dropSequence sequenceName="character_message_id_gen" schemaName="public"></dropSequence>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

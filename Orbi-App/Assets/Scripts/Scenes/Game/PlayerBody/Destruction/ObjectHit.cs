@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace GameScene
 {
-    [AddComponentMenu("App/Scenes/Game/ObjectHit")]
+    [AddComponentMenu("App/Scenes/Game/Body/ObjectHit")]
     class ObjectHit : MonoBehaviour
     {
 

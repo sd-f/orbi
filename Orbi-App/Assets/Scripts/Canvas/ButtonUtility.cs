@@ -7,12 +7,15 @@ namespace CanvasUtility
     {
         public static void SetButtonState(GameObject button, bool state)
         {
+            button.SetActive(state);
+            /*
             button.GetComponent<Button>().interactable = state;
             button.GetComponent<Image>().enabled = state;
             foreach (Image image in button.GetComponentsInChildren<Image>())
             {
                 image.enabled = state;
             }
+            */
         }
     }
 }

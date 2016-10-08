@@ -1,5 +1,6 @@
 ﻿using CanvasUtility;
 using GameController.Services;
+using GameScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,6 +113,7 @@ namespace GameController
 
 
                     GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(newObjectContainer, "uma_" + character.id);
+                    newObject.GetComponent<CharacterProperties>().SetCharacter(character);
                     GameObjectUtility.SetLayer(newObject, LayerMask.NameToLayer("Objects"));
 
                     GameObject newObjectTarget = new GameObject();

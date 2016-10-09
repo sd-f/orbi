@@ -10,7 +10,7 @@ import javax.enterprise.context.RequestScoped;
 @RequestScoped
 public class ServerService {
 
-    private static Long SERVER_VERSION = new Long(13);
+    private static Long SERVER_VERSION = new Long(14);
 
     public Long getVersion() {
         return SERVER_VERSION;

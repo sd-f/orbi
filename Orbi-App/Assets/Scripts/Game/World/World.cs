@@ -46,8 +46,11 @@ namespace GameController
             if (Game.GetLocation().IsReady())
                 yield return gameObjectService.RequestGameObjects();
             if (!IsInvoking("RefreshObjects"))
+            {
                 Invoke("RefreshObjects", 2f);
-            
+            }
+
+
         }
 
         public void RefreshObjects()

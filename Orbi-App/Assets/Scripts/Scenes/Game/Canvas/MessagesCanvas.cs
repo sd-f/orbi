@@ -87,7 +87,8 @@ namespace GameScene
         IEnumerator LoadMessages()
         {
             yield return Game.GetPlayer().GetMessageService().RequestMessages(this);
-            Invoke("CheckForMessages", 5f);
+            if (!IsInvoking("CheckForMessages"))
+                Invoke("CheckForMessages", 5f);
         }
 
         public void ShowInteractionForm(string characterName, long characterId)

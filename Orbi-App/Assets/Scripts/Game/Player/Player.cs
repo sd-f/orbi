@@ -30,12 +30,13 @@ namespace GameController
         void Start()
         {
             player.character.transform.geoPosition = Game.FALLBACK_START_POSITION;
+            Invoke("CheckIfOutOfBounds", 0.5f);
+            Invoke("CheckGPSPosition", 1f);
         }
 
         void Awake()
         {
-            Invoke("CheckIfOutOfBounds", 0.5f);
-            Invoke("CheckGPSPosition", 1f);
+            
         }
 
         internal bool IsFrozen()
@@ -94,7 +95,8 @@ namespace GameController
                     this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                     GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
                 }
-            Invoke("CheckGPSPosition", 2f);
+            if (!IsInvoking("CheckGPSPosition"))
+                Invoke("CheckGPSPosition", 1f);
         }
 
         void CheckIfOutOfBounds()

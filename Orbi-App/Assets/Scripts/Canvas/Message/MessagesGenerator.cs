@@ -25,7 +25,8 @@ namespace CanvasUtility
                     GenerateMessageObject(message);
                 }
             }
-            Invoke("CheckForNewMessages", 0.5f);
+            if (!IsInvoking("CheckForNewMessages"))
+                Invoke("CheckForNewMessages", 0.5f);
         }
 
         void GenerateMessageObject(Message message)

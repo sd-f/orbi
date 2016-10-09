@@ -31,10 +31,10 @@ namespace GameController
             if (tag != null)
                 container.tag = tag;
             container.name = "container_" + id;
-            container.transform.parent = parent;
+            container.transform.SetParent(parent);
 
             GameObject newObject = GameObject.Instantiate(GetGamePrefab(prefab)) as GameObject;
-            newObject.transform.parent = container.transform;
+            newObject.transform.SetParent(container.transform);
             newObject.name = "object_" + id;
             // max bounds
             Vector3 boundsSize = new Vector3(0, 0, 0);

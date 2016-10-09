@@ -83,12 +83,28 @@ namespace GameController
 
         internal static void Rotate(GameObject gameObject, ServerModel.Rotation rotation)
         {
-            gameObject.transform.localRotation = Quaternion.Euler(0, (float)rotation.y, 0);
+            
+            Quaternion target = Quaternion.Euler(0, (float)rotation.y, 0);
+            if (Quaternion.Angle(gameObject.transform.localRotation, target) > 0.0001)
+            {
+                gameObject.transform.localRotation = target;
+            }
+                
         }
 
         internal static void Translate(GameObject gameObject, ServerModel.GeoPosition geoPosition)
         {
-            gameObject.transform.position = geoPosition.ToPosition().ToVector3();
+            Vector3 b = geoPosition.ToPosition().ToVector3();
+            if (!V3Equal(gameObject.transform.position,b))
+            {
+                gameObject.transform.position = b;
+            }
+               
+        }
+
+        public static bool V3Equal(Vector3 a, Vector3 b)
+        {
+            return Vector3.SqrMagnitude(a - b) < 0.0001;
         }
 
         internal static long GetId(GameObject obj)

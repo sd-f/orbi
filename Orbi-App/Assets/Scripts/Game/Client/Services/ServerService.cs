@@ -3,7 +3,6 @@ using ServerModel;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace GameController.Services
 {
@@ -29,16 +28,16 @@ namespace GameController.Services
                 {
                     message = JsonUtility.FromJson<ErrorMessage>(request.text);
                     Debug.Log(message.status);
-                    if (message.status == 505)
-                    {
-                        Application.OpenURL("https://softwaredesign.foundation/orbi/");
-                        Application.Quit();
-                    }
-                    
                 }
                 catch (Exception ex)
                 {
                     Debug.LogError(ex);
+                }
+                if (message.status == 505)
+                {
+                    yield return new WaitForSeconds(3);
+                    Application.OpenURL("https://softwaredesign.foundation/orbi/");
+                    Application.Quit();
                 }
 
                 if (message != null)

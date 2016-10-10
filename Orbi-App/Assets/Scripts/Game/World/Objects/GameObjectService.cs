@@ -158,6 +158,11 @@ namespace GameController
             oldCharacters.RemoveAll(r => r.gameObject == null);
         }
 
+        public void RemoveObject(GameObject objectToRemove)
+        {
+            oldObjects.RemoveAll(r => GameObject.ReferenceEquals(r.gameObject,objectToRemove));
+        }
+
         public void RefreshWorld(ServerModel.Player player, ServerModel.World world)
         {
             // game objects

@@ -3,6 +3,7 @@ using GameController.Services;
 using ServerModel;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GameController
 {
@@ -22,12 +23,17 @@ namespace GameController
             position = Game.FALLBACK_START_POSITION;
         }
 
+        void OnAwake()
+        {
+            Input.location.Start();
+        }
+
         public void StartUpdatingLocation()
         {
             UpdateLocation();
             Game.GetWorld().SetCenterGeoPosition(position);
             ready = true;
-            Invoke("UpdateLocation", 0.1f);
+            Invoke("UpdateLocation", 0.5f);
         }
 
         public bool IsReady()
@@ -40,13 +46,6 @@ namespace GameController
             return this.position;
         }
 
-        public void UpdateLocation(double latitude, double longitude)
-        {
-            position.latitude = latitude;
-            position.longitude = longitude;
-            Invoke("UpdateLocation", 0.1f);
-        }
-
         void UpdateLocation()
         {
             if (!paused)
@@ -54,6 +53,8 @@ namespace GameController
                 position.latitude = Input.location.lastData.latitude;
                 position.longitude = Input.location.lastData.longitude;
             }
+            //DebugUtility.SetDebugText(position.ToString());
+            Invoke("UpdateLocation", 0.5f);
         }
 
         public void Pause()

@@ -51,6 +51,7 @@ namespace GameScene
                 {
                     GameObject effect = GameObject.Instantiate(explosionEffect) as GameObject;
                     effect.transform.position = realContainer.transform.position;
+                    Game.GetWorld().GetGameObjectService().RemoveObject(realContainer);
                     GameObject.Destroy(effect, 3f);
                     GameObject.Destroy(realContainer);
                     StartCoroutine(Game.GetPlayer().GetDestructionController().Destroy(id));

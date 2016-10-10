@@ -39,10 +39,15 @@ namespace GameScene
 
             SetTargetPosition(Game.GetPlayer().GetModel().character.transform.position.ToVector3());
             SetRotation(Game.GetPlayer().GetModel().character.transform.rotation.ToVector3());
-            //SensorHelper.ActivateRotation();
-            Invoke("UpdateDeltaCompass", 1f);
-            Invoke("UpdateTransformInModel", 1f);
         }
+        void Awake()
+        {
+            SensorHelper.ActivateRotation();
+            if (!IsInvoking("UpdateTransformInModel"))
+                InvokeRepeating("UpdateTransformInModel", 1f, 1f);
+            Invoke("UpdateDeltaCompass", 1f);
+        }
+
 
         void Update()
         {
@@ -80,7 +85,6 @@ namespace GameScene
             Game.GetPlayer().GetModel().character.transform.geoPosition = new Position(this.transform.position).ToGeoPosition();
             Game.GetPlayer().GetModel().character.transform.position = new Position(this.transform.position);
             Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(cam.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y,0);
-            Invoke("UpdateTransformInModel", 1f);
         }
 
         public void SetTargetPosition(Vector3 targetPosition)

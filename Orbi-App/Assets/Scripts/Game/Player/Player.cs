@@ -1,4 +1,5 @@
-﻿using ClientModel;
+﻿using CanvasUtility;
+using ClientModel;
 using GameController.Services;
 using GameScene;
 using ServerModel;
@@ -30,13 +31,14 @@ namespace GameController
         void Start()
         {
             player.character.transform.geoPosition = Game.FALLBACK_START_POSITION;
-            Invoke("CheckIfOutOfBounds", 0.5f);
-            Invoke("CheckGPSPosition", 1f);
         }
 
         void Awake()
         {
-            
+            if (!IsInvoking("CheckGPSPosition"))
+                InvokeRepeating("CheckGPSPosition", 1f, 1f);
+            if (!IsInvoking("CheckIfOutOfBounds"))
+                InvokeRepeating("CheckIfOutOfBounds", 1f, 1f);
         }
 
         internal bool IsFrozen()
@@ -87,18 +89,12 @@ namespace GameController
 
         public void CheckGPSPosition()
         {
-            if (GetPlayerBody() != null)
-                //Info.Show("debug check gps");
-                if (!frozen)
-                {
-                    this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
-                    this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
-                    Vector3 target = this.player.character.transform.geoPosition.ToPosition().ToVector3();
-                    
-                    GetPlayerBodyController().SetTargetPosition(target);
-                }
-            if (!IsInvoking("CheckGPSPosition"))
-                Invoke("CheckGPSPosition", 1f);
+            if ((GetPlayerBody() != null) && !frozen) { 
+                this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
+                this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
+                Vector3 target = this.player.character.transform.geoPosition.ToPosition().ToVector3();
+                GetPlayerBodyController().SetTargetPosition(target);
+            }
         }
 
         void CheckIfOutOfBounds()
@@ -121,7 +117,6 @@ namespace GameController
                 }
                 
             }
-            Invoke("CheckIfOutOfBounds", 0.5f);
         }
 
         public PlayerBodyController GetPlayerBodyController()

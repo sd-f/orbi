@@ -73,5 +73,6 @@
     <include file="ORBI-00014/000_character.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/001_messages.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/002_object_user_text.xml" relativeToChangelogFile="true"/>
+    <include file="ORBI-00014/003_billboard.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

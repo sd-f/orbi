@@ -15,6 +15,15 @@ namespace GameController
             }
         }
 
+        public static void TrySettingTextInChildren(GameObject parent, string text)
+        {
+            TextMesh textMesh = parent.GetComponent<TextMesh>();
+            if ((parent.tag == "UserText") && (textMesh != null))
+                textMesh.text = text;
+            foreach (UnityEngine.Transform child in parent.transform)
+                TrySettingTextInChildren(child.gameObject, text);
+        }
+
         public static Rigidbody GetRigidBody(GameObject obj)
         {
             if (obj.GetComponent<Rigidbody>() != null)

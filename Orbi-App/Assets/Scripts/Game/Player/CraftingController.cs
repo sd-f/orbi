@@ -13,6 +13,7 @@ namespace GameController
     {
         private bool collission = false;
         private string selectedPrefab;
+        private string userText = "";
         private UnityEngine.GameObject objectToCraft;
         private bool crafting = false;
         private Inventory inventory = new Inventory();
@@ -102,6 +103,19 @@ namespace GameController
             return this.collission;
         }
 
+        public string GetUserText()
+        {
+            return this.userText;
+        }
+
+        public void SetUserText(string text)
+        {
+            if ((text != null) && (text.Length > 16))
+                this.userText = text.Substring(0, 15);
+            else
+                this.userText = text;
+        }
+
         public IEnumerator LoadInventory()
         {
             yield return Game.GetPlayer().GetPlayerService().RequestInventory();
@@ -113,6 +127,8 @@ namespace GameController
             newObject.id = -1;
             newObject.name = "new";
             newObject.prefab = Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
+            if (GetInventoryItem(Game.GetPlayer().GetCraftingController().GetSelectedPrefab()).supportsUserText)
+                newObject.userText = Game.GetPlayer().GetCraftingController().GetUserText();
             newObject.transform.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
             newObject.transform.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
             ServerModel.Player player = Game.GetPlayer().GetModel();

@@ -1,6 +1,7 @@
 package foundation.softwaredesign.orbi.rest;
 
 import foundation.softwaredesign.orbi.model.Player;
+import foundation.softwaredesign.orbi.model.Statistics;
 import foundation.softwaredesign.orbi.model.World;
 import foundation.softwaredesign.orbi.service.*;
 
@@ -32,6 +33,8 @@ public class WorldRestApi {
     @Inject
     UserService userService;
     @Inject
+    GameObjectService gameObjectService;
+    @Inject
     CharacterService characterService;
 
     private void checkPlayerParameter(Player player) {
@@ -55,6 +58,15 @@ public class WorldRestApi {
     public String reset() {
         worldFactory.reset();
         return "OK";
+    }
+
+    @GET
+    @Path("/statistics")
+    public Statistics statistics() {
+        Statistics statistics = new Statistics();
+        statistics.setNumberOfObjects(gameObjectService.count());
+        statistics.setNumberOfPlayers(characterService.count());
+        return statistics;
     }
 
     @POST

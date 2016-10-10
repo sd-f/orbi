@@ -24,6 +24,28 @@ namespace GameController
             charactersContainer = GameObject.Find("Characters");
         }
 
+        public IEnumerator RequestStatistics()
+        {
+            WWW request = Request("world/statistics", null);
+            yield return request;
+            if (request.error == null)
+            {
+                ServerModel.Statistics stats = JsonUtility.FromJson<ServerModel.Statistics>(request.text);
+                Game.GetWorld().SetStatistics(stats);
+                // TODO bad hack
+                GameObject statsGameObject = GameObject.Find("StatisticsPanel");
+                if (statsGameObject != null)
+                {
+                    StartScene.Canvas statsCanvas = statsGameObject.GetComponent<StartScene.Canvas>();
+                    if (statsCanvas != null)
+                        statsCanvas.UpdateStats();
+                }
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+        }
+
         public IEnumerator RequestGameObjects()
         {
             WWW request = Request("world/around", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
@@ -88,6 +110,8 @@ namespace GameController
         void CreateObject(ServerModel.GameObject newObject)
         {
             GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.prefab, newObject.id, "DynamicGameObject");
+            if (!String.IsNullOrEmpty(newObject.userText))
+                GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
             newObject.gameObject = newGameObject;
             oldObjects.Add(newObject);
             GameObjectUtility.Transform(newGameObject, newObject.transform);

@@ -23,6 +23,7 @@ namespace GameController.Services
             headers.Add("Accept", "application/json");
             headers.Add("X-App-Version", Client.VERSION.ToString());
             headers.Add("Authorization", "Bearer " + Game.GetGame().GetSettings().GetToken());
+            //Debug.Log(apiPath + " token: " + Game.GetGame().GetSettings().GetToken());
             WWW www;
             if (jsonString != null)
             {
@@ -50,6 +51,7 @@ namespace GameController.Services
                         Game.GetGame().LoadScene(Game.GameScene.AuthorizationScene);
                     }
                     Game.GetGame().GetSettings().SetToken(null);
+                    Game.GetPlayer().SetLoggedIn(false);
                 }
             } catch (Exception ex)
             {

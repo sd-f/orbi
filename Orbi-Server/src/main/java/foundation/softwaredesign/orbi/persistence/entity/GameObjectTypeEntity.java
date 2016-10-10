@@ -19,6 +19,8 @@ public class GameObjectTypeEntity implements Serializable {
     private Long id;
     @Column
     private String prefab;
+    @Column
+    private Boolean supportsUserText;
 
     public Long getId() {
         return id;
@@ -34,5 +36,13 @@ public class GameObjectTypeEntity implements Serializable {
 
     public void setPrefab(String prefab) {
         this.prefab = prefab;
+    }
+
+    public Boolean getSupportsUserText() {
+        return supportsUserText;
+    }
+
+    public void setSupportsUserText(Boolean supportsUserText) {
+        this.supportsUserText = supportsUserText;
     }
 }

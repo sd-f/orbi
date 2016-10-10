@@ -7,13 +7,13 @@ public class InventoryItem {
 
     private String prefab;
     private Long amount;
+    private Boolean supportsUserText = false;
 
-    public InventoryItem() {
-    }
 
-    public InventoryItem(String prefab, Long amount) {
+    public InventoryItem(String prefab, Long amount, Boolean supportsUserText) {
         this.prefab = prefab;
         this.amount = amount;
+        this.supportsUserText = supportsUserText;
     }
 
     public String getPrefab() {
@@ -30,5 +30,13 @@ public class InventoryItem {
 
     public void setAmount(Long amount) {
         this.amount = amount;
+    }
+
+    public Boolean getSupportsUserText() {
+        return supportsUserText;
+    }
+
+    public void setSupportsUserText(Boolean supportsUserText) {
+        this.supportsUserText = supportsUserText;
     }
 }

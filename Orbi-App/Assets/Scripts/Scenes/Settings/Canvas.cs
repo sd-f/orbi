@@ -14,16 +14,25 @@ namespace SettingsScene
         public GameObject toggleHandheldInputEnabled;
         public GameObject toggleDesktopInputEnabled;
 
-        void Awake()
+        public Text textNumberOfObjects;
+        public Text textVersion;
+
+
+
+        void Start()
         {
+            textVersion.text = "version " + Client.VERSION.ToString();
+            textNumberOfObjects.text = "objects " + Game.GetWorld().GetStatistics().numberOfObjects.ToString();
             toggleHeightsEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsHeightsEnabled();
             toggleSetalliteOverlayEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsSatelliteOverlayEnabled();
             toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsHandheldInputEnabled();
             toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsDesktopInputEnabled();
         }
 
+
         public void OnHeightsEnabled(bool enabled)
         {
+            Game.GetWorld().ForceRefreshOnNextLoading();
             if (Game.GetGame().GetSettings().IsHeightsEnabled() != enabled)
             {
                 Game.GetGame().GetSettings().SetHeightsEnabled(enabled);
@@ -33,6 +42,7 @@ namespace SettingsScene
 
         public void OnSatelliteOverlayEnabled(bool enabled)
         {
+            Game.GetWorld().ForceRefreshOnNextLoading();
             if (Game.GetGame().GetSettings().IsSatelliteOverlayEnabled() != enabled)
             {
                 Game.GetGame().GetSettings().SetSatelliteOverlayEnabled(enabled);
@@ -41,6 +51,10 @@ namespace SettingsScene
 
         public void OnHandheldInputEnabled(bool enabled)
         {
+            if (enabled && !Game.GetLocation().IsReady())
+            {
+                StartCoroutine(Game.GetLocation().Boot());
+            }
             toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = !enabled;
             if (Game.GetGame().GetSettings().IsHandheldInputEnabled() != enabled)
                 Game.GetGame().GetSettings().SetHandheldInputEnabled(enabled);
@@ -63,6 +77,7 @@ namespace SettingsScene
         {
             Game.GetGame().Quit();
         }
+
 
     }
 }

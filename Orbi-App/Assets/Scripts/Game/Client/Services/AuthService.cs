@@ -58,7 +58,7 @@ namespace GameController.Services
             if (request.error == null)
             {
                 AuthorizationInfo authInfo = JsonUtility.FromJson<AuthorizationInfo>(request.text);
-                if (authInfo.token != null && authInfo.token != "")
+                if (!String.IsNullOrEmpty(authInfo.token))
                 {
                     Game.GetGame().GetSettings().SetToken(authInfo.token);
                     Game.GetPlayer().SetLoggedIn(true);

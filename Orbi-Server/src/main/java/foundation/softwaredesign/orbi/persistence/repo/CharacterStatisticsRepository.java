@@ -14,4 +14,8 @@ public interface CharacterStatisticsRepository extends EntityRepository<Characte
     @Query(" select max(e.experiencePoints)" +
             "  from CharacterEntity e")
     Long findMaxXp();
+
+    @Query(" select count(e.experiencePoints)" +
+            "  from CharacterEntity e")
+    Long countAllCharacters();
 }

@@ -64,7 +64,7 @@ public class InventoryService {
         }
 
         for (InventoryEntity inventoryEntity: repository.findByIdentityId(userService.getIdentity().getId())) {
-            inventory.getItems().add(new InventoryItem(inventoryEntity.getGameObjectType().getPrefab(), inventoryEntity.getAmount()));
+            inventory.getItems().add(new InventoryItem(inventoryEntity.getGameObjectType().getPrefab(), inventoryEntity.getAmount(), inventoryEntity.getGameObjectType().getSupportsUserText()));
         }
         return inventory;
     }

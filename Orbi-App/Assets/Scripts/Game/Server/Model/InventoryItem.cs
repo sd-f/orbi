@@ -9,6 +9,9 @@ namespace ServerModel
 
         public String prefab;
         public int amount;
+        public bool supportsUserText;
+        [NonSerialized]
+        public UnityEngine.GameObject gameObject;
 
     }
 

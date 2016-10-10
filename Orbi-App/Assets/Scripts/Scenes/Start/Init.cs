@@ -15,11 +15,14 @@ namespace StartScene
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
             // load settings
-            Game.GetGame().GetSettings().Load();
+            Game.GetGame().GetSettings().Init();
+
             // udpating game settings
             Game.GetGame().GetSettings().SetClientVersion(Client.VERSION);
 
+            StartCoroutine(Game.GetWorld().GetGameObjectService().RequestStatistics());
             StartCoroutine(Boot());
+            
         }
 
         IEnumerator Boot()

@@ -10,4 +10,8 @@
         <sql>ALTER TABLE public.game_object ADD COLUMN user_text character varying(1000);</sql>
     </changeSet>
 
+    <changeSet id="game_object_type_column_supports_text" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN supports_user_text smallint DEFAULT 0;</sql>
+    </changeSet>
+
 </databaseChangeLog>

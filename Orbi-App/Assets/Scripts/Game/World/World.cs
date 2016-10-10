@@ -25,6 +25,7 @@ namespace GameController
         private MapTextureService textureService;
         private GameObjectService gameObjectService;
         private UMACreator umaCreator;
+        private ServerModel.Statistics stats = new Statistics();
 
         void Start()
         {
@@ -41,6 +42,16 @@ namespace GameController
             
         }
 
+        internal void SetStatistics(Statistics stats)
+        {
+            this.stats = stats;
+        }
+
+        internal Statistics GetStatistics()
+        {
+            return this.stats;
+        }
+
         public IEnumerator UpdateObjects()
         {
             if (Game.GetLocation().IsReady())
@@ -49,8 +60,6 @@ namespace GameController
             {
                 Invoke("RefreshObjects", 2f);
             }
-
-
         }
 
         public void RefreshObjects()
@@ -172,6 +181,11 @@ namespace GameController
             }
             
             return 0.0f;
+        }
+
+        public void ForceRefreshOnNextLoading()
+        {
+            this.skipRefresh = false;
         }
 
         public void SkipRefreshOnNextLoading()

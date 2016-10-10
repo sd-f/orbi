@@ -11,7 +11,7 @@ namespace InventoryScene
         public GameObject canvasGameObject;
         public static float OBJECT_PADDING = 10f;
 
-        void Awake()
+        void Start()
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
@@ -39,10 +39,10 @@ namespace InventoryScene
                 GameObject newObject = GameObjectFactory.CreateObject(parent.transform, item.prefab, id, null, LayerMask.NameToLayer("Default"));
                 newObject.AddComponent<InventoryObjectSelected>();
                 newObject.transform.localPosition = new Vector3(id * OBJECT_PADDING, 0f, 0f);
+                item.gameObject = newObject;
                 id++;
             }
             canvasScript.SetSelected(preselected);
-
         }
 
         void Update()

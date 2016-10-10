@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using GameController;
 using System.Collections;
+using System;
 
 namespace GameScene
 {
@@ -126,6 +127,8 @@ namespace GameScene
         {
             checkInventory();
             newObject = GameObjectFactory.CreateObject(transform, Game.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, null, LayerMask.NameToLayer("Default"));
+            if (!String.IsNullOrEmpty(Game.GetPlayer().GetCraftingController().GetUserText()))
+                GameObjectUtility.TrySettingTextInChildren(newObject, Game.GetPlayer().GetCraftingController().GetUserText());
             newObject.transform.rotation = Quaternion.Euler(rotation);
             Game.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
         }

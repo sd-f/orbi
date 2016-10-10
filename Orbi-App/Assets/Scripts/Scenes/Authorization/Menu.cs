@@ -16,7 +16,7 @@ namespace StartScene
         private Button loginButton;
         private Button requestCodeButton;
 
-        void Awake()
+        void Start()
         {
             emailField = GameObject.Find("InputFieldEmail").GetComponent<InputField>();
             emailField.text = Game.GetGame().GetSettings().GetEmail();

@@ -110,4 +110,8 @@ public class CharacterService {
         return characterList;
     }
 
+    public Long count() {
+        return statisticsRepository.countAllCharacters();
+    }
+
 }

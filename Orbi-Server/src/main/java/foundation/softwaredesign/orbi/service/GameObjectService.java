@@ -4,6 +4,7 @@ import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.GeoPosition;
 import foundation.softwaredesign.orbi.model.Position;
 import foundation.softwaredesign.orbi.persistence.repo.GameObjectRepository;
+import foundation.softwaredesign.orbi.persistence.repo.GameObjectStatisticsRepository;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -19,6 +20,8 @@ public class GameObjectService {
 
     @Inject
     GameObjectRepository repository;
+    @Inject
+    GameObjectStatisticsRepository statisticsRepository;
     @Inject
     WorldAdapterService worldAdapter;
 
@@ -49,5 +52,9 @@ public class GameObjectService {
 
     public void deleteAll() {
         repository.deleteAll();
+    }
+
+    public Long count() {
+        return statisticsRepository.countAllObjects();
     }
 }

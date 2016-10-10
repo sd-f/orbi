@@ -22,9 +22,10 @@ namespace InventoryScene
         public Text amountText;
         public UnityEngine.GameObject leftButton;
         public UnityEngine.GameObject rightButton;
-        
+        public InputField userTextInputField;
+        public UnityEngine.GameObject userTextForm;
 
-        void Awake()
+        void Start()
         {
             this.inventoryObjectsScript = inventoryObjectsContainer.GetComponent<InventoryObjects>();
             isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
@@ -34,10 +35,29 @@ namespace InventoryScene
         {
             currentIndex = selectedIndex;
             InventoryItem item = objectsList[currentIndex];
+            if (item.supportsUserText)
+            {
+                userTextForm.SetActive(true);
+                userTextInputField.text = Game.GetPlayer().GetCraftingController().GetUserText();
+            } else
+            {
+                userTextInputField.text = Game.GetPlayer().GetCraftingController().GetUserText();
+                Game.GetPlayer().GetCraftingController().SetUserText(null);
+            }
             SetAmountText(item.amount);
             checkButtons();
             inventoryObjectsScript.MoveToPosition(currentIndex * Init.OBJECT_PADDING);
-            
+        }
+
+        public void OnSaveUserText()
+        {
+            InventoryItem item = objectsList[currentIndex];
+            if (item.supportsUserText)
+            {
+                Game.GetPlayer().GetCraftingController().SetUserText(userTextInputField.text);
+                GameObjectUtility.TrySettingTextInChildren(item.gameObject, Game.GetPlayer().GetCraftingController().GetUserText());
+            }
+                
         }
 
         public void OnLeft()

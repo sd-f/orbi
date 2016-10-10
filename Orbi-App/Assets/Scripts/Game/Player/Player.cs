@@ -14,7 +14,7 @@ namespace GameController
     {
         private PlayerService playerService = new PlayerService();
         private MessageService messageService = new MessageService();
-        private Vector3 positionBeforeOutOfBounds = new Vector3(0, 0, 0);
+        private Vector3 positionBeforeOutOfBounds = new Vector3(0, HEIGHT, 0);
         private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
         private bool loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
@@ -25,7 +25,7 @@ namespace GameController
 
         private List<CharacterMessage> messages = new List<CharacterMessage>();
 
-        public static float HEIGHT = 0.8f;
+        public static float HEIGHT = 0.9f;
 
         void Start()
         {
@@ -93,7 +93,9 @@ namespace GameController
                 {
                     this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
                     this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
-                    GetPlayerBodyController().SetTargetPosition(this.player.character.transform.geoPosition.ToPosition().ToVector3());
+                    Vector3 target = this.player.character.transform.geoPosition.ToPosition().ToVector3();
+                    
+                    GetPlayerBodyController().SetTargetPosition(target);
                 }
             if (!IsInvoking("CheckGPSPosition"))
                 Invoke("CheckGPSPosition", 1f);

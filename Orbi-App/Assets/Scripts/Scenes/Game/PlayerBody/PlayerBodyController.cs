@@ -15,12 +15,12 @@ namespace GameScene
         // handheld movement
         private Vector3 gyroRotation = new Vector3(0,0,0);
         private bool gyroEnabled = false;
-        private Vector3 targetPosition = new Vector3(0, 0, 0);
+        private Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
         private float deltaCompass = 0.0f;
         private MyFirstPersonController firstPersonController;
         public Camera cam;
 
-        void Awake()
+        void Start()
         {
             Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
@@ -33,13 +33,6 @@ namespace GameScene
                 gyroRotation.x = Input.gyro.attitude.eulerAngles.y - 90f;
                 //gyroRotation.y = Input.gyro.attitude.eulerAngles.z;
             }
-
-            Invoke("UpdateDeltaCompass", 1f);
-            Invoke("UpdateTransformInModel", 1f);
-        }
-
-        void Start()
-        {
             firstPersonController = GetComponent<MyFirstPersonController>();
             Input.gyro.enabled = true;
             // restore rotation + position
@@ -47,6 +40,8 @@ namespace GameScene
             SetTargetPosition(Game.GetPlayer().GetModel().character.transform.position.ToVector3());
             SetRotation(Game.GetPlayer().GetModel().character.transform.rotation.ToVector3());
             //SensorHelper.ActivateRotation();
+            Invoke("UpdateDeltaCompass", 1f);
+            Invoke("UpdateTransformInModel", 1f);
         }
 
         void Update()

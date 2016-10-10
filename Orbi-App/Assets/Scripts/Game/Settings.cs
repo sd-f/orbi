@@ -191,19 +191,27 @@ namespace GameController
 
             byte[] key = DeviceIdToDesKey();
             byte[] encryptedData = Convert.FromBase64String(b64DataToDecrypt);
-            byte[] decryptedData = Decrypt(key, encryptedData);
-            return Encoding.UTF8.GetString(decryptedData);
+            try
+            {
+                byte[] decryptedData = Decrypt(key, encryptedData);
+                return Encoding.UTF8.GetString(decryptedData);
+            } catch (Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
+            
         }
 
         private static byte[] DeviceIdToDesKey()
         {
-            string deviceId = SystemInfo.deviceUniqueIdentifier ?? "UNAVAILABLE";
-
+            string deviceId = "UNAVAILABLEUNAVAILABLEUNAVAILABLEUNAVAILABLE";
+            if (SystemInfo.deviceUniqueIdentifier != null)
+                deviceId = SystemInfo.deviceUniqueIdentifier;
             // Compute hash of device ID so we are sure enough bytes have been gathered for the key
             byte[] bytes = null;
-            using (SHA1 sha1 = SHA1.Create())
+            using (SHA256Managed sha1 = new SHA256Managed())
                 bytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(deviceId));
-
             // Get last 8 bytes from device ID hash as a key
             byte[] desKey = new byte[8];
             Array.Copy(bytes, bytes.Length - desKey.Length, desKey, 0, desKey.Length);

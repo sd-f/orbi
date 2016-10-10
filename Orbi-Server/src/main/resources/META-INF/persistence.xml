@@ -6,6 +6,7 @@
         <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
         <jta-data-source>jdbc/orbiDB</jta-data-source>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <shared-cache-mode>NONE</shared-cache-mode>
         <properties>
             <property name="eclipselink.session.customizer"
                       value="foundation.softwaredesign.orbi.persistence.CamelNamingStrategy"/>

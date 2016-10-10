@@ -15,7 +15,7 @@ namespace GameController.Services
         public WWW Request(string apiPath, string jsonString)
         {
             IndicateRequestStart();
-            //Debug.Log(jsonString);
+            //Debug.Log(apiPath + "\n" + jsonString);
             string uri = ServerConstants.GetServerUrl(Game.GetClient().serverType) + "/" + apiPath;
             UTF8Encoding encoding = new UTF8Encoding();
             

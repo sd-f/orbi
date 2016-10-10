@@ -9,5 +9,11 @@ namespace ServerModel
         {
             return JsonUtility.ToJson(this, false);
         }
+
+
+        public string ToPrettyString()
+        {
+            return JsonUtility.ToJson(this, true);
+        }
     }
 }

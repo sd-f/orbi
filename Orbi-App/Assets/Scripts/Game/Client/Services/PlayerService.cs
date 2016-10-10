@@ -37,8 +37,7 @@ namespace GameController.Services
 
         public IEnumerator RequestUpdate()
         {
-            ClientModel.Transform newTransform = new ClientModel.Transform();
-            newTransform.geoPosition = Game.GetLocation().GetGeoLocation();
+            ClientModel.Transform newTransform = Game.GetPlayer().GetModel().character.transform;
             WWW request = Request("player/update", JsonUtility.ToJson(newTransform));
             yield return request;
             if (request.error == null)

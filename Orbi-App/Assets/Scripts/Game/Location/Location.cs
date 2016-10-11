@@ -21,6 +21,8 @@ namespace GameController
         void Start()
         {
             position = Game.FALLBACK_START_POSITION;
+            if (Game.GetClient().randomLocation)
+                InvokeRepeating("RandomLocation", 10f, 10f);
         }
 
         void OnAwake()
@@ -53,8 +55,15 @@ namespace GameController
                 position.latitude = Input.location.lastData.latitude;
                 position.longitude = Input.location.lastData.longitude;
             }
-            //DebugUtility.SetDebugText(position.ToString());
             Invoke("UpdateLocation", 0.5f);
+        }
+
+        void RandomLocation()
+        {
+           
+            position.latitude += Random.Range(-0.001f, 0.001f);
+            position.longitude += Random.Range(-0.001f, 0.001f);
+            Game.GetClient().Log(position);
         }
 
         public void Pause()

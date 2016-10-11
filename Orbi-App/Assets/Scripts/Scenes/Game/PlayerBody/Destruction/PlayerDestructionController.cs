@@ -11,6 +11,7 @@ namespace GameScene
         public GameObject Shot1;
         public GameObject Wave;
         public GameObject explosionEffect;
+        public GameObject earnedXPTextPrefab;
         private bool isDesktopMode = false;
         
 
@@ -50,9 +51,12 @@ namespace GameScene
                 if (id != 0)
                 {
                     GameObject effect = GameObject.Instantiate(explosionEffect) as GameObject;
+                    GameObject earnedText = GameObject.Instantiate(earnedXPTextPrefab) as GameObject;
+                    earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_DESTROY);
                     effect.transform.position = realContainer.transform.position;
+                    earnedText.transform.position = realContainer.transform.position + (Vector3.up * 2f);
                     Game.GetWorld().GetGameObjectService().RemoveObject(realContainer);
-                    GameObject.Destroy(effect, 3f);
+                    GameObject.Destroy(effect, 1.5f);
                     GameObject.Destroy(realContainer);
                     StartCoroutine(Game.GetPlayer().GetDestructionController().Destroy(id));
                 }

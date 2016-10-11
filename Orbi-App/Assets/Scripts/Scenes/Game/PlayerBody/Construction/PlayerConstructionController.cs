@@ -10,6 +10,7 @@ namespace GameScene
     {
         public GameObject camera;
         public GameObject effectPrefab;
+        public GameObject earnedXPTextPrefab;
         private bool isDesktopMode = false;
         private bool crafting = false;
         private GameObject newObject;
@@ -114,7 +115,10 @@ namespace GameScene
         IEnumerator CraftingProcess()
         {
             GameObject effect = GameObject.Instantiate(effectPrefab) as GameObject;
+            GameObject earnedText = GameObject.Instantiate(earnedXPTextPrefab) as GameObject;
+            earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_CRAFT);
             effect.transform.position = newObject.transform.position;
+            earnedText.transform.position = newObject.transform.position + (Vector3.up * 2f);
             GameObject.Destroy(effect, 1.5f);
             yield return Game.GetPlayer().GetCraftingController().Craft(newObject);
             

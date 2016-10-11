@@ -10,6 +10,7 @@ import java.util.List;
 @XmlRootElement
 public class Inventory {
 
+    private Long numberOfObjectTypes = new Long(0);
     private List<InventoryItem> items = new ArrayList<>();
 
     public List<InventoryItem> getItems() {
@@ -18,5 +19,13 @@ public class Inventory {
 
     public void setItems(List<InventoryItem> items) {
         this.items = items;
+    }
+
+    public Long getNumberOfObjectTypes() {
+        return numberOfObjectTypes;
+    }
+
+    public void setNumberOfObjectTypes(Long numberOfObjectTypes) {
+        this.numberOfObjectTypes = numberOfObjectTypes;
     }
 }

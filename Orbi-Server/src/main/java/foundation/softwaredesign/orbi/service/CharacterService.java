@@ -25,11 +25,6 @@ import static java.util.Objects.nonNull;
 @RequestScoped
 public class CharacterService {
 
-    public final static Long XP_DESTROY = new Long(3);
-    public final static Long XP_CRAFT = new Long(10);
-    public final static Long XP_MESSAGE = new Long(2);
-    public final static Long XP_LOGIN = new Long(1);
-
     @Inject
     CharacterRepository repository;
     @Inject

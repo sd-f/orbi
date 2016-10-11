@@ -1,5 +1,7 @@
 package foundation.softwaredesign.orbi.model;
 
+import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.Date;
@@ -15,6 +17,8 @@ public class Character {
     private Long xp;
     private Long xr;
     private Transform transform = new Transform();
+    private CharacterDevelopment characterDevelopment;
+
     @XmlTransient
     private Date lastSeen;
     @XmlTransient
@@ -74,5 +78,13 @@ public class Character {
 
     public void setXr(Long xr) {
         this.xr = xr;
+    }
+
+    public CharacterDevelopment getCharacterDevelopment() {
+        return characterDevelopment;
+    }
+
+    public void setCharacterDevelopment(CharacterDevelopment characterDevelopment) {
+        this.characterDevelopment = characterDevelopment;
     }
 }

@@ -43,6 +43,7 @@ namespace InventoryScene
                 id++;
             }
             canvasScript.SetSelected(preselected);
+            canvasScript.SetStatusText(Game.GetPlayer().GetCraftingController().GetInventory().items.Count + "/" + Game.GetPlayer().GetCraftingController().GetInventory().numberOfObjectTypes);
         }
 
         void Update()

@@ -9,6 +9,7 @@ namespace GameController
     {
         static Projection projection;
         public static int ZOOM = 18;
+        public static bool VERBOSE = false;
 
         static WorldAdapter()
         {
@@ -30,6 +31,9 @@ namespace GameController
             // to virtual
             Position virtualPosition = FromGeoToVirtual(pos_g);
 
+            if (VERBOSE)
+                Game.GetClient().Log("r->v-1" + virtualPosition + "c" +  centerVirtual);
+
             // translate
             virtualPosition.z = virtualPosition.z - centerVirtual.z;
             virtualPosition.x = virtualPosition.x - centerVirtual.x;
@@ -37,7 +41,8 @@ namespace GameController
             virtualPosition.y = virtualPosition.y + Game.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
             //virtualPosition.y = virtualPosition.y;
 
-            //Debug.Log("r->v" + original_g + "(" + pos_g + ")" + "<" + virtualPosition);
+            if (VERBOSE)
+                Game.GetClient().Log("r->v-2" + original_g + "(" + pos_g + ")" + "<" + virtualPosition);
 
             return virtualPosition;
         }
@@ -53,14 +58,15 @@ namespace GameController
             //Debug.Log(" -> center_v " + centerVirtual);
 
             // translate
-            pos_v.z = centerVirtual.z + original_v.z;
-            pos_v.x = centerVirtual.x + original_v.x;
+            pos_v.z =  original_v.z + centerVirtual.z;
+            pos_v.x =  original_v.x + centerVirtual.x;
             pos_v.y = original_v.y;
 
             // to real
             GeoPosition realPosition = FromVirtualToGeo(pos_v);
 
-            //Debug.Log("v->r" + original_v + ">" + realPosition);
+            if (VERBOSE)
+                Game.GetClient().Log("v->r" + original_v + ">" + pos_v + ">" + realPosition);
 
             return realPosition;
         }

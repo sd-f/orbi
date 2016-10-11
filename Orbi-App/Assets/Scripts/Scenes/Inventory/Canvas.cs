@@ -24,6 +24,7 @@ namespace InventoryScene
         public UnityEngine.GameObject rightButton;
         public InputField userTextInputField;
         public UnityEngine.GameObject userTextForm;
+        public Text statusText;
 
         void Start()
         {
@@ -47,6 +48,11 @@ namespace InventoryScene
             SetAmountText(item.amount);
             checkButtons();
             inventoryObjectsScript.MoveToPosition(currentIndex * Init.OBJECT_PADDING);
+        }
+
+        public void SetStatusText(string text)
+        {
+            statusText.text = text;
         }
 
         public void OnSaveUserText()

@@ -37,4 +37,8 @@ public class GameObjectTypeService {
             throw new BadRequestException("Invalid prefab");
         }
     }
+
+    public Long getNumberOfObjectTypes() {
+        return repository.count();
+    }
 }

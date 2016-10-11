@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.service;
 
+import foundation.softwaredesign.orbi.model.CharacterDevelopment;
 import foundation.softwaredesign.orbi.model.GameObject;
 import foundation.softwaredesign.orbi.model.Inventory;
 import foundation.softwaredesign.orbi.model.InventoryItem;
@@ -59,13 +60,14 @@ public class InventoryService {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.HOUR, -3);
         if (userService.getIdentity().getLastInit().before(cal.getTime())) {
-            characterService.incrementXp(CharacterService.XP_LOGIN);
+            characterService.incrementXp(CharacterDevelopment.XP_LOGIN);
             addItem(GIFT_CHEST_OBJECT_TYPE_PREFAB,new Long(1));
         }
 
         for (InventoryEntity inventoryEntity: repository.findByIdentityId(userService.getIdentity().getId())) {
             inventory.getItems().add(new InventoryItem(inventoryEntity.getGameObjectType().getPrefab(), inventoryEntity.getAmount(), inventoryEntity.getGameObjectType().getSupportsUserText()));
         }
+        inventory.setNumberOfObjectTypes(gameObjectType.getNumberOfObjectTypes());
         return inventory;
     }
 

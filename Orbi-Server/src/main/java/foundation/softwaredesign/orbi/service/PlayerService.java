@@ -32,7 +32,7 @@ public class PlayerService {
         inventory.use(player.getGameObjectToCraft());
         player.getGameObjectToCraft().setIdentityId(user.getIdentity().getId());
         world.create(player.getGameObjectToCraft());
-        characterService.incrementXp(CharacterService.XP_CRAFT);
+        characterService.incrementXp(CharacterDevelopment.XP_CRAFT);
         return world.getWorld(player.getCharacter().getTransform().getGeoPosition());
     }
 
@@ -44,7 +44,7 @@ public class PlayerService {
             inventory.addItem(object.getPrefab(), new Long(1));
             inventory.checkForGiftChest(object);
             world.delete(object.getId());
-            characterService.incrementXp(CharacterService.XP_DESTROY);
+            characterService.incrementXp(CharacterDevelopment.XP_DESTROY);
         } catch (NotFoundException ex) {
             Logger.getLogger(PlayerService.class.getName()).fine(ex.getMessage());
         }
@@ -53,6 +53,7 @@ public class PlayerService {
 
     public Inventory getInventory() {
         inventory.checkBasicInventoryAndRestock();
+
         return inventory.getInventory();
     }
 

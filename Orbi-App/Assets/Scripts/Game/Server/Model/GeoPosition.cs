@@ -23,6 +23,13 @@ namespace ServerModel
         {
         }
 
+        public GeoPosition(GeoPosition position)
+        {
+            this.latitude = position.latitude;
+            this.longitude = position.longitude;
+            this.altitude = position.altitude;
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null || !(obj is GeoPosition))

@@ -104,7 +104,7 @@ namespace GameController
 
         public void SetCenterGeoPosition(GeoPosition centerGeoPosition)
         {
-            this.centerGeoPosition = centerGeoPosition;
+            this.centerGeoPosition = new GeoPosition(centerGeoPosition);
         }
 
         public GeoPosition GetCenterGeoPostion()

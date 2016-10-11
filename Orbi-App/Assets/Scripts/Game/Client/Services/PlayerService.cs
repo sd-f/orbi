@@ -6,6 +6,7 @@ namespace GameController.Services
 
     public class PlayerService: AbstractHttpService
     {
+
         public IEnumerator RequestInventory()
         {
             WWW request = Request("player/inventory", null);

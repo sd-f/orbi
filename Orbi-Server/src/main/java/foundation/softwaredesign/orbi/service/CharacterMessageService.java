@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.service;
 
+import foundation.softwaredesign.orbi.model.CharacterDevelopment;
 import foundation.softwaredesign.orbi.model.CharacterMessage;
 import foundation.softwaredesign.orbi.persistence.repo.CharacterMessageRepository;
 import foundation.softwaredesign.orbi.persistence.repo.CharacterMessageStatisticsRepository;
@@ -46,7 +47,7 @@ public class CharacterMessageService {
             throw new WebApplicationException("Character is busy or not available");
         }
         message.setFromCharacterId(character.loadCurrent().getId());
-        character.incrementXp(CharacterService.XP_MESSAGE);
+        character.incrementXp(CharacterDevelopment.XP_MESSAGE);
         repository.saveAndFlush(message);
     }
 

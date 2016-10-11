@@ -10,7 +10,7 @@ namespace GameController
 
         // prod server, dev server or localhost
         public ServerType serverType = ServerType.LOCAL;
-        public static int VERSION = 18;
+        public static int VERSION = 19;
         //private AuthService authService = new AuthService();
         private int runningRequests = 0;
         public bool verbose = false;

@@ -11,6 +11,7 @@ namespace GameScene
         public GameObject camera;
         public GameObject effectPrefab;
         public GameObject earnedXPTextPrefab;
+        public Camera cam;
         private bool isDesktopMode = false;
         private bool crafting = false;
         private GameObject newObject;
@@ -117,6 +118,7 @@ namespace GameScene
             GameObject effect = GameObject.Instantiate(effectPrefab) as GameObject;
             GameObject earnedText = GameObject.Instantiate(earnedXPTextPrefab) as GameObject;
             earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_CRAFT);
+            earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
             effect.transform.position = newObject.transform.position;
             earnedText.transform.position = newObject.transform.position + (Vector3.up * 2f);
             GameObject.Destroy(effect, 1.5f);

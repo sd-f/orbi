@@ -12,6 +12,7 @@ namespace GameScene
         public GameObject Wave;
         public GameObject explosionEffect;
         public GameObject earnedXPTextPrefab;
+        public Camera cam;
         private bool isDesktopMode = false;
         
 
@@ -55,6 +56,7 @@ namespace GameScene
                     earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_DESTROY);
                     effect.transform.position = realContainer.transform.position;
                     earnedText.transform.position = realContainer.transform.position + (Vector3.up * 2f);
+                    earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
                     Game.GetWorld().GetGameObjectService().RemoveObject(realContainer);
                     GameObject.Destroy(effect, 1.5f);
                     GameObject.Destroy(realContainer);

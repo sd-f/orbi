@@ -13,11 +13,12 @@ public class GeroBeam : MonoBehaviour {
 	private Vector3[] F_Vec;
 	private int LRSize;
 	private GeroBeamHit HitObj;
-	private float RateA;
+#pragma warning disable 0649, 0169
+    private float RateA;
 
 	public float NowLengthGlobal;
 	private BeamParam BP;
-    private Vector3 HitObjSize;
+    //private Vector3 HitObjSize;
     private GameObject Flash;
     private float FlashSize;
     // Use this for initialization
@@ -27,7 +28,7 @@ public class GeroBeam : MonoBehaviour {
 		NowLength = 0.0f;
 		LR = this.GetComponent<LineRenderer>();
 		HitObj = this.transform.FindChild("GeroBeamHit").GetComponent<GeroBeamHit>();
-        HitObjSize = HitObj.transform.localScale;
+        //HitObjSize = HitObj.transform.localScale;
         SHP_Emitter = this.transform.FindChild("ShotParticle_Emitter").GetComponent<ShotParticleEmitter>();
         Flash = this.transform.FindChild("BeamFlash").gameObject;
         F_Vec = new Vector3[LRSize+1];
@@ -100,7 +101,7 @@ public class GeroBeam : MonoBehaviour {
 					break;
                 int layerMask = ~(1 << LayerMask.NameToLayer("NoBeamHit") | 1 << 2);
                 if (Physics.Raycast(NowPos,F_Vec[i],out hit,BlockLen*workNLG,layerMask)){
-    				GameObject hitobj = hit.collider.gameObject;
+    				//GameObject hitobj = hit.collider.gameObject;
 					NowLength = ((BlockLen*i)+hit.distance)/MaxLength;
                     HitObj.transform.position = NowPos + F_Vec[i] * hit.distance;
 					HitObj.transform.rotation = Quaternion.AngleAxis(180.0f,transform.up)* this.transform.rotation;

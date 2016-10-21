@@ -37,7 +37,6 @@ namespace GameController
             newObject.transform.SetParent(container.transform);
             newObject.name = "object_" + id;
             // max bounds
-            Vector3 boundsSize = new Vector3(0, 0, 0);
             GameObjectUtility.SetLayer(container, layer);
             GameObjectUtility.Freeze(container);
             return container;

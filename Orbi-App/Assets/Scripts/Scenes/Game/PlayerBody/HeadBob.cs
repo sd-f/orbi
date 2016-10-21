@@ -14,7 +14,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         public MyFirstPersonController rigidbodyFirstPersonController;
         public float StrideInterval;
         [Range(0f, 1f)] public float RunningStrideLengthen;
-        private bool enabled = false;
+        private bool isEnabled = false;
 
        // private CameraRefocus m_CameraRefocus;
         private bool m_PreviouslyGrounded;
@@ -22,7 +22,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Awake()
         {
-            this.enabled = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            this.isEnabled = Game.GetGame().GetSettings().IsDesktopInputEnabled();
         }
 
         private void Start()
@@ -35,7 +35,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Update()
         {
-            if (enabled) { 
+            if (isEnabled) { 
                 //  m_CameraRefocus.GetFocusPoint();
                 Vector3 newCameraPosition;
                 if (rigidbodyFirstPersonController.Velocity.magnitude > 0 && rigidbodyFirstPersonController.Grounded)

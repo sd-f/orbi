@@ -202,8 +202,12 @@ namespace UMA
 		{
 			if (name != null)
 			{
-				dest.name = String.Copy(name);
-			}
+#if WINDOWS_UWP
+                dest.name = new String(name.ToCharArray());
+#else
+                dest.name = new String(name.ToCharArray()); // String.Copy();
+#endif
+            }
 			dest.channelMask = new Color[channelMask.Length];
 			for (int i = 0; i < channelMask.Length; i++)
 			{

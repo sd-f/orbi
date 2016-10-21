@@ -8,6 +8,7 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Body/PlayerDestructionController")]
     class PlayerDestructionController : MonoBehaviour
     {
+#pragma warning disable 0649
         public GameObject Shot1;
         public GameObject Wave;
         public GameObject explosionEffect;

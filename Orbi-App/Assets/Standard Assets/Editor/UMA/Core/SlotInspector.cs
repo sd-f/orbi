@@ -70,6 +70,8 @@ namespace UMAEditor
 
         public override void OnInspectorGUI()
         {
+            // TODO deprecated
+#pragma warning disable 0618
             EditorGUIUtility.LookLikeControls();
 
             slot.slotName = EditorGUILayout.TextField("Slot Name", slot.slotName);

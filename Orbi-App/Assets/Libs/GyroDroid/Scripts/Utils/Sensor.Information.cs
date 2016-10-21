@@ -83,7 +83,7 @@ public partial class Sensor
 	        return string.Format("Vendor: {0}, Resolution: {1}, MinDelay: {2}, MaxRange: {3}, Value: {4}", vendor, resolution, minDelay, maximumRange, values.ToString());
 	    }
 
-
+        /*
 		public void Serialize(BitStream stream)
 		{
 			bool _gotFirstValue = false;
@@ -111,5 +111,6 @@ public partial class Sensor
 				values = _values;
 			}
 		}
+        */
 	}
 }

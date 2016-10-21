@@ -94,7 +94,7 @@ namespace GameController
                 this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                 Vector3 target = this.player.character.transform.geoPosition.ToPosition().ToVector3();
                 WorldAdapter.VERBOSE = true;
-                Game.GetClient().Log("CheckGPSPosition-pos " + target);
+                //Game.GetClient().Log("CheckGPSPosition-pos " + target);
                 WorldAdapter.VERBOSE = false;
                 GetPlayerBodyController().SetTargetPosition(target);
             }

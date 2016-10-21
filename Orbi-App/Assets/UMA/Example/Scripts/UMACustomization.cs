@@ -16,6 +16,7 @@ public class UMACustomization : MonoBehaviour
 	private UMADnaTutorial umaTutorialDna;
 
     private GameObject DnaPanel;            // This is the parent panel
+#pragma warning disable 0649, 0169
     private GameObject DnaScrollPanel;      // This is the scrollable panel that holds the sliders
 
     // Slider objects 
@@ -66,6 +67,7 @@ public class UMACustomization : MonoBehaviour
     private Slider EyeSpacingSlider;
     private Slider LowCheekPosSlider;
     private Slider HeadWidthSlider;
+#pragma warning disable 0649, 0169
     private Slider[] sliders;
     private Rect ViewPortFull = new Rect(0, 0, 1, 1);
     private Rect ViewPortReduced;

@@ -15,7 +15,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <!-- delta spike -->
         <deltaspike.version>1.7.0</deltaspike.version>
-        <eclipselink.version>2.6.3</eclipselink.version>
+        <eclipselink.version>2.6.4</eclipselink.version>
 		
     </properties>
 

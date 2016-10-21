@@ -9,6 +9,7 @@ namespace UnityStandardAssets.Utility
 {
     public class AutoMobileShaderSwitch : MonoBehaviour
     {
+#pragma warning disable 0649, 0169
         [SerializeField] private ReplacementList m_ReplacementList;
 
         // Use this for initialization

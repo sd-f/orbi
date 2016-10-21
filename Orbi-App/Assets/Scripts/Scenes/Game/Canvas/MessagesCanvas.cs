@@ -21,7 +21,6 @@ namespace GameScene
 
         private bool isChatWindowActive = false;
         private bool isInteractionWindowActive = false;
-        private bool hasNewMessages = false;
 
         void Start()
         {

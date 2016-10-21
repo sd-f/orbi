@@ -1,16 +1,11 @@
 ﻿using GameController;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/Canvas")]
     public class Canvas : MonoBehaviour
     {
-        Button craftButton;
-        Button craftOkButton;
-        Button craftCancelButton;
-
 
         public void OnSettings()
         {

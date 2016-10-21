@@ -3,6 +3,7 @@ using System.Collections;
 using UMA;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System.Reflection;
 
 public class UMAGenericCustomization : MonoBehaviour {
 	
@@ -152,7 +153,7 @@ public class UMAGenericCustomization : MonoBehaviour {
 		var index = 0;
 		foreach (var dna in allDna){
 			if (dna is UMADnaHumanoid) continue;
-			var fields = dna.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            FieldInfo[] fields = dna.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 			foreach (var field in fields){
 				sliderControlList[index++].value = (float)field.GetValue(dna);
 			}
@@ -163,7 +164,7 @@ public class UMAGenericCustomization : MonoBehaviour {
 		var index = 0;
 		foreach (var dna in allDna){
 			if (dna is UMADnaHumanoid) continue;
-			var fields = dna.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+            FieldInfo[] fields = dna.GetType().GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
 			foreach (var field in fields){
 				field.SetValue(dna, sliderControlList[index++].value);
 			}

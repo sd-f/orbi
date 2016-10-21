@@ -13,7 +13,13 @@ namespace UMA
 		{
 			Prepare();
 		}
-	    public System.Type DNAType;
+#if WINDOWS_UWP
+        //public System.TypeInfo DNAType;
+        public System.Type DNAType;
+#else
+        public System.Type DNAType;
+#endif
+
         public delegate void DNAConvertDelegate(UMAData data, UMASkeleton skeleton);
 		/// <summary>
 		/// Called on the DNA converter to adjust avatar from DNA values.

@@ -8,12 +8,12 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Canvas/Compass")]
     class Compass : MonoBehaviour
     {
+#pragma warning disable 0649
         public Image compassImage;
         public Image buttonBackground;
         public GameObject playerBody;
 
         private float heading = 0.0f;
-        private float headingVelocity = 0.0f;
         private bool headingNorth = false;
 
         void Start()

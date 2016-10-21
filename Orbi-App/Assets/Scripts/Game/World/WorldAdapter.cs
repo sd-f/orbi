@@ -7,13 +7,13 @@ namespace GameController
 {
     public static class WorldAdapter
     {
-        static Projection projection;
+        public static Projection PROJECTION;
         public static int ZOOM = 18;
         public static bool VERBOSE = false;
 
         static WorldAdapter()
         {
-            projection = new Projection();
+            PROJECTION = new Projection();
         }
 
         public static Position ToVirtualRelative(GeoPosition original_g)
@@ -94,7 +94,7 @@ namespace GameController
             //Debug.Log(" -> pos_pn " + position);
 
             // pos_pn  -> pos_g (proj)
-            GeoPosition geoPosition = projection.fromPointToLatLng(position);
+            GeoPosition geoPosition = PROJECTION.fromPointToLatLng(position);
 
             //Debug.Log(" -> pos_g " + geoPosition);
 
@@ -108,7 +108,7 @@ namespace GameController
         {
             //Debug.Log(" <- pos_g " + original);
             // pos_g  -> pos_pn (proj)
-            Position virtualPosition = projection.fromLatLngToPoint(original);
+            Position virtualPosition = PROJECTION.fromLatLngToPoint(original);
 
             //Debug.Log(" <- pos_pn " + virtualPosition);
 

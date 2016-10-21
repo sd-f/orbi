@@ -7,6 +7,7 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Canvas/ViewSwitcher")]
     class ViewSwitcher : MonoBehaviour
     {
+#pragma warning disable 0649
         public Camera playerCamera;
         public GameObject buttonImage;
         public Sprite cameraSprite;

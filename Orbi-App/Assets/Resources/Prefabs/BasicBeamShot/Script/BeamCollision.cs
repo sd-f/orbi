@@ -32,7 +32,7 @@ public class BeamCollision : MonoBehaviour {
         int layerMask = ~(1 << LayerMask.NameToLayer("NoBeamHit") | 1 << 2);
         if (HitEffect != null && !bHit && Physics.Raycast(transform.position, transform.forward, out hit, Mathf.Infinity, layerMask))
         {
-            GameObject hitobj = hit.collider.gameObject;
+            //GameObject hitobj = hit.collider.gameObject;
 			if(hit.distance < BL.GetNowLength())
 		    {
 				BL.StopLength(hit.distance);

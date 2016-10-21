@@ -8,8 +8,9 @@ using System;
 /// </summary>
 public abstract class SlotLibraryBase : MonoBehaviour 
 {
-	public virtual void AddSlotAsset(SlotDataAsset slot) { throw new NotFiniteNumberException(); }
-	public virtual SlotDataAsset[] GetAllSlotAssets() { throw new NotFiniteNumberException(); }
+    // UWP fixed switched to generic Exception
+	public virtual void AddSlotAsset(SlotDataAsset slot) { throw new Exception(); }
+	public virtual SlotDataAsset[] GetAllSlotAssets() { throw new Exception(); }
 	public abstract SlotData InstantiateSlot(string name);
 	public abstract SlotData InstantiateSlot(int nameHash);
 	public abstract SlotData InstantiateSlot(string name, List<OverlayData> overlayList);
@@ -19,8 +20,8 @@ public abstract class SlotLibraryBase : MonoBehaviour
     public abstract void ValidateDictionary();
 
 	[Obsolete("SlotLibrary.AddSlot(SlotData slot) is obsolete use SlotLibrary.AddSlotAsset(SlotDataAsset slot) instead", false)]
-	public virtual void AddSlot(SlotData slot) { throw new NotFiniteNumberException(); }
+	public virtual void AddSlot(SlotData slot) { throw new Exception(); }
 	[Obsolete("SlotLibrary.GetAllSlots() is obsolete use SlotLibrary.GetAllSlotAssets() instead", false)]
-	public virtual SlotData[] GetAllSlots() { throw new NotFiniteNumberException(); }
+	public virtual SlotData[] GetAllSlots() { throw new Exception(); }
 
 }

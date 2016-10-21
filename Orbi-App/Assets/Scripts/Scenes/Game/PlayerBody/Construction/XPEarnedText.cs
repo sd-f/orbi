@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class XPEarnedText : MonoBehaviour {
 
-    private long amount;
     private bool fading = false;
     private TextMesh textMesh;
     private static float scaleFactor = 0.01f;

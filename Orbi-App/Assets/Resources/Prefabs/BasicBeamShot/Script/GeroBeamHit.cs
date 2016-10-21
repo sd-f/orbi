@@ -6,8 +6,8 @@ public class GeroBeamHit : MonoBehaviour {
 	private GameObject ParticleB;
 	private GameObject HitFlash;
 	
-	private float PatA_rate;
-	private float PatB_rate;
+	private float PatA_rate = 0;
+	private float PatB_rate = 0;
 
 	private ParticleSystem PatA;
 	private ParticleSystem PatB;
@@ -15,12 +15,16 @@ public class GeroBeamHit : MonoBehaviour {
 	public void SetViewPat(bool b)
 	{
 		if(b){
-			PatA.emissionRate = PatA_rate;
-			PatB.emissionRate = PatB_rate;
+            ParticleSystem.EmissionModule patAEm = PatA.emission;
+            patAEm.rate = PatA_rate;
+            ParticleSystem.EmissionModule patBEm = PatB.emission;
+            patBEm.rate = PatB_rate;
 			HitFlash.GetComponent<Renderer>().enabled = true;
 		}else{
-			PatA.emissionRate = 0;
-			PatB.emissionRate = 0;
+            ParticleSystem.EmissionModule patAEm = PatA.emission;
+            patAEm.rate = 0;
+            ParticleSystem.EmissionModule patBEm = PatB.emission;
+            patBEm.rate = 0;
 			HitFlash.GetComponent<Renderer>().enabled = false;
 		}
 	}
@@ -32,13 +36,13 @@ public class GeroBeamHit : MonoBehaviour {
 		ParticleB = transform.FindChild("GeroParticleB").gameObject;
 		HitFlash = transform.FindChild("BeamFlash").gameObject;
 		PatA = ParticleA.gameObject.GetComponent<ParticleSystem>();
-		PatA_rate = PatA.emissionRate;
-		PatA.emissionRate = 0;
-		PatB = ParticleB.gameObject.GetComponent<ParticleSystem>();
-		PatB_rate = PatB.emissionRate;
-		PatB.emissionRate = 0;
+        ParticleSystem.EmissionModule patAEm = PatA.emission;
+        patAEm.rate = 0;
+        PatB = ParticleB.gameObject.GetComponent<ParticleSystem>();
+        ParticleSystem.EmissionModule patBEm = PatB.emission;
+        patBEm.rate = 0;
 
-		HitFlash.GetComponent<Renderer>().enabled = false;
+        HitFlash.GetComponent<Renderer>().enabled = false;
     }
 	
 	// Update is called once per frame

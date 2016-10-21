@@ -11,6 +11,8 @@ namespace StartScene
 
         void Start()
         {
+            Game.GetClient().Log("Debug: Orbi started.", this);
+            print("Orbi started.");
 
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
@@ -22,7 +24,6 @@ namespace StartScene
 
             StartCoroutine(Game.GetWorld().GetGameObjectService().RequestStatistics());
             StartCoroutine(Boot());
-            
         }
 
         IEnumerator Boot()

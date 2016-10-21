@@ -8,14 +8,14 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Body/PlayerConstructionController")]
     class PlayerConstructionController : MonoBehaviour
     {
-        public GameObject camera;
+#pragma warning disable 0649
+        public GameObject mainCamera;
         public GameObject effectPrefab;
         public GameObject earnedXPTextPrefab;
         public Camera cam;
         private bool isDesktopMode = false;
         private bool crafting = false;
         private GameObject newObject;
-        private Rigidbody body;
         private Vector3 rotation = new Vector3(0, 0, 0);
         private float distance = 10f;
         private Vector3 firstpoint;

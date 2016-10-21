@@ -23,7 +23,8 @@ namespace UMAEditor
     [CustomEditor(typeof(UMARecipeBase), true)]
     public partial class RecipeEditor : CharacterBaseEditor
     {
-		List<GameObject> draggedObjs;
+#pragma warning disable 0649, 0169
+        List<GameObject> draggedObjs;
 		public virtual void OnSceneDrag(SceneView view)
 		{
 			if (Event.current.type == EventType.DragUpdated)

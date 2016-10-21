@@ -18,6 +18,7 @@ namespace GameController
         public LayerMask backgroundLayersTerrain;
         public LayerMask backgroundLayersCamera;
         public LayerMask backGroundLayerMask;
+        public Texture2D defaultGroundTexture;
 
         private bool skipRefresh = false;
         private TerrainService terrainService;
@@ -26,6 +27,7 @@ namespace GameController
         private GameObjectService gameObjectService;
         private UMACreator umaCreator;
         private ServerModel.Statistics stats = new Statistics();
+
 
         void Start()
         {
@@ -89,11 +91,11 @@ namespace GameController
                 skipRefresh = false;
             } else
             {
-                yield return textureService.LoadTextures();
+                yield return textureService.LoadTexture();
                 if (Game.GetGame().GetSettings().IsHeightsEnabled())
                 {
                     //Debug.Log("heights");
-                    yield return terrainService.RequestTerrain();
+                    //yield return terrainService.RequestTerrain();
                 }
                 else
                 {
@@ -197,7 +199,7 @@ namespace GameController
         {
             // cleanup dynamic splats
             CancelInvoke();
-            GetTerrainService().SetMapsSplats(new SortedList<int, SplatPrototype>());
+            GetTerrainService().CleanSplats();
         }
 
 

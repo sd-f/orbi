@@ -63,7 +63,7 @@ namespace GameController
            
             position.latitude += Random.Range(-0.001f, 0.001f);
             position.longitude += Random.Range(-0.001f, 0.001f);
-            Game.GetClient().Log(position);
+            Game.GetClient().Log(position, this);
         }
 
         public void Pause()

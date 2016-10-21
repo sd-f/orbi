@@ -18,6 +18,7 @@ namespace GameScene
         private Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
         private float deltaCompass = 0.0f;
         private MyFirstPersonController firstPersonController;
+#pragma warning disable 0649
         public Camera cam;
 
         void Start()

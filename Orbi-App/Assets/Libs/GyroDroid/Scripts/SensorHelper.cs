@@ -10,6 +10,7 @@
 // ---------------------------------------
 // #######################################
 
+using GameController;
 using UnityEngine;
 
 public static class SensorHelper
@@ -91,7 +92,7 @@ public static class SensorHelper
 				    rotationHelper = new GetRotationHelper(RotationQuaternion);
 				    current = RotationFallbackType.RotationQuaternion;
 					
-					Debug.Log("RotationVector is available.");
+					//Game.GetClient().Log("RotationVector is available.");
 				    return true;
 			    }
 		        break;
@@ -213,7 +214,8 @@ public static class SensorHelper
 		return new Quaternion(0,0, Mathf.Sin(k/2),Mathf.Cos(k/2));
 	}
 
-	private static Transform tempT;
+#pragma warning disable 0649, 0169
+    private static Transform tempT;
 	private static readonly AngleFilter OrientationXFilter = new AngleFilter(8);
 	private static Quaternion OrientationAndAcceleration()
 	{

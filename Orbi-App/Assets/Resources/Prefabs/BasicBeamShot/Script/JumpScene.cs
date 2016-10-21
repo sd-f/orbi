@@ -16,6 +16,6 @@ public class JumpScene : MonoBehaviour {
 	
 	public void ChangeScene(){
 		print("SceneChange:"+scene_index);
-		Application.LoadLevel(scene_index);
+		//Application.LoadLevel(scene_index);
 	}
 }

@@ -8,6 +8,7 @@ namespace InventoryScene
     [AddComponentMenu("App/Scenes/Inventory/Init")]
     class Init : MonoBehaviour
     {
+#pragma warning disable 0649
         public GameObject canvasGameObject;
         public static float OBJECT_PADDING = 10f;
 

@@ -23,6 +23,7 @@ namespace UMAEditor
 
 	    public override void OnInspectorGUI()
 	    {
+#pragma warning disable 0618
             EditorGUIUtility.LookLikeControls();
 			
 			race.raceName = EditorGUILayout.TextField("Race Name", race.raceName);

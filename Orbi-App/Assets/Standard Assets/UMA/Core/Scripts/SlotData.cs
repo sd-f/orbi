@@ -38,8 +38,9 @@ namespace UMA
 		public SlotData(SlotDataAsset asset)
 		{
 			this.asset = asset;
-#if !UMA2_LEAN_AND_CLEAN 
-			slotName = asset.slotName;
+#if !UMA2_LEAN_AND_CLEAN
+#pragma warning disable 0649, 0169, 0618
+            slotName = asset.slotName;
 			materialSample = asset.materialSample;
 #endif
 			overlayScale = asset.overlayScale;

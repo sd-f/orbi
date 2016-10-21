@@ -14,7 +14,6 @@ namespace StartScene
         private InputField emailField;
         private InputField codeField;
         private Button loginButton;
-        private Button requestCodeButton;
 
         void Start()
         {
@@ -22,7 +21,6 @@ namespace StartScene
             emailField.text = Game.GetGame().GetSettings().GetEmail();
             codeField = GameObject.Find("InputFieldCode").GetComponent<InputField>();
             loginButton = GameObject.Find("ButtonLogin").GetComponent<Button>();
-            requestCodeButton = GameObject.Find("ButtonRequestCode").GetComponent<Button>();
             if (!Game.GetPlayer().IsLoggedIn())
                 SetFormEnabled(true);
             else

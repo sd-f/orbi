@@ -36,8 +36,12 @@ namespace UMA.Integrations
 
 		private static UnityEngine.Object GetPowerPackPersistanceInstance()
 		{
-			var method = GetPowerPackPersistanceType().GetMethod("GetInstance", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
-			return method.Invoke(null, null) as UnityEngine.Object;
+#if WINDOWS_UWP
+            var method = GetPowerPackPersistanceType().GetMethod("GetInstance", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+#else
+            var method = GetPowerPackPersistanceType().GetMethod("GetInstance", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+#endif
+            return method.Invoke(null, null) as UnityEngine.Object;
 		}
 		private static void ReleasePowerPackPersistanceInstance(UnityEngine.Object instance)
 		{

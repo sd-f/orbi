@@ -40,6 +40,7 @@ namespace GameController
             this.terrainSize = (int)td.size.x;
             this.terrainHeight = (int)td.size.y;
             this.hm = new float[hmSize, hmSize];
+            AddStaticAlpha2();
         }
 
         public IEnumerator RequestTerrain()
@@ -53,7 +54,7 @@ namespace GameController
                 try
                 {
                     IndicateRequestFinished();
-                    //AdjustTerrainHeights(terrainWorld);
+                    AdjustTerrainHeights(terrainWorld);
                     AddStaticAlpha();
                     
                     t.Flush();
@@ -160,11 +161,25 @@ namespace GameController
             t.Flush();
         }
 
+        public void SetGroundTexture(Texture2D texture)
+        {
+            SplatPrototype[] splats = td.splatPrototypes;
+            splats[1].texture = texture; // ground
+            td.splatPrototypes = splats;
+            td.RefreshPrototypes();
+            t.Flush();
+        }
+
+        internal void CleanSplats()
+        {
+            SetGroundTexture(Game.GetWorld().defaultGroundTexture);
+        }
+
         public IEnumerator ResetTerrain()
         {
             SetHeightMin(0.0f);
             SetHeightsToMin();
-            AddStaticAlpha();
+            AddStaticAlpha2();
             t.Flush();
             yield return null;
         }
@@ -215,7 +230,7 @@ namespace GameController
             int vermeindlicherLayer = 0;
             int index_helper_y = 0;
             int index_helper_x = 0;
-            int bla = 0;
+            //int bla = 0;
             for (int y = 0; y < amSize; y++) {
                 if (y % 256 == 0)
                 {
@@ -226,7 +241,7 @@ namespace GameController
                     index_helper_x = index_helper_y + (x / 256);
                     if (x % 256 == 0)
                     {
-                        bla = 2;
+                       // bla = 2;
 
                     }
 

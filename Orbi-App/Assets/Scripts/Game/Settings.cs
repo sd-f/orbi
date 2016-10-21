@@ -1,7 +1,6 @@
 ﻿using CanvasUtility;
 using System;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
@@ -24,13 +23,13 @@ namespace GameController
 
         public void SetHeightsEnabled(bool enabled)
         {
-            this.data.heightsEnabled = enabled;
+            this.data.heightsEnabled = false; // TODO disabled
             Save();
         }
 
         public void SetSatelliteOverlayEnabled(bool enabled)
         {
-            this.data.satelliteOverlayEnabled = enabled;
+            this.data.satelliteOverlayEnabled = false; // TODO disabled
             Save();
         }
 
@@ -63,12 +62,14 @@ namespace GameController
 
         public bool IsHeightsEnabled()
         {
-            return this.data.heightsEnabled;
+            return false; // TODO disabled
+            //return this.data.heightsEnabled;
         }
 
         public bool IsSatelliteOverlayEnabled()
         {
-            return this.data.satelliteOverlayEnabled;
+            return false; // TODO disabled no satellite available
+            //return this.data.satelliteOverlayEnabled;
         }
 
         public bool IsHandheldInputEnabled()
@@ -103,20 +104,15 @@ namespace GameController
         {
             if (File.Exists(Application.persistentDataPath + SETTINGS_FILE_PATH))
             {
-                FileStream file = null;
                 try
                 {
-                    BinaryFormatter bf = new BinaryFormatter();
-                    file = File.Open(Application.persistentDataPath + SETTINGS_FILE_PATH, FileMode.Open);
-                    this.data = (SettingsData)bf.Deserialize(file);
-                    file.Close();
+                    string readText = File.ReadAllText(Application.persistentDataPath + SETTINGS_FILE_PATH);
+                    this.data = JsonUtility.FromJson<SettingsData>(readText);
+                    //this.data = (SettingsData)bf.Deserialize(file);
                 }
                 catch (Exception ex)
                 {
-                    if (file != null)
-                    {
-                        file.Close();
-                    }
+
                     Error.Show("Error loading save game, Settings will be set to default");
                     Debug.LogError(ex.Message);
                     File.Delete(Application.persistentDataPath + SETTINGS_FILE_PATH);
@@ -135,10 +131,7 @@ namespace GameController
         {
             try
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                FileStream file = File.Create(Application.persistentDataPath + SETTINGS_FILE_PATH);
-                bf.Serialize(file, data);
-                file.Close();
+                File.WriteAllText(Application.persistentDataPath + SETTINGS_FILE_PATH, JsonUtility.ToJson(this.data));
             } catch (Exception ex)
             {
                 Error.Show("Error saving game: " + ex.Message);

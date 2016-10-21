@@ -107,7 +107,8 @@ namespace UMA.PoseTools
 
 		void OnGUI()
 		{
-			EditorGUIUtility.LookLikeControls();
+#pragma warning disable 0618
+            EditorGUIUtility.LookLikeControls();
 
 			sourceSkeleton = EditorGUILayout.ObjectField("Rig Prefab", sourceSkeleton, typeof(Transform), true) as Transform;
 

@@ -23,11 +23,17 @@ namespace GameController
         public int terrainSize;     // 256
         public int terrainHeight;   // 100
 
-        private TerrainData td;
+        public TerrainData td;
         private Terrain t;
         private LayerMask terrainMask;
 
         private float[,] hm;
+
+        public static int L_GROUND = 0;
+        public static int L_GRAS = 1;
+        public static int L_STREET = 2;
+        public static int smoothArea = 3;
+        private static int NUM_L = 3;
 
 
         public TerrainService(Terrain terrain)
@@ -37,149 +43,94 @@ namespace GameController
             terrainMask = 1 << LayerMask.NameToLayer("Terrain");
             this.hmSize = td.heightmapResolution;
             this.amSize = td.alphamapResolution;
+            //Game.GetClient().Log("AlphaMap Resolution " + this.amSize);
             this.terrainSize = (int)td.size.x;
             this.terrainHeight = (int)td.size.y;
             this.hm = new float[hmSize, hmSize];
-            AddStaticAlpha2();
+            ResetAlpha();
         }
 
-        public IEnumerator RequestTerrain()
+        public bool IsInsideTerrain(int x, int z)
         {
-            ServerModel.World generatedWorld = GenerateDummyWorldArround();
-            WWW request = Request("world/terrain", JsonUtility.ToJson(generatedWorld));
-            yield return request;
-            if (request.error == null)
+            return (x < td.alphamapWidth) && (x > 0) && (z < td.alphamapHeight) && (z > 0);
+        }
+
+        public Vector2 GetAlphaMapCoordinates(Position worldPosition)
+        {
+            int mapX = (int)(((worldPosition.x + 256) / td.size.x) * td.alphamapWidth);
+            int mapZ = (int)(((worldPosition.z + 256) / td.size.z) * td.alphamapHeight);
+            return new Vector2(mapX, mapZ);
+        }
+
+        public void Paint(float[,,] maps, int x, int y, int layer)
+        {
+            Paint(maps, x, y, layer, 1.0f);
+            PaintAround(maps, x, y, layer);
+        }
+
+        public void Paint(float[,,] maps, int x, int y, int layer, float amount)
+        {
+            if (IsInsideTerrain(x, y))
             {
-                ServerModel.World terrainWorld = JsonUtility.FromJson<ServerModel.World>(request.text);
-                try
-                {
-                    IndicateRequestFinished();
-                    AdjustTerrainHeights(terrainWorld);
-                    AddStaticAlpha();
+                float rest = (1 - amount) / (NUM_L - 1);
+                for (int l = 0; l < NUM_L; l++)
+                    if (l == layer)
+                        maps[x, y, l] = amount;
+                    else
+                        maps[x, y, l] = maps[x, y, l] * rest;
+            }
+        }
+
+        private void PaintAround(float[,,] maps, int x, int y, int layer)
+        {
+            float amount;
+            for (int h = -smoothArea; h<= smoothArea; h++) 
+                for (int v = -smoothArea; v<= smoothArea; v++)
+                    if ((h!=0) && (v!=0))
+                    {
+                        amount = (smoothArea*2) / (Math.Abs(h) + Math.Abs(v));
+                        PaintSmooth(maps, x + v, y + h, layer, amount);
+                    }
                     
-                    t.Flush();
-                }
-                catch (Exception ex) {
-                    Error.Show(ex.Message);
-                }    
-            }
-            else
-                HandleError(request);
-            
-            
         }
 
-        
-
-        public ServerModel.World GenerateDummyWorldArround()
+        private void PaintSmooth(float[,,] maps, int x, int y, int layer, float amount)
         {
-            ServerModel.World dummyWorld = new ServerModel.World();
-            
-            int factor = terrainSize / (HEIGHTMAP_SIZE_SERVER - 1);
-            // 0 .. 17 -> -8 .. +8
-            for (int i = 0; i < HEIGHTMAP_SIZE_SERVER; i++)
-                for (int j = 0; j < HEIGHTMAP_SIZE_SERVER; j++)
-                {
-                    ServerModel.GameObject dummyGameObject = new ServerModel.GameObject();
-                    Position dummyGeoLocation = new Position();
-                    dummyGeoLocation.z = (i - (HEIGHTMAP_SIZE_SERVER / 2)) * factor;
-                    dummyGeoLocation.x = (j - (HEIGHTMAP_SIZE_SERVER / 2)) * factor;
-                    dummyGeoLocation.y = 0.0d;
-                    dummyGameObject.transform.geoPosition = dummyGeoLocation.ToGeoPosition();
-                    //Debug.Log(dummyGameObject.geoPosition);
-                    dummyWorld.gameObjects.Add(dummyGameObject);
-                }
-
-            return dummyWorld;
+            if (IsInsideTerrain(x, y))
+                if (maps[x, y, layer] != 1.0f)
+                    Paint(maps, x, y, layer, amount);
         }
 
-        private void SetHeightsMinMaxFromDummyWorld(ServerModel.World dummyWorld)
+        public float[,,] GetAlphaMaps()
         {
-            heightMin = 100000d;
-            heightMax = 0d;
-            foreach (ServerModel.GameObject dummyGameObject in dummyWorld.gameObjects)
-            {
-                if (dummyGameObject.transform.geoPosition.altitude < heightMin)
-                    heightMin = dummyGameObject.transform.geoPosition.altitude;
-                if (dummyGameObject.transform.geoPosition.altitude > heightMax)
-                    heightMax = dummyGameObject.transform.geoPosition.altitude;
-            }
+           return td.GetAlphamaps(0, 0, amSize, amSize);
         }
 
-        public void AdjustTerrainHeights(ServerModel.World dummyWorld)
+        public void SetAlphaMaps(float[,,] maps)
         {
-            SetHeightsMinMaxFromDummyWorld(dummyWorld);
-            SetHeightsToMin();
-            //Texture2D texture = new Texture2D(heightMapSizeForRequest, heightMapSizeForRequest);
-            int x, y, vX, vY;
-            int factor = terrainSize / (HEIGHTMAP_SIZE_SERVER - 1);
-            float height = 0.0f;
-            double altitude = 0.0f;
-
-            foreach (ServerModel.GameObject dummyGameObject in dummyWorld.gameObjects)
-            {
-                altitude = dummyGameObject.transform.geoPosition.altitude - heightMin;
-                Position pos = dummyGameObject.transform.geoPosition.ToPosition();
-
-                x = (int)Math.Round(pos.z);
-                y = (int)Math.Round(pos.x);
-                vX = (x / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
-                vY = (y / factor) + ((HEIGHTMAP_SIZE_SERVER - 1) / 2);
-                height = (float)(altitude / terrainHeight);
-                //Debug.Log("(" + vX + "," + vY + ") " + altitude + " " + pos);
-                if (height > 1)
-                    height = 1;
-                if ((vX <= hmSize) && (vY <= hmSize) && (vX >= 0) && (vY >= 0))
-                {
-                    hm[vX, vY] = height;
-                    //Debug.Log("(" + vX + "," + vY + ") " + height);
-                }
-                    
-            }
-            
-            SetHeights();
+            t.terrainData.SetAlphamaps(0, 0, maps);
         }
 
-        public double getMinHeight()
+        private void ResetAlpha()
         {
-            return this.heightMin;
+            float[,,] maps = GetAlphaMaps();
+            for (int y = 0; y < amSize; y++)
+                for (int x = 0; x < amSize; x++)
+                    Paint(maps, x, y, L_GROUND, 1.0f);
+            SetAlphaMaps(maps);
         }
 
-
-        public void SetMapsSplats(SortedList<int, SplatPrototype> prototypes)
-        {
-            SplatPrototype[] splats = td.splatPrototypes;
-            List<SplatPrototype> newSplats = new List<SplatPrototype>();
-            newSplats.Add(splats[0]); // grass
-            foreach (KeyValuePair<int, SplatPrototype> pair in prototypes)
-            {
-                newSplats.Add(pair.Value);
-            }
-            
-            td.splatPrototypes = newSplats.ToArray();
-            td.RefreshPrototypes();
-            t.Flush();
-        }
-
-        public void SetGroundTexture(Texture2D texture)
-        {
-            SplatPrototype[] splats = td.splatPrototypes;
-            splats[1].texture = texture; // ground
-            td.splatPrototypes = splats;
-            td.RefreshPrototypes();
-            t.Flush();
-        }
 
         internal void CleanSplats()
         {
-            SetGroundTexture(Game.GetWorld().defaultGroundTexture);
+            ResetAlpha();
         }
 
         public IEnumerator ResetTerrain()
         {
             SetHeightMin(0.0f);
             SetHeightsToMin();
-            AddStaticAlpha2();
+            ResetAlpha();
             t.Flush();
             yield return null;
         }
@@ -210,64 +161,12 @@ namespace GameController
             SetHeights();
         }
 
-        private void AddStaticAlpha2()
-        {
-            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, amSize, amSize);
-            for (int y = 0; y < amSize; y++)
-            {
-                for (int x = 0; x < amSize; x++)
-                {
-                    maps[x, y, 1] = 0.9f;
-                    maps[x, y, 0] = 0.1f;
-                }
-            }
-            t.terrainData.SetAlphamaps(0, 0, maps);
-        }
-
-        private void AddStaticAlpha()
-        {
-            float[,,] maps = t.terrainData.GetAlphamaps(0, 0, amSize, amSize);
-            int vermeindlicherLayer = 0;
-            int index_helper_y = 0;
-            int index_helper_x = 0;
-            //int bla = 0;
-            for (int y = 0; y < amSize; y++) {
-                if (y % 256 == 0)
-                {
-                    index_helper_y++;
-                }
-                for (int x = 0; x < amSize; x++)
-                {
-                    index_helper_x = index_helper_y + (x / 256);
-                    if (x % 256 == 0)
-                    {
-                       // bla = 2;
-
-                    }
-
-                    vermeindlicherLayer = index_helper_x + index_helper_y - 1;
-
-                    // für vermeindlichen auf 0.8 sonst für alle anderen 0.0
-                    for (int zusetzenderLayer = 1; zusetzenderLayer <= 4; zusetzenderLayer++)
-                    {
-                        if (zusetzenderLayer == (vermeindlicherLayer))
-                            maps[y,x, zusetzenderLayer] = 0.9f;
-                        else
-                            maps[y,x, zusetzenderLayer] = 0f;
-                    }
-                   
-                    maps[x, y, 0] = 0.1f;
-                }
-            }
-            t.terrainData.SetAlphamaps(0, 0, maps);
-        }
-
         public float GetTerrainHeight(float x, float z)
         {
-            Vector3 rayOrigin = new Vector3(x, 300, z);
+            Vector3 rayOrigin = new Vector3(x, 600, z);
 
             Ray ray = new Ray(rayOrigin, Vector3.down);
-            float distanceToCheck = 400;
+            float distanceToCheck = 600;
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, distanceToCheck, terrainMask))
                 return hit.point.y;

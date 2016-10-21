@@ -37,6 +37,9 @@ namespace StartScene
             // init player
             yield return Game.GetPlayer().GetPlayerService().RequestUpdate();
 
+            // reset terrain
+            yield return Game.GetWorld().GetTerrainService().ResetTerrain();
+
             // check logged in
             yield return Game.GetGame().GetAuthService().LoadGameIfAuthorized();
         }

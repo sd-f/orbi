@@ -31,6 +31,13 @@ namespace ClientModel
             this.z = z;
         }
 
+        public Position(Mapity.Position world)
+        {
+            this.x = world.Longitude;
+            this.z = world.Latitude;
+            this.y = world.Elevation;
+        }
+
         public Vector3 ToVector3()
         {
             return new Vector3((float)this.x,(float)this.y,(float)this.z);

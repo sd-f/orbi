@@ -123,7 +123,7 @@ namespace GameController
                 }
             }
             //Debug.Log(gout);
-            Game.GetWorld().GetTerrainService().SetMapsSplats(splats);
+            //Game.GetWorld().GetTerrainService().SetMapsSplats(splats);
         }
 
         public IEnumerator LoadTexture()
@@ -137,7 +137,7 @@ namespace GameController
             PointF tilePosition = WorldAdapter.PROJECTION.WorldToTilePos(geoPosition.longitude, geoPosition.latitude, 19);
             yield return RequestMapDataOsm((long)tilePosition.x, (long)tilePosition.y, prototype);
             //Debug.Log(gout);
-            Game.GetWorld().GetTerrainService().SetGroundTexture(prototype.texture);
+            //Game.GetWorld().GetTerrainService().SetGroundTexture(prototype.texture);
 
 
         }

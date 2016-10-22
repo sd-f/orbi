@@ -31,10 +31,10 @@ namespace GameController
             if (tag != null)
                 container.tag = tag;
             container.name = "container_" + id;
-            container.transform.SetParent(parent);
+            container.transform.SetParent(parent, false);
 
             GameObject newObject = GameObject.Instantiate(GetGamePrefab(prefab)) as GameObject;
-            newObject.transform.SetParent(container.transform);
+            newObject.transform.SetParent(container.transform, false);
             newObject.name = "object_" + id;
             // max bounds
             GameObjectUtility.SetLayer(container, layer);

@@ -12,6 +12,7 @@ namespace ServerModel
         public bool supportsUserText;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;
+        public int categoryId;
 
     }
 

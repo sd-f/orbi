@@ -24,6 +24,12 @@ namespace GameController
                 TrySettingTextInChildren(child.gameObject, text);
         }
 
+        public static void NormalizeScale(GameObject obj)
+        {
+            float size = 1.0f / GetSize(obj);
+            obj.transform.localScale = new Vector3(size, size, size);
+        }
+
         public static Rigidbody GetRigidBody(GameObject obj)
         {
             if (obj.GetComponent<Rigidbody>() != null)
@@ -55,6 +61,40 @@ namespace GameController
             }
         }
 
+        public static float GetSize(GameObject obj)
+        {
+            float size = 1.0f;
+            Collider collider = GetCollider(obj);
+            if (collider != null)
+                return GetDimension(collider.bounds.size);
+            return size;
+        }
+
+        public static Collider GetCollider(GameObject obj)
+        {
+            Collider collider;
+            foreach (UnityEngine.Transform child in obj.transform)
+            {
+                collider = child.GetComponent<Collider>();
+                if (collider != null)
+                    return collider;
+                return GetCollider(child.gameObject);
+            }
+            return null;
+        }
+
+        private static float GetDimension(Vector3 vector)
+        {
+            float dim = 1f;
+            if (vector.x > dim)
+                dim = vector.x;
+            if (vector.y > dim)
+                dim = vector.y;
+            if (vector.z > dim)
+                dim = vector.z;
+            return dim;
+        }
+
         internal static void Freeze(GameObject obj)
         {
             if (obj.GetComponent<Rigidbody>() != null)
@@ -65,6 +105,14 @@ namespace GameController
             {
                 Freeze(child.gameObject);
             }
+        }
+
+        public static GameObject FindChildWithName(GameObject obj, string name)
+        {
+            foreach (UnityEngine.Transform child in obj.transform)
+                if (child.name.Equals(name))
+                    return child.gameObject;
+            return null;
         }
 
 

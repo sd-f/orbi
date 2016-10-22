@@ -1,11 +1,10 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
+import org.eclipse.persistence.annotations.BatchFetch;
+import org.eclipse.persistence.annotations.BatchFetchType;
 import org.eclipse.persistence.annotations.ReadOnly;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -21,6 +20,10 @@ public class GameObjectTypeEntity implements Serializable {
     private String prefab;
     @Column
     private Boolean supportsUserText;
+    @ManyToOne
+    @BatchFetch(BatchFetchType.JOIN)
+    @JoinColumn(name = "category_id")
+    private GameObjectTypeCategoryEntity gameObjectTypeCategoryEntity;
 
     public Long getId() {
         return id;
@@ -44,5 +47,13 @@ public class GameObjectTypeEntity implements Serializable {
 
     public void setSupportsUserText(Boolean supportsUserText) {
         this.supportsUserText = supportsUserText;
+    }
+
+    public GameObjectTypeCategoryEntity getGameObjectTypeCategoryEntity() {
+        return gameObjectTypeCategoryEntity;
+    }
+
+    public void setGameObjectTypeCategoryEntity(GameObjectTypeCategoryEntity gameObjectTypeCategoryEntity) {
+        this.gameObjectTypeCategoryEntity = gameObjectTypeCategoryEntity;
     }
 }

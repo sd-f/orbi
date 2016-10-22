@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="create_table_game_object_type_category" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.game_object_type_category
+            (
+            id bigint NOT NULL,
+            name character varying(1000) NOT NULL,
+            craftable smallint DEFAULT 0 NOT NULL,
+            rarity int DEFAULT 1 NOT NULL,
+            CONSTRAINT game_object_type_category_pkey PRIMARY KEY (id)
+            );
+        </sql>
+
+        <sql>insert into public.game_object_type_category values (0,'No Category',0,1);</sql>
+        <sql>insert into public.game_object_type_category values (1,'Simple Chests',0,1);</sql>
+        <sql>insert into public.game_object_type_category values (2,'Simple Sci-Fi Crates',1,1);</sql>
+        <sql>insert into public.game_object_type_category values (3,'Simple Trees',1,1);</sql>
+        <sql>insert into public.game_object_type_category values (4,'Simple Cubes',1,1);</sql>
+        <sql>insert into public.game_object_type_category values (5,'Simple Billboards',1,1);</sql>
+
+        <sql>
+            CREATE INDEX game_object_type_category_id_idx ON public.game_object_type_category (id);
+        </sql>
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN category_id bigint default 0 NOT NULL;</sql>
+
+        <sql>update public.game_object_type set category_id = 2 where id = 1;</sql>
+        <sql>update public.game_object_type set category_id = 2 where id = 2;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 9;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 11;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 12;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 13;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 14;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 21;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 22;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 23;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 24;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 25;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 26;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 27;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 28;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 29;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 30;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 31;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 32;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 33;</sql>
+        <sql>update public.game_object_type set category_id = 3 where id = 34;</sql>
+        <sql>update public.game_object_type set category_id = 4 where id = 40;</sql>
+        <sql>update public.game_object_type set category_id = 4 where id = 41;</sql>
+        <sql>update public.game_object_type set category_id = 4 where id = 53;</sql>
+        <sql>update public.game_object_type set category_id = 5 where id = 61;</sql>
+        <sql>
+            ALTER TABLE public.game_object_type
+            ADD CONSTRAINT game_object_type_category_id_fk
+            FOREIGN KEY (category_id)
+            REFERENCES public.game_object_type_category (id) MATCH FULL;
+        </sql>
+        <sql>
+            CREATE INDEX game_object_type_category_id_fk_idx ON public.game_object_type (category_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

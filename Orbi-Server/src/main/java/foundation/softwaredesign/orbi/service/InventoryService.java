@@ -32,7 +32,10 @@ public class InventoryService {
     @Inject
     GameObjectTypeService gameObjectType;
     @Inject
+    GameObjectTypeCategoryService gameObjectTypeCategory;
+    @Inject
     CharacterService characterService;
+
 
     public void checkForGiftChest(GameObject object) {
         if (object.getPrefab().startsWith(GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX)) {
@@ -65,9 +68,14 @@ public class InventoryService {
         }
 
         for (InventoryEntity inventoryEntity: repository.findByIdentityId(userService.getIdentity().getId())) {
-            inventory.getItems().add(new InventoryItem(inventoryEntity.getGameObjectType().getPrefab(), inventoryEntity.getAmount(), inventoryEntity.getGameObjectType().getSupportsUserText()));
+            InventoryItem newItem = new InventoryItem();
+            newItem.setAmount(inventoryEntity.getAmount());
+            newItem.setPrefab(inventoryEntity.getGameObjectType().getPrefab());
+            newItem.setCategoryId(inventoryEntity.getGameObjectType().getGameObjectTypeCategoryEntity().getId());
+            newItem.setSupportsUserText(inventoryEntity.getGameObjectType().getSupportsUserText());
+            inventory.getItems().add(newItem);
         }
-        inventory.setNumberOfObjectTypes(gameObjectType.getNumberOfObjectTypes());
+        inventory.setCategories(gameObjectTypeCategory.loadAll());
         return inventory;
     }
 

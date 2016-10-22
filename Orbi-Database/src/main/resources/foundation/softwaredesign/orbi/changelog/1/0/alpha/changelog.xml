@@ -74,5 +74,6 @@
     <include file="ORBI-00014/001_messages.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/002_object_user_text.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/003_billboard.xml" relativeToChangelogFile="true"/>
+    <include file="ORBI-00014/004_object_type_category.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

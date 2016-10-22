@@ -10,8 +10,8 @@ import java.util.List;
 @XmlRootElement
 public class Inventory {
 
-    private Long numberOfObjectTypes = new Long(0);
     private List<InventoryItem> items = new ArrayList<>();
+    private List<GameObjectTypeCategory> categories = new ArrayList<>();
 
     public List<InventoryItem> getItems() {
         return items;
@@ -21,11 +21,11 @@ public class Inventory {
         this.items = items;
     }
 
-    public Long getNumberOfObjectTypes() {
-        return numberOfObjectTypes;
+    public List<GameObjectTypeCategory> getCategories() {
+        return categories;
     }
 
-    public void setNumberOfObjectTypes(Long numberOfObjectTypes) {
-        this.numberOfObjectTypes = numberOfObjectTypes;
+    public void setCategories(List<GameObjectTypeCategory> categories) {
+        this.categories = categories;
     }
 }

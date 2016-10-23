@@ -46,6 +46,9 @@ public class GameObjectEntity {
     @NotNull
     private GameObjectTypeEntity gameObjectType;
 
+    @Column
+    private Integer bodyConstraints;
+
     public Long getId() {
         return id;
     }
@@ -124,5 +127,13 @@ public class GameObjectEntity {
 
     public void setUserText(String userText) {
         this.userText = userText;
+    }
+
+    public Integer getBodyConstraints() {
+        return bodyConstraints;
+    }
+
+    public void setBodyConstraints(Integer bodyConstraints) {
+        this.bodyConstraints = bodyConstraints;
     }
 }

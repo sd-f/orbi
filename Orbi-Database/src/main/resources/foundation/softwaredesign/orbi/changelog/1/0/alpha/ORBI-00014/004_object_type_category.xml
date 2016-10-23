@@ -66,4 +66,8 @@
         </sql>
     </changeSet>
 
+    <changeSet id="udpate_table_game_object_type_category" author="Lucas Reeh">
+        <sql>update public.game_object_type set category_id = 4 where id = 34;</sql>
+    </changeSet>
+
 </databaseChangeLog>

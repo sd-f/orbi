@@ -13,11 +13,15 @@ namespace GameScene
     {
         public Text textXp;
         public Text textXr;
+        public Text level;
+        public GameObject levelUpEffect;
+        public GameObject levelUpContainer;
 
         void Start()
         {
             UpdateStatsLabels();
             Invoke("UpdateStats", 5f);
+            
         }
 
         void UpdateStats()
@@ -34,8 +38,17 @@ namespace GameScene
 
         void UpdateStatsLabels()
         {
-            textXp.text = Convert.ToInt64(Game.GetPlayer().GetModel().character.xp.ToString()).ToString();
-            textXr.text = Convert.ToInt64(Game.GetPlayer().GetModel().character.xr.ToString()).ToString();
+            if (Convert.ToInt64(level.text) > 0)
+                if (Game.GetPlayer().GetModel().character.level > Convert.ToInt64(level.text))
+                {
+                    GameObject levelUp = GameObject.Instantiate(levelUpEffect) as GameObject;
+                    levelUp.transform.SetParent(levelUpContainer.transform, false);
+                }
+
+            textXp.text = Convert.ToInt64(Game.GetPlayer().GetModel().character.xp).ToString();
+            textXr.text = Convert.ToInt64(Game.GetPlayer().GetModel().character.xr).ToString();
+            level.text = Convert.ToInt64(Game.GetPlayer().GetModel().character.level).ToString();
+            
         }
 
         void OnDestroy()

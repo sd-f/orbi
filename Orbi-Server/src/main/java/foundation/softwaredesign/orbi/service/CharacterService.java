@@ -109,4 +109,14 @@ public class CharacterService {
         return statisticsRepository.countAllCharacters();
     }
 
+    public void calculateLevel(Character currentCharacter) {
+        int level = (int)(Math.log(currentCharacter.getXp()) / Math.log(16));
+        currentCharacter.setLevel(new Long(level + 1));
+    }
+
+    public void gifted() {
+        Character currentCharacter = loadCurrent();
+        currentCharacter.setGiftedOn(new Date());
+        repository.saveAndFlushAndRefresh(currentCharacter);
+    }
 }

@@ -131,6 +131,7 @@ namespace GameController
                 newObject.userText = Game.GetPlayer().GetCraftingController().GetUserText();
             newObject.transform.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
             newObject.transform.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
+            newObject.constraints = (int)RigidbodyConstraints.FreezeAll;
             ServerModel.Player player = Game.GetPlayer().GetModel();
             player.gameObjectToCraft = newObject;
             yield return Game.GetPlayer().GetPlayerService().RequestCraft(player);

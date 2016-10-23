@@ -32,6 +32,7 @@ public class CharacterMappper extends SimpleQueryInOutMapperBase<CharacterEntity
         dto.setXp(entity.getExperiencePoints());
         dto.setName(entity.getName());
         dto.setLastSeen(entity.getLastSeen());
+        dto.setGiftedOn(entity.getGiftedOn());
         return dto;
     }
 
@@ -56,6 +57,7 @@ public class CharacterMappper extends SimpleQueryInOutMapperBase<CharacterEntity
         newEntity.setLastSeen(character.getLastSeen());
         newEntity.setExperiencePoints(character.getXp());
         newEntity.setName(character.getName());
+        newEntity.setGiftedOn(character.getGiftedOn());
         return newEntity;
     }
 }

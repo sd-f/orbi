@@ -95,6 +95,26 @@ namespace GameController
             return dim;
         }
 
+        internal static RigidbodyConstraints IntToRigidbodyConstraint(int constraints)
+        {
+            foreach(RigidbodyConstraints constraint in Enum.GetValues(typeof(RigidbodyConstraints)))
+                if ((int)constraint == constraints)
+                    return constraint;
+            return RigidbodyConstraints.FreezeAll;
+        }
+
+        internal static void SetConstraints(GameObject obj, RigidbodyConstraints constraints)
+        {
+            if (obj.GetComponent<Rigidbody>() != null)
+            {
+                obj.GetComponent<Rigidbody>().constraints = constraints;
+            }
+            foreach (UnityEngine.Transform child in obj.transform)
+            {
+                SetConstraints(child.gameObject, constraints);
+            }
+        }
+
         internal static void Freeze(GameObject obj)
         {
             if (obj.GetComponent<Rigidbody>() != null)

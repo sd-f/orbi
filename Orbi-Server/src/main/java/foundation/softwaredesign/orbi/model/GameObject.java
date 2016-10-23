@@ -16,6 +16,7 @@ public class GameObject {
     private Date createDate;
     private Long identityId;
     private String userText;
+    private Integer constraints;
 
     public String getName() {
         return name;
@@ -76,5 +77,13 @@ public class GameObject {
 
     public void setUserText(String userText) {
         this.userText = userText;
+    }
+
+    public Integer getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(Integer constraints) {
+        this.constraints = constraints;
     }
 }

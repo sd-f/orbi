@@ -41,6 +41,9 @@ public class CharacterEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date lastSeen;
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date giftedOn;
     @OneToOne
     @JoinColumn(name = "identity_id", referencedColumnName = "id", updatable = false, insertable = false)
     private IdentityEntity identityEntity;
@@ -131,5 +134,13 @@ public class CharacterEntity {
 
     public void setLastSeen(Date lastSeen) {
         this.lastSeen = lastSeen;
+    }
+
+    public Date getGiftedOn() {
+        return giftedOn;
+    }
+
+    public void setGiftedOn(Date giftedOn) {
+        this.giftedOn = giftedOn;
     }
 }

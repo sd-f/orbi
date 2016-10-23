@@ -20,6 +20,8 @@ public class GameObjectTypeEntity implements Serializable {
     private String prefab;
     @Column
     private Boolean supportsUserText;
+    @Column(updatable = false, insertable = false)
+    private Long categoryId;
     @ManyToOne
     @BatchFetch(BatchFetchType.JOIN)
     @JoinColumn(name = "category_id")
@@ -55,5 +57,13 @@ public class GameObjectTypeEntity implements Serializable {
 
     public void setGameObjectTypeCategoryEntity(GameObjectTypeCategoryEntity gameObjectTypeCategoryEntity) {
         this.gameObjectTypeCategoryEntity = gameObjectTypeCategoryEntity;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
     }
 }

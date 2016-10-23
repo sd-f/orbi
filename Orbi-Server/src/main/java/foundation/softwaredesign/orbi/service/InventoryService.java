@@ -23,8 +23,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class InventoryService {
 
     private static final String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
-    private static final String GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX = "ScifiCrate/ScifiCrate_";
-    private static final String GIFT_CHEST_OBJECT_TYPE_PREFAB = "ScifiCrate/ScifiCrate_1";
+
     @Inject
     InventoryRepository repository;
     @Inject
@@ -38,12 +37,16 @@ public class InventoryService {
 
 
     public void checkForGiftChest(GameObject object) {
-        if (object.getPrefab().startsWith(GIFT_CHEST_OBJECT_TYPE_PREFAB_PREFIX)) {
-            List<GameObjectTypeEntity> types = gameObjectType.loadAll();
-            for (int i = 0; i < 3; i++) {
-                Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size());
-                addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,10)));
-            }
+        if (gameObjectType.isGiftObject(object.getPrefab())) {
+            addRandomGifts();
+        }
+    }
+
+    private void addRandomGifts() {
+        List<GameObjectTypeEntity> types = gameObjectType.loadAllCraftable();
+        for (int i = 0; i < 3; i++) {
+            Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size());
+            addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,10)));
         }
     }
 
@@ -64,7 +67,7 @@ public class InventoryService {
         cal.add(Calendar.HOUR, -3);
         if (userService.getIdentity().getLastInit().before(cal.getTime())) {
             characterService.incrementXp(CharacterDevelopment.XP_LOGIN);
-            addItem(GIFT_CHEST_OBJECT_TYPE_PREFAB,new Long(1));
+            addRandomGifts();
         }
 
         for (InventoryEntity inventoryEntity: repository.findByIdentityId(userService.getIdentity().getId())) {

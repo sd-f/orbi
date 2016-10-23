@@ -112,6 +112,7 @@ namespace GameController
             GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.prefab, newObject.id, "DynamicGameObject");
             if (!String.IsNullOrEmpty(newObject.userText))
                 GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
+            GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
             newObject.gameObject = newGameObject;
             oldObjects.Add(newObject);
             GameObjectUtility.Transform(newGameObject, newObject.transform);

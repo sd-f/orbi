@@ -6,6 +6,7 @@ import foundation.softwaredesign.orbi.model.*;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
+import java.util.Calendar;
 import java.util.logging.Logger;
 
 /**
@@ -65,6 +66,8 @@ public class PlayerService {
     public Player update(Transform newTransform) {
         Character currentCharacter = characterService.updateTransform(newTransform);
         characterService.calculateExperienceRank(currentCharacter);
+        characterService.calculateLevel(currentCharacter);
+
         Player player = new Player();
         player.setCharacter(currentCharacter);
         return player;

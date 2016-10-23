@@ -16,13 +16,17 @@ public class Character {
     private String name;
     private Long xp;
     private Long xr;
+    private Long level;
     private Transform transform = new Transform();
     private CharacterDevelopment characterDevelopment;
+
 
     @XmlTransient
     private Date lastSeen;
     @XmlTransient
     private Long identityId;
+    @XmlTransient
+    private Date giftedOn;
 
     public String getName() {
         return name;
@@ -87,4 +91,21 @@ public class Character {
     public void setCharacterDevelopment(CharacterDevelopment characterDevelopment) {
         this.characterDevelopment = characterDevelopment;
     }
+
+    public Date getGiftedOn() {
+        return giftedOn;
+    }
+
+    public void setGiftedOn(Date giftedOn) {
+        this.giftedOn = giftedOn;
+    }
+
+    public Long getLevel() {
+        return level;
+    }
+
+    public void setLevel(Long level) {
+        this.level = level;
+    }
+
 }

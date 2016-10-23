@@ -55,11 +55,14 @@ namespace GameScene
                     GameObject effect = GameObject.Instantiate(explosionEffect) as GameObject;
                     GameObject earnedText = GameObject.Instantiate(earnedXPTextPrefab) as GameObject;
                     earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_DESTROY);
-                    effect.transform.position = realContainer.transform.position;
-                    earnedText.transform.position = realContainer.transform.position + (Vector3.up * 2f);
+                    Rigidbody body = GameObjectUtility.GetRigidBody(realContainer);
+                    effect.transform.position = body.transform.position; // realContainer.transform.position;
+                    effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetSize(realContainer);
+                    earnedText.transform.position = body.transform.position + (Vector3.up * 2f);
                     earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
+                    
                     Game.GetWorld().GetGameObjectService().RemoveObject(realContainer);
-                    GameObject.Destroy(effect, 1.5f);
+                    GameObject.Destroy(effect, 3f);
                     GameObject.Destroy(realContainer);
                     StartCoroutine(Game.GetPlayer().GetDestructionController().Destroy(id));
                 }

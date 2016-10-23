@@ -33,8 +33,8 @@ namespace InventoryScene
         public void SetBounds(float right, float bottom)
         {
             
-            this.boundBottom = (bottom / 1.8f );
-            this.boundRight = (right / 1.45f) + 1.5f;
+            this.boundBottom = bottom;
+            this.boundRight = right;
         }
 
         // Update is called once per frame

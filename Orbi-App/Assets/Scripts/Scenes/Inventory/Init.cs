@@ -85,6 +85,7 @@ namespace InventoryScene
                                 preselected = id;
                             GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.prefab, id, null, LayerMask.NameToLayer("Default"));
                             newObject.AddComponent<InventoryObjectSelected>();
+                            newObject.transform.localRotation = Quaternion.Euler(-5f, -5f, 0f);
                             GameObjectUtility.NormalizeScale(newObject);
                             item.gameObject = newObject;
                             overall_items_collected++;
@@ -98,7 +99,7 @@ namespace InventoryScene
                         GameObject itemContainer = new GameObject();
                         itemContainer.name = "item_" + category.id + "_" + "unknown";
                         itemContainer.transform.SetParent(categoryContainer.transform, false);
-                        itemContainer.transform.localPosition = new Vector3(paddingHorizontal + 1f, -1.5f, 0f);
+                        itemContainer.transform.localPosition = new Vector3(paddingHorizontal + 0.7f, -1.7f, 0f);
 
                         GameObject itemAmountText = GameObject.Instantiate(textPrefab) as GameObject;
                         itemAmountText.name = "itemunknowntext_" + category.id + "_" + id;
@@ -132,7 +133,8 @@ namespace InventoryScene
 
             }
 
-            inventoryCamera.SetBounds(maxItems * OBJECT_PADDING_HORIZONTAL, Game.GetPlayer().GetCraftingController().GetInventory().categories.Count * OBJECT_PADDING_VERTICAL);
+            inventoryCamera.SetBounds(((maxItems) * OBJECT_PADDING_HORIZONTAL) / 1.25f, 
+                (Game.GetPlayer().GetCraftingController().GetInventory().categories.Count * OBJECT_PADDING_VERTICAL) / 1.75f);
 
             //canvasScript.SetSelected(preselected);
             canvas.SetStatusText( "Collected: " + overall_items_collected + "/" + overall_items);

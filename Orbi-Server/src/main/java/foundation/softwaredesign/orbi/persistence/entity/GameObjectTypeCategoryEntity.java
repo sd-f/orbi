@@ -1,6 +1,8 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
 import org.eclipse.persistence.annotations.ReadOnly;
+import org.eclipse.persistence.annotations.TypeConverter;
+import org.eclipse.persistence.internal.jpa.parsing.IntegerLiteralNode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,6 +20,7 @@ public class GameObjectTypeCategoryEntity implements Serializable {
     @Column
     private String name;
     @Column
+    @TypeConverter(name = "boolMapper", dataType = Integer.class, objectType = Boolean.class)
     private Boolean craftable;
     @Column
     private Integer rarity;

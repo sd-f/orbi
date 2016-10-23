@@ -120,8 +120,9 @@ namespace GameScene
             earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_CRAFT);
             earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
             effect.transform.position = newObject.transform.position;
+            effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetSize(newObject);
             earnedText.transform.position = newObject.transform.position + (Vector3.up * 2f);
-            GameObject.Destroy(effect, 1.5f);
+            GameObject.Destroy(effect, 3f);
             yield return Game.GetPlayer().GetCraftingController().Craft(newObject);
             
             CleanUp();

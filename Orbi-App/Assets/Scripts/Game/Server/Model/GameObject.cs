@@ -11,9 +11,10 @@ namespace ServerModel
         public string name;
         public string prefab;
         public string userText;
+        public int constraints;
         public ClientModel.Transform transform = new ClientModel.Transform();
         [NonSerialized]
         public UnityEngine.GameObject gameObject;
-
+        
     }
 }

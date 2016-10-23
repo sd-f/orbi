@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="insert_chests" author="Lucas Reeh">
+        <sql>
+            insert into  public.game_object_type (id, prefab, supports_user_text, category_id) values ( 3 , 'ToonTreasureChest/ToonTreasureChestBlue', 0, 1);
+        </sql>
+    </changeSet>
+
+    <changeSet id="character_add_column_last_gift" author="Lucas Reeh">
+        <sql>ALTER TABLE public.character ADD COLUMN gifted_on timestamp without time zone default null;</sql>
+    </changeSet>
+
+    <changeSet id="game_object_add_column_contstraints" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object ADD COLUMN body_constraints integer NOT NULL default 126;</sql>
+    </changeSet>
+
+
+</databaseChangeLog>

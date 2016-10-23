@@ -40,6 +40,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.setIdentityId(objectEntity.getIdentity().getId());
         gameObject.setUserText(objectEntity.getUserText());
         gameObject.setName(objectEntity.getName());
+        gameObject.setConstraints(objectEntity.getBodyConstraints());
         return gameObject;
     }
 
@@ -66,6 +67,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         newGameObjectEntity.setUserText(gameObject.getUserText());
         newGameObjectEntity.setGameObjectType(gameObjectType.loadByPrefab(gameObject.getPrefab()));
         newGameObjectEntity.setName(gameObject.getName());
+        newGameObjectEntity.setBodyConstraints(gameObject.getConstraints());
         return newGameObjectEntity;
     }
 }

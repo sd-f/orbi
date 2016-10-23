@@ -1,6 +1,6 @@
 package foundation.softwaredesign.orbi.model.auth;
 
-import foundation.softwaredesign.orbi.model.Player;
+import foundation.softwaredesign.orbi.model.game.character.Player;
 
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;

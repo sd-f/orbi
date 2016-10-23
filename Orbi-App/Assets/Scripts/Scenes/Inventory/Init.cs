@@ -15,12 +15,15 @@ namespace InventoryScene
         public GameObject startPrefab;
         public InventoryCamera inventoryCamera;
         public InventoryCanvas canvas;
+        private LayerMask layers;
 
         public static float OBJECT_PADDING_HORIZONTAL = 1.75f;
         public static float OBJECT_PADDING_VERTICAL = 2.75f;
 
         void Start()
         {
+            layers = LayerMask.NameToLayer("Inventory");
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             // screen always awake
@@ -54,6 +57,7 @@ namespace InventoryScene
                     if (maxItems < category.numberOfItems)
                         maxItems = category.numberOfItems;
                     GameObject categoryContainer = new GameObject();
+                    categoryContainer.layer = layers;
                     categoryContainer.name = "category_" + category.id;
                     categoryContainer.transform.SetParent(objectsContainer.transform);
                     categoryContainer.transform.localPosition = new Vector3(0.0f, paddingVertical, 0f);
@@ -65,12 +69,14 @@ namespace InventoryScene
                         {
                             
                             GameObject itemContainer = new GameObject();
+                            itemContainer.layer = layers;
                             itemContainer.name = "item_" + category.id + "_" + id;
                             itemContainer.transform.SetParent(categoryContainer.transform, false);
                             itemContainer.transform.localPosition = new Vector3(paddingHorizontal + 1f, -2f, 0.5f);
                             inventoryCamera.GetObjectsList().Add(id, item);
 
                             GameObject itemAmountText = GameObject.Instantiate(textPrefab) as GameObject;
+                            GameObjectUtility.SetLayer(itemAmountText, layers);
                             itemAmountText.name = "itemamounttext_" + category.id + "_" + id;
                             itemAmountText.transform.localScale = itemAmountText.transform.localScale * 0.5f;
                             itemAmountText.transform.SetParent(itemContainer.transform, false);
@@ -83,7 +89,7 @@ namespace InventoryScene
 
                             if (item.prefab == Game.GetPlayer().GetCraftingController().GetSelectedPrefab())
                                 preselected = id;
-                            GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.prefab, id, null, LayerMask.NameToLayer("Default"));
+                            GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.prefab, id, null, layers);
                             newObject.AddComponent<InventoryObjectSelected>();
                             newObject.transform.localRotation = Quaternion.Euler(-5f, -5f, 0f);
                             GameObjectUtility.NormalizeScale(newObject);
@@ -97,6 +103,7 @@ namespace InventoryScene
                     {
 
                         GameObject itemContainer = new GameObject();
+                        itemContainer.layer = layers;
                         itemContainer.name = "item_" + category.id + "_" + "unknown";
                         itemContainer.transform.SetParent(categoryContainer.transform, false);
                         itemContainer.transform.localPosition = new Vector3(paddingHorizontal + 0.7f, -1.7f, 0f);
@@ -105,6 +112,7 @@ namespace InventoryScene
                         itemAmountText.name = "itemunknowntext_" + category.id + "_" + id;
                         itemAmountText.transform.localScale = itemAmountText.transform.localScale * 2f;
                         itemAmountText.transform.SetParent(itemContainer.transform, false);
+                        GameObjectUtility.SetLayer(itemAmountText, layers);
                         ShadowText text = itemAmountText.GetComponent<ShadowText>();
                         text.SetText("?");
                         text.SetForeGroundColor(Color.gray);
@@ -115,12 +123,14 @@ namespace InventoryScene
 
                     }
                     GameObject categoryText = GameObject.Instantiate(textPrefab) as GameObject;
+                    GameObjectUtility.SetLayer(categoryText, layers);
                     categoryText.name = "categorytext_" + category.id;
                     categoryText.transform.SetParent(categoryContainer.transform, false);
                     if (category.numberOfItems.Equals(items_collected))
                     {
                         categoryText.transform.localPosition = new Vector3(0.75f, 0f, 0f);
                         GameObject categoryCompletedIcon = GameObject.Instantiate(startPrefab) as GameObject;
+                        GameObjectUtility.SetLayer(categoryCompletedIcon, layers);
                         categoryCompletedIcon.name = "categoryicon_" + category.id;
                         categoryCompletedIcon.transform.localPosition = new Vector3(0.3f, -0.3f, 0f);
                         categoryCompletedIcon.transform.SetParent(categoryContainer.transform, false);

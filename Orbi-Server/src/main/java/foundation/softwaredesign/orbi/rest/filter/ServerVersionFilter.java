@@ -1,7 +1,7 @@
 package foundation.softwaredesign.orbi.rest.filter;
 
 import foundation.softwaredesign.orbi.rest.exception.VersionNotSupportedException;
-import foundation.softwaredesign.orbi.service.ServerService;
+import foundation.softwaredesign.orbi.service.game.server.ServerService;
 
 import javax.annotation.Priority;
 import javax.ws.rs.BadRequestException;

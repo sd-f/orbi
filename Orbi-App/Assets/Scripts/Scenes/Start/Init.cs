@@ -29,7 +29,7 @@ namespace StartScene
         IEnumerator Boot()
         {
             // check client version
-            yield return Game.GetGame().GetServerService().RequestVersion();
+            yield return Game.GetGame().GetServerService().RequestInfo();
 
             // boot gps location
             yield return Game.GetLocation().Boot();

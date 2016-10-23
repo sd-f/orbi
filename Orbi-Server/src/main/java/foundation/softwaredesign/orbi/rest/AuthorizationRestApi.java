@@ -3,7 +3,7 @@ package foundation.softwaredesign.orbi.rest;
 import foundation.softwaredesign.orbi.model.auth.AuthorizationInfo;
 import foundation.softwaredesign.orbi.model.auth.LoginInfo;
 import foundation.softwaredesign.orbi.model.auth.RequestCodeInfo;
-import foundation.softwaredesign.orbi.service.UserService;
+import foundation.softwaredesign.orbi.service.auth.UserService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

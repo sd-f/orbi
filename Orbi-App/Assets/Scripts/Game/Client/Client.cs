@@ -1,4 +1,5 @@
 ﻿using GameController.Services;
+using ServerModel;
 using UnityEngine;
 
 namespace GameController
@@ -15,6 +16,8 @@ namespace GameController
         private int runningRequests = 0;
         public bool verbose = false;
         public bool randomLocation = false;
+
+        private ServerInfo serverInfo = new ServerInfo();
 
         public void Log(object objectToLog)
         {
@@ -43,6 +46,15 @@ namespace GameController
             return (this.runningRequests > 0);
         }
 
+        public void SetServerInfo(ServerInfo info)
+        {
+            this.serverInfo = info;
+        }
+
+        public ServerInfo GetServerInfo()
+        {
+            return this.serverInfo;
+        }
     }
 
 }

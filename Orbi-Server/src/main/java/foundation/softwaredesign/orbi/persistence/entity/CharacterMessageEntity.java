@@ -1,8 +1,5 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
-import foundation.softwaredesign.orbi.persistence.types.ChkPass;
-import foundation.softwaredesign.orbi.persistence.types.ChkPassConverter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;

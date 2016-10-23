@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="create_table_motd" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.motd
+            (
+            id bigint NOT NULL,
+            message character varying(1000) NOT NULL,
+            created timestamp without time zone NOT NULL default now(),
+            CONSTRAINT motd_pkey PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+
+    <changeSet id="create_table_motd_add_validity" author="Lucas Reeh">
+        <sql>ALTER TABLE public.motd ADD COLUMN expires timestamp without time zone default null;</sql>
+    </changeSet>
+
+</databaseChangeLog>

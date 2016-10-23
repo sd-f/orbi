@@ -1,5 +1,6 @@
 ﻿using CanvasUtility;
 using GameController;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ namespace SettingsScene
 
         public Text textNumberOfObjects;
         public Text textVersion;
+        public Text textMotd;
 
 
 
@@ -23,6 +25,13 @@ namespace SettingsScene
         {
             textVersion.text = "version " + Client.VERSION.ToString();
             textNumberOfObjects.text = "objects " + Game.GetWorld().GetStatistics().numberOfObjects.ToString();
+            ServerModel.ServerInfo serverInfo = Game.GetClient().GetServerInfo();
+            textMotd.text = "";
+            if (serverInfo != null && serverInfo.messages != null)
+                foreach(ServerModel.MessageOfTheDay motd in serverInfo.messages)
+                {
+                    textMotd.text = textMotd.text + "\n" + motd.message;
+                }
             toggleHeightsEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsHeightsEnabled();
             toggleSetalliteOverlayEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsSatelliteOverlayEnabled();
             toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsHandheldInputEnabled();

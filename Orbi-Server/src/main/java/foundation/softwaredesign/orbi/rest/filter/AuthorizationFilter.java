@@ -2,8 +2,8 @@ package foundation.softwaredesign.orbi.rest.filter;
 
 import foundation.softwaredesign.orbi.model.exception.ErrorMessage;
 import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
-import foundation.softwaredesign.orbi.persistence.repo.IdentityRepository;
-import foundation.softwaredesign.orbi.service.authorization.IdentityThreadLocal;
+import foundation.softwaredesign.orbi.persistence.repo.auth.IdentityRepository;
+import foundation.softwaredesign.orbi.service.auth.IdentityThreadLocal;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;

@@ -10,14 +10,14 @@ namespace GameController.Services
     public class ServerService: AbstractHttpService
     {
 
-        public IEnumerator RequestVersion()
+        public IEnumerator RequestInfo()
         {
-            WWW request = Request("server/version", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
+            WWW request = Request("server/info", null);
             yield return request;
             if (request.error == null)
             {
-                //Info.Show("Application is up-to-date");
-                // no errors
+                ServerInfo info = JsonUtility.FromJson<ServerInfo>(request.text);
+                Game.GetClient().SetServerInfo(info);
                 IndicateRequestFinished();
             }
             else

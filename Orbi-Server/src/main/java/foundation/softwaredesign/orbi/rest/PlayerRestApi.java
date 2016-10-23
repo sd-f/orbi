@@ -1,9 +1,14 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.model.*;
-import foundation.softwaredesign.orbi.service.CharacterMessageService;
-import foundation.softwaredesign.orbi.service.ElevationService;
-import foundation.softwaredesign.orbi.service.PlayerService;
+import foundation.softwaredesign.orbi.model.game.character.CharacterMessage;
+import foundation.softwaredesign.orbi.model.game.character.CharacterMessages;
+import foundation.softwaredesign.orbi.model.game.character.Inventory;
+import foundation.softwaredesign.orbi.model.game.character.Player;
+import foundation.softwaredesign.orbi.model.game.transform.Transform;
+import foundation.softwaredesign.orbi.model.game.world.World;
+import foundation.softwaredesign.orbi.service.game.character.CharacterMessageService;
+import foundation.softwaredesign.orbi.service.game.world.ElevationService;
+import foundation.softwaredesign.orbi.service.game.character.PlayerService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

@@ -3,7 +3,6 @@ package foundation.softwaredesign.orbi.rest.exception.mapper;
 import foundation.softwaredesign.orbi.model.exception.ErrorMessage;
 
 import javax.annotation.Priority;
-import javax.transaction.TransactionRolledbackException;
 import javax.transaction.TransactionalException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;

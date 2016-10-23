@@ -1,10 +1,11 @@
 package foundation.softwaredesign.orbi.rest;
 
-import foundation.softwaredesign.orbi.service.ServerService;
+import foundation.softwaredesign.orbi.model.game.server.ServerInfo;
+import foundation.softwaredesign.orbi.service.game.server.ServerService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.POST;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -21,10 +22,10 @@ public class ServerRestApi {
     @Inject
     ServerService serverService;
 
-    @POST
-    @Path("/version")
-    public String version() {
-        return serverService.getVersion().toString();
+    @GET
+    @Path("/info")
+    public ServerInfo info() {
+        return serverService.loadInfo();
     }
 
 }

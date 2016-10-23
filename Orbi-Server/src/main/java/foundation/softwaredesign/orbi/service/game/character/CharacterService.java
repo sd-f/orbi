@@ -47,6 +47,10 @@ public class CharacterService {
     public Character loadCurrent() {
         Long identityId = user.getIdentity().getId();
         Character character = createIfNotExists(identityId);
+
+        calculateExperienceRank(character);
+        calculateLevel(character);
+
         return character;
     }
 

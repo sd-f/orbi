@@ -20,7 +20,6 @@ namespace GameController
 
         void Start()
         {
-            position = Game.FALLBACK_START_POSITION;
             if (Game.GetClient().randomLocation)
                 InvokeRepeating("RandomLocation", 10f, 10f);
         }
@@ -84,6 +83,7 @@ namespace GameController
 
         public IEnumerator Boot()
         {
+            position = Game.FALLBACK_START_POSITION;
             if (Game.GetClient().serverType == ServerType.LOCAL || Game.GetClient().serverType == ServerType.DEV)
             {
                 //Debug.Log(Game.FALLBACK_START_POSITION);

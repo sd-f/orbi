@@ -15,10 +15,11 @@ namespace GameScene
         public OverlayLibrary overlayLibrary;
         public RaceLibrary raceLibrary;
         public RuntimeAnimatorController animController;
+        public GameObject characterPrefab;
 
         public GameObject GenerateUMA(GameObject parent, string containerName)
         {
-            GameObject container = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Character")) as GameObject;
+            GameObject container = GameObject.Instantiate(characterPrefab) as GameObject;
             container.name = containerName;
             container.transform.SetParent(parent.transform);
             container.transform.localPosition = Vector3.zero;

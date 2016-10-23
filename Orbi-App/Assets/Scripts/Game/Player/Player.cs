@@ -15,8 +15,6 @@ namespace GameController
     {
         private PlayerService playerService = new PlayerService();
         private MessageService messageService = new MessageService();
-        private Vector3 positionBeforeOutOfBounds = new Vector3(0, HEIGHT, 0);
-        private Quaternion rotationBeforeOutOfBounds = Quaternion.Euler(new Vector3(0,0,0)); 
         private bool loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
         private bool frozen = true;
@@ -76,20 +74,16 @@ namespace GameController
             this.player = model;
         }
 
-        internal void RestoreRotation()
+        internal void SavePlayerTransform()
         {
             if (GetPlayerBody() != null)
-                GetPlayerBody().transform.rotation = rotationBeforeOutOfBounds;
+                GetPlayerBodyController().UpdateTransformInModel();
         }
 
-        public Vector3 GetPositionBeforeOutOfBounds()
-        {
-            return this.positionBeforeOutOfBounds;
-        }
 
         public void CheckGPSPosition()
         {
-            if ((GetPlayerBody() != null) && !frozen) {
+            if ((GetPlayerBody() != null) && !Game.GetGame().GetSettings().IsDesktopInputEnabled() && !IsFrozen()) {
                 this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
                 this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                 Vector3 target = this.player.character.transform.geoPosition.ToPosition().ToVector3();
@@ -112,10 +106,10 @@ namespace GameController
                     || (playerPosition.z < -120))
                 {
                     Freeze();
-                    this.rotationBeforeOutOfBounds = GetPlayerBody().transform.rotation;
-                    this.positionBeforeOutOfBounds = GetPlayerBody().transform.position;
-                    Game.GetWorld().SetCenterGeoPosition(new Position(Game.GetPlayer().GetPositionBeforeOutOfBounds()).ToGeoPosition());
+                    SavePlayerTransform();
+                    Game.GetWorld().SetCenterGeoPosition(Game.GetPlayer().GetModel().character.transform.position.ToGeoPosition());
                     Game.GetPlayer().GetModel().character.transform.position = new Position();
+                    GetPlayerBodyController().ResetPosition();
                     Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 }
                 

@@ -72,9 +72,15 @@ public class PlayerService {
      */
     public Player update(Transform newTransform) {
         Character currentCharacter = characterService.updateTransform(newTransform);
-        characterService.calculateExperienceRank(currentCharacter);
-        characterService.calculateLevel(currentCharacter);
 
+
+        Player player = new Player();
+        player.setCharacter(currentCharacter);
+        return player;
+    }
+
+    public Player load() {
+        Character currentCharacter = characterService.loadCurrent();
         Player player = new Player();
         player.setCharacter(currentCharacter);
         return player;

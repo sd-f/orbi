@@ -950,6 +950,12 @@ public class Mapity : MonoBehaviour {
         StartCoroutine(LoadingCoroutine());
     }
 
+    public IEnumerator LoadMap()
+    {
+        loadingInProgress = true;
+        yield return LoadingCoroutine();
+    }
+
     /// <summary>
     /// Unload the map data.
     /// </summary>
@@ -1127,7 +1133,7 @@ public class Mapity : MonoBehaviour {
     /// <returns>
     /// The coroutine.
     /// </returns>
-    IEnumerator LoadingCoroutine()
+    public IEnumerator LoadingCoroutine()
     {
         // Reset Mapity load flag
         hasLoaded = false;

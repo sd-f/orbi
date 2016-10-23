@@ -27,9 +27,7 @@ namespace GameScene
             //create BasicBeamShot
 
             if (Input.GetButtonDown("Fire2") && isDesktopMode)
-            {
                 Shoot();
-            }
 
         }
 

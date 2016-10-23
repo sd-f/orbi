@@ -48,6 +48,7 @@ namespace GameController
 
         public IEnumerator RequestGameObjects()
         {
+            //Game.GetClient().Log("Update Objects on " + Game.GetPlayer().GetModel().character.transform.geoPosition);
             WWW request = Request("world/around", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
             yield return request;
             if (request.error == null)
@@ -99,6 +100,14 @@ namespace GameController
             newObject.GetComponent<AICharacterControl>().SetTarget(newObjectTarget.transform);
 
             //newObject.gameObject.GetComponent<UMAMovement>().SetTransform(newObjectTarget.transform);
+        }
+
+        internal void ClearAll()
+        {
+            oldCharacters = new List<ServerModel.Character>();
+            oldObjects = new List<ServerModel.GameObject>();
+            GameObjectUtility.DestroyAllChildObjects(gameObjectsContainer);
+            GameObjectUtility.DestroyAllChildObjects(charactersContainer);
         }
 
         void UpdateObject(ServerModel.GameObject oldObject, ServerModel.GameObject newObject)

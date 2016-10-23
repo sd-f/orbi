@@ -21,6 +21,8 @@ namespace GameScene
 #pragma warning disable 0649
         public Camera cam;
 
+        private long updateCounter = 0;
+
         void Start()
         {
             Input.gyro.enabled = true;
@@ -37,29 +39,30 @@ namespace GameScene
             firstPersonController = GetComponent<MyFirstPersonController>();
             Input.gyro.enabled = true;
             // restore rotation + position
+            SetTransform(Game.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.GetPlayer().GetModel().character.transform.rotation.ToVector3());
 
-            SetTargetPosition(Game.GetPlayer().GetModel().character.transform.position.ToVector3());
-            SetRotation(Game.GetPlayer().GetModel().character.transform.rotation.ToVector3());
         }
+
         void Awake()
         {
+            
             SensorHelper.ActivateRotation();
             if (!IsInvoking("UpdateTransformInModel"))
                 InvokeRepeating("UpdateTransformInModel", 1f, 1f);
-            Invoke("UpdateDeltaCompass", 1f);
+            if (!IsInvoking("UpdateDeltaCompass"))
+                Invoke("UpdateDeltaCompass", 1f);
         }
 
 
         void Update()
         {
             
-            if (!Game.GetPlayer().IsFrozen() && gyroEnabled)
+            if (gyroEnabled)
             {
                 this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
-            }
-            if (gyroEnabled)
                 ApplyGyroRotation();
-                
+            }
+              
         }
 
         public void SetMouseRotationEnabled(bool enabled)
@@ -81,11 +84,20 @@ namespace GameScene
             }
         }
 
-        void UpdateTransformInModel()
+        public void UpdateTransformInModel()
         {
-            Game.GetPlayer().GetModel().character.transform.geoPosition = new Position(this.transform.position).ToGeoPosition();
-            Game.GetPlayer().GetModel().character.transform.position = new Position(this.transform.position);
+            updateCounter++;
+            Position pos = new Position(this.transform.position);
+            
+            Game.GetPlayer().GetModel().character.transform.geoPosition = pos.ToGeoPosition();
+            Game.GetPlayer().GetModel().character.transform.position = pos;
             Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(cam.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y,0);
+
+            if (updateCounter > 5)
+            {
+                updateCounter = 0;
+                StartCoroutine(Game.GetPlayer().GetPlayerService().RequestUpdateTransform());
+            }
         }
 
         public void SetTargetPosition(Vector3 targetPosition)
@@ -176,6 +188,16 @@ namespace GameScene
         public void ResetPosition()
         {
             transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
+            targetPosition = transform.position;
+            this.GetComponent<Rigidbody>().transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
+        }
+
+        public void SetTransform(Vector3 position, Vector3 rotation)
+        {
+            transform.position = position;
+            targetPosition = position;
+            //this.GetComponent<Rigidbody>().transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
+            SetRotation(rotation);
         }
 
         void OnDestroy()

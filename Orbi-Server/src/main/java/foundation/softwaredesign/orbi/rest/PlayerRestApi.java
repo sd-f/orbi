@@ -112,4 +112,11 @@ public class PlayerRestApi {
     public Player update(@NotNull Transform newTransform) {
         return playerService.update(newTransform);
     }
+
+    @GET
+    @Transactional
+    @Path("/")
+    public Player load() {
+        return playerService.load();
+    }
 }

@@ -6,9 +6,13 @@ using System.Collections;
 
 namespace CanvasUtility
 {
+    
+
     [AddComponentMenu("App/Canvas/Message/Generator")]
     class MessagesGenerator : MonoBehaviour
     {
+        public GameObject messagePrefab;
+
         void Awake()
         {
             Invoke("CheckForNewMessages", 0.5f);
@@ -32,7 +36,7 @@ namespace CanvasUtility
         void GenerateMessageObject(Message message)
         {
             GameObject parent = GameObject.Find("Canvas");
-            GameObject newMessage = UnityEngine.GameObject.Instantiate(Resources.Load<UnityEngine.GameObject>("Prefabs/Message"), parent.transform, false) as GameObject;
+            GameObject newMessage = UnityEngine.GameObject.Instantiate(messagePrefab, parent.transform, false) as GameObject;
             Color bgColor = message.GetBackgroundColor();
             bgColor.a = 0.7f;
             newMessage.GetComponent<Image>().color = bgColor;

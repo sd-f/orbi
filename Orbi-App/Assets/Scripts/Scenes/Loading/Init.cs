@@ -24,7 +24,7 @@ namespace LoadingScene
             yield return Game.GetPlayer().GetCraftingController().LoadInventory();
             Game.GetLocation().Resume();
             Game.GetPlayer().Unfreeze();
-            
+            Game.GetWorld().ForceRefreshOnNextLoading();
             Game.GetGame().LoadScene(Game.GameScene.GameScene);
         }
 

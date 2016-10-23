@@ -36,15 +36,48 @@ namespace GameController.Services
 
         }
 
-        public IEnumerator RequestUpdate()
+        public IEnumerator RequestPlayer()
         {
-            ClientModel.Transform newTransform = Game.GetPlayer().GetModel().character.transform;
-            WWW request = Request("player/update", JsonUtility.ToJson(newTransform));
+            WWW request = Request("player",null);
             yield return request;
             if (request.error == null)
             {
                 ServerModel.Player player = JsonUtility.FromJson<ServerModel.Player>(request.text);
                 Game.GetPlayer().SetModel(player);
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+
+        }
+
+        public IEnumerator RequestUpdateTransform()
+        {
+            ClientModel.Transform newTransform = Game.GetPlayer().GetModel().character.transform;
+            //Game.GetClient().Log("update transform " + newTransform);
+            WWW request = Request("player/update", JsonUtility.ToJson(newTransform));
+            yield return request;
+            if (request.error == null)
+            {
+                //ServerModel.Player player = JsonUtility.FromJson<ServerModel.Player>(request.text);
+                //Game.GetPlayer().SetModel(player);
+                IndicateRequestFinished();
+            }
+            else
+                HandleError(request);
+
+        }
+
+        public IEnumerator RequestStatsUpdate()
+        {
+            WWW request = Request("player", null);
+            yield return request;
+            if (request.error == null)
+            {
+                ServerModel.Player player = JsonUtility.FromJson<ServerModel.Player>(request.text);
+                Game.GetPlayer().GetModel().character.level = player.character.level;
+                Game.GetPlayer().GetModel().character.xp = player.character.xp;
+                Game.GetPlayer().GetModel().character.xr = player.character.xr;
                 IndicateRequestFinished();
             }
             else

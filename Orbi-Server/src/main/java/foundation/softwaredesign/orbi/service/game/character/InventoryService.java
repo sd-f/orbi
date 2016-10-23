@@ -47,10 +47,8 @@ public class InventoryService {
 
     private void addRandomGifts() {
         List<GameObjectTypeEntity> types = gameObjectType.loadAllCraftable();
-        for (int i = 0; i < 3; i++) {
-            Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size());
-            addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,10)));
-        }
+        Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size());
+        addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,2)));
     }
 
 

@@ -165,7 +165,9 @@ namespace GameController
         {
             // Example #1
             // Loop over all the roads in Map-ity
-
+            UnityEngine.GameObject streetLabelPrefab = Game.GetWorld().streetLabelPrefab;
+            UnityEngine.GameObject mapContainer = Game.GetWorld().mapContainer;
+            GameObjectUtility.DestroyAllChildObjects(mapContainer);
             Mapity.MapWay mapWay = null;
             float[,,] maps = GetAlphaMaps();
             //GetTerrainService().Paint(maps, 256, 256, TerrainService.L_GRAS);
@@ -186,52 +188,36 @@ namespace GameController
                             ClientModel.Position position_end = new ClientModel.Position(node_end.position.world);
                             //Debug.Log(mapWay.tags.GetTag("name").ToString() + "start: " + position_start);
                             //Debug.Log(mapWay.tags.GetTag("name").ToString() + "end: " + position_end);
-
+                            string name = mapWay.tags.GetTag("name").ToString();
                             Vector3 end = position_end.ToVector3();
                             Vector3 wayPoint = position_start.ToVector3();
-                            float distance = Vector3.Distance(wayPoint, end) * 10;
-                            int run = 0;
-                            //Debug.Log("dt" + distance);
-                            while (Vector3.SqrMagnitude(wayPoint - end) > 0.5)
+                            float distance = Vector3.Distance(wayPoint, end);
+                            Debug.Log(name + " dt" + distance + " l " + name.Length);
+                            Vector3 stepVector = (end - wayPoint).normalized;
+
+                            for (int step = 1; step <= (int) (distance*4); step ++)
                             {
-                                run++;
-                                wayPoint = Vector3.Lerp(wayPoint, end, 1 / distance);
-                                /*
-                                UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
-                                cube.transform.position = wayPoint;
-                                cube.transform.parent = UnityEngine.GameObject.Find("Objects").transform;
-                                cube.name = mapWay.tags.GetTag("name").ToString();
-                                */
+                                wayPoint = wayPoint + (stepVector * 0.25f);
+                                if (((int)step) % (100 + name.Length) == 0)
+                                {
+                                    UnityEngine.GameObject streetLabel = UnityEngine.GameObject.Instantiate(streetLabelPrefab, mapContainer.transform) as UnityEngine.GameObject;
+                                    streetLabel.GetComponent<TextMesh>().text = name;
+                                    streetLabel.transform.localPosition = new Vector3(wayPoint.x, 3, wayPoint.z);
+                                    streetLabel.transform.localRotation = Quaternion.LookRotation(stepVector);
+                                    streetLabel.transform.Rotate(new Vector3(0f,90f,0f));
+
+                                    UnityEngine.GameObject streetLabelReverse = UnityEngine.GameObject.Instantiate(streetLabelPrefab, mapContainer.transform) as UnityEngine.GameObject;
+                                    streetLabelReverse.GetComponent<TextMesh>().text = name;
+                                    streetLabelReverse.transform.localPosition = new Vector3(wayPoint.x, 3, wayPoint.z);
+                                    streetLabelReverse.transform.localRotation = Quaternion.LookRotation(stepVector);
+                                    streetLabelReverse.transform.Rotate(new Vector3(0f, -90f, 0f));
+                                }
                                 ClientModel.Position position = new ClientModel.Position(wayPoint);
                                 Vector2 coordinates = GetAlphaMapCoordinates(position);
                                 //Debug.Log(coordinates);
                                 Paint(maps, (int)coordinates.y, (int)coordinates.x, TerrainService.L_STREET);
                             }
-                            //Debug.Log(mapWay.tags.GetTag("name").ToString() + "start: " + position_start + " runs: " + run);
-
-                            /*
-                            for (int cx = (int)position_start.x; cx < (int)position_end.x; cx = cx + moveX)
-                            {
-                                for (int cz = (int)position_start.z; cz < (int)position_end.z; cz = cz + moveY)
-                                {
-                                    if (GetTerrainService().IsInsideTerrain(cx,cz))
-                                    {
-                                        if ((cx % 20 == 0) && (cz % 20 == 0))
-                                        {
-                                            UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
-                                            cube.transform.position = new Vector3(cx, 0, cz);
-                                            cube.transform.parent = UnityEngine.GameObject.Find("Objects").transform;
-                                            cube.name = mapWay.tags.GetTag("name").ToString();
-                                        }
-                                        
-                                        Vector2 coordinates = GetTerrainService().GetAlphaMapCoordinates(new ClientModel.Position(cx, 0, cz));
-
-                                        GetTerrainService().Paint(maps, (int)coordinates.x, (int)coordinates.y, TerrainService.L_ROCK);
-                                    }
-                                }
-                            }
-                            */
-                            //Debug.Log(node.position.world.ToString());
+                            
                         }
                         //Debug.Log(mapWay.tags.GetTag("name").ToString());
                     }

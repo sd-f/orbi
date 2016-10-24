@@ -283,6 +283,7 @@ public class Mapity : MonoBehaviour {
     /// The base zoom. e.g. ZoomLevel_0 = degreeImMeters * baseZoom;
     /// </summary>
     private const float baseZoom = 0.0009765625f;
+    //private const float baseZoom = 0.0009765625f;
 
     /// <summary>
     /// The world to unity scale. e.g. When 1.0f, 1 meter = 1 unity unit.
@@ -1197,10 +1198,13 @@ public class Mapity : MonoBehaviour {
             // Calculate a bounds half - The base zoom level * the current zoom level
             float bounds = baseZoom * (int)mapZoom;
 
-            float longitudeMin = location.x - bounds; // Minus a half bound
-            float longitudeMax = location.x + bounds; // Plus a half bound
-            float latitudeMin = location.y - bounds; // Minus a half bound
-            float latitudeMax = location.y + bounds; // Plus a half bound
+            ServerModel.GeoPosition boundsNortWest = new ClientModel.Position(-256f, 0f, 256f).ToGeoPosition();
+            ServerModel.GeoPosition boundSouthEast = new ClientModel.Position(256f, 0f, -256f).ToGeoPosition();
+
+            float longitudeMin = (float)boundsNortWest.longitude; // location.x - bounds; // Minus a half bound
+            float longitudeMax = (float)boundSouthEast.longitude; // location.x + bounds; // Plus a half bound
+            float latitudeMin = (float)boundSouthEast.latitude; // location.y - bounds; // Minus a half bound
+            float latitudeMax = (float)boundsNortWest.latitude; // location.y + bounds; Plus a half bound
 
             //Load XML data from a URL
             string url = openStreetMapApiUrl + "map?bbox="
@@ -1210,7 +1214,7 @@ public class Mapity : MonoBehaviour {
                         + latitudeMax.ToString();
 
             www = new WWW(url);
-
+            //Debug.Log("Mapity request " + url);
             //Load the data and yield (wait) till it's ready before we continue executing the rest of this method.
             yield return www;
 

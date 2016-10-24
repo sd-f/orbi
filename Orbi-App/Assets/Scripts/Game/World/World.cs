@@ -18,7 +18,9 @@ namespace GameController
         public LayerMask backgroundLayersTerrain;
         public LayerMask backgroundLayersCamera;
         public LayerMask backGroundLayerMask;
-        public Texture2D defaultGroundTexture;
+
+        public UnityEngine.GameObject streetLabelPrefab;
+        public UnityEngine.GameObject mapContainer;
 
         private bool skipRefresh = false;
         private TerrainService terrainService;

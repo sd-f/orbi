@@ -41,7 +41,7 @@ namespace GameController
 
         public void SetDesktopInputEnabled(bool enabled)
         {
-            this.data.satelliteOverlayEnabled = enabled;
+            this.data.desktopInputEnabled = enabled;
             Save();
         }
 

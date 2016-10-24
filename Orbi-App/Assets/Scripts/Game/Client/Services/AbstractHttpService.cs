@@ -62,7 +62,21 @@ namespace GameController.Services
             if (message != null)
                 Error.Show(message.message);
             else
-                Error.Show(request.error);
+            {
+                if (request.error.Contains("500"))
+                    Error.Show("Server is doing weird stuff");
+                else if(request.error.Contains("502"))
+                    Error.Show("Server is sending weird stuff"); 
+                else if (request.error.Contains("503"))
+                    Error.Show("No connection or server is down");
+                else if (request.error.Contains("504"))
+                    Error.Show("Connection too slow");
+                else if (request.error.Contains("400"))
+                    Error.Show("App is sending weird stuff");
+                else
+                    Error.Show("Sorry something went wrong");
+            }
+                
            
             
         }

@@ -10,6 +10,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
     [RequireComponent(typeof (AudioSource))]
     public class FirstPersonController : MonoBehaviour
     {
+#pragma warning disable 0649
         [SerializeField] private bool m_IsWalking;
 #pragma warning disable 0649
         [SerializeField] private float m_WalkSpeed;

@@ -62,7 +62,8 @@ namespace GameController
            
             position.latitude += Random.Range(-0.001f, 0.001f);
             position.longitude += Random.Range(-0.001f, 0.001f);
-            Game.GetClient().Log(position, this);
+            Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(0f, Random.Range(0f, 360f), 0f);
+            Game.GetClient().Log("Random Location: " + position, this);
         }
 
         public void Pause()

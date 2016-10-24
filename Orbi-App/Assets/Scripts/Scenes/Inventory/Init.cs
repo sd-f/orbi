@@ -47,7 +47,6 @@ namespace InventoryScene
             long overall_items_collected = 0;
             long items_collected = 0;
             int id = 0;
-            int preselected = 0;
             List<ServerModel.InventoryItem> items = Game.GetPlayer().GetCraftingController().GetInventory().items;
             foreach (ServerModel.GameObjectTypeCategory category in Game.GetPlayer().GetCraftingController().GetInventory().categories)
             {
@@ -86,9 +85,6 @@ namespace InventoryScene
                             text.SetForeGroundColor(Color.white);
                             text.SetShadowColor(Color.black);
                             text.SetAlignment(TextAlignment.Center, TextAnchor.MiddleCenter);
-
-                            if (item.prefab == Game.GetPlayer().GetCraftingController().GetSelectedPrefab())
-                                preselected = id;
                             GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.prefab, id, null, layers);
                             newObject.AddComponent<InventoryObjectSelected>();
                             newObject.transform.localRotation = Quaternion.Euler(-5f, -5f, 0f);

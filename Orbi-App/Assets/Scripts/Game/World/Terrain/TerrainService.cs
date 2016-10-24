@@ -13,13 +13,16 @@ namespace GameController
     {
         public static int TEXTURE_RASTER_SIZE = 2;
 
-        private static int HEIGHTMAP_SIZE_SERVER = 33;
+        //private static int HEIGHTMAP_SIZE_SERVER = 33;
 
-        private double heightMax = 0d;
+        //private double heightMax = 0d;
         private double heightMin = 100000d;
 
         private int hmSize;         // 33
-        private int amSize;         // 256
+        //private int hmSizeX;         // 33
+        //private int hmSizeY;         // 33
+        private int amSizeY;         // 256
+        private int amSizeX;         // 256
         public int terrainSize;     // 256
         public int terrainHeight;   // 100
 
@@ -28,7 +31,7 @@ namespace GameController
         private LayerMask terrainMask;
 
         private float[,] hm;
-
+        private float[,,] alphaMaps;
         public static int L_GROUND = 0;
         public static int L_GRAS = 1;
         public static int L_STREET = 2;
@@ -36,17 +39,20 @@ namespace GameController
         private static int NUM_L = 3;
 
 
+
         public TerrainService(Terrain terrain)
         {
             this.t = terrain;
             this.td = t.terrainData;
             terrainMask = 1 << LayerMask.NameToLayer("Terrain");
-            this.hmSize = td.heightmapResolution;
-            this.amSize = td.alphamapResolution;
+            this.hmSize = td.heightmapHeight;
+            this.amSizeY = td.alphamapHeight;
+            this.amSizeX = td.alphamapWidth;
             //Game.GetClient().Log("AlphaMap Resolution " + this.amSize);
             this.terrainSize = (int)td.size.x;
             this.terrainHeight = (int)td.size.y;
             this.hm = new float[hmSize, hmSize];
+            this.alphaMaps = td.GetAlphamaps(0, 0, amSizeX, amSizeY);
             ResetAlpha();
         }
 
@@ -62,26 +68,26 @@ namespace GameController
             return new Vector2(mapX, mapZ);
         }
 
-        public void Paint(float[,,] maps, int x, int y, int layer)
+        public void Paint(int x, int y, int layer)
         {
-            Paint(maps, x, y, layer, 1.0f);
-            PaintAround(maps, x, y, layer);
+            Paint(x, y, layer, 1.0f);
+            PaintAround(x, y, layer);
         }
 
-        public void Paint(float[,,] maps, int x, int y, int layer, float amount)
+        public void Paint(int x, int y, int layer, float amount)
         {
             if (IsInsideTerrain(x, y))
             {
-                float rest = (1 - amount) / (NUM_L - 1);
+                float rest = (1 - amount) / (NUM_L - 1); // fix
                 for (int l = 0; l < NUM_L; l++)
                     if (l == layer)
-                        maps[x, y, l] = amount;
+                        alphaMaps[x, y, l] = amount;
                     else
-                        maps[x, y, l] = maps[x, y, l] * rest;
+                        alphaMaps[x, y, l] = alphaMaps[x, y, l] * rest;
             }
         }
 
-        private void PaintAround(float[,,] maps, int x, int y, int layer)
+        private void PaintAround(int x, int y, int layer)
         {
             float amount;
             for (int h = -smoothArea; h<= smoothArea; h++) 
@@ -89,35 +95,38 @@ namespace GameController
                     if ((h!=0) && (v!=0))
                     {
                         amount = (smoothArea*2) / (Math.Abs(h) + Math.Abs(v));
-                        PaintSmooth(maps, x + v, y + h, layer, amount);
+                        PaintSmooth(x + v, y + h, layer, amount);
                     }
                     
         }
 
-        private void PaintSmooth(float[,,] maps, int x, int y, int layer, float amount)
+        private void PaintSmooth(int x, int y, int layer, float amount)
         {
             if (IsInsideTerrain(x, y))
-                if (maps[x, y, layer] != 1.0f)
-                    Paint(maps, x, y, layer, amount);
-        }
-
-        public float[,,] GetAlphaMaps()
-        {
-           return td.GetAlphamaps(0, 0, amSize, amSize);
+                if (alphaMaps[x, y, layer] != 1.0f)
+                    Paint(x, y, layer, amount);
         }
 
         public void SetAlphaMaps(float[,,] maps)
         {
+            
             t.terrainData.SetAlphamaps(0, 0, maps);
         }
 
         private void ResetAlpha()
         {
-            float[,,] maps = GetAlphaMaps();
-            for (int y = 0; y < amSize; y++)
-                for (int x = 0; x < amSize; x++)
-                    Paint(maps, x, y, L_GROUND, 1.0f);
-            SetAlphaMaps(maps);
+            for (int y = 0; y < amSizeY; y++)
+                for (int x = 0; x < amSizeX; x++)
+                    Paint(x, y, L_GROUND, 1.0f);
+        }
+
+        private void PaintForest(List<Vector2> poly)
+        {
+            for (int y = 0; y < amSizeY; y++)
+                for (int x = 0; x < amSizeX; x++)
+                    if (IsInPolygon(poly, new Vector2(x,y)))
+                        Paint(x, y, L_GRAS, 1.0f);
+                    
         }
 
 
@@ -131,7 +140,7 @@ namespace GameController
             SetHeightMin(0.0f);
             SetHeightsToMin();
             ResetAlpha();
-            t.Flush();
+            Flush();
             yield return null;
         }
 
@@ -161,6 +170,44 @@ namespace GameController
             SetHeights();
         }
 
+        public void Flush()
+        {
+            //Normalize(alphaMaps);
+            SetAlphaMaps(alphaMaps);
+            t.Flush();
+        }
+
+        private void Normalize(float[,,] maps)
+        {
+            float maxValue = 1;
+            float debugFixed = 0;
+            for (int x = 0; x < amSizeX; x++)
+                for (int y = 0; y < amSizeY; y++)
+                {
+                    maxValue = 0;
+                    for (int l = 0; l < NUM_L; l++)
+                        if (maxValue < maps[x, y, l])
+                            maxValue = maps[x, y, l];
+                    if (maxValue > 1)
+                    {
+                        debugFixed++;
+                        for (int l = 0; l < NUM_L; l++)
+                            maps[x, y, l] = maps[x, y, l] / maxValue;
+                    }
+                    /*
+                    if (maxValue < 0)
+                    {
+                        maxValue = 1 / maxValue;
+                        for (int l = 0; l < NUM_L; l++)
+                            maps[x, y, l] = maps[x, y, l] * maxValue;
+                    }
+                    */
+                        
+                }
+
+            //Debug.Log("Normalize Alphamap: " + debugFixed);
+        }
+
         public void PaintTerrainFromMapity()
         {
             // Example #1
@@ -169,7 +216,6 @@ namespace GameController
             UnityEngine.GameObject mapContainer = Game.GetWorld().mapContainer;
             GameObjectUtility.DestroyAllChildObjects(mapContainer);
             Mapity.MapWay mapWay = null;
-            float[,,] maps = GetAlphaMaps();
             //GetTerrainService().Paint(maps, 256, 256, TerrainService.L_GRAS);
             for (var mapWayEnumerator = Mapity.Singleton.mapWays.Values.GetEnumerator(); mapWayEnumerator.MoveNext();)
             {
@@ -192,7 +238,7 @@ namespace GameController
                             Vector3 end = position_end.ToVector3();
                             Vector3 wayPoint = position_start.ToVector3();
                             float distance = Vector3.Distance(wayPoint, end);
-                            Debug.Log(name + " dt" + distance + " l " + name.Length);
+                            //Debug.Log(name + " dt" + distance + " l " + name.Length);
                             Vector3 stepVector = (end - wayPoint).normalized;
 
                             for (int step = 1; step <= (int) (distance*4); step ++)
@@ -215,7 +261,7 @@ namespace GameController
                                 ClientModel.Position position = new ClientModel.Position(wayPoint);
                                 Vector2 coordinates = GetAlphaMapCoordinates(position);
                                 //Debug.Log(coordinates);
-                                Paint(maps, (int)coordinates.y, (int)coordinates.x, TerrainService.L_STREET);
+                                Paint((int)coordinates.y, (int)coordinates.x, TerrainService.L_STREET);
                             }
                             
                         }
@@ -223,14 +269,54 @@ namespace GameController
                     }
                 }
             }
-            SetAlphaMaps(maps);
-            GetTerrain().Flush();
+            
+            /* forest
+            Mapity.MapRelation relation = null;
+            
+
+            for (IEnumerator relationsIterator = Mapity.Singleton.mapRelations.Values.GetEnumerator(); relationsIterator.MoveNext();)
+            {
+                relation = relationsIterator.Current as Mapity.MapRelation;
+                if (relation.tags.GetTag("landuse") != null && relation.tags.GetTag("landuse").Equals("forest") )
+                    //&& relation.tags.GetTag("type") != null && relation.tags.GetTag("type").Equals("polygon") ) // TODO type=multipolygon
+                {
+                    mapWay = null;
+                    Debug.Log("Forest found");
+                    //GetTerrainService().Paint(maps, 256, 256, TerrainService.L_GRAS);
+                    
+                    for (var mapWayEnumerator = relation.relationWays.GetEnumerator(); mapWayEnumerator.MoveNext();)
+                    {
+                        mapWay = mapWayEnumerator.Current as Mapity.MapWay;
+                        
+                        List<Vector2> poly = new List<Vector2>();
+                        if (mapWay != null)
+                        {
+                            for (int j = 0; j < (mapWay.wayMapNodes.Count - 1); j++)
+                            {
+                                Mapity.MapNode node = (Mapity.MapNode)mapWay.wayMapNodes[j];
+                                poly.Add(new ClientModel.Position(node.position.world).ToVector2());
+                            }
+                        }
+                           
+                            
+                        if (poly.Count > 0)
+                        {
+                            PaintForest(poly);
+                            return;
+                        }
+                            
+                           
+                    }
+                }
+            }
+            */
+            Flush();
 
             // Example #2
             // Loop over all the buildings in Map-ity
 
-            Mapity.MapBuilding mapBuilding = null;
-            /*
+            /*Mapity.MapBuilding mapBuilding = null;
+            
             for (var mapBuildingEnumerator = Mapity.Singleton.mapBuildings.Values.GetEnumerator(); mapBuildingEnumerator.MoveNext();)
             {
                 mapBuilding = mapBuildingEnumerator.Current as Mapity.MapBuilding;
@@ -268,6 +354,40 @@ namespace GameController
             }
             */
 
+        }
+
+        public static bool IsInPolygon(List<Vector2> poly, Vector2 p)
+        {
+            Vector2 p1, p2;
+            bool inside = false;
+            if (poly.Count < 3)
+                return inside;
+
+            var oldPoint = new Vector2(
+                poly[poly.Count - 1].x, poly[poly.Count - 1].y);
+            for (int i = 0; i < poly.Count; i++)
+            {
+                var newPoint = new Vector2(poly[i].y, poly[i].y);
+                if (newPoint.x > oldPoint.x)
+                {
+                    p1 = oldPoint;
+                    p2 = newPoint;
+                }
+
+                else
+                {
+                    p1 = newPoint;
+                    p2 = oldPoint;
+                }
+                if ((newPoint.x < p.x) == (p.x <= oldPoint.x)
+                    && (p.y - (long)p1.y) * (p2.x - p1.x)
+                    < (p2.y - (long)p1.y) * (p.x - p1.x))
+                {
+                    inside = !inside;
+                }
+                oldPoint = newPoint;
+            }
+            return inside;
         }
 
         public float GetTerrainHeight(float x, float z)

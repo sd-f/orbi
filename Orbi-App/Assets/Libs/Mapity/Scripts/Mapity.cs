@@ -1196,7 +1196,7 @@ public class Mapity : MonoBehaviour {
             }
 
             // Calculate a bounds half - The base zoom level * the current zoom level
-            float bounds = baseZoom * (int)mapZoom;
+            //float bounds = baseZoom * (int)mapZoom;
 
             ServerModel.GeoPosition boundsNortWest = new ClientModel.Position(-256f, 0f, 256f).ToGeoPosition();
             ServerModel.GeoPosition boundSouthEast = new ClientModel.Position(256f, 0f, -256f).ToGeoPosition();

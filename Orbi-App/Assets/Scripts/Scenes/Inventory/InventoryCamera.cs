@@ -43,18 +43,18 @@ namespace InventoryScene
             if (isDesktopMode)
             {
                 if (Input.GetKeyDown(KeyCode.LeftArrow))
-                    Left();
+                    Left(1);
                 if (Input.GetKeyDown(KeyCode.RightArrow))
-                    Right();
+                    Right(1);
                 if (Input.GetKeyDown(KeyCode.UpArrow))
-                    Up();
+                    Up(1);
                 if (Input.GetKeyDown(KeyCode.DownArrow))
-                    Down();
+                    Down(1);
                 float d = Input.GetAxis("Mouse ScrollWheel");
                 if (d > 0f)
-                    Up();
+                    Up(1);
                 else if (d < 0f)
-                    Down();
+                    Down(1);
                 if (Input.GetButtonDown("Fire1"))
                 {
                     checkTouchObjectSingleTouch(Input.mousePosition);
@@ -78,13 +78,13 @@ namespace InventoryScene
                         text.text = "secondpoint.x: " + secondpoint.x
                             + "\nmoved: " + moved; */
                         if (movedX >= 5)
-                            Left();
+                            Left(1.5f);
                         if (movedX <= -5)
-                            Right();
+                            Right(1.5f);
                         if (movedY >= 5)
-                            Up();
+                            Down(2);
                         if (movedY <= -5)
-                            Down();
+                            Up(2);
                         if ((movedX > -5) && (movedX < 5) && (movedY > -5) && (movedY < 5))
                         {
                             checkTouchObjectSingleTouch(secondpoint);
@@ -113,24 +113,24 @@ namespace InventoryScene
         }
 
 
-        private void Up()
+        private void Up(float amount)
         {
-            SetTarget(target.x, target.y - moveSpeedY);
+            SetTarget(target.x, target.y - moveSpeedY * amount);
         }
 
-        private void Down()
+        private void Down(float amount)
         {
-            SetTarget(target.x, target.y + moveSpeedY);
+            SetTarget(target.x, target.y + moveSpeedY * amount);
         }
 
-        private void Left()
+        private void Left(float amount)
         {
-            SetTarget(target.x - moveSpeedX, target.y);
+            SetTarget(target.x - moveSpeedX * amount, target.y);
         }
 
-        private void Right()
+        private void Right(float amount)
         {
-            SetTarget(target.x + moveSpeedX, target.y);
+            SetTarget(target.x + moveSpeedX * amount, target.y);
         }
 
         public void SetTarget(float x, float y)

@@ -11,6 +11,7 @@ namespace CanvasUtility
     [AddComponentMenu("App/Canvas/Message/Generator")]
     class MessagesGenerator : MonoBehaviour
     {
+#pragma warning disable 0649
         public GameObject messagePrefab;
 
         void Awake()

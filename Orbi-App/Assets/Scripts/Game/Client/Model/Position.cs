@@ -43,6 +43,11 @@ namespace ClientModel
             return new Vector3((float)this.x,(float)this.y,(float)this.z);
         }
 
+        public Vector3 ToVector2()
+        {
+            return new Vector3((float)this.z, (float)this.x);
+        }
+
         public GeoPosition ToGeoPosition()
         {
             return WorldAdapter.ToRealRelative(this);

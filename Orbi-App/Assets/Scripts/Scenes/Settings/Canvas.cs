@@ -66,14 +66,22 @@ namespace SettingsScene
             }
             toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = !enabled;
             if (Game.GetGame().GetSettings().IsHandheldInputEnabled() != enabled)
+            {
                 Game.GetGame().GetSettings().SetHandheldInputEnabled(enabled);
+                //Game.GetGame().GetSettings().SetDesktopInputEnabled(!enabled);
+            }
+                
         }
 
         public void OnDesktopInputEnabled(bool enabled)
         {
             toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = !enabled;
             if (Game.GetGame().GetSettings().IsDesktopInputEnabled() != enabled)
+            {
                 Game.GetGame().GetSettings().SetDesktopInputEnabled(enabled);
+                //Game.GetGame().GetSettings().SetHandheldInputEnabled(!enabled);
+            }
+               
         }
 
 

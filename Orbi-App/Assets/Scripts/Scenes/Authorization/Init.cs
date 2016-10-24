@@ -9,7 +9,7 @@ namespace AuthorizationScene
 
         void Awake()
         {
-            Game.GetLocation().Pause();
+            //Game.GetLocation().Pause();
             Game.GetPlayer().Freeze();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;

@@ -9,9 +9,9 @@ namespace ServerModel
         public long id;
         public ClientModel.Transform transform = new ClientModel.Transform();
         public string name;
-        public long xp;
-        public long xr;
-        public long level;
+        public long xp = 0;
+        public long xr = 0;
+        public long level = 0;
         public CharacterDevelopment characterDevelopment;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;

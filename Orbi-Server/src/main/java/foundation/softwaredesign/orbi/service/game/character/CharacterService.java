@@ -47,7 +47,7 @@ public class CharacterService {
 
     public Character loadCurrent() {
         Long identityId = user.getIdentity().getId();
-        Character character = createIfNotExists(identityId);
+        Character character = loadByIdentityId(identityId);
 
         calculateExperienceRank(character);
         calculateLevel(character);
@@ -73,31 +73,25 @@ public class CharacterService {
         return repository.saveAndFlushAndRefresh(character);
     }
 
-    @Transactional(Transactional.TxType.REQUIRES_NEW)
-    private Character createIfNotExists(Long identityId) {
-        Character currentCharacter = null;
-        try {
-            currentCharacter = loadByIdentityId(identityId);
-        } catch (NoResultException ex) {
-            Logger.getLogger(UserService.class.getName()).info("create missing character for player with identity_id " + user.getIdentity().getId());
-        }
-        if (Objects.isNull(currentCharacter)) {
-            currentCharacter = new Character();
-            currentCharacter.setLastSeen(new Date());
-            currentCharacter.setTransform(new Transform());
-            currentCharacter.setXp(new Long(0));
-            currentCharacter.setIdentityId(user.getIdentity().getId());
-            currentCharacter.setName(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
-            currentCharacter = repository.saveAndFlushAndRefresh(currentCharacter);
-        }
+    public Character create(Long identityId) {
+        Character currentCharacter = new Character();
+        currentCharacter.setLastSeen(new Date());
+        currentCharacter.setTransform(new Transform());
+        currentCharacter.setXp(new Long(0));
+        currentCharacter.setIdentityId(user.getIdentity().getId());
+        currentCharacter.setName(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
         return currentCharacter;
+    }
+
+    public Character save(Character character) {
+        return repository.saveAndFlushAndRefresh(character);
     }
 
     public Character updateTransform(Transform newTransform) {
         Character currentCharacter = loadCurrent();
         currentCharacter.setTransform(newTransform);
         currentCharacter.setLastSeen(new Date());
-        return repository.saveAndFlush(currentCharacter);
+        return save(currentCharacter);
     }
 
     public List<Character> getCharactersAround(GeoPosition geoPosition) {

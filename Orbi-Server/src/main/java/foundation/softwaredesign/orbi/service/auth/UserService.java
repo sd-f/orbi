@@ -3,10 +3,12 @@ package foundation.softwaredesign.orbi.service.auth;
 import foundation.softwaredesign.orbi.model.auth.AuthorizationInfo;
 import foundation.softwaredesign.orbi.model.auth.LoginInfo;
 import foundation.softwaredesign.orbi.model.auth.RequestCodeInfo;
+import foundation.softwaredesign.orbi.model.game.character.Character;
 import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
 import foundation.softwaredesign.orbi.persistence.repo.auth.IdentityRepository;
 import foundation.softwaredesign.orbi.persistence.types.ChkPass;
 import foundation.softwaredesign.orbi.service.auth.IdentityThreadLocal;
+import foundation.softwaredesign.orbi.service.game.character.CharacterService;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +19,7 @@ import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.persistence.NoResultException;
@@ -42,6 +45,8 @@ public class UserService {
 
     @Inject
     IdentityRepository identityRepository;
+    @Inject
+    CharacterService characterService;
 
     @PostConstruct
     public void init() {
@@ -56,11 +61,17 @@ public class UserService {
         return this.authorizationInfo;
     }
 
+
     public void requestPassword(@Valid @NotNull RequestCodeInfo requestCodeInfo) {
+        if (!isValidEmailAddress(requestCodeInfo.getEmail())) {
+            throw new InternalServerErrorException("Email not valid");
+        }
         IdentityEntity identityEntity = identityRepository.findByEmail(requestCodeInfo.getEmail());
+        Boolean isNewIdentity = false;
         if (Objects.isNull(identityEntity)) {
             identityEntity = new IdentityEntity();
             identityEntity.setEmail(requestCodeInfo.getEmail());
+            isNewIdentity = true;
         }
         identityEntity.setLastInit(new Date());
 
@@ -68,6 +79,10 @@ public class UserService {
         identityEntity.setTmpPassword(new ChkPass(password));
 
         saveUser(identityEntity);
+        if (isNewIdentity) {
+            Character newCharacter = characterService.create(identityEntity.getId());
+            characterService.save(newCharacter);
+        }
         if (!sendPasswordMail(identityEntity.getEmail(), password)) {
             throw new InternalServerErrorException("Email could not be send");
         }
@@ -99,7 +114,7 @@ public class UserService {
     }
 
     private void saveUser(IdentityEntity identity) {
-        identityRepository.saveAndFlush(identity);
+        identityRepository.saveAndFlushAndRefresh(identity);
     }
 
     private Boolean sendPasswordMail(String email, String password) {
@@ -119,6 +134,17 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    public static boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            result = false;
+        }
+        return result;
     }
 
     public void updateLastInit() {

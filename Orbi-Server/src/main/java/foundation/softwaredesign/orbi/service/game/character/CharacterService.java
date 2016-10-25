@@ -78,7 +78,7 @@ public class CharacterService {
         currentCharacter.setLastSeen(new Date());
         currentCharacter.setTransform(new Transform());
         currentCharacter.setXp(new Long(0));
-        currentCharacter.setIdentityId(user.getIdentity().getId());
+        currentCharacter.setIdentityId(identityId);
         currentCharacter.setName(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
         return currentCharacter;
     }

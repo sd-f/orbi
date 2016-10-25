@@ -80,4 +80,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="character_1_to_1_constraint" author="Lucas Reeh">
+        <sql>
+            ALTER TABLE public.character ADD CONSTRAINT character_unique UNIQUE (id, identity_id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

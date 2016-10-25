@@ -63,6 +63,7 @@ namespace GameController.Services
                     Game.GetGame().GetSettings().SetToken(authInfo.token);
                     Game.GetPlayer().SetLoggedIn(true);
                 }
+                yield return Game.GetLocation().Boot();
                 Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
                 Info.Show("Login successful");
                 // no errors

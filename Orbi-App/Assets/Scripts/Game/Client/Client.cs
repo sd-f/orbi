@@ -41,6 +41,11 @@ namespace GameController
                 this.runningRequests--;
         }
 
+        public int RunningRequests()
+        {
+            return runningRequests;
+        }
+
         public bool IsRequestRunning()
         {
             return (this.runningRequests > 0);

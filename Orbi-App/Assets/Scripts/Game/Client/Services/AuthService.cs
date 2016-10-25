@@ -14,19 +14,14 @@ namespace GameController.Services
 
         public IEnumerator RequestAuthUser()
         {
-            WWW request = Request("auth/user", null);
-            yield return request;
-            if (request.error == null)
-            {
-                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
-                //Info.Show("Logged in successful");
-                Game.GetPlayer().SetLoggedIn(true);
-                // no errors
-                IndicateRequestFinished();
-            }
-            else
-                HandleError(request);
-               
+            yield return Request("auth/user", null, OnAuthUser);
+        }
+
+        private void OnAuthUser(string data)
+        {
+            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+            //Info.Show("Logged in successful");
+            Game.GetPlayer().SetLoggedIn(true);
         }
 
         public IEnumerator RequestCode(String email)
@@ -34,17 +29,12 @@ namespace GameController.Services
             RequestCodeInfo info = new RequestCodeInfo();
             info.email = email;
             info.player = Game.GetPlayer().GetModel();
-            WWW request = Request("auth/requestcode", JsonUtility.ToJson(info));
-            yield return request;
-            if (request.error == null)
-            {
-                Info.Show("Code has been sent - check your mail");
-                // no errors
-                IndicateRequestFinished();
-            }
-            else
-                HandleError(request);
+            yield return Request("auth/requestcode", JsonUtility.ToJson(info), OnCodeRequests);
+        }
 
+        private void OnCodeRequests(string data)
+        {
+            Info.Show("Code has been sent - check your mail");
         }
 
         public IEnumerator RequestLogin(String email, String password)
@@ -53,25 +43,26 @@ namespace GameController.Services
             info.email = email;
             info.password = password;
             info.player = Game.GetPlayer().GetModel();
-            WWW request = Request("auth/login", JsonUtility.ToJson(info));
-            yield return request;
-            if (request.error == null)
-            {
-                AuthorizationInfo authInfo = JsonUtility.FromJson<AuthorizationInfo>(request.text);
-                if (!String.IsNullOrEmpty(authInfo.token))
-                {
-                    Game.GetGame().GetSettings().SetToken(authInfo.token);
-                    Game.GetPlayer().SetLoggedIn(true);
-                }
-                yield return Game.GetLocation().Boot();
-                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
-                Info.Show("Login successful");
-                // no errors
-                IndicateRequestFinished();
-            }
-            else
-                HandleError(request);
+            yield return Request("auth/login", JsonUtility.ToJson(info), OnLoginSucceded);
 
+        }
+
+
+        private void OnLoginSucceded(string data)
+        {
+            AuthorizationInfo authInfo = JsonUtility.FromJson<AuthorizationInfo>(data);
+            if (!String.IsNullOrEmpty(authInfo.token))
+            {
+                Game.GetGame().GetSettings().SetToken(authInfo.token);
+                Game.GetPlayer().SetLoggedIn(true);
+            }
+            StartCoroutine(BootLocationAndLoad());            
+        }
+
+        private IEnumerator BootLocationAndLoad()
+        {
+            yield return Game.GetLocation().Boot();
+            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
         }
 
 

@@ -188,7 +188,13 @@ namespace GameController
             {
                 byte[] decryptedData = Decrypt(key, encryptedData);
                 return Encoding.UTF8.GetString(decryptedData);
-            } catch (Exception e)
+            }
+            catch (CryptographicException e)
+            {
+                //Debug.LogError(e);
+                return null;
+            }
+            catch (Exception e)
             {
                 Debug.LogError(e);
                 return null;

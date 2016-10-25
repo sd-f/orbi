@@ -44,6 +44,7 @@ namespace GameController
             Game.GetClient().Log("google map request = " + url);
             WWW request = new WWW(url);
             yield return request;
+            IndicateRequestFinished();
             if (request.error == null)
             {
                 Texture2D tex = new Texture2D(1024, 1024);
@@ -53,9 +54,7 @@ namespace GameController
                 prototype.texture = tex;
             }
             else
-                Error.Show(request.error);
-            IndicateRequestFinished();
-
+                HandleError(request);
         }
 
         public IEnumerator RequestMapDataOsm(long latitude, long longitude, SplatPrototype prototype)
@@ -68,6 +67,7 @@ namespace GameController
             Game.GetClient().Log("osm map request = " + url);
             WWW request = new WWW(url);
             yield return request;
+            IndicateRequestFinished();
             if (request.error == null)
             {
                 Texture2D tex = new Texture2D(256, 256); // TODO change if sd-f osm server is running
@@ -77,9 +77,8 @@ namespace GameController
                 prototype.texture = tex;
             }
             else
-                Error.Show(request.error);
-            IndicateRequestFinished();
-
+                HandleError(request);
+            
         }
 
         public IEnumerator LoadTexturesTiled()

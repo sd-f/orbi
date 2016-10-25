@@ -86,4 +86,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="character_1_to_1_index" author="Lucas Reeh">
+        <sql>
+            CREATE UNIQUE INDEX character_identity_unique_idx ON public.character (id, identity_id);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

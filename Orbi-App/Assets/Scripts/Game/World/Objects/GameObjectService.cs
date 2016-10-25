@@ -26,44 +26,34 @@ namespace GameController
 
         public IEnumerator RequestStatistics()
         {
-            WWW request = Request("world/statistics", null);
-            yield return request;
-            if (request.error == null)
+            yield return Request("world/statistics", null, OnStatisticsLoaded);
+        }
+
+        private void OnStatisticsLoaded(string data)
+        {
+            ServerModel.Statistics stats = JsonUtility.FromJson<ServerModel.Statistics>(data);
+            Game.GetWorld().SetStatistics(stats);
+            // TODO bad hack
+            GameObject statsGameObject = GameObject.Find("StatisticsPanel");
+            if (statsGameObject != null)
             {
-                ServerModel.Statistics stats = JsonUtility.FromJson<ServerModel.Statistics>(request.text);
-                Game.GetWorld().SetStatistics(stats);
-                // TODO bad hack
-                GameObject statsGameObject = GameObject.Find("StatisticsPanel");
-                if (statsGameObject != null)
-                {
-                    StartScene.Canvas statsCanvas = statsGameObject.GetComponent<StartScene.Canvas>();
-                    if (statsCanvas != null)
-                        statsCanvas.UpdateStats();
-                }
-                IndicateRequestFinished();
+                StartScene.Canvas statsCanvas = statsGameObject.GetComponent<StartScene.Canvas>();
+                if (statsCanvas != null)
+                    statsCanvas.UpdateStats();
             }
-            else
-                HandleError(request);
         }
 
         public IEnumerator RequestGameObjects()
         {
             //Game.GetClient().Log("Update Objects on " + Game.GetPlayer().GetModel().character.transform.geoPosition);
-            WWW request = Request("world/around", JsonUtility.ToJson(Game.GetPlayer().GetModel()));
-            yield return request;
-            if (request.error == null)
-            {
-
-                //Debug.Log("objects loaded...");
-                ServerModel.World newWorld = JsonUtility.FromJson<ServerModel.World>(request.text);
-                RefreshWorld(Game.GetPlayer().GetModel(), newWorld);
-                IndicateRequestFinished();
-            }
-            else
-                HandleError(request);
+            yield return Request("world/around", JsonUtility.ToJson(Game.GetPlayer().GetModel()), OnObjectsLoaded);
         }
 
-        
+        private void OnObjectsLoaded(string data)
+        {
+            ServerModel.World newWorld = JsonUtility.FromJson<ServerModel.World>(data);
+            RefreshWorld(Game.GetPlayer().GetModel(), newWorld);
+        }
 
         void UpdateCharacter(ServerModel.Character oldCharacter, ServerModel.Character newCharacter)
         {

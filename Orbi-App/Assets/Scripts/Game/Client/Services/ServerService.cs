@@ -12,40 +12,13 @@ namespace GameController.Services
 
         public IEnumerator RequestInfo()
         {
-            WWW request = Request("server/info", null);
-            yield return request;
-            if (request.error == null)
-            {
-                ServerInfo info = JsonUtility.FromJson<ServerInfo>(request.text);
-                Game.GetClient().SetServerInfo(info);
-                IndicateRequestFinished();
-            }
-            else
-            {
-                IndicateRequestFinished();
-                ErrorMessage message = null;
-                try
-                {
-                    message = JsonUtility.FromJson<ErrorMessage>(request.text);
-                    Debug.Log(message.status);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError(ex);
-                }
-                if (message.status == 505)
-                {
-                    yield return new WaitForSeconds(3);
-                    Application.OpenURL("https://softwaredesign.foundation/orbi/");
-                    Application.Quit();
-                }
+            yield return Request("server/info", null, OnServerInf);
+        }
 
-                if (message != null)
-                    Error.Show(message.message);
-                else
-                    Error.Show(request.error);
-            }
-               
+        private void OnServerInf(string data)
+        {
+            ServerInfo info = JsonUtility.FromJson<ServerInfo>(data);
+            Game.GetClient().SetServerInfo(info);
         }
 
     }

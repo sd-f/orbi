@@ -13,6 +13,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -72,6 +73,7 @@ public class CharacterService {
         return repository.saveAndFlushAndRefresh(character);
     }
 
+    @Transactional(Transactional.TxType.REQUIRES_NEW)
     private Character createIfNotExists(Long identityId) {
         Character currentCharacter = null;
         try {
@@ -86,7 +88,7 @@ public class CharacterService {
             currentCharacter.setXp(new Long(0));
             currentCharacter.setIdentityId(user.getIdentity().getId());
             currentCharacter.setName(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
-            //currentCharacter = repository.saveAndFlushAndRefresh(currentCharacter);
+            currentCharacter = repository.saveAndFlushAndRefresh(currentCharacter);
         }
         return currentCharacter;
     }

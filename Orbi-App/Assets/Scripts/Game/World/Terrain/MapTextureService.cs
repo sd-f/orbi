@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace GameController
 {
-    class MapTextureService: AbstractHttpService
+    public class MapTextureService: AbstractHttpService
     {
         public static bool satellite = false;
 
@@ -31,7 +31,7 @@ namespace GameController
         public IEnumerator RequestMapDataGoogle(GeoPosition geoPosition, SplatPrototype prototype)
         {
             IndicateRequestStart();
-            if (Game.GetGame().GetSettings().IsSatelliteOverlayEnabled())
+            if (Game.Instance.GetSettings().IsSatelliteOverlayEnabled())
                 mapType = "satellite";
             else
                 mapType = "roadmap";
@@ -41,7 +41,7 @@ namespace GameController
                 + WWW.EscapeURL(geoPosition.latitude + "," + geoPosition.longitude)
                 + "&maptype=" + mapType;
             //Debug.Log(url);
-            Game.GetClient().Log("google map request = " + url);
+            Game.Instance.GetClient().Log("google map request = " + url);
             WWW request = new WWW(url);
             yield return request;
             IndicateRequestFinished();
@@ -64,7 +64,7 @@ namespace GameController
             string url = OSM_URL
                 + latitude + "/" + longitude + ".png";
             //Debug.Log(url);
-            Game.GetClient().Log("osm map request = " + url);
+            Game.Instance.GetClient().Log("osm map request = " + url);
             WWW request = new WWW(url);
             yield return request;
             IndicateRequestFinished();
@@ -114,7 +114,7 @@ namespace GameController
                     //UnityEngine.GameObject cube = UnityEngine.GameObject.CreatePrimitive(PrimitiveType.Cube);
                     //cube.transform.position = position.ToVector3();
                     //cube.transform.name = "c" + splatIndex;
-                    //cube.transform.SetParent(Game.GetGame().transform);
+                    //cube.transform.SetParent(Game.Instance.transform);
 
                     yield return RequestMapDataGoogle(position.ToGeoPosition(), prototype);
                     splats.Add(splatIndex, prototype);
@@ -122,7 +122,7 @@ namespace GameController
                 }
             }
             //Debug.Log(gout);
-            //Game.GetWorld().GetTerrainService().SetMapsSplats(splats);
+            //Game.Instance.GetWorld().GetTerrainService().SetMapsSplats(splats);
         }
 
         public IEnumerator LoadTexture()
@@ -136,7 +136,7 @@ namespace GameController
             PointF tilePosition = WorldAdapter.PROJECTION.WorldToTilePos(geoPosition.longitude, geoPosition.latitude, 19);
             yield return RequestMapDataOsm((long)tilePosition.x, (long)tilePosition.y, prototype);
             //Debug.Log(gout);
-            //Game.GetWorld().GetTerrainService().SetGroundTexture(prototype.texture);
+            //Game.Instance.GetWorld().GetTerrainService().SetGroundTexture(prototype.texture);
 
 
         }

@@ -17,7 +17,7 @@ namespace StartScene
 
         public void UpdateStats()
         {
-            textNumberOfObjects.text = "objects " + Game.GetWorld().GetStatistics().numberOfObjects.ToString();
+            textNumberOfObjects.text = "objects " + Game.Instance.GetWorld().GetStatistics().numberOfObjects.ToString();
         }
 
 

@@ -20,7 +20,7 @@ namespace GameController
         {
             GeoPosition pos_g = new GeoPosition();
             // get geo center
-            GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
+            GeoPosition center = Game.Instance.GetWorld().GetCenterGeoPostion();
             Position centerVirtual = FromGeoToVirtual(center);
 
             pos_g.latitude = original_g.latitude;
@@ -32,17 +32,17 @@ namespace GameController
             Position virtualPosition = FromGeoToVirtual(pos_g);
 
             if (VERBOSE)
-                Game.GetClient().Log("r->v-1" + virtualPosition + "c" +  centerVirtual);
+                Game.Instance.GetClient().Log("r->v-1" + virtualPosition + "c" +  centerVirtual);
 
             // translate
             virtualPosition.z = virtualPosition.z - centerVirtual.z;
             virtualPosition.x = virtualPosition.x - centerVirtual.x;
             // y (altitude)
-            virtualPosition.y = virtualPosition.y + Game.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
+            virtualPosition.y = virtualPosition.y + Game.Instance.GetWorld().GetTerrainHeight(virtualPosition.x, virtualPosition.z);
             //virtualPosition.y = virtualPosition.y;
 
             if (VERBOSE)
-                Game.GetClient().Log("r->v-2" + original_g + "(" + pos_g + ")" + "<" + virtualPosition);
+                Game.Instance.GetClient().Log("r->v-2" + original_g + "(" + pos_g + ")" + "<" + virtualPosition);
 
             return virtualPosition;
         }
@@ -52,7 +52,7 @@ namespace GameController
             Position pos_v = new Position();
 
             // get virtual center
-            GeoPosition center = Game.GetWorld().GetCenterGeoPostion();
+            GeoPosition center = Game.Instance.GetWorld().GetCenterGeoPostion();
             Position centerVirtual = FromGeoToVirtual(center);
 
             //Debug.Log(" -> center_v " + centerVirtual);
@@ -66,7 +66,7 @@ namespace GameController
             GeoPosition realPosition = FromVirtualToGeo(pos_v);
 
             if (VERBOSE)
-                Game.GetClient().Log("v->r" + original_v + ">" + pos_v + ">" + realPosition);
+                Game.Instance.GetClient().Log("v->r" + original_v + ">" + pos_v + ">" + realPosition);
 
             return realPosition;
         }
@@ -99,7 +99,7 @@ namespace GameController
             //Debug.Log(" -> pos_g " + geoPosition);
 
             // altitude (y)
-            geoPosition.altitude = geoPosition.altitude - Game.GetWorld().GetTerrainHeight(geoPosition.longitude, geoPosition.latitude);
+            geoPosition.altitude = geoPosition.altitude - Game.Instance.GetWorld().GetTerrainHeight(geoPosition.longitude, geoPosition.latitude);
 
             return geoPosition;
         }

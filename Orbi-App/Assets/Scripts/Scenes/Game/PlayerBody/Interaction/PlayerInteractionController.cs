@@ -15,7 +15,7 @@ namespace GameScene
 
         void Awake()
         {
-            isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
             centerOfScreen = new Vector2(Screen.width / 2f, Screen.height / 2f);
             selectionPoint = centerOfScreen; 
         }
@@ -24,7 +24,7 @@ namespace GameScene
         {
             if (isDesktopMode)
             {
-                if (Input.GetKeyDown(KeyCode.F) && !Game.GetGame().IsInTypingMode())
+                if (Input.GetKeyDown(KeyCode.F) && !Game.Instance.IsInTypingMode())
                     checkTouchObjectSingleTouch();
             }
             else

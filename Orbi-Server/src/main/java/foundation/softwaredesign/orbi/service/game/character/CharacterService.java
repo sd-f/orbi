@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -112,6 +113,9 @@ public class CharacterService {
     }
 
     public void calculateLevel(Character currentCharacter) {
+        if (isNull(currentCharacter.getXp()) || (nonNull(currentCharacter.getXp()) && currentCharacter.getXp().equals(new Long(0)))) {
+            currentCharacter.setLevel(new Long(0));
+        }
         int level = (int)(Math.log(currentCharacter.getXp()) / Math.log(16));
         currentCharacter.setLevel(new Long(level + 1));
     }

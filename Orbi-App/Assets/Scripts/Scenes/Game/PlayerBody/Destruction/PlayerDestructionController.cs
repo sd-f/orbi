@@ -19,7 +19,7 @@ namespace GameScene
 
         void Awake ()
         {
-            isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
         }
 
         void Update()
@@ -59,10 +59,10 @@ namespace GameScene
                     earnedText.transform.position = body.transform.position + (Vector3.up * 2f);
                     earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
                     
-                    Game.GetWorld().GetGameObjectService().RemoveObject(realContainer);
+                    Game.Instance.GetWorld().GetGameObjectService().RemoveObject(realContainer);
                     GameObject.Destroy(effect, 3f);
                     GameObject.Destroy(realContainer);
-                    StartCoroutine(Game.GetPlayer().GetDestructionController().Destroy(id));
+                    StartCoroutine(Game.Instance.GetPlayer().GetDestructionController().Destroy(id));
                 }
                     
             }

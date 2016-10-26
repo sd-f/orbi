@@ -27,8 +27,8 @@ namespace GameController
         public int terrainHeight;   // 100
 
         public TerrainData td;
-        private Terrain t;
-        private LayerMask terrainMask;
+        public Terrain terrain;
+        public LayerMask terrainMask;
 
         private float[,] hm;
         private float[,,] alphaMaps;
@@ -39,16 +39,12 @@ namespace GameController
         private static int NUM_L = 3;
 
 
-
-        public TerrainService(Terrain terrain)
+        void Start()
         {
-            this.t = terrain;
-            this.td = t.terrainData;
-            terrainMask = 1 << LayerMask.NameToLayer("Terrain");
             this.hmSize = td.heightmapHeight;
             this.amSizeY = td.alphamapHeight;
             this.amSizeX = td.alphamapWidth;
-            //Game.GetClient().Log("AlphaMap Resolution " + this.amSize);
+            //Game.Instance.GetClient().Log("AlphaMap Resolution " + this.amSize);
             this.terrainSize = (int)td.size.x;
             this.terrainHeight = (int)td.size.y;
             this.hm = new float[hmSize, hmSize];
@@ -110,7 +106,7 @@ namespace GameController
         public void SetAlphaMaps(float[,,] maps)
         {
             
-            t.terrainData.SetAlphamaps(0, 0, maps);
+            terrain.terrainData.SetAlphamaps(0, 0, maps);
         }
 
         private void ResetAlpha()
@@ -146,7 +142,7 @@ namespace GameController
 
         public Terrain GetTerrain()
         {
-            return this.t;
+            return this.terrain;
         }
 
         private void SetHeights()
@@ -174,7 +170,7 @@ namespace GameController
         {
             //Normalize(alphaMaps);
             SetAlphaMaps(alphaMaps);
-            t.Flush();
+            terrain.Flush();
         }
 
         private void Normalize(float[,,] maps)
@@ -212,8 +208,8 @@ namespace GameController
         {
             // Example #1
             // Loop over all the roads in Map-ity
-            UnityEngine.GameObject streetLabelPrefab = Game.GetWorld().streetLabelPrefab;
-            UnityEngine.GameObject mapContainer = Game.GetWorld().mapContainer;
+            UnityEngine.GameObject streetLabelPrefab = Game.Instance.GetWorld().streetLabelPrefab;
+            UnityEngine.GameObject mapContainer = Game.Instance.GetWorld().mapContainer;
             GameObjectUtility.DestroyAllChildObjects(mapContainer);
             Mapity.MapWay mapWay = null;
             //GetTerrainService().Paint(maps, 256, 256, TerrainService.L_GRAS);

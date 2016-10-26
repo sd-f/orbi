@@ -11,43 +11,43 @@ namespace StartScene
 
         void Start()
         {
-            Game.GetClient().Log("Debug: Orbi started.", this);
+            Game.Instance.GetClient().Log("Debug: Orbi started.", this);
             print("Orbi started.");
 
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
             // load settings
-            Game.GetGame().GetSettings().Init();
+            Game.Instance.GetSettings().Init();
 
             // udpating game settings
-            Game.GetGame().GetSettings().SetClientVersion(Client.VERSION);
+            Game.Instance.GetSettings().SetClientVersion(Client.VERSION);
 
-            StartCoroutine(Game.GetWorld().GetGameObjectService().RequestStatistics());
+            StartCoroutine(Game.Instance.GetWorld().GetGameObjectService().RequestStatistics());
             StartCoroutine(Boot());
         }
 
         IEnumerator Boot()
         {
             // check client version
-            yield return Game.GetGame().GetServerService().RequestInfo();
+            yield return Game.Instance.GetServerService().RequestInfo();
 
             // boot gps location
-            yield return Game.GetLocation().Boot();
+            yield return Game.Instance.GetLocation().Boot();
 
             // init player
-            yield return Game.GetPlayer().GetPlayerService().RequestPlayer();
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
 
             // reset terrain
-            yield return Game.GetWorld().GetTerrainService().ResetTerrain();
+            yield return Game.Instance.GetWorld().GetTerrainService().ResetTerrain();
 
             // check logged in
-            yield return Game.GetGame().GetAuthService().LoadGameIfAuthorized();
+            yield return Game.Instance.GetAuthService().LoadGameIfAuthorized();
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                Game.GetGame().Quit();
+                Game.Instance.Quit();
         }
     }
 }

@@ -19,16 +19,16 @@ namespace GameController.Services
 
         private void OnAuthUser(string data)
         {
-            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+            Game.Instance.LoadScene(Game.GameScene.LoadingScene);
             //Info.Show("Logged in successful");
-            Game.GetPlayer().SetLoggedIn(true);
+            Game.Instance.GetPlayer().SetLoggedIn(true);
         }
 
         public IEnumerator RequestCode(String email)
         {
             RequestCodeInfo info = new RequestCodeInfo();
             info.email = email;
-            info.player = Game.GetPlayer().GetModel();
+            info.player = Game.Instance.GetPlayer().GetModel();
             yield return Request("auth/requestcode", JsonUtility.ToJson(info), OnCodeRequests);
         }
 
@@ -42,7 +42,7 @@ namespace GameController.Services
             LoginInfo info = new LoginInfo();
             info.email = email;
             info.password = password;
-            info.player = Game.GetPlayer().GetModel();
+            info.player = Game.Instance.GetPlayer().GetModel();
             yield return Request("auth/login", JsonUtility.ToJson(info), OnLoginSucceded);
 
         }
@@ -53,16 +53,16 @@ namespace GameController.Services
             AuthorizationInfo authInfo = JsonUtility.FromJson<AuthorizationInfo>(data);
             if (!String.IsNullOrEmpty(authInfo.token))
             {
-                Game.GetGame().GetSettings().SetToken(authInfo.token);
-                Game.GetPlayer().SetLoggedIn(true);
+                Game.Instance.GetSettings().SetToken(authInfo.token);
+                Game.Instance.GetPlayer().SetLoggedIn(true);
             }
             StartCoroutine(BootLocationAndLoad());            
         }
 
         private IEnumerator BootLocationAndLoad()
         {
-            yield return Game.GetLocation().Boot();
-            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+            yield return Game.Instance.GetLocation().Boot();
+            Game.Instance.LoadScene(Game.GameScene.LoadingScene);
         }
 
 

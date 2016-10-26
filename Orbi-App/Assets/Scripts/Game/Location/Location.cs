@@ -20,7 +20,7 @@ namespace GameController
 
         void Start()
         {
-            if (Game.GetClient().randomLocation)
+            if (Game.Instance.GetClient().randomLocation)
                 InvokeRepeating("RandomLocation", 10f, 10f);
         }
 
@@ -32,7 +32,7 @@ namespace GameController
         public void StartUpdatingLocation()
         {
             UpdateLocation();
-            Game.GetWorld().SetCenterGeoPosition(position);
+            Game.Instance.GetWorld().SetCenterGeoPosition(position);
             ready = true;
             Invoke("UpdateLocation", 0.5f);
         }
@@ -62,8 +62,8 @@ namespace GameController
            
             position.latitude += Random.Range(-0.001f, 0.001f);
             position.longitude += Random.Range(-0.001f, 0.001f);
-            Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(0f, Random.Range(0f, 360f), 0f);
-            Game.GetClient().Log("Random Location: " + position, this);
+            Game.Instance.GetPlayer().GetModel().character.transform.rotation = new Rotation(0f, Random.Range(0f, 360f), 0f);
+            Game.Instance.GetClient().Log("Random Location: " + position, this);
         }
 
         public void Pause()
@@ -85,11 +85,11 @@ namespace GameController
         public IEnumerator Boot()
         {
             position = Game.FALLBACK_START_POSITION;
-            if (Game.GetClient().serverType == ServerType.LOCAL || Game.GetClient().serverType == ServerType.DEV)
+            if (Game.Instance.GetClient().serverType == ServerType.LOCAL || Game.Instance.GetClient().serverType == ServerType.DEV)
             {
-                //Debug.Log(Game.FALLBACK_START_POSITION);
-                Game.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);
-                Game.GetPlayer().GetModel().character.transform.geoPosition = Game.FALLBACK_START_POSITION;
+                //Debug.Log(Game.Instance.FALLBACK_START_POSITION);
+                Game.Instance.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);
+                Game.Instance.GetPlayer().GetModel().character.transform.geoPosition = Game.FALLBACK_START_POSITION;
                 this.ready = true;
                 Resume();
                 Warning.Show("Location running in LOCAL-mode");

@@ -23,7 +23,7 @@ namespace GameScene
 
         void Awake()
         {
-            isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
         }
 
         public void OnCraft()
@@ -46,13 +46,13 @@ namespace GameScene
         {
             if (isDesktopMode)
             {
-                if (Input.GetKeyDown(KeyCode.C) && !Game.GetGame().IsInTypingMode())
-                    if (!Game.GetPlayer().GetCraftingController().IsCrafting())
+                if (Input.GetKeyDown(KeyCode.C) && !Game.Instance.IsInTypingMode())
+                    if (!Game.Instance.GetPlayer().GetCraftingController().IsCrafting())
                         OnCraft();
                     else
                         OnCraftCancel();
-                if ((Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Fire1")) && !Game.GetGame().IsInTypingMode())
-                    if (Game.GetPlayer().GetCraftingController().IsCrafting())
+                if ((Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Fire1")) && !Game.Instance.IsInTypingMode())
+                    if (Game.Instance.GetPlayer().GetCraftingController().IsCrafting())
                         OnCraftOk();
             }
             

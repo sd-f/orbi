@@ -92,7 +92,7 @@ public static class SensorHelper
 				    rotationHelper = new GetRotationHelper(RotationQuaternion);
 				    current = RotationFallbackType.RotationQuaternion;
 					
-					//Game.GetClient().Log("RotationVector is available.");
+					//Game.Instance.GetClient().Log("RotationVector is available.");
 				    return true;
 			    }
 		        break;

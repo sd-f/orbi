@@ -35,7 +35,7 @@ namespace GameController.Services
             if (messagesObject.messages != null)
             {
                 List<ServerModel.CharacterMessage> messages = messagesObject.messages;
-                Game.GetPlayer().GetMessages().AddRange(messages);
+                Game.Instance.GetPlayer().GetMessages().AddRange(messages);
                 if ((messages.Count > 0) && (canvas != null))
                     ((MessagesCanvas)canvas).Unread();
             }

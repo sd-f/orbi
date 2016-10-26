@@ -18,7 +18,7 @@ namespace GameController.Services
         private void OnServerInf(string data)
         {
             ServerInfo info = JsonUtility.FromJson<ServerInfo>(data);
-            Game.GetClient().SetServerInfo(info);
+            Game.Instance.GetClient().SetServerInfo(info);
         }
 
     }

@@ -24,51 +24,51 @@ namespace SettingsScene
         void Start()
         {
             textVersion.text = "version " + Client.VERSION.ToString();
-            textNumberOfObjects.text = "objects " + Game.GetWorld().GetStatistics().numberOfObjects.ToString();
-            ServerModel.ServerInfo serverInfo = Game.GetClient().GetServerInfo();
+            textNumberOfObjects.text = "objects " + Game.Instance.GetWorld().GetStatistics().numberOfObjects.ToString();
+            ServerModel.ServerInfo serverInfo = Game.Instance.GetClient().GetServerInfo();
             textMotd.text = "";
             if (serverInfo != null && serverInfo.messages != null)
                 foreach(ServerModel.MessageOfTheDay motd in serverInfo.messages)
                 {
                     textMotd.text = textMotd.text + "\n" + motd.message;
                 }
-            toggleHeightsEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsHeightsEnabled();
-            toggleSetalliteOverlayEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsSatelliteOverlayEnabled();
-            toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsHandheldInputEnabled();
-            toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            toggleHeightsEnabled.GetComponent<Toggle>().isOn = Game.Instance.GetSettings().IsHeightsEnabled();
+            toggleSetalliteOverlayEnabled.GetComponent<Toggle>().isOn = Game.Instance.GetSettings().IsSatelliteOverlayEnabled();
+            toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = Game.Instance.GetSettings().IsHandheldInputEnabled();
+            toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = Game.Instance.GetSettings().IsDesktopInputEnabled();
         }
 
 
         public void OnHeightsEnabled(bool enabled)
         {
-            Game.GetWorld().ForceRefreshOnNextLoading();
-            if (Game.GetGame().GetSettings().IsHeightsEnabled() != enabled)
+            Game.Instance.GetWorld().ForceRefreshOnNextLoading();
+            if (Game.Instance.GetSettings().IsHeightsEnabled() != enabled)
             {
-                Game.GetGame().GetSettings().SetHeightsEnabled(enabled);
+                Game.Instance.GetSettings().SetHeightsEnabled(enabled);
             }
                 
         }
 
         public void OnSatelliteOverlayEnabled(bool enabled)
         {
-            Game.GetWorld().ForceRefreshOnNextLoading();
-            if (Game.GetGame().GetSettings().IsSatelliteOverlayEnabled() != enabled)
+            Game.Instance.GetWorld().ForceRefreshOnNextLoading();
+            if (Game.Instance.GetSettings().IsSatelliteOverlayEnabled() != enabled)
             {
-                Game.GetGame().GetSettings().SetSatelliteOverlayEnabled(enabled);
+                Game.Instance.GetSettings().SetSatelliteOverlayEnabled(enabled);
             }
         }
 
         public void OnHandheldInputEnabled(bool enabled)
         {
-            if (enabled && !Game.GetLocation().IsReady())
+            if (enabled && !Game.Instance.GetLocation().IsReady())
             {
-                StartCoroutine(Game.GetLocation().Boot());
+                StartCoroutine(Game.Instance.GetLocation().Boot());
             }
             toggleDesktopInputEnabled.GetComponent<Toggle>().isOn = !enabled;
-            if (Game.GetGame().GetSettings().IsHandheldInputEnabled() != enabled)
+            if (Game.Instance.GetSettings().IsHandheldInputEnabled() != enabled)
             {
-                Game.GetGame().GetSettings().SetHandheldInputEnabled(enabled);
-                //Game.GetGame().GetSettings().SetDesktopInputEnabled(!enabled);
+                Game.Instance.GetSettings().SetHandheldInputEnabled(enabled);
+                //Game.Instance.GetSettings().SetDesktopInputEnabled(!enabled);
             }
                 
         }
@@ -76,10 +76,10 @@ namespace SettingsScene
         public void OnDesktopInputEnabled(bool enabled)
         {
             toggleHandheldInputEnabled.GetComponent<Toggle>().isOn = !enabled;
-            if (Game.GetGame().GetSettings().IsDesktopInputEnabled() != enabled)
+            if (Game.Instance.GetSettings().IsDesktopInputEnabled() != enabled)
             {
-                Game.GetGame().GetSettings().SetDesktopInputEnabled(enabled);
-                //Game.GetGame().GetSettings().SetHandheldInputEnabled(!enabled);
+                Game.Instance.GetSettings().SetDesktopInputEnabled(enabled);
+                //Game.Instance.GetSettings().SetHandheldInputEnabled(!enabled);
             }
                
         }
@@ -87,12 +87,12 @@ namespace SettingsScene
 
         public void OnBack()
         {
-            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+            Game.Instance.LoadScene(Game.GameScene.LoadingScene);
         }
 
         public void OnExit()
         {
-            Game.GetGame().Quit();
+            Game.Instance.Quit();
         }
 
 

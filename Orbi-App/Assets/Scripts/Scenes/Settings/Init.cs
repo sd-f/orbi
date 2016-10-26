@@ -9,7 +9,7 @@ namespace SettingsScene
     {
         void Start()
         {
-            Game.GetWorld().SkipRefreshOnNextLoading();
+            Game.Instance.GetWorld().SkipRefreshOnNextLoading();
         }
 
         void Awake()
@@ -24,7 +24,7 @@ namespace SettingsScene
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+                Game.Instance.LoadScene(Game.GameScene.LoadingScene);
         }
 
     }

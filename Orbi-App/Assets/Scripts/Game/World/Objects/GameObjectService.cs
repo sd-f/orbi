@@ -9,20 +9,15 @@ using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace GameController
 {
-    class GameObjectService: AbstractHttpService
+    public class GameObjectService: AbstractHttpService
     {
 
-        GameObject gameObjectsContainer;
-        GameObject charactersContainer;
+        public GameObject gameObjectsContainer;
+        public GameObject charactersContainer;
 
         private List<ServerModel.Character> oldCharacters = new List<ServerModel.Character>();
         private List<ServerModel.GameObject> oldObjects = new List<ServerModel.GameObject>();
 
-        public GameObjectService()
-        {
-            gameObjectsContainer = GameObject.Find("Objects");
-            charactersContainer = GameObject.Find("Characters");
-        }
 
         public IEnumerator RequestStatistics()
         {
@@ -32,7 +27,7 @@ namespace GameController
         private void OnStatisticsLoaded(string data)
         {
             ServerModel.Statistics stats = JsonUtility.FromJson<ServerModel.Statistics>(data);
-            Game.GetWorld().SetStatistics(stats);
+            Game.Instance.GetWorld().SetStatistics(stats);
             // TODO bad hack
             GameObject statsGameObject = GameObject.Find("StatisticsPanel");
             if (statsGameObject != null)
@@ -45,14 +40,14 @@ namespace GameController
 
         public IEnumerator RequestGameObjects()
         {
-            //Game.GetClient().Log("Update Objects on " + Game.GetPlayer().GetModel().character.transform.geoPosition);
-            yield return Request("world/around", JsonUtility.ToJson(Game.GetPlayer().GetModel()), OnObjectsLoaded);
+            //Game.Instance.GetClient().Log("Update Objects on " + Game.Instance.GetPlayer().GetModel().character.transform.geoPosition);
+            yield return Request("world/around", JsonUtility.ToJson(Game.Instance.GetPlayer().GetModel()), OnObjectsLoaded);
         }
 
         private void OnObjectsLoaded(string data)
         {
             ServerModel.World newWorld = JsonUtility.FromJson<ServerModel.World>(data);
-            RefreshWorld(Game.GetPlayer().GetModel(), newWorld);
+            RefreshWorld(Game.Instance.GetPlayer().GetModel(), newWorld);
         }
 
         void UpdateCharacter(ServerModel.Character oldCharacter, ServerModel.Character newCharacter)
@@ -78,7 +73,7 @@ namespace GameController
             GameObjectUtility.Transform(newObjectContainer, newCharacter.transform);
 
 
-            GameObject newObject = Game.GetWorld().GetUMACreator().GenerateUMA(newObjectContainer, "uma_" + newCharacter.id);
+            GameObject newObject = Game.Instance.GetWorld().GetUMACreator().GenerateUMA(newObjectContainer, "uma_" + newCharacter.id);
             newObject.GetComponent<CharacterProperties>().SetCharacter(newCharacter);
             GameObjectUtility.SetLayer(newObject, LayerMask.NameToLayer("Objects"));
 

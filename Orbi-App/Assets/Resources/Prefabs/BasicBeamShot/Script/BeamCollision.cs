@@ -51,10 +51,9 @@ public class BeamCollision : MonoBehaviour {
                 GameObject obj = (GameObject)Instantiate(HitEffect,this.transform.position+this.transform.forward*hit.distance,Angle);
 				obj.GetComponent<BeamParam>().SetBeamParam(BP);
 				obj.transform.localScale = this.transform.localScale;
-			}
+                controller.Destroy(hit.collider.gameObject);
 
-            controller.Destroy(hit.collider.gameObject);
-            
+            }
 		}
 
 

@@ -9,18 +9,18 @@ namespace GameScene
 
         public void OnSettings()
         {
-            Game.GetGame().LoadScene(Game.GameScene.SettingsScene);
+            Game.Instance.LoadScene(Game.GameScene.SettingsScene);
         }
 
         public void OnInventory()
         {
-            Game.GetGame().LoadScene(Game.GameScene.InventoryScene);
+            Game.Instance.LoadScene(Game.GameScene.InventoryScene);
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.I) && !Game.GetGame().IsInTypingMode())
-                Game.GetGame().LoadScene(Game.GameScene.InventoryScene);
+            if (Input.GetKeyDown(KeyCode.I) && !Game.Instance.IsInTypingMode())
+                Game.Instance.LoadScene(Game.GameScene.InventoryScene);
 
         }
 

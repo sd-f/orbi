@@ -25,7 +25,7 @@ namespace InventoryScene
         // Use this for initialization
         void Start()
         {
-            isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
             SetTarget(0, 0);
         }
 

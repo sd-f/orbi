@@ -33,7 +33,7 @@ namespace InventoryScene
 
         IEnumerator LoadInventory()
         {
-            yield return Game.GetPlayer().GetCraftingController().LoadInventory();
+            yield return Game.Instance.GetPlayer().GetCraftingController().LoadInventory();
 
             GameObjectUtility.DestroyAllChildObjects(objectsContainer);
 
@@ -47,8 +47,8 @@ namespace InventoryScene
             long overall_items_collected = 0;
             long items_collected = 0;
             int id = 0;
-            List<ServerModel.InventoryItem> items = Game.GetPlayer().GetCraftingController().GetInventory().items;
-            foreach (ServerModel.GameObjectTypeCategory category in Game.GetPlayer().GetCraftingController().GetInventory().categories)
+            List<ServerModel.InventoryItem> items = Game.Instance.GetPlayer().GetCraftingController().GetInventory().items;
+            foreach (ServerModel.GameObjectTypeCategory category in Game.Instance.GetPlayer().GetCraftingController().GetInventory().categories)
             {
                 if (category.craftable)
                 {
@@ -140,7 +140,7 @@ namespace InventoryScene
             }
 
             inventoryCamera.SetBounds(((maxItems) * OBJECT_PADDING_HORIZONTAL) / 1.25f, 
-                (Game.GetPlayer().GetCraftingController().GetInventory().categories.Count * OBJECT_PADDING_VERTICAL) / 1.75f);
+                (Game.Instance.GetPlayer().GetCraftingController().GetInventory().categories.Count * OBJECT_PADDING_VERTICAL) / 1.75f);
 
             //canvasScript.SetSelected(preselected);
             canvas.SetStatusText( "Collected: " + overall_items_collected + "/" + overall_items);
@@ -150,8 +150,8 @@ namespace InventoryScene
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                Game.GetWorld().SkipRefreshOnNextLoading();
-                Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+                Game.Instance.GetWorld().SkipRefreshOnNextLoading();
+                Game.Instance.LoadScene(Game.GameScene.LoadingScene);
             }
                
         }

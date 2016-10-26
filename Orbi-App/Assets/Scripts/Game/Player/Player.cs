@@ -13,8 +13,9 @@ namespace GameController
     [AddComponentMenu("App/Game/Player")]
     class Player : MonoBehaviour
     {
-        private PlayerService playerService = new PlayerService();
-        private MessageService messageService = new MessageService();
+#pragma warning disable 0649
+        public PlayerService playerService;
+        public MessageService messageService;
         private bool loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
         private bool frozen = true;
@@ -83,12 +84,12 @@ namespace GameController
 
         public void CheckGPSPosition()
         {
-            if ((GetPlayerBody() != null) && !Game.GetGame().GetSettings().IsDesktopInputEnabled() && !IsFrozen()) {
-                this.player.character.transform.geoPosition = Game.GetLocation().GetGeoLocation();
+            if ((GetPlayerBody() != null) && !Game.Instance.GetSettings().IsDesktopInputEnabled() && !IsFrozen()) {
+                this.player.character.transform.geoPosition = Game.Instance.GetLocation().GetGeoLocation();
                 this.player.character.transform.rotation = new Rotation(GetPlayerBodyController().transform.rotation);
                 Vector3 target = this.player.character.transform.geoPosition.ToPosition().ToVector3();
                 WorldAdapter.VERBOSE = true;
-                Game.GetClient().Log("CheckGPSPosition-pos " + target);
+                Game.Instance.GetClient().Log("CheckGPSPosition-pos " + target);
                 WorldAdapter.VERBOSE = false;
                 GetPlayerBodyController().SetTargetPosition(target);
             }
@@ -107,10 +108,10 @@ namespace GameController
                 {
                     Freeze();
                     SavePlayerTransform();
-                    Game.GetWorld().SetCenterGeoPosition(Game.GetPlayer().GetModel().character.transform.position.ToGeoPosition());
-                    Game.GetPlayer().GetModel().character.transform.position = new Position();
+                    Game.Instance.GetWorld().SetCenterGeoPosition(Game.Instance.GetPlayer().GetModel().character.transform.position.ToGeoPosition());
+                    Game.Instance.GetPlayer().GetModel().character.transform.position = new Position();
                     GetPlayerBodyController().ResetPosition();
-                    Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+                    Game.Instance.LoadScene(Game.GameScene.LoadingScene);
                 }
                 
             }

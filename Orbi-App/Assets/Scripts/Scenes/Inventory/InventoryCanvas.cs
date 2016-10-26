@@ -21,7 +21,7 @@ namespace InventoryScene
         public void ShowUserForm(int selectedIndex)
         {
             userTextForm.SetActive(true);
-            userTextInputField.text = Game.GetPlayer().GetCraftingController().GetUserText();
+            userTextInputField.text = Game.Instance.GetPlayer().GetCraftingController().GetUserText();
         }
 
         public void SetStatusText(string text)
@@ -32,10 +32,10 @@ namespace InventoryScene
         public void OnSaveUserText()
         {
             userTextForm.SetActive(false);
-            Game.GetPlayer().GetCraftingController().SetUserText(userTextInputField.text);
+            Game.Instance.GetPlayer().GetCraftingController().SetUserText(userTextInputField.text);
             foreach(KeyValuePair<int, InventoryItem> item in inventoryCamera.GetObjectsList())
                 if (item.Value.supportsUserText)
-                    GameObjectUtility.TrySettingTextInChildren(item.Value.gameObject, Game.GetPlayer().GetCraftingController().GetUserText());
+                    GameObjectUtility.TrySettingTextInChildren(item.Value.gameObject, Game.Instance.GetPlayer().GetCraftingController().GetUserText());
            // 
                 
         }

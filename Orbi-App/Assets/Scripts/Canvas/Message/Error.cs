@@ -7,7 +7,7 @@ namespace CanvasUtility
     {
         public static void Show(string message)
         {
-            Game.GetGame().GetUi().GetMessageQueue().Enqueue(new Message(message, Color.white, Color.red));
+            Game.Instance.GetUi().GetMessageQueue().Enqueue(new Message(message, Color.white, Color.red));
         }
     }
 }

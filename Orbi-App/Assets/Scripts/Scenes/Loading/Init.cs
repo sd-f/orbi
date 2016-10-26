@@ -20,18 +20,18 @@ namespace LoadingScene
         IEnumerator Load()
         {
             
-            yield return Game.GetWorld().UpdateWorld();
-            yield return Game.GetPlayer().GetCraftingController().LoadInventory();
-            Game.GetLocation().Resume();
-            Game.GetPlayer().Unfreeze();
-            Game.GetWorld().ForceRefreshOnNextLoading();
-            Game.GetGame().LoadScene(Game.GameScene.GameScene);
+            yield return Game.Instance.GetWorld().UpdateWorld();
+            yield return Game.Instance.GetPlayer().GetCraftingController().LoadInventory();
+            Game.Instance.GetLocation().Resume();
+            Game.Instance.GetPlayer().Unfreeze();
+            Game.Instance.GetWorld().ForceRefreshOnNextLoading();
+            Game.Instance.LoadScene(Game.GameScene.GameScene);
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                Game.GetGame().LoadScene(Game.GameScene.SettingsScene);
+                Game.Instance.LoadScene(Game.GameScene.SettingsScene);
         }
 
     }

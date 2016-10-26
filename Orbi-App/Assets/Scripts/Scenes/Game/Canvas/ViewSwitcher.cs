@@ -19,7 +19,7 @@ namespace GameScene
         {
             webcamTexture = new WebCamTexture();
             image.material.mainTexture = webcamTexture;
-            if (Game.GetWorld().backGroundLayerMask == Game.GetWorld().backgroundLayersCamera)
+            if (Game.Instance.GetWorld().backGroundLayerMask == Game.Instance.GetWorld().backgroundLayersCamera)
             {
                 OnSwitchView();
             }
@@ -28,21 +28,21 @@ namespace GameScene
         // camera, terrain switch
         public void OnSwitchView()
         {
-            if (playerCamera.cullingMask == Game.GetWorld().backgroundLayersTerrain)
+            if (playerCamera.cullingMask == Game.Instance.GetWorld().backgroundLayersTerrain)
             {
                 buttonImage.GetComponent<Image>().sprite = mapsSprite;
                 webcamTexture.Play();
-                playerCamera.cullingMask = Game.GetWorld().backgroundLayersCamera;
+                playerCamera.cullingMask = Game.Instance.GetWorld().backgroundLayersCamera;
                 playerCamera.clearFlags = CameraClearFlags.Depth;
-                Game.GetWorld().backGroundLayerMask = Game.GetWorld().backgroundLayersCamera;
+                Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersCamera;
             }
             else
             {
                 buttonImage.GetComponent<Image>().sprite = cameraSprite;
                 webcamTexture.Stop();
-                playerCamera.cullingMask = Game.GetWorld().backgroundLayersTerrain;
+                playerCamera.cullingMask = Game.Instance.GetWorld().backgroundLayersTerrain;
                 playerCamera.clearFlags = CameraClearFlags.Skybox;
-                Game.GetWorld().backGroundLayerMask = Game.GetWorld().backgroundLayersTerrain;
+                Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersTerrain;
             }
         }
 

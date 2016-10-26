@@ -29,7 +29,7 @@ namespace GameScene
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.M) && (!Game.GetGame().IsInTypingMode() || isChatWindowActive))
+            if (Input.GetKeyDown(KeyCode.M) && (!Game.Instance.IsInTypingMode() || isChatWindowActive))
                 ToggleMessagesScrollView();
 
         }
@@ -40,11 +40,11 @@ namespace GameScene
             if (!isChatWindowActive)
             {
                 Read();
-                Game.GetGame().EnterTypingMode();
-                Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
+                Game.Instance.EnterTypingMode();
+                Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
                 
                 GameObjectUtility.DestroyAllChildObjects(messagesContainer);
-                foreach(ServerModel.CharacterMessage message in Game.GetPlayer().GetMessages())
+                foreach(ServerModel.CharacterMessage message in Game.Instance.GetPlayer().GetMessages())
                 {
                     GameObject chatLine = GameObject.Instantiate(messagePrefab) as GameObject;
                     chatLine.transform.SetParent(messagesContainer.transform, false);
@@ -52,8 +52,8 @@ namespace GameScene
                 }
             } else
             {
-                Game.GetGame().LeaveTypingMode();
-                Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
+                Game.Instance.LeaveTypingMode();
+                Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
             }
             isChatWindowActive = !isChatWindowActive;
         }
@@ -61,7 +61,7 @@ namespace GameScene
         public void OnCancelInteraction()
         {
             if (!isInteractionWindowActive)
-                Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
+                Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
             CleanupAndHideForm();
         }
 
@@ -72,9 +72,9 @@ namespace GameScene
 
         IEnumerator SendMessage()
         {
-            Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
+            Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
             
-            yield return Game.GetPlayer().GetMessageService().RequestMessage(messageInputField.text, selectedCharacterId);
+            yield return Game.Instance.GetPlayer().GetMessageService().RequestMessage(messageInputField.text, selectedCharacterId);
             CleanupAndHideForm();
         }
 
@@ -85,15 +85,15 @@ namespace GameScene
 
         IEnumerator LoadMessages()
         {
-            yield return Game.GetPlayer().GetMessageService().RequestMessages(this);
+            yield return Game.Instance.GetPlayer().GetMessageService().RequestMessages(this);
             if (!IsInvoking("CheckForMessages"))
                 Invoke("CheckForMessages", 5f);
         }
 
         public void ShowInteractionForm(string characterName, long characterId)
         {
-            Game.GetGame().EnterTypingMode();
-            Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
+            Game.Instance.EnterTypingMode();
+            Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
             this.selectedCharacterId = characterId;
             this.characterNameText.text = characterName;
             this.interactionPanel.SetActive(true);
@@ -101,9 +101,9 @@ namespace GameScene
 
         void CleanupAndHideForm()
         {
-            Game.GetGame().LeaveTypingMode();
+            Game.Instance.LeaveTypingMode();
             if (!isChatWindowActive)
-                Game.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
+                Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(true);
             this.selectedCharacterId = -1;
             this.messageInputField.text = null;
             this.characterNameText.text = "...";

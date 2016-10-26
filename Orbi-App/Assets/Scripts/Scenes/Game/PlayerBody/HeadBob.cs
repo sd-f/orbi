@@ -22,7 +22,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Awake()
         {
-            this.isEnabled = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            this.isEnabled = Game.Instance.GetSettings().IsDesktopInputEnabled();
         }
 
         private void Start()

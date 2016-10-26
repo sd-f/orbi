@@ -24,9 +24,9 @@ namespace CanvasUtility
             List<GameObject> currentMessages = new List<GameObject>(GameObject.FindGameObjectsWithTag("Message"));
             if (currentMessages.Count == 0)
             {
-                if (Game.GetGame().GetUi().GetMessageQueue().Count > 0)
+                if (Game.Instance.GetUi().GetMessageQueue().Count > 0)
                 {
-                    Message message = Game.GetGame().GetUi().GetMessageQueue().Dequeue();
+                    Message message = Game.Instance.GetUi().GetMessageQueue().Dequeue();
                     GenerateMessageObject(message);
                 }
             }

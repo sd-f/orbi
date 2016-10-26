@@ -1,9 +1,6 @@
 ﻿using GameController.Services;
-using GameScene;
-using ServerModel;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace GameController
 {
@@ -11,23 +8,29 @@ namespace GameController
     [AddComponentMenu("App/Game/Game")]
     class Game : MonoBehaviour
     {
-        public static GeoPosition FALLBACK_START_POSITION; // Schlossberg, Graz, Austria
+        public static ServerModel.GeoPosition FALLBACK_START_POSITION; // Schlossberg, Graz, Austria
+        public static Game Instance { get; private set; }
 
         // holding all scene persistent objects
-        private static Game GAME;
-        private static Client CLIENT;
-        private static Player PLAYER;
-        private static World WORLD;
-        private static Location LOCATION;
+#pragma warning disable 0649
+        public Client client;
+        public Player player;
+        
+        public Location location;
+        //public World world;
+
+        public WorldController world;
+
+        public AuthService authService;
+        public ServerService serverService;
+
         private Ui ui = new Ui();
-        private AuthService authService;
-        private ServerService serverService;
         private GameScene currentScene = GameScene.StartScene;
 
         private bool typingMode = false;
 
         // settings
-        private Settings settings = new Settings();
+        public Settings settings;
 
         public enum GameScene {
             SettingsScene,
@@ -41,14 +44,20 @@ namespace GameController
         void Start()
         {
             DontDestroyOnLoad(gameObject);
-            serverService = new ServerService();
-            authService = new AuthService();
-            if (Game.GetClient().serverType == ServerType.LOCAL || Game.GetClient().serverType == ServerType.DEV)
-                FALLBACK_START_POSITION = new GeoPosition(47.0678d, 15.5552d, 0.0d);
+            if (Game.Instance.GetClient().serverType == ServerType.LOCAL || Game.Instance.GetClient().serverType == ServerType.DEV)
+                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.0678d, 15.5552d, 0.0d);
             else
-                FALLBACK_START_POSITION = new GeoPosition(47.073158d, 15.438000d, 0.0d); // schlossberg
+                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.073158d, 15.438000d, 0.0d); // schlossberg
             // FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); // marakesh
             //FALLBACK_START_POSITION = new GeoPosition(47.0678d, 15.5552d, 0.0d); // lahö
+        }
+
+        void Awake()
+        {
+            if (Instance == null)
+            {
+                Instance = this as Game;
+            }
         }
 
         public void LoadScene(GameScene scene)
@@ -56,7 +65,7 @@ namespace GameController
             if (currentScene == GameScene.GameScene)
             {
                 //UnityEngine.GameObject.Find("ButtonSwitchView").GetComponent<ViewSwitcher>().StopWebCam();
-                Game.GetPlayer().SavePlayerTransform();
+                Game.Instance.GetPlayer().SavePlayerTransform();
             }
             currentScene = scene;
             SceneManager.LoadScene(scene.ToString());
@@ -77,67 +86,29 @@ namespace GameController
             return this.settings;
         }
 
-        public static Game GetGame()
+        public Game GetGame()
         {
-            return LoadAndGetGame().GetComponent<Game>();
+            return Instance;
         }
 
-        public static Client GetClient()
+        public Client GetClient()
         {
-            return LoadAndGetClient();
+            return client;
         }
 
-        public static Player GetPlayer()
+        public Player GetPlayer()
         {
-            return LoadAndGetPlayer();
+            return player;
         }
 
-        public static World GetWorld()
+        public WorldController GetWorld()
         {
-            return LoadAndGetWorld();
+            return world;
         }
 
-        public static Location GetLocation()
+        public Location GetLocation()
         {
-            return LoadAndGetLocation();
-        }
-
-        private static Game LoadAndGetGame()
-        {
-            if (GAME == null)
-            {
-                GAME = UnityEngine.GameObject.Find("Game").GetComponent<Game>();
-            }
-                
-            return GAME;
-        }
-
-        private static Client LoadAndGetClient()
-        {
-            if (CLIENT == null)
-                CLIENT = LoadAndGetGame().transform.Find("Client").GetComponent<Client>();
-            return CLIENT;
-        }
-
-        private static Location LoadAndGetLocation()
-        {
-            if (LOCATION == null)
-                LOCATION = LoadAndGetGame().transform.Find("Location").GetComponent<Location>();
-            return LOCATION;
-        }
-
-        private static Player LoadAndGetPlayer()
-        {
-            if (PLAYER == null)
-                PLAYER = LoadAndGetGame().transform.Find("Player").GetComponent<Player>();
-            return PLAYER;
-        }
-
-        private static World LoadAndGetWorld()
-        {
-            if (WORLD == null)
-                WORLD = LoadAndGetGame().transform.Find("World").GetComponent<World>();
-            return WORLD;
+            return location;
         }
 
         public void EnterTypingMode()

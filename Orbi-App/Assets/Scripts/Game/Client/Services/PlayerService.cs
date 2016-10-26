@@ -15,7 +15,7 @@ namespace GameController.Services
         private void OnInventoryRecieved(string data)
         {
             ServerModel.Inventory inventory = JsonUtility.FromJson<ServerModel.Inventory>(data);
-            Game.GetPlayer().GetCraftingController().SetInventory(inventory);
+            Game.Instance.GetPlayer().GetCraftingController().SetInventory(inventory);
             IndicateRequestFinished();
         }
 
@@ -26,7 +26,7 @@ namespace GameController.Services
 
         private void OnCrafted(string data, object prefab)
         {
-            Game.GetPlayer().GetCraftingController().RemoveInventoryItem((string)prefab);
+            Game.Instance.GetPlayer().GetCraftingController().RemoveInventoryItem((string)prefab);
         }
 
         public IEnumerator RequestPlayer()
@@ -37,12 +37,12 @@ namespace GameController.Services
         private void OnPlayerRecieved(string data)
         {
             ServerModel.Player player = JsonUtility.FromJson<ServerModel.Player>(data);
-            Game.GetPlayer().SetModel(player);
+            Game.Instance.GetPlayer().SetModel(player);
         }
 
         public IEnumerator RequestUpdateTransform()
         {
-            ClientModel.Transform newTransform = Game.GetPlayer().GetModel().character.transform;
+            ClientModel.Transform newTransform = Game.Instance.GetPlayer().GetModel().character.transform;
             yield return Request("player/update", JsonUtility.ToJson(newTransform), OnPlayerTransformUpdated);
         }
 
@@ -59,9 +59,9 @@ namespace GameController.Services
         private void OnStatsUpdatesRecieved(string data)
         {
             ServerModel.Player player = JsonUtility.FromJson<ServerModel.Player>(data);
-            Game.GetPlayer().GetModel().character.level = player.character.level;
-            Game.GetPlayer().GetModel().character.xp = player.character.xp;
-            Game.GetPlayer().GetModel().character.xr = player.character.xr;
+            Game.Instance.GetPlayer().GetModel().character.level = player.character.level;
+            Game.Instance.GetPlayer().GetModel().character.xp = player.character.xp;
+            Game.Instance.GetPlayer().GetModel().character.xr = player.character.xr;
         }
 
         public IEnumerator RequestDestroy(ServerModel.Player player)

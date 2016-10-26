@@ -9,19 +9,19 @@ namespace AuthorizationScene
 
         void Awake()
         {
-            //Game.GetLocation().Pause();
-            Game.GetPlayer().Freeze();
+            //Game.Instance.GetLocation().Pause();
+            Game.Instance.GetPlayer().Freeze();
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
-            Game.GetGame().EnterTypingMode();
+            Game.Instance.EnterTypingMode();
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
-                Game.GetGame().Quit();
+                Game.Instance.Quit();
         }
 
         void OnDestroy()

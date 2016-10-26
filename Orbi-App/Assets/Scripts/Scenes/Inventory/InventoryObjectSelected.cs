@@ -12,9 +12,9 @@ namespace InventoryScene
     {
         void OnTouched(InventoryCamera inventoryCamera) { 
             long id = GameObjectUtility.GetId(this.gameObject);
-            Game.GetPlayer().GetCraftingController().SetSelectedPrefab(inventoryCamera.GetObjectsList()[(int)id].prefab);
-            Game.GetWorld().SkipRefreshOnNextLoading();
-            Game.GetGame().LoadScene(Game.GameScene.LoadingScene);
+            Game.Instance.GetPlayer().GetCraftingController().SetSelectedPrefab(inventoryCamera.GetObjectsList()[(int)id].prefab);
+            Game.Instance.GetWorld().SkipRefreshOnNextLoading();
+            Game.Instance.LoadScene(Game.GameScene.LoadingScene);
         }
 
     }

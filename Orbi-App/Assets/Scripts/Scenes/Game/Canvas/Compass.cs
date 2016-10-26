@@ -42,7 +42,7 @@ namespace GameScene
         {
             heading = Mathf.LerpAngle(heading, Input.compass.trueHeading, Time.deltaTime * 5f);
             compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, heading), Time.deltaTime * 2);
-            Game.GetLocation().SetCompassValue(compassImage.transform.rotation.eulerAngles.z);
+            Game.Instance.GetLocation().SetCompassValue(compassImage.transform.rotation.eulerAngles.z);
         }
 
         void CheckIfNorth() {

@@ -8,10 +8,10 @@ namespace GameController
         public IEnumerator Destroy(long id)
         {
             // effect
-            ServerModel.Player player = Game.GetPlayer().GetModel();
+            ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
             player.selectedObjectId = id;
-            yield return Game.GetPlayer().GetPlayerService().RequestDestroy(player);
-            yield return Game.GetWorld().UpdateObjects();
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestDestroy(player);
+            yield return Game.Instance.GetWorld().UpdateObjects();
         }
     }
 }

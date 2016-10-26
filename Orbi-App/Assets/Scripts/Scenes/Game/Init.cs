@@ -11,14 +11,14 @@ namespace GameScene
         {
             // screen always awake
             Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
-            Game.GetGame().LeaveTypingMode();
+            Game.Instance.LeaveTypingMode();
         }
 
         void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                Game.GetGame().LoadScene(Game.GameScene.SettingsScene);
+                Game.Instance.LoadScene(Game.GameScene.SettingsScene);
             }
         }
 

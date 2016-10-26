@@ -23,12 +23,12 @@ namespace GameScene
 
         void Start()
         {
-            Game.GetPlayer().GetCraftingController().SetCrafting(false, null);
+            Game.Instance.GetPlayer().GetCraftingController().SetCrafting(false, null);
         }
 
         void Awake ()
         {
-            isDesktopMode = Game.GetGame().GetSettings().IsDesktopInputEnabled();
+            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
         }
 
         void Update()
@@ -86,25 +86,25 @@ namespace GameScene
 
         public Vector3 CheckFloor(Vector3 newPosition)
         {
-            float height = Game.GetWorld().GetMinHeightForObject(newObject);
+            float height = Game.Instance.GetWorld().GetMinHeightForObject(newObject);
             return new Vector3(newPosition.x, height, newPosition.z);
         }
 
         public void StartCrafting()
         {
-            Game.GetPlayer().Freeze();
+            Game.Instance.GetPlayer().Freeze();
             CreateObjectToCraft();
             transform.localPosition = new Vector3(0,0,distance);
             newObject.transform.position = CheckFloor(transform.position);
-            Game.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
+            Game.Instance.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
             this.crafting = true;
         }
 
         public void StopCrafting()
         {
-            Game.GetPlayer().Unfreeze();
+            Game.Instance.GetPlayer().Unfreeze();
             this.crafting = false;
-            Game.GetPlayer().GetCraftingController().SetCrafting(false, null);
+            Game.Instance.GetPlayer().GetCraftingController().SetCrafting(false, null);
             CleanUp();
         }
 
@@ -123,27 +123,27 @@ namespace GameScene
             effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetSize(newObject);
             earnedText.transform.position = newObject.transform.position + (Vector3.up * 2f);
             GameObject.Destroy(effect, 3f);
-            yield return Game.GetPlayer().GetCraftingController().Craft(newObject);
+            yield return Game.Instance.GetPlayer().GetCraftingController().Craft(newObject);
             
             CleanUp();
-            Game.GetPlayer().Unfreeze();
+            Game.Instance.GetPlayer().Unfreeze();
         }
 
 
         private void CreateObjectToCraft()
         {
             checkInventory();
-            newObject = GameObjectFactory.CreateObject(transform, Game.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, null, LayerMask.NameToLayer("Default"));
-            if (!String.IsNullOrEmpty(Game.GetPlayer().GetCraftingController().GetUserText()))
-                GameObjectUtility.TrySettingTextInChildren(newObject, Game.GetPlayer().GetCraftingController().GetUserText());
+            newObject = GameObjectFactory.CreateObject(transform, Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, null, LayerMask.NameToLayer("Default"));
+            if (!String.IsNullOrEmpty(Game.Instance.GetPlayer().GetCraftingController().GetUserText()))
+                GameObjectUtility.TrySettingTextInChildren(newObject, Game.Instance.GetPlayer().GetCraftingController().GetUserText());
             newObject.transform.rotation = Quaternion.Euler(rotation);
-            Game.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
+            Game.Instance.GetPlayer().GetCraftingController().SetCrafting(true, newObject);
         }
 
         void checkInventory()
         {
-            if (!Game.GetPlayer().GetCraftingController().HasInventoryItem(Game.GetPlayer().GetCraftingController().GetSelectedPrefab())) {
-                Game.GetPlayer().GetCraftingController().SetSelectedPrefab(Game.GetPlayer().GetCraftingController().GetNextAvailableItem().prefab);
+            if (!Game.Instance.GetPlayer().GetCraftingController().HasInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab())) {
+                Game.Instance.GetPlayer().GetCraftingController().SetSelectedPrefab(Game.Instance.GetPlayer().GetCraftingController().GetNextAvailableItem().prefab);
             }
         }
 

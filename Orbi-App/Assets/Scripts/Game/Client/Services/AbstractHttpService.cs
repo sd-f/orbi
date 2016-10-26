@@ -20,7 +20,7 @@ namespace GameController.Services
         System.Collections.IEnumerator CheckRequestQueue()
         {
             waited++;
-            if (Game.GetClient().RunningRequests() > MAX_REQUESTS)
+            if (Game.Instance.GetClient().RunningRequests() > MAX_REQUESTS)
             {
                 yield return new WaitForSeconds(REQUEST_QUEUE_WAIT_TIME);
             } else
@@ -59,14 +59,14 @@ namespace GameController.Services
         public WWW Request(string apiPath, string jsonString)
         {
             //Debug.Log(apiPath + "\n" + jsonString);
-            string uri = ServerConstants.GetServerUrl(Game.GetClient().serverType) + "/" + apiPath;
+            string uri = ServerConstants.GetServerUrl(Game.Instance.GetClient().serverType) + "/" + apiPath;
             UTF8Encoding encoding = new UTF8Encoding();
             
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("Accept", "application/json");
             headers.Add("X-App-Version", Client.VERSION.ToString());
-            headers.Add("Authorization", "Bearer " + Game.GetGame().GetSettings().GetToken());
-            //Debug.Log(apiPath + " token: " + Game.GetGame().GetSettings().GetToken());
+            headers.Add("Authorization", "Bearer " + Game.Instance.GetSettings().GetToken());
+            //Debug.Log(apiPath + " token: " + Game.Instance.GetSettings().GetToken());
             WWW www;
             if (jsonString != null)
             {
@@ -91,10 +91,10 @@ namespace GameController.Services
                 {
                     if (SceneManager.GetActiveScene().name != Game.GameScene.AuthorizationScene.ToString())
                     {
-                        Game.GetGame().LoadScene(Game.GameScene.AuthorizationScene);
+                        Game.Instance.LoadScene(Game.GameScene.AuthorizationScene);
                     }
-                    Game.GetGame().GetSettings().SetToken(null);
-                    Game.GetPlayer().SetLoggedIn(false);
+                    Game.Instance.GetSettings().SetToken(null);
+                    Game.Instance.GetPlayer().SetLoggedIn(false);
                 }
             } catch (Exception ex)
             {
@@ -165,12 +165,12 @@ namespace GameController.Services
 
         public void IndicateRequestStart()
         {
-            Game.GetClient().IncRunningRequests();
+            Game.Instance.GetClient().IncRunningRequests();
         }
 
         public void IndicateRequestFinished()
         {
-            Game.GetClient().DecRunningRequests();
+            Game.Instance.GetClient().DecRunningRequests();
         }
     }
 }

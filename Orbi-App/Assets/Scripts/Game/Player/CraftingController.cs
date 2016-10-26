@@ -118,7 +118,7 @@ namespace GameController
 
         public IEnumerator LoadInventory()
         {
-            yield return Game.GetPlayer().GetPlayerService().RequestInventory();
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestInventory();
         }
 
         public IEnumerator Craft(UnityEngine.GameObject gameObject)
@@ -126,17 +126,17 @@ namespace GameController
             ServerModel.GameObject newObject = new ServerModel.GameObject();
             newObject.id = -1;
             newObject.name = "new";
-            newObject.prefab = Game.GetPlayer().GetCraftingController().GetSelectedPrefab();
-            if (GetInventoryItem(Game.GetPlayer().GetCraftingController().GetSelectedPrefab()).supportsUserText)
-                newObject.userText = Game.GetPlayer().GetCraftingController().GetUserText();
+            newObject.prefab = Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab();
+            if (GetInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab()).supportsUserText)
+                newObject.userText = Game.Instance.GetPlayer().GetCraftingController().GetUserText();
             newObject.transform.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
             newObject.transform.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
             newObject.constraints = (int)RigidbodyConstraints.FreezeAll;
-            ServerModel.Player player = Game.GetPlayer().GetModel();
+            ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
             player.gameObjectToCraft = newObject;
-            yield return Game.GetPlayer().GetPlayerService().RequestCraft(player);
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestCraft(player);
             yield return LoadInventory();
-            yield return Game.GetWorld().UpdateObjects();
+            yield return Game.Instance.GetWorld().UpdateObjects();
         }
 
     }

@@ -28,7 +28,7 @@ namespace GameScene
             Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
             //SensorHelper.ActivateRotation();
-            gyroEnabled = Game.GetGame().GetSettings().IsHandheldInputEnabled();
+            gyroEnabled = Game.Instance.GetSettings().IsHandheldInputEnabled();
 
             if (gyroEnabled)
             {
@@ -39,7 +39,7 @@ namespace GameScene
             firstPersonController = GetComponent<MyFirstPersonController>();
             Input.gyro.enabled = true;
             // restore rotation + position
-            SetTransform(Game.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.GetPlayer().GetModel().character.transform.rotation.ToVector3());
+            SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
 
         }
 
@@ -89,14 +89,14 @@ namespace GameScene
             updateCounter++;
             Position pos = new Position(this.transform.position);
             
-            Game.GetPlayer().GetModel().character.transform.geoPosition = pos.ToGeoPosition();
-            Game.GetPlayer().GetModel().character.transform.position = pos;
-            Game.GetPlayer().GetModel().character.transform.rotation = new Rotation(cam.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y,0);
+            Game.Instance.GetPlayer().GetModel().character.transform.geoPosition = pos.ToGeoPosition();
+            Game.Instance.GetPlayer().GetModel().character.transform.position = pos;
+            Game.Instance.GetPlayer().GetModel().character.transform.rotation = new Rotation(cam.transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y,0);
 
             if (updateCounter > 5)
             {
                 updateCounter = 0;
-                StartCoroutine(Game.GetPlayer().GetPlayerService().RequestUpdateTransform());
+                StartCoroutine(Game.Instance.GetPlayer().GetPlayerService().RequestUpdateTransform());
             }
         }
 
@@ -115,8 +115,8 @@ namespace GameScene
 
         public void UpdateDeltaCompass()
         {
-            Game.GetLocation().SetCompassDelta(gyroRotation.y - Game.GetLocation().GetCompassValue());
-            deltaCompass = Game.GetLocation().GetCompassDelta();
+            Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
+            deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
         }
 
         void ApplyGyroRotation()
@@ -128,7 +128,7 @@ namespace GameScene
             
            /* Text text = GameObject.Find("DebugText").GetComponent<Text>();
             text.text = "Input.gyro.attitude.eulerAngles: " + Input.gyro.attitude.eulerAngles
-                + "\nGetCompassValue: " + Game.GetLocation().GetCompassValue()
+                + "\nGetCompassValue: " + Game.Instance.GetLocation().GetCompassValue()
                 + "\nSensorHelper.rotation.eulerAngles: " + SensorHelper.rotation.eulerAngles
                 + "\ndeltaCompass: " + deltaCompass;
                 */
@@ -169,17 +169,17 @@ namespace GameScene
         {
             float newHeight = 0.0f;
             float height = 0.0f;
-            height = Game.GetWorld().GetHeight(x, z);
-            newHeight = Game.GetWorld().GetHeight(x - 0.5f, z - 0.5f);
+            height = Game.Instance.GetWorld().GetHeight(x, z);
+            newHeight = Game.Instance.GetWorld().GetHeight(x - 0.5f, z - 0.5f);
             if (newHeight > height)
                 height = newHeight;
-            newHeight = Game.GetWorld().GetHeight(x + 0.5f, z - 0.5f);
+            newHeight = Game.Instance.GetWorld().GetHeight(x + 0.5f, z - 0.5f);
             if (newHeight > height)
                 height = newHeight;
-            newHeight = Game.GetWorld().GetHeight(x - 0.5f, z + 0.5f);
+            newHeight = Game.Instance.GetWorld().GetHeight(x - 0.5f, z + 0.5f);
             if (newHeight > height)
                 height = newHeight;
-            newHeight = Game.GetWorld().GetHeight(x + 0.5f, z + 0.5f);
+            newHeight = Game.Instance.GetWorld().GetHeight(x + 0.5f, z + 0.5f);
             if (newHeight > height)
                 height = newHeight;
             return height;

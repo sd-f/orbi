@@ -17,13 +17,13 @@ namespace GameScene
         void OnCollisionEnter(Collision col)
         {
             collisions++;
-            Game.GetPlayer().GetCraftingController().SetColliding(collisions > 0);
+            Game.Instance.GetPlayer().GetCraftingController().SetColliding(collisions > 0);
         }
 
         void OnCollisionExit(Collision col)
         {
             collisions--;
-            Game.GetPlayer().GetCraftingController().SetColliding(collisions > 0);
+            Game.Instance.GetPlayer().GetCraftingController().SetColliding(collisions > 0);
         }
 
     }

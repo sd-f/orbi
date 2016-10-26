@@ -122,7 +122,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void Awake()
         {
-            if (Game.GetGame().GetSettings().IsHandheldInputEnabled())
+            if (Game.Instance.GetSettings().IsHandheldInputEnabled())
             {
                 mouseLook.SetCursorLock(false);
             }
@@ -134,7 +134,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_RigidBody = GetComponent<Rigidbody>();
             m_Capsule = GetComponent<CapsuleCollider>();
             mouseLook.Init (transform, cam.transform);
-            if (Game.GetGame().GetSettings().IsHandheldInputEnabled())
+            if (Game.Instance.GetSettings().IsHandheldInputEnabled())
             {
                 mouseLook.SetCursorLock(false);
             }

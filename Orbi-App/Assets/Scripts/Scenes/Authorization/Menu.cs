@@ -18,10 +18,10 @@ namespace StartScene
         void Start()
         {
             emailField = GameObject.Find("InputFieldEmail").GetComponent<InputField>();
-            emailField.text = Game.GetGame().GetSettings().GetEmail();
+            emailField.text = Game.Instance.GetSettings().GetEmail();
             codeField = GameObject.Find("InputFieldCode").GetComponent<InputField>();
             loginButton = GameObject.Find("ButtonLogin").GetComponent<Button>();
-            if (!Game.GetPlayer().IsLoggedIn())
+            if (!Game.Instance.GetPlayer().IsLoggedIn())
                 SetFormEnabled(true);
             else
                 SetFormEnabled(false);
@@ -31,7 +31,7 @@ namespace StartScene
         {
             Info.Show("Logging in...");
             SetFormEnabled(false);
-            Game.GetGame().GetSettings().SetEmail(emailField.text);
+            Game.Instance.GetSettings().SetEmail(emailField.text);
             StartCoroutine(Login());
         }
 
@@ -39,20 +39,20 @@ namespace StartScene
         {
             Info.Show("Code requested...");
             SetFormEnabled(false);
-            Game.GetGame().GetSettings().SetEmail(emailField.text);
+            Game.Instance.GetSettings().SetEmail(emailField.text);
             StartCoroutine(RequestCode());
         }
 
         private IEnumerator RequestCode()
         {
-            yield return Game.GetGame().GetAuthService().RequestCode(emailField.text);
+            yield return Game.Instance.GetAuthService().RequestCode(emailField.text);
             SetFormEnabled(true);
         }
 
         private IEnumerator Login()
         {
-            yield return Game.GetGame().GetAuthService().RequestLogin(emailField.text, codeField.text);
-            yield return Game.GetPlayer().GetPlayerService().RequestPlayer();
+            yield return Game.Instance.GetAuthService().RequestLogin(emailField.text, codeField.text);
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
             SetFormEnabled(true);
         }
 

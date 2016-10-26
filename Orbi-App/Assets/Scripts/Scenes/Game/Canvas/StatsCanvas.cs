@@ -78,8 +78,8 @@ namespace GameScene
 
         private IEnumerator PlayerUpdate()
         {
-            yield return Game.GetPlayer().GetPlayerService().RequestStatsUpdate();
-            yield return Game.GetPlayer().GetPlayerService().RequestInventory();
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestStatsUpdate();
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestInventory();
             UpdateStatsLabels();
             Invoke("UpdateStats", 5f);
         }
@@ -87,14 +87,14 @@ namespace GameScene
         void UpdateStatsLabels()
         {
             long oldLevel = Convert.ToInt64(level.text);
-            long newLevel = Game.GetPlayer().GetModel().character.level;
+            long newLevel = Game.Instance.GetPlayer().GetModel().character.level;
             if ((oldLevel > 0) && (newLevel > oldLevel))
             { 
                 GameObject levelUp = GameObject.Instantiate(levelUpEffect) as GameObject;
                 levelUp.transform.SetParent(levelUpContainer.transform, false);
             }
             long oldXP = Convert.ToInt64(textXp.text);
-            long newXP = Convert.ToInt64(Game.GetPlayer().GetModel().character.xp);
+            long newXP = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xp);
             if ((oldXP > 0) && (newXP > oldXP))
                 AddStatsInfo("+ " + (newXP - Convert.ToInt64(textXp.text)) + " xp");
             long newNumberOfInventoryItems = GetNumberOfInventoryItems();
@@ -102,7 +102,7 @@ namespace GameScene
                 if (inventoryItems < newNumberOfInventoryItems)
                     AddNewItemsInfo("+ " + (newNumberOfInventoryItems - inventoryItems) + " items");
             textXp.text = newXP.ToString();
-            textXr.text = Convert.ToInt64(Game.GetPlayer().GetModel().character.xr).ToString();
+            textXr.text = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xr).ToString();
             level.text = newLevel.ToString();
             inventoryItems = newNumberOfInventoryItems;
         }
@@ -128,7 +128,7 @@ namespace GameScene
         private long GetNumberOfInventoryItems()
         {
             long itemsCount = 0;
-            foreach(ServerModel.InventoryItem item in Game.GetPlayer().GetCraftingController().GetInventory().items)
+            foreach(ServerModel.InventoryItem item in Game.Instance.GetPlayer().GetCraftingController().GetInventory().items)
             {
                 itemsCount += item.amount;
             }

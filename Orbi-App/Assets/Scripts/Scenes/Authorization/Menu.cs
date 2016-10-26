@@ -5,6 +5,7 @@ using GameController;
 using UnityEngine.UI;
 using CanvasUtility;
 using System;
+using System.Net.Mail;
 
 namespace StartScene
 {
@@ -29,14 +30,41 @@ namespace StartScene
 
         public void OnLogin()
         {
+            
+            if (!IsValidEmail(emailField.text))
+            {
+                Error.Show("Email not valid");
+                return;
+            }
             Info.Show("Logging in...");
             SetFormEnabled(false);
             Game.Instance.GetSettings().SetEmail(emailField.text);
             StartCoroutine(Login());
         }
 
+        bool IsValidEmail(string emailAddress)
+        {
+            bool MethodResult = false;
+            try
+            {
+                MailAddress m = new MailAddress(emailAddress);
+                MethodResult = m.Address == emailAddress;
+            }
+            catch //(Exception ex)
+            {
+                //ex.HandleException();
+            }
+            return MethodResult;
+        }
+
         public void OnRequestCode()
         {
+            Info.Show("Logging in...");
+            if (!IsValidEmail(emailField.text))
+            {
+                Error.Show("Email not valid");
+                return;
+            }
             Info.Show("Code requested...");
             SetFormEnabled(false);
             Game.Instance.GetSettings().SetEmail(emailField.text);

@@ -151,12 +151,14 @@ namespace InventoryScene
 
             if (controller.itemsDiscovered == null)
                 controller.itemsDiscovered = itemsDiscovered;
-            else if (itemsDiscovered.Count > controller.itemsDiscovered.Count)
+            else if (true) //itemsDiscovered.Count > controller.itemsDiscovered.Count)
             {
-                GameObject newItemText = GameObject.Instantiate(textPrefab) as GameObject;
+                GameObject newItemText = GameObject.Instantiate(newItemPrefab) as GameObject;
                 GameObjectUtility.SetLayer(newItemText, layers);
                 newItemText.transform.SetParent(inventoryCamera.transform, false);
+                newItemText.transform.localPosition = new Vector3(0, 0, 2);
                 newItemText.name = "newItemText";
+                controller.itemsDiscovered = itemsDiscovered;
             }
         }
 

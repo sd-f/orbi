@@ -89,7 +89,9 @@ public class UserService {
     }
 
     public AuthorizationInfo login(@Valid @NotNull LoginInfo loginInfo) {
-
+        if (!isValidEmailAddress(loginInfo.getEmail())) {
+            throw new InternalServerErrorException("Email not valid");
+        }
         IdentityEntity identityEntity = identityRepository.findByEmail(loginInfo.getEmail());
         if (Objects.isNull(identityEntity)) {
             throw new InternalServerErrorException("Email not registered");

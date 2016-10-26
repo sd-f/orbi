@@ -11,7 +11,7 @@ namespace ServerModel
         public string name;
         public long xp = 0;
         public long xr = 0;
-        public long level = 0;
+        public long level = 1;
         public CharacterDevelopment characterDevelopment;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;

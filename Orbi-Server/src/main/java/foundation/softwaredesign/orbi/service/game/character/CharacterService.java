@@ -110,7 +110,7 @@ public class CharacterService {
     }
 
     public void calculateLevel(Character currentCharacter) {
-        currentCharacter.setLevel(new Long(0));
+        currentCharacter.setLevel(new Long(1));
         if (nonNull(currentCharacter.getXp()) && (currentCharacter.getXp().longValue() != 0)) {
             long level = (long)((long)Math.log(currentCharacter.getXp()) / Math.log(16));
             currentCharacter.setLevel(new Long(level + 1l));

@@ -50,9 +50,6 @@ public class CharacterService {
         Long identityId = user.getIdentity().getId();
         Character character = loadByIdentityId(identityId);
 
-        calculateExperienceRank(character);
-        calculateLevel(character);
-
         return character;
     }
 

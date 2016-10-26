@@ -14,9 +14,9 @@ public class Character {
 
     private Long id;
     private String name;
-    private Long xp;
-    private Long xr;
-    private Long level;
+    private Long xp = new Long(0);
+    private Long xr = new Long(0);
+    private Long level = new Long(0);
     private Transform transform = new Transform();
     private CharacterDevelopment characterDevelopment;
 

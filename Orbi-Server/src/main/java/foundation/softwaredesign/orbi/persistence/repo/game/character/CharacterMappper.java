@@ -2,7 +2,10 @@ package foundation.softwaredesign.orbi.persistence.repo.game.character;
 
 import foundation.softwaredesign.orbi.model.game.character.Character;
 import foundation.softwaredesign.orbi.persistence.entity.CharacterEntity;
+import foundation.softwaredesign.orbi.service.game.character.CharacterService;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
+
+import javax.inject.Inject;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -12,6 +15,8 @@ import static java.util.Objects.nonNull;
  */
 public class CharacterMappper extends SimpleQueryInOutMapperBase<CharacterEntity, Character> {
 
+    @Inject
+    CharacterService characterService;
 
     @Override
     protected Object getPrimaryKey(Character character) {
@@ -33,7 +38,8 @@ public class CharacterMappper extends SimpleQueryInOutMapperBase<CharacterEntity
         dto.setName(entity.getName());
         dto.setLastSeen(entity.getLastSeen());
         dto.setGiftedOn(entity.getGiftedOn());
-        dto.setLevel(new Long(0));
+        characterService.calculateExperienceRank(dto);
+        characterService.calculateLevel(dto);
         return dto;
     }
 

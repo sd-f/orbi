@@ -17,6 +17,12 @@ namespace GameController
         private UnityEngine.GameObject objectToCraft;
         private bool crafting = false;
         private Inventory inventory = new Inventory();
+        private int itemsUnlocked { get; set; }
+
+        public CraftingController()
+        {
+            itemsUnlocked = 0;
+        }
 
         public void SetCrafting(Boolean crafting, UnityEngine.GameObject objectToCraft)
         {

@@ -35,6 +35,16 @@ namespace GameController
             Game.Instance.GetWorld().SetCenterGeoPosition(position);
             ready = true;
             Invoke("UpdateLocation", 0.5f);
+            Invoke("RestartDevices", 3f);
+        }
+
+        void RestartDevices()
+        {
+            Sensor.Activate(Sensor.Type.Accelerometer);
+            Sensor.Activate(Sensor.Type.MagneticField);
+            Sensor.Activate(Sensor.Type.Gyroscope);
+            SensorHelper.ActivateRotation();
+            Input.location.Start();
         }
 
         public bool IsReady()
@@ -156,6 +166,7 @@ namespace GameController
         {
             this.compassDelta = delta;
         }
+
     }
 
 }

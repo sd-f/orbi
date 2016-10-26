@@ -116,7 +116,7 @@ public class CharacterService {
         if (isNull(currentCharacter.getXp()) || (nonNull(currentCharacter.getXp()) && (currentCharacter.getXp().longValue() == 0))) {
             currentCharacter.setLevel(new Long(0));
         }
-        int level = (int)(Math.log(currentCharacter.getXp()) / Math.log(16));
+        int level = (int)((int)Math.log(currentCharacter.getXp()) / Math.log(16));
         currentCharacter.setLevel(new Long(level + 1));
     }
 

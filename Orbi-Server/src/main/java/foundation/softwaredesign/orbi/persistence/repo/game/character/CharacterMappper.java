@@ -33,6 +33,7 @@ public class CharacterMappper extends SimpleQueryInOutMapperBase<CharacterEntity
         dto.setName(entity.getName());
         dto.setLastSeen(entity.getLastSeen());
         dto.setGiftedOn(entity.getGiftedOn());
+        dto.setLevel(new Long(0));
         return dto;
     }
 

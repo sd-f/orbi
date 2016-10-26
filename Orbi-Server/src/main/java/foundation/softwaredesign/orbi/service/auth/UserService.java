@@ -95,7 +95,7 @@ public class UserService {
             throw new InternalServerErrorException("Email not registered");
         }
         try {
-            Long id = identityRepository.findIdentityIdByEmailAndPassword(identityEntity.getEmail(), loginInfo.getPassword());
+            Long id = identityRepository.findIdentityIdByEmailAndPassword(identityEntity.getEmail(), loginInfo.getPassword().toUpperCase());
             identityEntity = identityRepository.findBy(id);
         } catch (NoResultException ex) {
             throw new InternalServerErrorException("Email or Password incorrect");

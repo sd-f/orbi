@@ -77,5 +77,6 @@
     <include file="ORBI-00014/004_object_type_category.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/005_chests.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/006_motd.xml" relativeToChangelogFile="true"/>
+    <include file="ORBI-00014/007_inventory_improvements.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

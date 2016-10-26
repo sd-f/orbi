@@ -13,6 +13,7 @@ namespace InventoryScene
         public GameObject objectsContainer;
         public GameObject textPrefab;
         public GameObject startPrefab;
+        public GameObject newItemPrefab;
         public InventoryCamera inventoryCamera;
         public InventoryCanvas canvas;
         private LayerMask layers;
@@ -33,7 +34,8 @@ namespace InventoryScene
 
         IEnumerator LoadInventory()
         {
-            yield return Game.Instance.GetPlayer().GetCraftingController().LoadInventory();
+            CraftingController controller = Game.Instance.GetPlayer().GetCraftingController();
+            yield return controller.LoadInventory();
 
             GameObjectUtility.DestroyAllChildObjects(objectsContainer);
 
@@ -47,8 +49,10 @@ namespace InventoryScene
             long overall_items_collected = 0;
             long items_collected = 0;
             int id = 0;
-            List<ServerModel.InventoryItem> items = Game.Instance.GetPlayer().GetCraftingController().GetInventory().items;
-            foreach (ServerModel.GameObjectTypeCategory category in Game.Instance.GetPlayer().GetCraftingController().GetInventory().categories)
+
+            List<ServerModel.InventoryItem> items = controller.GetInventory().items;
+            List<string> itemsDiscovered = new List<string>();
+            foreach (ServerModel.GameObjectTypeCategory category in controller.GetInventory().categories)
             {
                 if (category.craftable)
                 {
@@ -59,14 +63,14 @@ namespace InventoryScene
                     categoryContainer.layer = layers;
                     categoryContainer.name = "category_" + category.id;
                     categoryContainer.transform.SetParent(objectsContainer.transform);
-                    categoryContainer.transform.localPosition = new Vector3(0.0f, paddingVertical, 0f);
-                   
+                    categoryContainer.transform.localPosition = new Vector3(0.0f, paddingVertical, 5f);
+
                     items_collected = 0;
                     paddingHorizontal = 0;
                     foreach (ServerModel.InventoryItem item in items)
                         if (item.categoryId == category.id)
                         {
-                            
+                            itemsDiscovered.Add(item.prefab);
                             GameObject itemContainer = new GameObject();
                             itemContainer.layer = layers;
                             itemContainer.name = "item_" + category.id + "_" + id;
@@ -81,7 +85,7 @@ namespace InventoryScene
                             itemAmountText.transform.SetParent(itemContainer.transform, false);
                             itemAmountText.transform.localPosition = new Vector3(0f, -0.25f, 0f);
                             ShadowText text = itemAmountText.GetComponent<ShadowText>();
-                            text.SetText("x "+item.amount);
+                            text.SetText("x " + item.amount);
                             text.SetForeGroundColor(Color.white);
                             text.SetShadowColor(Color.black);
                             text.SetAlignment(TextAlignment.Center, TextAnchor.MiddleCenter);
@@ -95,7 +99,7 @@ namespace InventoryScene
                             id++;
                             paddingHorizontal = paddingHorizontal + OBJECT_PADDING_HORIZONTAL;
                         }
-                    for (int i = (int)items_collected; i < (category.numberOfItems); i++ )
+                    for (int i = (int)items_collected; i < (category.numberOfItems); i++)
                     {
 
                         GameObject itemContainer = new GameObject();
@@ -135,15 +139,25 @@ namespace InventoryScene
                     categoryText.GetComponent<ShadowText>().SetText(category.name + " (" + items_collected + "/" + category.numberOfItems + ")");
                     paddingVertical = paddingVertical - OBJECT_PADDING_VERTICAL;
                 }
-               
+
 
             }
 
-            inventoryCamera.SetBounds(((maxItems) * OBJECT_PADDING_HORIZONTAL) / 1.25f, 
+            inventoryCamera.SetBounds(((maxItems) * OBJECT_PADDING_HORIZONTAL) / 1.25f,
                 (Game.Instance.GetPlayer().GetCraftingController().GetInventory().categories.Count * OBJECT_PADDING_VERTICAL) / 1.75f);
 
             //canvasScript.SetSelected(preselected);
-            canvas.SetStatusText( "Collected: " + overall_items_collected + "/" + overall_items);
+            canvas.SetStatusText("Collected: " + overall_items_collected + "/" + overall_items);
+
+            if (controller.itemsDiscovered == null)
+                controller.itemsDiscovered = itemsDiscovered;
+            else if (itemsDiscovered.Count > controller.itemsDiscovered.Count)
+            {
+                GameObject newItemText = GameObject.Instantiate(textPrefab) as GameObject;
+                GameObjectUtility.SetLayer(newItemText, layers);
+                newItemText.transform.SetParent(inventoryCamera.transform, false);
+                newItemText.name = "newItemText";
+            }
         }
 
         void Update()

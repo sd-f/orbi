@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace GameController
 {
-    class CraftingController
+    public class CraftingController
     {
         private bool collission = false;
         private string selectedPrefab;
@@ -17,11 +17,11 @@ namespace GameController
         private UnityEngine.GameObject objectToCraft;
         private bool crafting = false;
         private Inventory inventory = new Inventory();
-        private int itemsUnlocked { get; set; }
+        public List<string> itemsDiscovered { get; set; }
 
         public CraftingController()
         {
-            itemsUnlocked = 0;
+            itemsDiscovered = null;
         }
 
         public void SetCrafting(Boolean crafting, UnityEngine.GameObject objectToCraft)

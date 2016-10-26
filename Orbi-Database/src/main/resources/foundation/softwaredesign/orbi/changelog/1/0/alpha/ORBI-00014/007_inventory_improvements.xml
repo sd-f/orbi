@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="inventory_unique_constraint" author="Lucas Reeh">
+        <sql>
+            ALTER TABLE public.inventory ADD CONSTRAINT inventory_unique UNIQUE (identity_id, game_object_type_id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="inventory_unique_index" author="Lucas Reeh">
+        <sql>
+            CREATE UNIQUE INDEX inventory_unique_idx ON public.inventory (identity_id, game_object_type_id);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

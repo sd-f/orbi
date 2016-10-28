@@ -151,7 +151,7 @@ namespace InventoryScene
 
             if (controller.itemsDiscovered == null)
                 controller.itemsDiscovered = itemsDiscovered;
-            else if (true) //itemsDiscovered.Count > controller.itemsDiscovered.Count)
+            else if (itemsDiscovered.Count > controller.itemsDiscovered.Count)
             {
                 GameObject newItemText = GameObject.Instantiate(newItemPrefab) as GameObject;
                 GameObjectUtility.SetLayer(newItemText, layers);

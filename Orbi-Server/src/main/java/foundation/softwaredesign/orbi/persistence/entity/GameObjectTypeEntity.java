@@ -5,6 +5,7 @@ import org.eclipse.persistence.annotations.BatchFetchType;
 import org.eclipse.persistence.annotations.ReadOnly;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -28,6 +29,9 @@ public class GameObjectTypeEntity implements Serializable {
     private Integer ordering;
     @Column
     private Integer spawnAmount;
+    @Column
+    @NotNull
+    private Boolean ai;
     @ManyToOne
     @BatchFetch(BatchFetchType.JOIN)
     @JoinColumn(name = "category_id")
@@ -95,5 +99,13 @@ public class GameObjectTypeEntity implements Serializable {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Boolean getAi() {
+        return ai;
+    }
+
+    public void setAi(Boolean ai) {
+        this.ai = ai;
     }
 }

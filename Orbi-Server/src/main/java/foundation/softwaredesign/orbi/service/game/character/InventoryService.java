@@ -16,10 +16,7 @@ import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeServ
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -60,7 +57,10 @@ public class InventoryService {
         }
         Integer randomIndex = ThreadLocalRandom.current().nextInt(0, types.size());
         GameObjectType randomType = types.get(randomIndex);
-        addItem(randomType.getPrefab(), new Long(ThreadLocalRandom.current().nextInt(1, randomType.getSpawnAmount())));
+        Long randomAmount = new Long(1);
+        if (randomType.getSpawnAmount() > 1)
+            randomAmount = new Long(ThreadLocalRandom.current().nextInt(1, randomType.getSpawnAmount()));
+        addItem(randomType.getPrefab(), randomAmount);
     }
 
 
@@ -113,6 +113,7 @@ public class InventoryService {
             inventory.setGameObjectType(new GameObjectTypeMappper().toEntity(null,objectType));
             inventory.setIdentity(userService.getIdentity());
             inventory.setAmount(new Long(0));
+            inventory.setDiscoveredOn(new Date());
         }
         inventory.setAmount(inventory.getAmount() + amount);
         repository.saveAndFlush(inventory);

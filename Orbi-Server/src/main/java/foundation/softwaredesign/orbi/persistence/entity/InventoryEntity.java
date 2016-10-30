@@ -1,6 +1,7 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -24,6 +25,8 @@ public class InventoryEntity {
 
     @Column
     private Long amount;
+    @Column
+    private Date discoveredOn;
 
     public InventoryEntityId getId() {
         return id;
@@ -55,5 +58,13 @@ public class InventoryEntity {
 
     public void setIdentity(IdentityEntity identity) {
         this.identity = identity;
+    }
+
+    public Date getDiscoveredOn() {
+        return discoveredOn;
+    }
+
+    public void setDiscoveredOn(Date discoveredOn) {
+        this.discoveredOn = discoveredOn;
     }
 }

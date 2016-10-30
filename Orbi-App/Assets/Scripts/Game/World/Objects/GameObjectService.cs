@@ -97,19 +97,34 @@ namespace GameController
 
         void UpdateObject(ServerModel.GameObject oldObject, ServerModel.GameObject newObject)
         {
+            UpdateAi(oldObject.gameObject, newObject);
             oldObject.transform = newObject.transform;
             GameObjectUtility.Transform(oldObject.gameObject, newObject.transform);
         }
 
+
         void CreateObject(ServerModel.GameObject newObject)
         {
-            GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.type.prefab, newObject.id, "DynamicGameObject");
+            UnityEngine.GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.type.prefab, newObject.id, "DynamicGameObject");
             if (!String.IsNullOrEmpty(newObject.userText))
                 GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
             GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
+            if (newObject.type.ai)
+                UpdateAi(newGameObject, newObject);
             newObject.gameObject = newGameObject;
             oldObjects.Add(newObject);
             GameObjectUtility.Transform(newGameObject, newObject.transform);
+        }
+
+
+
+        private void UpdateAi(UnityEngine.GameObject gameObject, ServerModel.GameObject newObject)
+        {
+            ToonTreasureChestBlueNpcController controller = gameObject.GetComponentInChildren<ToonTreasureChestBlueNpcController>();
+            if (controller != null)
+            {
+                controller.SetTarget(newObject.aiProperties.target.geoPosition.ToPosition().ToVector3());
+            }
         }
 
         void UpdateGameObjects(ServerModel.World world)

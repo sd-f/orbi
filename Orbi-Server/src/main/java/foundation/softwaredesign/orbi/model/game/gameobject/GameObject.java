@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.model.game.gameobject;
 
+import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -18,6 +19,7 @@ public class GameObject {
     private Long identityId;
     private String userText;
     private Integer constraints;
+    private AiProperties aiProperties;
 
     public String getName() {
         return name;
@@ -86,5 +88,13 @@ public class GameObject {
 
     public void setConstraints(Integer constraints) {
         this.constraints = constraints;
+    }
+
+    public AiProperties getAiProperties() {
+        return aiProperties;
+    }
+
+    public void setAiProperties(AiProperties aiProperties) {
+        this.aiProperties = aiProperties;
     }
 }

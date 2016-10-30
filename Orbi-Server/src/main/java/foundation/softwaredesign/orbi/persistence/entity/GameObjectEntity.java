@@ -27,6 +27,8 @@ public class GameObjectEntity {
     @NotNull
     private Double altitude;
     @Column
+    private String aiProperties;
+    @Column
     @NotNull
     private Double rotationY;
     @Column(insertable = false, updatable = false)
@@ -135,5 +137,13 @@ public class GameObjectEntity {
 
     public void setBodyConstraints(Integer bodyConstraints) {
         this.bodyConstraints = bodyConstraints;
+    }
+
+    public String getAiProperties() {
+        return aiProperties;
+    }
+
+    public void setAiProperties(String aiProperties) {
+        this.aiProperties = aiProperties;
     }
 }

@@ -85,4 +85,5 @@ public class PlayerService {
         player.setCharacter(currentCharacter);
         return player;
     }
+
 }

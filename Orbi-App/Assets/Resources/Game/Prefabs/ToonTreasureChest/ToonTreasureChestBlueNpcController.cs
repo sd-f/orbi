@@ -8,6 +8,7 @@ public class ToonTreasureChestBlueNpcController : ThirdPersonCharacter {
     private AICharacterControl ai;
     private ThirdPersonCharacter thirdPersonController;
     private GameObject target;
+    private Vector3 targetVector = new Vector3();
     private static float MOVE_RADIUS = 10f;
     float m_restTime = 0f;
 
@@ -19,23 +20,35 @@ public class ToonTreasureChestBlueNpcController : ThirdPersonCharacter {
         ai = GetComponent<AICharacterControl>();
         thirdPersonController = GetComponent<ThirdPersonCharacter>();
         ai.SetTarget(target.transform);
-        InvokeRepeating("RandomTarget", 0, 30);
+        InvokeRepeating("UpdateTarget", 2, 2);
     }
 	
-    void Update()
+
+    void UpdateTarget()
     {
-        //Debug.Log(transform.gameObject.name + " " + transform.position);
+        Vector3 newTarget = Game.Instance.GetWorld().GetTerrainService().ClampPosition(targetVector);
+
+        // todo check nav mesh
+        /*
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(newTarget, out hit, MOVE_RADIUS, 1))
+        {
+            Vector3 finalPosition = Game.Instance.GetWorld().GetTerrainService().ClampPosition(hit.position);
+            target.transform.position = finalPosition;
+        }
+        */
+        target.transform.position = newTarget;
     }
 
-	void RandomTarget()
+    void OnDestroy()
     {
-        Vector3 randomDirection = Random.insideUnitSphere * MOVE_RADIUS;
-        randomDirection += transform.position;
-        randomDirection = Game.Instance.GetWorld().GetTerrainService().ClampPosition(randomDirection);
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, MOVE_RADIUS, 1);
-        Vector3 finalPosition = Game.Instance.GetWorld().GetTerrainService().ClampPosition(hit.position);
-        target.transform.position = finalPosition;
+        CancelInvoke();
+    }
+
+
+    public void SetTarget(Vector3 newTargetPosition)
+    {
+        targetVector = newTargetPosition;
     }
 
     public override void UpdateAnimator(Vector3 move)

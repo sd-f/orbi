@@ -3,6 +3,7 @@ package foundation.softwaredesign.orbi.service.game.world;
 import foundation.softwaredesign.orbi.model.game.character.Character;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
+import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.model.game.transform.GeoPosition;
 import foundation.softwaredesign.orbi.model.game.transform.Position;
 import foundation.softwaredesign.orbi.model.game.world.World;
@@ -11,6 +12,7 @@ import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.character.CharacterService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
+import foundation.softwaredesign.orbi.service.game.gameobject.ai.AiService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -31,6 +34,8 @@ public class WorldService {
 
     @Inject
     GameObjectService gameObjectService;
+    @Inject
+    AiService aiService;
     @Inject
     GameObjectTypeService gameObjectTypeService;
     @Inject
@@ -49,9 +54,13 @@ public class WorldService {
         //elevationService.addAltitude(world);
         createGift(gameObjectList);
         List<Character> characterList = characterService.getCharactersAround(geoPosition);
+
+        aiService.updateAiTargets(gameObjectList);
         world.setCharacters(characterList);
         return world;
     }
+
+
 
     private void createGift(List<GameObject> objects) {
         Character character = characterService.loadCurrent();
@@ -74,8 +83,8 @@ public class WorldService {
                 gift.setType(gameObjectTypeService.loadByPrefab(GameObjectTypeService.GIFT_CHEST_OBJECT_TYPE_PREFAB));
                 gift.setName("Gift_For_"+character.getName());
 
-                Integer randomX = ThreadLocalRandom.current().nextInt(-15,30);
-                Integer randomZ = ThreadLocalRandom.current().nextInt(-15,30);
+                Integer randomX = ThreadLocalRandom.current().nextInt(-25,25);
+                Integer randomZ = ThreadLocalRandom.current().nextInt(-25,25);
                 GeoPosition giftPosition = worldAdapterService.toGeo(new Position(new Double(randomX),100d,new Double(randomZ)),
                         character.getTransform().getGeoPosition());
                 gift.getTransform().setGeoPosition(giftPosition);

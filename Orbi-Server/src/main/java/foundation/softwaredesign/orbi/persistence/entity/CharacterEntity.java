@@ -36,6 +36,7 @@ public class CharacterEntity {
     @NotNull
     private Long experiencePoints;
     @Column
+    @NotNull
     private Long identityId;
     @Column
     @Temporal(TemporalType.TIMESTAMP)
@@ -143,4 +144,5 @@ public class CharacterEntity {
     public void setGiftedOn(Date giftedOn) {
         this.giftedOn = giftedOn;
     }
+
 }

@@ -1,13 +1,21 @@
 package foundation.softwaredesign.orbi.persistence.repo.game.gameobject;
 
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
+import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
 import javax.inject.Inject;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -43,6 +51,14 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.setUserText(objectEntity.getUserText());
         gameObject.setName(objectEntity.getName());
         gameObject.setConstraints(objectEntity.getBodyConstraints());
+
+        // TODO data structure
+        AiProperties properties = getAiPropertiesDeserialized(objectEntity);
+        if (nonNull(properties)) {
+            gameObject.setAiProperties(properties);
+        }
+
+
         return gameObject;
     }
 
@@ -71,6 +87,43 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
 
         newGameObjectEntity.setName(gameObject.getName());
         newGameObjectEntity.setBodyConstraints(gameObject.getConstraints());
+
+        if (gameObject.getType().getAi()) {
+            newGameObjectEntity.setAiProperties(getAiPropertiesSerialized(gameObject));
+        }
+
         return newGameObjectEntity;
+    }
+
+    private AiProperties getAiPropertiesDeserialized(GameObjectEntity objectEntity) {
+        if (isNull(objectEntity.getAiProperties()) || (nonNull(objectEntity.getAiProperties()) && objectEntity.getAiProperties().isEmpty())) {
+            return null;
+        }
+        AiProperties properties = null;
+        StringReader sr = new StringReader(objectEntity.getAiProperties());
+        try {
+            JAXBContext context = JAXBContext.newInstance(AiProperties.class);
+            Unmarshaller unmarshaller = context.createUnmarshaller();
+            properties = (AiProperties) unmarshaller.unmarshal( sr );
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return properties;
+    }
+
+    private String getAiPropertiesSerialized(GameObject gameObject) {
+        if (isNull(gameObject.getAiProperties())) {
+            return null;
+        }
+        StringWriter sw = new StringWriter();
+        try {
+            JAXBContext context = JAXBContext.newInstance(AiProperties.class);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.marshal(gameObject.getAiProperties(), sw );
+        } catch (JAXBException e) {
+            // slient
+            Logger.getLogger(GameObjectMappper.class.getName()).fine(e.getMessage());
+        }
+        return sw.toString();
     }
 }

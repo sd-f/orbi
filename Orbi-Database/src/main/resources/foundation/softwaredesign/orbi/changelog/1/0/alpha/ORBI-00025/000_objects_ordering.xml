@@ -53,4 +53,20 @@
         <sql>ALTER TABLE public.game_object ALTER COLUMN game_object_type_id SET NOT NULL;</sql>
     </changeSet>
 
+    <changeSet id="character_new_item_col" author="Lucas Reeh">
+        <sql>ALTER TABLE public.inventory ADD COLUMN discovered_on timestamp without time zone NOT NULL DEFAULT now();</sql>
+    </changeSet>
+
+    <changeSet id="objects_ai_col" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN ai smallint NOT NULL DEFAULT 0;</sql>
+    </changeSet>
+
+    <changeSet id="objects_ai_props" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object ADD COLUMN ai_properties text;</sql>
+    </changeSet>
+
+    <changeSet id="objects_ai_content" author="Lucas Reeh">
+        <sql>update public.game_object_type set ai = 1 where id = 3</sql>
+    </changeSet>
+
 </databaseChangeLog>

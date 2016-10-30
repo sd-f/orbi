@@ -22,7 +22,6 @@ public class Character {
     private Transform transform = new Transform();
     private CharacterDevelopment characterDevelopment;
 
-
     @XmlTransient
     private Date lastSeen;
     @XmlTransient
@@ -125,4 +124,5 @@ public class Character {
     public void setLastLevelXp(Long lastLevelXp) {
         this.lastLevelXp = lastLevelXp;
     }
+
 }

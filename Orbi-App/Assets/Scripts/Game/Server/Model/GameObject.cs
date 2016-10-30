@@ -13,6 +13,7 @@ namespace ServerModel
         public string userText;
         public int constraints;
         public ClientModel.Transform transform = new ClientModel.Transform();
+        public AiProperties aiProperties;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;
         

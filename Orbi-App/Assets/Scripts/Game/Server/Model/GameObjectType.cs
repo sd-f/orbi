@@ -11,6 +11,7 @@ namespace ServerModel
         public string prefab;
         public bool supportsUserText;
         public int rarity;
+        public bool ai;
         public GameObjectTypeCategory category;
 
 

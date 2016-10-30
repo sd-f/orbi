@@ -14,6 +14,7 @@ public class Inventory {
 
     private List<InventoryItem> items = new ArrayList<>();
     private List<GameObjectTypeCategory> categories = new ArrayList<>();
+    private Boolean newItemDiscovered = false;
 
     public List<InventoryItem> getItems() {
         return items;
@@ -29,5 +30,13 @@ public class Inventory {
 
     public void setCategories(List<GameObjectTypeCategory> categories) {
         this.categories = categories;
+    }
+
+    public Boolean getNewItemDiscovered() {
+        return newItemDiscovered;
+    }
+
+    public void setNewItemDiscovered(Boolean newItemDiscovered) {
+        this.newItemDiscovered = newItemDiscovered;
     }
 }

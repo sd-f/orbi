@@ -51,6 +51,10 @@ public class GameObjectService {
         repository.save(gameObject);
     }
 
+    public GameObject saveAndRefresh(GameObject gameObject) {
+        return repository.saveAndFlushAndRefresh(gameObject);
+    }
+
     public void deleteAll() {
         repository.deleteAll();
     }

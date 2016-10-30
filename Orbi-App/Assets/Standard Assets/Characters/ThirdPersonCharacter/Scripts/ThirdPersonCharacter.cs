@@ -16,21 +16,20 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
 
-		Rigidbody m_Rigidbody;
-		Animator m_Animator;
-		bool m_IsGrounded;
-		float m_OrigGroundCheckDistance;
-		const float k_Half = 0.5f;
-		float m_TurnAmount;
-		float m_ForwardAmount;
-		Vector3 m_GroundNormal;
-		float m_CapsuleHeight;
-		Vector3 m_CapsuleCenter;
-		CapsuleCollider m_Capsule;
-		bool m_Crouching;
+        protected Rigidbody m_Rigidbody;
+        protected Animator m_Animator;
+        protected bool m_IsGrounded;
+        protected float m_OrigGroundCheckDistance;
+        protected const float k_Half = 0.5f;
+        protected float m_TurnAmount;
+		protected float m_ForwardAmount;
+        protected Vector3 m_GroundNormal;
+        protected float m_CapsuleHeight;
+        protected Vector3 m_CapsuleCenter;
+        protected CapsuleCollider m_Capsule;
+        protected bool m_Crouching;
 
-
-		void Start()
+		public virtual void Start()
 		{
 			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
@@ -38,7 +37,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_CapsuleHeight = m_Capsule.height;
 			m_CapsuleCenter = m_Capsule.center;
 
-			m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+            m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 			m_OrigGroundCheckDistance = m_GroundCheckDistance;
 		}
 
@@ -121,41 +120,41 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		void UpdateAnimator(Vector3 move)
+		public virtual void UpdateAnimator(Vector3 move)
 		{
-			// update the animator parameters
-			m_Animator.SetFloat("Forward", m_ForwardAmount, 0.1f, Time.deltaTime);
-			m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
-			m_Animator.SetBool("Crouch", m_Crouching);
-			m_Animator.SetBool("OnGround", m_IsGrounded);
-			if (!m_IsGrounded)
-			{
-				m_Animator.SetFloat("Jump", m_Rigidbody.velocity.y);
-			}
+            // update the animator parameters
+            m_Animator.SetFloat("Forward", m_ForwardAmount, 0.1f, Time.deltaTime);
+            m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
+            m_Animator.SetBool("Crouch", m_Crouching);
+            m_Animator.SetBool("OnGround", m_IsGrounded);
+            if (!m_IsGrounded)
+            {
+                m_Animator.SetFloat("Jump", m_Rigidbody.velocity.y);
+            }
 
-			// calculate which leg is behind, so as to leave that leg trailing in the jump animation
-			// (This code is reliant on the specific run cycle offset in our animations,
-			// and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
-			float runCycle =
-				Mathf.Repeat(
-					m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + m_RunCycleLegOffset, 1);
-			float jumpLeg = (runCycle < k_Half ? 1 : -1) * m_ForwardAmount;
-			if (m_IsGrounded)
-			{
-				m_Animator.SetFloat("JumpLeg", jumpLeg);
-			}
+            // calculate which leg is behind, so as to leave that leg trailing in the jump animation
+            // (This code is reliant on the specific run cycle offset in our animations,
+            // and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
+            float runCycle =
+                Mathf.Repeat(
+                    m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + m_RunCycleLegOffset, 1);
+            float jumpLeg = (runCycle < k_Half ? 1 : -1) * m_ForwardAmount;
+            if (m_IsGrounded)
+            {
+                m_Animator.SetFloat("JumpLeg", jumpLeg);
+            }
 
-			// the anim speed multiplier allows the overall speed of walking/running to be tweaked in the inspector,
-			// which affects the movement speed because of the root motion.
-			if (m_IsGrounded && move.magnitude > 0)
-			{
-				m_Animator.speed = m_AnimSpeedMultiplier;
-			}
-			else
-			{
-				// don't use that while airborne
-				m_Animator.speed = 1;
-			}
+            // the anim speed multiplier allows the overall speed of walking/running to be tweaked in the inspector,
+            // which affects the movement speed because of the root motion.
+            if (m_IsGrounded && move.magnitude > 0)
+            {
+                m_Animator.speed = m_AnimSpeedMultiplier;
+            }
+            else
+            {
+                // don't use that while airborne
+                m_Animator.speed = 1;
+            }
 		}
 
 

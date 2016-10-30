@@ -133,7 +133,7 @@ namespace GameScene
         private void CreateObjectToCraft()
         {
             checkInventory();
-            newObject = GameObjectFactory.CreateObject(transform, Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab(), -1, null, LayerMask.NameToLayer("Default"));
+            newObject = GameObjectFactory.CreateObject(transform, Game.Instance.GetPlayer().GetCraftingController().GetSelectedType().prefab, -1, null, LayerMask.NameToLayer("Default"));
             if (!String.IsNullOrEmpty(Game.Instance.GetPlayer().GetCraftingController().GetUserText()))
                 GameObjectUtility.TrySettingTextInChildren(newObject, Game.Instance.GetPlayer().GetCraftingController().GetUserText());
             newObject.transform.rotation = Quaternion.Euler(rotation);
@@ -142,8 +142,8 @@ namespace GameScene
 
         void checkInventory()
         {
-            if (!Game.Instance.GetPlayer().GetCraftingController().HasInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab())) {
-                Game.Instance.GetPlayer().GetCraftingController().SetSelectedPrefab(Game.Instance.GetPlayer().GetCraftingController().GetNextAvailableItem().prefab);
+            if (!Game.Instance.GetPlayer().GetCraftingController().HasInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedType().prefab)) {
+                Game.Instance.GetPlayer().GetCraftingController().SetSelectedType(Game.Instance.GetPlayer().GetCraftingController().GetNextAvailableItem().type);
             }
         }
 

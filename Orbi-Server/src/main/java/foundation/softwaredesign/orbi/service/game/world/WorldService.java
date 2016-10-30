@@ -2,6 +2,7 @@ package foundation.softwaredesign.orbi.service.game.world;
 
 import foundation.softwaredesign.orbi.model.game.character.Character;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
+import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.model.game.transform.GeoPosition;
 import foundation.softwaredesign.orbi.model.game.transform.Position;
 import foundation.softwaredesign.orbi.model.game.world.World;
@@ -25,6 +26,8 @@ import static java.util.Objects.isNull;
  */
 @RequestScoped
 public class WorldService {
+
+    private static Integer MAX_GIFTS_AROUND = 2;
 
     @Inject
     GameObjectService gameObjectService;
@@ -53,8 +56,8 @@ public class WorldService {
     private void createGift(List<GameObject> objects) {
         Character character = characterService.loadCurrent();
         Calendar cal = Calendar.getInstance();
-        Integer randomHours = ThreadLocalRandom.current().nextInt(5,120);
-        cal.add(Calendar.MINUTE, -randomHours);
+        Integer randomMinutes = ThreadLocalRandom.current().nextInt(15,120);
+        cal.add(Calendar.MINUTE, -randomMinutes);
         Date lastGifted = character.getGiftedOn();
         if (isNull(lastGifted)) {
             Calendar calTmp = Calendar.getInstance();
@@ -62,10 +65,13 @@ public class WorldService {
             lastGifted = calTmp.getTime();
         }
         if (lastGifted.before(cal.getTime())) {
-            if (objects.stream().filter(gameObject -> gameObjectTypeService.isGiftObject(gameObject.getPrefab())).count() < 10) {
+            if (objects.stream().filter(gameObject -> {
+                GameObjectType type = gameObject.getType();
+                return gameObjectTypeService.isGiftObject(gameObject.getType());
+            }).count() <= MAX_GIFTS_AROUND) {
                 GameObject gift = new GameObject();
                 gift.setIdentityId(userService.getIdentity().getId());
-                gift.setPrefab(GameObjectTypeService.GIFT_CHEST_OBJECT_TYPE_PREFAB);
+                gift.setType(gameObjectTypeService.loadByPrefab(GameObjectTypeService.GIFT_CHEST_OBJECT_TYPE_PREFAB));
                 gift.setName("Gift_For_"+character.getName());
 
                 Integer randomX = ThreadLocalRandom.current().nextInt(-15,30);

@@ -70,7 +70,7 @@ namespace InventoryScene
                     foreach (ServerModel.InventoryItem item in items)
                         if (item.categoryId == category.id)
                         {
-                            itemsDiscovered.Add(item.prefab);
+                            itemsDiscovered.Add(item.type.prefab);
                             GameObject itemContainer = new GameObject();
                             itemContainer.layer = layers;
                             itemContainer.name = "item_" + category.id + "_" + id;
@@ -89,7 +89,7 @@ namespace InventoryScene
                             text.SetForeGroundColor(Color.white);
                             text.SetShadowColor(Color.black);
                             text.SetAlignment(TextAlignment.Center, TextAnchor.MiddleCenter);
-                            GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.prefab, id, null, layers);
+                            GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.type.prefab, id, null, layers);
                             newObject.AddComponent<InventoryObjectSelected>();
                             newObject.transform.localRotation = Quaternion.Euler(-5f, -5f, 0f);
                             GameObjectUtility.NormalizeScale(newObject);

@@ -107,7 +107,7 @@ namespace GameController
             else
             {
                 Mapity.Singleton.Unload();
-                yield return terrainService.ResetTerrain();
+                //yield return terrainService.ResetTerrain();
                 //Game.Instance.GetClient().Log("Updating world...");
                 yield return Mapity.Singleton.LoadMap();
                 /*

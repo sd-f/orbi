@@ -1,18 +1,20 @@
 package foundation.softwaredesign.orbi.model.game.character;
 
+import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
+
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
 public class InventoryItem {
 
-    private String prefab;
+    private GameObjectType type;
     private Long amount;
     private Boolean supportsUserText = false;
     private Long categoryId;
 
 
-    public InventoryItem(String prefab, Long amount, Boolean supportsUserText, Long categoryId) {
-        this.prefab = prefab;
+    public InventoryItem(GameObjectType type, Long amount, Boolean supportsUserText, Long categoryId) {
+        this.type = type;
         this.amount = amount;
         this.supportsUserText = supportsUserText;
         this.categoryId = categoryId;
@@ -22,12 +24,12 @@ public class InventoryItem {
 
     }
 
-    public String getPrefab() {
-        return prefab;
+    public GameObjectType getType() {
+        return type;
     }
 
-    public void setPrefab(String prefab) {
-        this.prefab = prefab;
+    public void setType(GameObjectType type) {
+        this.type = type;
     }
 
     public Long getAmount() {

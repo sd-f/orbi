@@ -12,7 +12,7 @@ namespace GameController
     public class CraftingController
     {
         private bool collission = false;
-        private string selectedPrefab;
+        private GameObjectType selectedType;
         private string userText = "";
         private UnityEngine.GameObject objectToCraft;
         private bool crafting = false;
@@ -40,9 +40,9 @@ namespace GameController
             return this.objectToCraft;
         }
 
-        public String GetSelectedPrefab()
+        public GameObjectType GetSelectedType()
         {
-            return this.selectedPrefab;
+            return this.selectedType;
         }
 
         internal bool HasInventoryItem(string prefab)
@@ -61,7 +61,7 @@ namespace GameController
         internal InventoryItem GetInventoryItem(string prefab)
         {
             foreach(InventoryItem item in inventory.items)
-                if (item.prefab.Equals(prefab))
+                if (item.type.prefab.Equals(prefab))
                     return item;
             return null;
         }
@@ -74,9 +74,9 @@ namespace GameController
             return null;
         }
 
-        public void SetSelectedPrefab(String selectedPrefab)
+        public void SetSelectedType(GameObjectType type)
         {
-            this.selectedPrefab = selectedPrefab;
+            this.selectedType = type;
         }
 
         public Inventory GetInventory()
@@ -87,11 +87,11 @@ namespace GameController
         public void SetInventory(Inventory inventory)
         {
             // select first item
-            if (GetSelectedPrefab() == null)
+            if (GetSelectedType() == null)
             {
                 foreach (InventoryItem item in inventory.items)
                 {
-                    SetSelectedPrefab(item.prefab);
+                    SetSelectedType(item.type);
                     break;
                 }
             }
@@ -132,8 +132,8 @@ namespace GameController
             ServerModel.GameObject newObject = new ServerModel.GameObject();
             newObject.id = -1;
             newObject.name = "new";
-            newObject.prefab = Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab();
-            if (GetInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedPrefab()).supportsUserText)
+            newObject.type = Game.Instance.GetPlayer().GetCraftingController().GetSelectedType();
+            if (Game.Instance.GetPlayer().GetCraftingController().GetSelectedType().supportsUserText)
                 newObject.userText = Game.Instance.GetPlayer().GetCraftingController().GetUserText();
             newObject.transform.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
             newObject.transform.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();

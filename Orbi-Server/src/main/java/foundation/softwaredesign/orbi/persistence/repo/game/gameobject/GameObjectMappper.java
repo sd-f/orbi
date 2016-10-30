@@ -35,7 +35,9 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         gameObject.getTransform().getGeoPosition().setLongitude(objectEntity.getLongitude());
         gameObject.getTransform().getGeoPosition().setAltitude(objectEntity.getAltitude());
         gameObject.getTransform().getRotation().setY(objectEntity.getRotationY());
-        gameObject.setPrefab(objectEntity.getGameObjectType().getPrefab());
+        if (nonNull(objectEntity.getGameObjectType())) {
+            gameObject.setType(new GameObjectTypeMappper().toDto(objectEntity.getGameObjectType()));
+        }
         gameObject.setCreateDate(objectEntity.getCreateDate());
         gameObject.setIdentityId(objectEntity.getIdentity().getId());
         gameObject.setUserText(objectEntity.getUserText());
@@ -65,7 +67,8 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
             }
         }
         newGameObjectEntity.setUserText(gameObject.getUserText());
-        newGameObjectEntity.setGameObjectType(gameObjectType.loadByPrefab(gameObject.getPrefab()));
+        newGameObjectEntity.setGameObjectType(new GameObjectTypeMappper().toEntity(null, gameObjectType.loadByPrefab(gameObject.getType().getPrefab())));
+
         newGameObjectEntity.setName(gameObject.getName());
         newGameObjectEntity.setBodyConstraints(gameObject.getConstraints());
         return newGameObjectEntity;

@@ -7,9 +7,8 @@ namespace ServerModel
     public class InventoryItem: AbstractModel
     {
 
-        public String prefab;
+        public GameObjectType type;
         public int amount;
-        public bool supportsUserText;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;
         public int categoryId;

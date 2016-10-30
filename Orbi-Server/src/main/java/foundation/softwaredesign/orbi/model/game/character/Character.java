@@ -16,7 +16,9 @@ public class Character {
     private String name;
     private Long xp = new Long(0);
     private Long xr = new Long(0);
-    private Long level = new Long(0);
+    private Integer level = new Integer(0);
+    private Long nextLevelXp = new Long(0);
+    private Long lastLevelXp = new Long(0);
     private Transform transform = new Transform();
     private CharacterDevelopment characterDevelopment;
 
@@ -100,12 +102,27 @@ public class Character {
         this.giftedOn = giftedOn;
     }
 
-    public Long getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
-    public void setLevel(Long level) {
+    public void setLevel(Integer level) {
         this.level = level;
     }
 
+    public Long getNextLevelXp() {
+        return nextLevelXp;
+    }
+
+    public void setNextLevelXp(Long nextLevelXp) {
+        this.nextLevelXp = nextLevelXp;
+    }
+
+    public Long getLastLevelXp() {
+        return lastLevelXp;
+    }
+
+    public void setLastLevelXp(Long lastLevelXp) {
+        this.lastLevelXp = lastLevelXp;
+    }
 }

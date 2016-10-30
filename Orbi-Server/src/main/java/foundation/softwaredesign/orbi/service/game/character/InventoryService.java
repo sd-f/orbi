@@ -4,9 +4,11 @@ import foundation.softwaredesign.orbi.model.game.character.CharacterDevelopment;
 import foundation.softwaredesign.orbi.model.game.character.Inventory;
 import foundation.softwaredesign.orbi.model.game.character.InventoryItem;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
+import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectTypeEntity;
 import foundation.softwaredesign.orbi.persistence.entity.InventoryEntity;
 import foundation.softwaredesign.orbi.persistence.repo.game.character.InventoryRepository;
+import foundation.softwaredesign.orbi.persistence.repo.game.gameobject.GameObjectTypeMappper;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeCategoryService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
@@ -14,6 +16,7 @@ import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeServ
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +29,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class InventoryService {
 
     private static final String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
+    private static final Integer MAX_RARITY = 3;
 
     @Inject
     InventoryRepository repository;
@@ -40,15 +44,23 @@ public class InventoryService {
 
 
     public void checkForGiftChest(GameObject object) {
-        if (gameObjectType.isGiftObject(object.getPrefab())) {
+        if (gameObjectType.isGiftObject(object.getType())) {
             addRandomGifts();
         }
     }
 
     private void addRandomGifts() {
-        List<GameObjectTypeEntity> types = gameObjectType.loadAllCraftable();
-        Integer randomIndex = ThreadLocalRandom.current().nextInt(0,types.size());
-        addItem(types.get(randomIndex).getPrefab(),new Long(ThreadLocalRandom.current().nextInt(1,2)));
+        // TODO find better algo for rarity -> probability
+        List<GameObjectType> types = gameObjectType.loadAllCraftable();
+        List<GameObjectType> allIds = new ArrayList<>();
+        for (GameObjectType type : types) {
+            for (Integer i = 1; i < (((MAX_RARITY + 1) - type.getRarity()) * 10); i++) {
+                allIds.add(type);
+            }
+        }
+        Integer randomIndex = ThreadLocalRandom.current().nextInt(0, types.size());
+        GameObjectType randomType = types.get(randomIndex);
+        addItem(randomType.getPrefab(), new Long(ThreadLocalRandom.current().nextInt(1, randomType.getSpawnAmount())));
     }
 
 
@@ -71,10 +83,10 @@ public class InventoryService {
             addRandomGifts();
         }
 
-        for (InventoryEntity inventoryEntity: repository.findByIdentityId(userService.getIdentity().getId())) {
+        for (InventoryEntity inventoryEntity : repository.findByIdentityId(userService.getIdentity().getId())) {
             InventoryItem newItem = new InventoryItem();
             newItem.setAmount(inventoryEntity.getAmount());
-            newItem.setPrefab(inventoryEntity.getGameObjectType().getPrefab());
+            newItem.setType(new GameObjectTypeMappper().toDto(inventoryEntity.getGameObjectType()));
             newItem.setCategoryId(inventoryEntity.getGameObjectType().getGameObjectTypeCategoryEntity().getId());
             newItem.setSupportsUserText(inventoryEntity.getGameObjectType().getSupportsUserText());
             inventory.getItems().add(newItem);
@@ -84,7 +96,7 @@ public class InventoryService {
     }
 
     public void use(GameObject gameObject) {
-        InventoryEntity toUse = getInventoryItemsByPrefab(gameObject.getPrefab());
+        InventoryEntity toUse = getInventoryItemsByPrefab(gameObject.getType().getPrefab());
         if (Objects.isNull(toUse) || (Objects.nonNull(toUse) && (toUse.getAmount().longValue() <= 0))) {
             throw new NotFoundException("Item not in inventory");
         }
@@ -94,11 +106,11 @@ public class InventoryService {
 
     public void addItem(String prefab, Long amount) {
         // get object type by prefab
-        GameObjectTypeEntity objectTypeEntity = gameObjectType.loadByPrefab(prefab);
-        InventoryEntity inventory = repository.findByIdentAndType(userService.getIdentity().getId(),objectTypeEntity.getId());
+        GameObjectType objectType = gameObjectType.loadByPrefab(prefab);
+        InventoryEntity inventory = repository.findByIdentAndType(userService.getIdentity().getId(), objectType.getId());
         if (Objects.isNull(inventory)) {
             inventory = new InventoryEntity();
-            inventory.setGameObjectType(objectTypeEntity);
+            inventory.setGameObjectType(new GameObjectTypeMappper().toEntity(null,objectType));
             inventory.setIdentity(userService.getIdentity());
             inventory.setAmount(new Long(0));
         }
@@ -107,7 +119,7 @@ public class InventoryService {
     }
 
     private InventoryEntity getInventoryItemsByPrefab(String prefab) {
-        GameObjectTypeEntity objectType = gameObjectType.loadByPrefab(prefab);
+        GameObjectType objectType = gameObjectType.loadByPrefab(prefab);
         InventoryEntity inventoryItems =
                 repository.findByIdentAndType(userService.getIdentity().getId(), objectType.getId());
         return inventoryItems;

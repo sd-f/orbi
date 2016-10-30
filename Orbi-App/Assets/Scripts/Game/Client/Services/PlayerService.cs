@@ -21,7 +21,7 @@ namespace GameController.Services
 
         public IEnumerator RequestCraft(ServerModel.Player player)
         {
-            yield return Request("player/craft", JsonUtility.ToJson(player), OnCrafted, player.gameObjectToCraft.prefab);
+            yield return Request("player/craft", JsonUtility.ToJson(player), OnCrafted, player.gameObjectToCraft.type.prefab);
         }
 
         private void OnCrafted(string data, object prefab)
@@ -62,6 +62,8 @@ namespace GameController.Services
             Game.Instance.GetPlayer().GetModel().character.level = player.character.level;
             Game.Instance.GetPlayer().GetModel().character.xp = player.character.xp;
             Game.Instance.GetPlayer().GetModel().character.xr = player.character.xr;
+            Game.Instance.GetPlayer().GetModel().character.nextLevelXp = player.character.nextLevelXp;
+            Game.Instance.GetPlayer().GetModel().character.lastLevelXp = player.character.lastLevelXp;
         }
 
         public IEnumerator RequestDestroy(ServerModel.Player player)

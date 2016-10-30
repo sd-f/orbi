@@ -1,10 +1,12 @@
 package foundation.softwaredesign.orbi.service.game.world;
 
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
+import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.model.game.transform.GeoPosition;
 import foundation.softwaredesign.orbi.model.game.transform.Rotation;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
+import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -21,6 +23,8 @@ public class WorldFactory {
 
     @Inject
     GameObjectService gameObjectService;
+    @Inject
+    GameObjectTypeService gameObjectTypeService;
     @Inject
     ElevationService elevationService;
     @Inject
@@ -68,10 +72,11 @@ public class WorldFactory {
             gameObject.setCreateDate(new Date());
             gameObject.setIdentityId(userService.getIdentity().getId());
             gameObject.getTransform().setRotation(new Rotation(0d,0d,0d));
-            gameObject.setPrefab("ScifiCrate/ScifiCrate_1");
+            GameObjectType type = gameObjectTypeService.loadByPrefab("ScifiCrate/ScifiCrate_1");
             if (gameObject.getName().contains("1")) {
-                gameObject.setPrefab("ScifiCrate/ScifiCrate_2");
+                type = gameObjectTypeService.loadByPrefab("ScifiCrate/ScifiCrate_2");
             }
+            gameObject.setType(type);
             gameObjectService.save(gameObject);
         }
     }

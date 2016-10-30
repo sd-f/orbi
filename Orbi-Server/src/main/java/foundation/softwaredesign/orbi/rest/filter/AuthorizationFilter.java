@@ -64,7 +64,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
             Long id = identityRepository.findIdentityIdByToken(berearStringSplitted[1]);
             identityEntity = identityRepository.findBy(id);
 
-        } catch (NoResultException ex) {
+        } catch (NoResultException|NullPointerException ex) {
             abort(requestContext, "Please log in");
         }
         IdentityThreadLocal.set(identityEntity);

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="objects_order_columns" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN ordering integer DEFAULT 0;</sql>
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN spawn_amount integer DEFAULT 1;</sql>
+        <sql>ALTER TABLE public.game_object_type_category ADD COLUMN ordering integer DEFAULT 0;</sql>
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN rarity integer DEFAULT 0;</sql>
+        <sql>ALTER TABLE public.game_object_type_category DROP COLUMN rarity;</sql>
+    </changeSet>
+    <changeSet id="objects_order_columns_content" author="Lucas Reeh">
+        <sql>update public.game_object_type_category set ordering = 10000 where id = 0</sql>
+        <sql>update public.game_object_type_category set ordering = 20000 where id = 1</sql>
+        <sql>update public.game_object_type_category set ordering = 30000 where id = 4</sql>
+        <sql>update public.game_object_type_category set ordering = 40000 where id = 5</sql>
+        <sql>update public.game_object_type_category set ordering = 50000 where id = 3</sql>
+        <sql>update public.game_object_type_category set ordering = 60000 where id = 2</sql>
+
+        <sql>update public.game_object_type set ordering = 60001 where id = 1</sql>
+        <sql>update public.game_object_type set ordering = 60002, rarity = 3 where id = 2</sql>
+        <sql>update public.game_object_type set ordering = 20001 where id = 3</sql>
+        <sql>update public.game_object_type set ordering = 50001 where id = 9</sql>
+        <sql>update public.game_object_type set ordering = 50002 where id = 21</sql>
+        <sql>update public.game_object_type set ordering = 50003 where id = 22</sql>
+        <sql>update public.game_object_type set ordering = 50004 where id = 23</sql>
+        <sql>update public.game_object_type set ordering = 50005 where id = 24</sql>
+        <sql>update public.game_object_type set ordering = 50007 where id = 14</sql>
+        <sql>update public.game_object_type set ordering = 50008 where id = 25</sql>
+        <sql>update public.game_object_type set ordering = 50009 where id = 26</sql>
+        <sql>update public.game_object_type set ordering = 50010 where id = 27</sql>
+        <sql>update public.game_object_type set ordering = 50011 where id = 28</sql>
+        <sql>update public.game_object_type set ordering = 50012, rarity = 1 where id = 29</sql>
+        <sql>update public.game_object_type set ordering = 50013, rarity = 1 where id = 30</sql>
+        <sql>update public.game_object_type set ordering = 50014, rarity = 1 where id = 12</sql>
+        <sql>update public.game_object_type set ordering = 50015, rarity = 1 where id = 11</sql>
+        <sql>update public.game_object_type set ordering = 50016, rarity = 2 where id = 31</sql>
+        <sql>update public.game_object_type set ordering = 50017, rarity = 2 where id = 32</sql>
+        <sql>update public.game_object_type set ordering = 50018, rarity = 2 where id = 33</sql>
+        <sql>update public.game_object_type set ordering = 50019, rarity = 2 where id = 13</sql>
+        <sql>update public.game_object_type set ordering = 40001, rarity = 2 where id = 61</sql>
+        <sql>update public.game_object_type set ordering = 30001, spawn_amount = 10 where id = 34</sql>
+        <sql>update public.game_object_type set ordering = 30004, rarity = 1, spawn_amount = 10 where id = 40</sql>
+        <sql>update public.game_object_type set ordering = 30002, spawn_amount = 10 where id = 41</sql>
+        <sql>update public.game_object_type set ordering = 30003, spawn_amount = 10 where id = 53</sql>
+    </changeSet>
+
+    <changeSet id="game_object_type_fk_nn" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object ALTER COLUMN game_object_type_id SET NOT NULL;</sql>
+    </changeSet>
+
+</databaseChangeLog>

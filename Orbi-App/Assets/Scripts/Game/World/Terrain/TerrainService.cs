@@ -32,11 +32,16 @@ namespace GameController
 
         private float[,] hm;
         private float[,,] alphaMaps;
-        public static int L_GROUND = 0;
-        public static int L_GRAS = 1;
-        public static int L_STREET = 2;
-        public static int smoothArea = 3;
-        private static int NUM_L = 3;
+        public static int L_WHITE = 1;
+        public static int L_BLACK = 0;
+        public static int L_GROUND = 2;
+        public static int L_GRAS = 3;
+        public static int L_STREET = 4;
+        public static int SMOOTH_PATCH_SIZE = 3;
+        public static float SMOOTH_MAX = SMOOTH_PATCH_SIZE * 2f;
+        private static int NUMBER_OF_USER_LAYERS = 3;
+        private static int USER_LAYER_START_INDEX = 2;
+        private static int USER_LAYERS_END_INDEX = USER_LAYER_START_INDEX + NUMBER_OF_USER_LAYERS;
 
 
         void Start()
@@ -66,46 +71,46 @@ namespace GameController
 
         public void Paint(int x, int y, int layer)
         {
-            Paint(x, y, layer, 1.0f);
             PaintAround(x, y, layer);
+            //Paint(x, y, layer, 1.0f);
+            //
         }
+
 
         public void Paint(int x, int y, int layer, float amount)
         {
             if (IsInsideTerrain(x, y))
             {
-                float rest = (1 - amount) / (NUM_L - 1); // fix
-                for (int l = 0; l < NUM_L; l++)
+                float rest = (1.0f - amount) / (NUMBER_OF_USER_LAYERS - 1.0f); // fix
+                for (int l = USER_LAYER_START_INDEX; l < (USER_LAYERS_END_INDEX); l++)
                     if (l == layer)
                         alphaMaps[x, y, l] = amount;
                     else
-                        alphaMaps[x, y, l] = alphaMaps[x, y, l] * rest;
+                        if (amount != 1.0f) // tuning
+                            alphaMaps[x, y, l] = alphaMaps[x, y, l] * rest;
+                        else
+                            alphaMaps[x, y, l] = 0.0f;
             }
         }
 
+
         private void PaintAround(int x, int y, int layer)
         {
-            float amount;
-            for (int h = -smoothArea; h<= smoothArea; h++) 
-                for (int v = -smoothArea; v<= smoothArea; v++)
-                    if ((h!=0) && (v!=0))
-                    {
-                        amount = (smoothArea*2) / (Math.Abs(h) + Math.Abs(v));
-                        PaintSmooth(x + v, y + h, layer, amount);
-                    }
-                    
-        }
+            float amount = 1;
+            float distance;
+            for (int h = -SMOOTH_PATCH_SIZE; h<= SMOOTH_PATCH_SIZE; h++) 
+                for (int v = -SMOOTH_PATCH_SIZE; v<= SMOOTH_PATCH_SIZE; v++) {
+                    distance = (Math.Abs(h) + Math.Abs(v));
+                    amount = 1.0f;
+                    if (distance != 0)
+                        amount = 1.0f - (0.5f * (distance / SMOOTH_MAX));
+                    Paint(x + v, y + h, layer, amount);
+                }
 
-        private void PaintSmooth(int x, int y, int layer, float amount)
-        {
-            if (IsInsideTerrain(x, y))
-                if (alphaMaps[x, y, layer] != 1.0f)
-                    Paint(x, y, layer, amount);
         }
 
         public void SetAlphaMaps(float[,,] maps)
         {
-            
             terrain.terrainData.SetAlphamaps(0, 0, maps);
         }
 
@@ -113,7 +118,12 @@ namespace GameController
         {
             for (int y = 0; y < amSizeY; y++)
                 for (int x = 0; x < amSizeX; x++)
-                    Paint(x, y, L_GROUND, 1.0f);
+                {
+                    alphaMaps[x, y, L_WHITE] = 0f;
+                    alphaMaps[x, y, L_BLACK] = 0f;
+                    Paint(x, y, L_GRAS, 1.0f);
+                }
+                    
         }
 
         private void PaintForest(List<Vector2> poly)
@@ -181,13 +191,13 @@ namespace GameController
                 for (int y = 0; y < amSizeY; y++)
                 {
                     maxValue = 0;
-                    for (int l = 0; l < NUM_L; l++)
+                    for (int l = 0; l < NUMBER_OF_USER_LAYERS; l++)
                         if (maxValue < maps[x, y, l])
                             maxValue = maps[x, y, l];
                     if (maxValue > 1)
                     {
                         debugFixed++;
-                        for (int l = 0; l < NUM_L; l++)
+                        for (int l = 0; l < NUMBER_OF_USER_LAYERS; l++)
                             maps[x, y, l] = maps[x, y, l] / maxValue;
                     }
                     /*
@@ -206,6 +216,7 @@ namespace GameController
 
         public void PaintTerrainFromMapity()
         {
+            ResetAlpha();
             // Example #1
             // Loop over all the roads in Map-ity
             UnityEngine.GameObject streetLabelPrefab = Game.Instance.GetWorld().streetLabelPrefab;
@@ -243,14 +254,14 @@ namespace GameController
                                 if (((int)step) % (100 + name.Length) == 0)
                                 {
                                     UnityEngine.GameObject streetLabel = UnityEngine.GameObject.Instantiate(streetLabelPrefab, mapContainer.transform) as UnityEngine.GameObject;
-                                    streetLabel.GetComponent<TextMesh>().text = name;
-                                    streetLabel.transform.localPosition = new Vector3(wayPoint.x, 3, wayPoint.z);
+                                    streetLabel.GetComponentInChildren<TextMesh>().text = name;
+                                    streetLabel.transform.localPosition = new Vector3(wayPoint.x, 0, wayPoint.z);
                                     streetLabel.transform.localRotation = Quaternion.LookRotation(stepVector);
                                     streetLabel.transform.Rotate(new Vector3(0f,90f,0f));
 
                                     UnityEngine.GameObject streetLabelReverse = UnityEngine.GameObject.Instantiate(streetLabelPrefab, mapContainer.transform) as UnityEngine.GameObject;
-                                    streetLabelReverse.GetComponent<TextMesh>().text = name;
-                                    streetLabelReverse.transform.localPosition = new Vector3(wayPoint.x, 3, wayPoint.z);
+                                    streetLabelReverse.GetComponentInChildren<TextMesh>().text = name;
+                                    streetLabelReverse.transform.localPosition = new Vector3(wayPoint.x, 0, wayPoint.z);
                                     streetLabelReverse.transform.localRotation = Quaternion.LookRotation(stepVector);
                                     streetLabelReverse.transform.Rotate(new Vector3(0f, -90f, 0f));
                                 }
@@ -396,6 +407,14 @@ namespace GameController
             if (Physics.Raycast(ray, out hit, distanceToCheck, terrainMask))
                 return hit.point.y;
             return 0.0f;
+        }
+
+        public Vector3 ClampPosition(Vector3 vector3)
+        {
+            float boundX = (terrainSize / 2f);
+            float boundY = 600;
+            float boundZ = boundX;
+            return new Vector3(Mathf.Clamp(vector3.x, -boundX, +boundX), Mathf.Clamp(vector3.y, 0, boundY), Mathf.Clamp(vector3.z, -boundY, +boundY));
         }
     }
 

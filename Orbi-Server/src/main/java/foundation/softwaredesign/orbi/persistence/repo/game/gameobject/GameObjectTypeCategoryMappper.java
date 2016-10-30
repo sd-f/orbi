@@ -22,7 +22,6 @@ public class GameObjectTypeCategoryMappper extends SimpleQueryInOutMapperBase<Ga
         GameObjectTypeCategory dto = new GameObjectTypeCategory();
         dto.setId(entity.getId());
         dto.setName(entity.getName());
-        dto.setRarity(entity.getRarity());
         dto.setCraftable(entity.getCraftable());
         dto.setNumberOfItems(new Long(0));
         if (nonNull(entity.getGameObjectTypeEntities())) {
@@ -39,7 +38,6 @@ public class GameObjectTypeCategoryMappper extends SimpleQueryInOutMapperBase<Ga
         }
         newEntity.setCraftable(dto.getCraftable());
         newEntity.setName(dto.getName());
-        newEntity.setRarity(dto.getRarity());
         return newEntity;
     }
 }

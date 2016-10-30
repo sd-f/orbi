@@ -1,5 +1,6 @@
 package foundation.softwaredesign.orbi.service.game.gameobject;
 
+import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectTypeEntity;
 import foundation.softwaredesign.orbi.persistence.repo.game.gameobject.GameObjectTypeRepository;
 
@@ -9,6 +10,9 @@ import javax.persistence.NoResultException;
 import javax.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -21,7 +25,7 @@ public class GameObjectTypeService {
     @Inject
     GameObjectTypeRepository repository;
 
-    public GameObjectTypeEntity load(Long objectTypeId) {
+    public GameObjectType load(Long objectTypeId) {
         try {
             return repository.findBy(objectTypeId);
         } catch (NoResultException ex) {
@@ -29,16 +33,18 @@ public class GameObjectTypeService {
         }
     }
 
-    public List<GameObjectTypeEntity> loadAll() {
-        return repository.findAll();
+    public List<GameObjectType> loadAll() {
+        return repository.findAllOrderByOrdering();
     }
 
-    public List<GameObjectTypeEntity> loadAllCraftable() {
+    public List<GameObjectType> loadAllCraftable() {
         //return repository.findAllCraftable(true);
-        return loadAll().stream().filter(gameObjectTypeEntity -> gameObjectTypeEntity.getGameObjectTypeCategoryEntity().getCraftable()).collect(Collectors.toList());
+        return loadAll().stream()
+                .filter(gameObjectType -> gameObjectType.getCategory().getCraftable())
+                .collect(Collectors.toList());
     }
 
-    public GameObjectTypeEntity loadByPrefab(String prefab) {
+    public GameObjectType loadByPrefab(String prefab) {
         try {
             return repository.findByPrefab(prefab);
         } catch (NoResultException ex) {
@@ -51,7 +57,9 @@ public class GameObjectTypeService {
     }
 
     // TODO contains, not only one item
-    public boolean isGiftObject(String prefab) {
-        return prefab.equals(GIFT_CHEST_OBJECT_TYPE_PREFAB);
+    public boolean isGiftObject(GameObjectType type) {
+        if (isNull(type) || (nonNull(type) && isNull(type)))
+            return false;
+        return type.getPrefab().equals(GIFT_CHEST_OBJECT_TYPE_PREFAB);
     }
 }

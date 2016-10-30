@@ -1,6 +1,7 @@
 package foundation.softwaredesign.orbi.service.game.character;
 
 import foundation.softwaredesign.orbi.model.game.character.Character;
+import foundation.softwaredesign.orbi.model.game.character.CharacterLevel;
 import foundation.softwaredesign.orbi.model.game.transform.GeoPosition;
 import foundation.softwaredesign.orbi.model.game.transform.Position;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
@@ -110,11 +111,10 @@ public class CharacterService {
     }
 
     public void calculateLevel(Character currentCharacter) {
-        currentCharacter.setLevel(new Long(1));
-        if (nonNull(currentCharacter.getXp()) && (currentCharacter.getXp().longValue() != 0)) {
-            long level = (long)((long)Math.log(currentCharacter.getXp()) / Math.log(16));
-            currentCharacter.setLevel(new Long(level + 1l));
-        }
+        CharacterLevel level = CharacterLevel.getLevel(currentCharacter.getXp());
+        currentCharacter.setLevel(level.level());
+        currentCharacter.setNextLevelXp(CharacterLevel.getNextLevel(level).minXp());
+        currentCharacter.setLastLevelXp(level.minXp());
 
     }
 

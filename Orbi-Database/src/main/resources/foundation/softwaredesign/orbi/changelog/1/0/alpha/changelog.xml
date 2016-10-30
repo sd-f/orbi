@@ -79,4 +79,10 @@
     <include file="ORBI-00014/006_motd.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00014/007_inventory_improvements.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00025" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00025" />
+    </changeSet>
+
+    <include file="ORBI-00025/000_objects_ordering.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

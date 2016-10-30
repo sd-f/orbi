@@ -34,7 +34,7 @@ namespace InventoryScene
             userTextForm.SetActive(false);
             Game.Instance.GetPlayer().GetCraftingController().SetUserText(userTextInputField.text);
             foreach(KeyValuePair<int, InventoryItem> item in inventoryCamera.GetObjectsList())
-                if (item.Value.supportsUserText)
+                if (item.Value.type.supportsUserText)
                     GameObjectUtility.TrySettingTextInChildren(item.Value.gameObject, Game.Instance.GetPlayer().GetCraftingController().GetUserText());
            // 
                 

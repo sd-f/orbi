@@ -136,14 +136,14 @@ namespace GameScene
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 Quaternion.Euler(transform.rotation.eulerAngles.x, gyroRotation.y - deltaCompass, 0.0f)
-                , Time.deltaTime * 5f);
+                , Time.deltaTime * 10f);
 
             // x on cam
             cam.transform.rotation = ClampRotationAroundXAxis(
                 Quaternion.Slerp(
                     cam.transform.rotation,
                     Quaternion.Euler(gyroRotation.x, cam.transform.rotation.eulerAngles.y, 0.0f),
-                    Time.deltaTime * 5f
+                    Time.deltaTime * 10f
                     )
             );
         }

@@ -49,7 +49,7 @@ public class PlayerService {
         Long id = player.getSelectedObjectId();
         try {
             GameObject object = gameObjectService.findById(id);
-            inventory.addItem(object.getPrefab(), new Long(1));
+            inventory.addItem(object.getType().getPrefab(), new Long(1));
             inventory.checkForGiftChest(object);
             world.delete(object.getId());
             characterService.incrementXp(CharacterDevelopment.XP_DESTROY);

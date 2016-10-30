@@ -9,7 +9,6 @@ public class GameObjectTypeCategory {
     private String name;
     private Boolean craftable;
     private Long numberOfItems;
-    private Integer rarity;
 
     public Long getId() {
         return id;
@@ -43,11 +42,4 @@ public class GameObjectTypeCategory {
         this.numberOfItems = numberOfItems;
     }
 
-    public Integer getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(Integer rarity) {
-        this.rarity = rarity;
-    }
 }

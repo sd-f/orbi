@@ -17,7 +17,7 @@ public class GameObjectTypeCategoryService {
     GameObjectTypeCategoryRepository repository;
 
     public List<GameObjectTypeCategory> loadAll() {
-        return repository.findAll();
+        return repository.findAllOrderByOrdering();
     }
 
 }

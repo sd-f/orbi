@@ -12,8 +12,8 @@ namespace GameScene
     public class StatsCanvas : MonoBehaviour
     {
         public Text textXp;
-        public Text textXr;
         public Text level;
+        public Image xpBar;
         public Text statsInfoText;
         public GameObject statsInfo;
         public Text newItemsInfoText;
@@ -22,6 +22,7 @@ namespace GameScene
         public GameObject levelUpContainer;
         private bool statsInfoFading = false;
         private bool newItemsInfoFading = false;
+        private long oldLevel = 0;
 
 
         private long inventoryItems = 0;
@@ -86,7 +87,6 @@ namespace GameScene
 
         void UpdateStatsLabels()
         {
-            long oldLevel = Convert.ToInt64(level.text);
             long newLevel = Game.Instance.GetPlayer().GetModel().character.level;
             if ((oldLevel > 0) && (newLevel > oldLevel))
             { 
@@ -102,9 +102,14 @@ namespace GameScene
                 if (inventoryItems < newNumberOfInventoryItems)
                     AddNewItemsInfo("+ " + (newNumberOfInventoryItems - inventoryItems) + " items");
             textXp.text = newXP.ToString();
-            textXr.text = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xr).ToString();
-            level.text = newLevel.ToString();
+            // textXr.text = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xr).ToString();
+            float xpInNextLevel = Game.Instance.GetPlayer().GetModel().character.nextLevelXp - Game.Instance.GetPlayer().GetModel().character.lastLevelXp;
+            float xpInLevel = (float)newXP - Game.Instance.GetPlayer().GetModel().character.lastLevelXp;
+            float xpToGo = xpInLevel / xpInNextLevel;
+            xpBar.fillAmount = xpToGo;
+            level.text = "lvl " + newLevel.ToString();
             inventoryItems = newNumberOfInventoryItems;
+            oldLevel = newLevel;
         }
 
         private void AddStatsInfo(string text)

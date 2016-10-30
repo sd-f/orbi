@@ -22,6 +22,12 @@ public class GameObjectTypeEntity implements Serializable {
     private Boolean supportsUserText;
     @Column(updatable = false, insertable = false)
     private Long categoryId;
+    @Column
+    private Integer rarity;
+    @Column
+    private Integer ordering;
+    @Column
+    private Integer spawnAmount;
     @ManyToOne
     @BatchFetch(BatchFetchType.JOIN)
     @JoinColumn(name = "category_id")
@@ -57,6 +63,30 @@ public class GameObjectTypeEntity implements Serializable {
 
     public void setGameObjectTypeCategoryEntity(GameObjectTypeCategoryEntity gameObjectTypeCategoryEntity) {
         this.gameObjectTypeCategoryEntity = gameObjectTypeCategoryEntity;
+    }
+
+    public Integer getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Integer rarity) {
+        this.rarity = rarity;
+    }
+
+    public Integer getOrdering() {
+        return ordering;
+    }
+
+    public void setOrdering(Integer ordering) {
+        this.ordering = ordering;
+    }
+
+    public Integer getSpawnAmount() {
+        return spawnAmount;
+    }
+
+    public void setSpawnAmount(Integer spawnAmount) {
+        this.spawnAmount = spawnAmount;
     }
 
     public Long getCategoryId() {

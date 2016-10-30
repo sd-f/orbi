@@ -10,21 +10,23 @@ namespace GameScene
     public class UMACreator : MonoBehaviour
     {
 
+        public GameObject character;
         public UMAGeneratorBase generator;
         public SlotLibrary slotLibrary;
         public OverlayLibrary overlayLibrary;
         public RaceLibrary raceLibrary;
         public RuntimeAnimatorController animController;
-        public GameObject characterPrefab;
+        
 
         public GameObject GenerateUMA(GameObject parent, string containerName)
         {
-            GameObject container = GameObject.Instantiate(characterPrefab) as GameObject;
+
+            GameObject container = GameObject.Instantiate(character) as GameObject;
             container.name = containerName;
             container.transform.SetParent(parent.transform);
             container.transform.localPosition = Vector3.zero;
             container.transform.localRotation = Quaternion.identity;
-
+            
             GameObject umaObject = new GameObject(containerName + "_dynamic_avatar");
             umaObject.transform.SetParent(container.transform);
             umaObject.transform.localPosition = Vector3.zero;
@@ -70,7 +72,9 @@ namespace GameScene
         void Created(UMAData data)
         {
             GameObjectUtility.SetLayer(data.gameObject, LayerMask.NameToLayer("Objects"));
-            data.gameObject.transform.parent.gameObject.GetComponent<ThirdPersonCharacter>().SetAnimator(data.gameObject.GetComponent<Animator>());
+            ThirdPersonCharacter character = data.gameObject.transform.parent.gameObject.GetComponent<ThirdPersonCharacter>();
+            Animator animator = data.gameObject.GetComponent<Animator>();
+            character.SetAnimator(animator);
         }
 
         void CreateMale(Uma uma)

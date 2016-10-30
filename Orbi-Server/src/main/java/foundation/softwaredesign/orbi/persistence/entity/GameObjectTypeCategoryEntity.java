@@ -19,10 +19,10 @@ public class GameObjectTypeCategoryEntity implements Serializable {
     @Column
     private String name;
     @Column
+    private Integer ordering;
+    @Column
     @TypeConverter(name = "boolMapper", dataType = Integer.class, objectType = Boolean.class)
     private Boolean craftable;
-    @Column
-    private Integer rarity;
     @OneToMany(mappedBy = "gameObjectTypeCategoryEntity")
     private List<GameObjectTypeEntity> gameObjectTypeEntities;
 
@@ -50,12 +50,12 @@ public class GameObjectTypeCategoryEntity implements Serializable {
         this.craftable = craftable;
     }
 
-    public Integer getRarity() {
-        return rarity;
+    public Integer getOrdering() {
+        return ordering;
     }
 
-    public void setRarity(Integer rarity) {
-        this.rarity = rarity;
+    public void setOrdering(Integer ordering) {
+        this.ordering = ordering;
     }
 
     public List<GameObjectTypeEntity> getGameObjectTypeEntities() {

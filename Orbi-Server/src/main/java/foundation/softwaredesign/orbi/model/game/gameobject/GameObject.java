@@ -13,7 +13,7 @@ public class GameObject {
     private Long id;
     private Transform transform = new Transform();
     private String name;
-    private String prefab;
+    private GameObjectType type;
     private Date createDate;
     private Long identityId;
     private String userText;
@@ -35,12 +35,12 @@ public class GameObject {
         this.id = id;
     }
 
-    public String getPrefab() {
-        return prefab;
+    public GameObjectType getType() {
+        return type;
     }
 
-    public void setPrefab(String prefab) {
-        this.prefab = prefab;
+    public void setType(GameObjectType type) {
+        this.type = type;
     }
 
     @Override

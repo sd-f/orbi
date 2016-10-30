@@ -103,7 +103,7 @@ namespace GameController
 
         void CreateObject(ServerModel.GameObject newObject)
         {
-            GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.prefab, newObject.id, "DynamicGameObject");
+            GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.type.prefab, newObject.id, "DynamicGameObject");
             if (!String.IsNullOrEmpty(newObject.userText))
                 GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
             GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));

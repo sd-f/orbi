@@ -50,7 +50,7 @@ namespace GameScene
             if (!IsInvoking("UpdateTransformInModel"))
                 InvokeRepeating("UpdateTransformInModel", 1f, 1f);
             if (!IsInvoking("UpdateDeltaCompass"))
-                Invoke("UpdateDeltaCompass", 1f);
+                Invoke("UpdateDeltaCompass", 0.1f);
         }
 
 

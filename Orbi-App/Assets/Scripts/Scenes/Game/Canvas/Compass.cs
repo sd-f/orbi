@@ -9,8 +9,9 @@ namespace GameScene
     class Compass : MonoBehaviour
     {
 #pragma warning disable 0649
-        public Image compassImage;
+        //public Image compassImage;
         public Image buttonBackground;
+        public Text compassIcon;
         public GameObject playerBody;
 
         private float heading = 0.0f;
@@ -41,8 +42,8 @@ namespace GameScene
         void Update()
         {
             heading = Mathf.LerpAngle(heading, Input.compass.trueHeading, Time.deltaTime * 5f);
-            compassImage.transform.rotation = Quaternion.Slerp(compassImage.transform.rotation, Quaternion.Euler(0, 0, heading), Time.deltaTime * 2);
-            Game.Instance.GetLocation().SetCompassValue(compassImage.transform.rotation.eulerAngles.z);
+            compassIcon.transform.rotation = Quaternion.Slerp(compassIcon.transform.rotation, Quaternion.Euler(0, 0, heading), Time.deltaTime * 2);
+            Game.Instance.GetLocation().SetCompassValue(compassIcon.transform.rotation.eulerAngles.z);
         }
 
         void CheckIfNorth() {

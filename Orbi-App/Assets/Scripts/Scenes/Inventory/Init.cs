@@ -32,6 +32,20 @@ namespace InventoryScene
             StartCoroutine(LoadInventory());
         }
 
+        private Color GetItemColor(ServerModel.GameObjectType type)
+        {
+            int rarity = type.rarity;
+            if (rarity == 1)
+                return Color.gray;
+            else if (rarity == 2)
+                return Color.green;
+            else if (rarity == 3)
+                return Color.blue;
+            else if (rarity == 4)
+                return Color.yellow;
+            return Color.black;
+        }
+
         IEnumerator LoadInventory()
         {
             CraftingController controller = Game.Instance.GetPlayer().GetCraftingController();
@@ -86,8 +100,8 @@ namespace InventoryScene
                             itemAmountText.transform.localPosition = new Vector3(0f, -0.25f, 0f);
                             ShadowText text = itemAmountText.GetComponent<ShadowText>();
                             text.SetText("x " + item.amount);
-                            text.SetForeGroundColor(Color.white);
-                            text.SetShadowColor(Color.black);
+                            text.SetForeGroundColor(GetItemColor(item.type));
+                            text.SetShadowColor(Color.white);
                             text.SetAlignment(TextAlignment.Center, TextAnchor.MiddleCenter);
                             GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.type.prefab, id, null, layers);
                             newObject.AddComponent<InventoryObjectSelected>();
@@ -115,7 +129,7 @@ namespace InventoryScene
                         GameObjectUtility.SetLayer(itemAmountText, layers);
                         ShadowText text = itemAmountText.GetComponent<ShadowText>();
                         text.SetText("?");
-                        text.SetForeGroundColor(Color.gray);
+                        text.SetForeGroundColor(Color.grey);
                         text.SetShadowColor(Color.white);
                         text.SetAlignment(TextAlignment.Center, TextAnchor.MiddleCenter);
                         id++;

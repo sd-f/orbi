@@ -9,19 +9,14 @@ import foundation.softwaredesign.orbi.persistence.repo.game.character.CharacterR
 import foundation.softwaredesign.orbi.persistence.repo.game.character.CharacterStatisticsRepository;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.world.WorldAdapterService;
-import org.apache.commons.lang3.RandomStringUtils;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import org.apache.commons.lang3.RandomStringUtils;
 
-import static java.util.Objects.isNull;
+
 import static java.util.Objects.nonNull;
 
 /**
@@ -30,97 +25,97 @@ import static java.util.Objects.nonNull;
 @RequestScoped
 public class CharacterService {
 
-    @Inject
-    CharacterRepository repository;
-    @Inject
-    CharacterStatisticsRepository statisticsRepository;
-    @Inject
-    UserService user;
-    @Inject
-    WorldAdapterService worldAdapter;
+  @Inject
+  CharacterRepository repository;
+  @Inject
+  CharacterStatisticsRepository statisticsRepository;
+  @Inject
+  UserService user;
+  @Inject
+  WorldAdapterService worldAdapter;
 
-    public Character loadByIdentityId(Long identityId) {
-        return repository.findByIdentityId(identityId);
+  public Character loadByIdentityId(Long identityId) {
+    return repository.findByIdentityId(identityId);
+  }
+
+  public Character loadById(Long id) {
+    return repository.findBy(id);
+  }
+
+  public Character loadCurrent() {
+    Long identityId = user.getIdentity().getId();
+    Character character = loadByIdentityId(identityId);
+
+    return character;
+  }
+
+  public void calculateExperienceRank(Character character) {
+    Long maxXp = statisticsRepository.findMaxXp();
+    Long xr = new Long(0);
+    if (nonNull(maxXp) && !maxXp.equals(new Long(0)) && !character.getXp().equals(new Long(0))) {
+      Double xp = character.getXp().doubleValue();
+      Double maxXPDouble = maxXp.doubleValue();
+      Double percentage = xp / maxXPDouble * 100d;
+      xr = percentage.longValue();
     }
+    character.setXr(xr);
+  }
 
-    public Character loadById(Long id) {
-        return repository.findBy(id);
-    }
+  public Character incrementXp(Long by) {
+    Character character = loadCurrent();
+    character.setXp(character.getXp() + by);
+    return repository.saveAndFlushAndRefresh(character);
+  }
 
-    public Character loadCurrent() {
-        Long identityId = user.getIdentity().getId();
-        Character character = loadByIdentityId(identityId);
+  public Character create(Long identityId) {
+    Character currentCharacter = new Character();
+    currentCharacter.setLastSeen(new Date());
+    currentCharacter.setTransform(new Transform());
+    currentCharacter.setXp(new Long(0));
+    currentCharacter.setIdentityId(identityId);
+    currentCharacter.setName(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
+    return currentCharacter;
+  }
 
-        return character;
-    }
+  public Character save(Character character) {
+    return repository.saveAndFlushAndRefresh(character);
+  }
 
-    public void calculateExperienceRank(Character character) {
-        Long maxXp = statisticsRepository.findMaxXp();
-        Long xr = new Long(0);
-        if (nonNull(maxXp) && !maxXp.equals(new Long(0)) && !character.getXp().equals(new Long(0))) {
-            Double xp = character.getXp().doubleValue();
-            Double maxXPDouble = maxXp.doubleValue();
-            Double percentage = xp / maxXPDouble * 100d;
-            xr = percentage.longValue();
-        }
-        character.setXr(xr);
-    }
+  public Character updateTransform(Transform newTransform) {
+    Character currentCharacter = loadCurrent();
+    currentCharacter.setTransform(newTransform);
+    currentCharacter.setLastSeen(new Date());
+    return save(currentCharacter);
+  }
 
-    public Character incrementXp(Long by) {
-        Character character = loadCurrent();
-        character.setXp(character.getXp() + by);
-        return repository.saveAndFlushAndRefresh(character);
-    }
+  public List<Character> getCharactersAround(GeoPosition geoPosition) {
+    Character mySelf = loadCurrent();
+    GeoPosition north = worldAdapter.toGeo(new Position(0d, 0d, 128d), geoPosition);
+    GeoPosition south = worldAdapter.toGeo(new Position(0d, 0d, -128d), geoPosition);
+    GeoPosition west = worldAdapter.toGeo(new Position(-128d, 0d, 0d), geoPosition);
+    GeoPosition east = worldAdapter.toGeo(new Position(128d, 0d, 0d), geoPosition);
+    List<Character> characterList = repository.findCharactersAround(north.getLatitude(), south.getLatitude(), west.getLongitude(), east.getLongitude());
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.MINUTE, -1);
+    characterList.removeIf(character -> (character.getId().equals(mySelf.getId()) || character.getLastSeen().before(cal.getTime())));
+    return characterList;
+  }
 
-    public Character create(Long identityId) {
-        Character currentCharacter = new Character();
-        currentCharacter.setLastSeen(new Date());
-        currentCharacter.setTransform(new Transform());
-        currentCharacter.setXp(new Long(0));
-        currentCharacter.setIdentityId(identityId);
-        currentCharacter.setName(RandomStringUtils.randomAlphanumeric(10).toUpperCase());
-        return currentCharacter;
-    }
+  public Long count() {
+    return statisticsRepository.countAllCharacters();
+  }
 
-    public Character save(Character character) {
-        return repository.saveAndFlushAndRefresh(character);
-    }
+  public void calculateLevel(Character currentCharacter) {
+    CharacterLevel level = CharacterLevel.getLevel(currentCharacter.getXp());
+    currentCharacter.setLevel(level.level());
+    currentCharacter.setNextLevelXp(CharacterLevel.getNextLevel(level).minXp());
+    currentCharacter.setLastLevelXp(level.minXp());
 
-    public Character updateTransform(Transform newTransform) {
-        Character currentCharacter = loadCurrent();
-        currentCharacter.setTransform(newTransform);
-        currentCharacter.setLastSeen(new Date());
-        return save(currentCharacter);
-    }
+  }
 
-    public List<Character> getCharactersAround(GeoPosition geoPosition) {
-        Character mySelf = loadCurrent();
-        GeoPosition north = worldAdapter.toGeo(new Position(0d,0d,128d), geoPosition);
-        GeoPosition south = worldAdapter.toGeo(new Position(0d,0d,-128d), geoPosition);
-        GeoPosition west = worldAdapter.toGeo(new Position(-128d,0d,0d), geoPosition);
-        GeoPosition east = worldAdapter.toGeo(new Position(128d,0d,0d), geoPosition);
-        List<Character> characterList = repository.findCharactersAround(north.getLatitude(),south.getLatitude(),west.getLongitude(),east.getLongitude());
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MINUTE, -1);
-        characterList.removeIf(character -> (character.getId().equals(mySelf.getId()) || character.getLastSeen().before(cal.getTime())));
-        return characterList;
-    }
-
-    public Long count() {
-        return statisticsRepository.countAllCharacters();
-    }
-
-    public void calculateLevel(Character currentCharacter) {
-        CharacterLevel level = CharacterLevel.getLevel(currentCharacter.getXp());
-        currentCharacter.setLevel(level.level());
-        currentCharacter.setNextLevelXp(CharacterLevel.getNextLevel(level).minXp());
-        currentCharacter.setLastLevelXp(level.minXp());
-
-    }
-
-    public void gifted() {
-        Character currentCharacter = loadCurrent();
-        currentCharacter.setGiftedOn(new Date());
-        repository.saveAndFlushAndRefresh(currentCharacter);
-    }
+  public void gifted() {
+    Character currentCharacter = loadCurrent();
+    currentCharacter.setGiftedOn(new Date());
+    repository.saveAndFlushAndRefresh(currentCharacter);
+  }
 }

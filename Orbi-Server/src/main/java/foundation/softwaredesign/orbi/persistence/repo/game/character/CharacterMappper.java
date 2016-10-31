@@ -49,6 +49,7 @@ public class CharacterMappper extends SimpleQueryInOutMapperBase<CharacterEntity
         if (isNull(characterEntity)) {
             newEntity = new CharacterEntity();
         }
+        newEntity.setId(character.getId());
         newEntity.setIdentityId(character.getIdentityId());
         if (nonNull(character.getTransform())) {
             if (nonNull(character.getTransform().getGeoPosition())) {

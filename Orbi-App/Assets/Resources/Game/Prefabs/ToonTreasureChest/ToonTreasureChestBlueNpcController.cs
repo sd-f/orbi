@@ -8,7 +8,7 @@ public class ToonTreasureChestBlueNpcController : ThirdPersonCharacter {
     private AICharacterControl ai;
     private ThirdPersonCharacter thirdPersonController;
     private GameObject target;
-    private Vector3 targetVector = new Vector3();
+    private Vector3 targetVector = new Vector3(0,0,0);
     private static float MOVE_RADIUS = 10f;
     float m_restTime = 0f;
 

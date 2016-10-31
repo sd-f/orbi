@@ -107,7 +107,8 @@ namespace GameScene
             float xpInLevel = (float)newXP - Game.Instance.GetPlayer().GetModel().character.lastLevelXp;
             float xpToGo = xpInLevel / xpInNextLevel;
             xpBar.fillAmount = xpToGo;
-            level.text = "lvl " + newLevel.ToString();
+            string levelText = "lvl " + newLevel.ToString();
+            level.text = levelText;
             inventoryItems = newNumberOfInventoryItems;
             oldLevel = newLevel;
         }

@@ -1,4 +1,5 @@
 ﻿using GameController;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,19 +11,22 @@ namespace GameScene
 #pragma warning disable 0649
         public Camera playerCamera;
         public GameObject buttonImage;
-        public Sprite cameraSprite;
-        public Sprite mapsSprite;
+        public Text icon;
         public RawImage image;
         private WebCamTexture webcamTexture;
+
+        void Start()
+        {
+            if (Game.Instance.GetWorld().backGroundLayerMask == Game.Instance.GetWorld().backgroundLayersCamera)
+            {
+                OnSwitchView();
+            }
+        }
 
         void Awake()
         {
             webcamTexture = new WebCamTexture();
             image.material.mainTexture = webcamTexture;
-            if (Game.Instance.GetWorld().backGroundLayerMask == Game.Instance.GetWorld().backgroundLayersCamera)
-            {
-                OnSwitchView();
-            }
         }
 
         // camera, terrain switch
@@ -30,20 +34,26 @@ namespace GameScene
         {
             if (playerCamera.cullingMask == Game.Instance.GetWorld().backgroundLayersTerrain)
             {
-                buttonImage.GetComponent<Image>().sprite = mapsSprite;
+                icon.text = '\uf041'.ToString();
                 webcamTexture.Play();
                 playerCamera.cullingMask = Game.Instance.GetWorld().backgroundLayersCamera;
-                playerCamera.clearFlags = CameraClearFlags.Depth;
+                //playerCamera.clearFlags = CameraClearFlags.SolidColor;
                 Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersCamera;
             }
             else
             {
-                buttonImage.GetComponent<Image>().sprite = cameraSprite;
+                icon.text = '\uf030'.ToString();
                 webcamTexture.Stop();
                 playerCamera.cullingMask = Game.Instance.GetWorld().backgroundLayersTerrain;
-                playerCamera.clearFlags = CameraClearFlags.Skybox;
+                //playerCamera.clearFlags = CameraClearFlags.Skybox;
                 Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersTerrain;
             }
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Y))
+                OnSwitchView();
         }
 
 

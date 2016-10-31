@@ -74,10 +74,7 @@ public class WorldService {
             lastGifted = calTmp.getTime();
         }
         if (lastGifted.before(cal.getTime())) {
-            if (objects.stream().filter(gameObject -> {
-                GameObjectType type = gameObject.getType();
-                return gameObjectTypeService.isGiftObject(gameObject.getType());
-            }).count() <= MAX_GIFTS_AROUND) {
+            if (objects.stream().filter(gameObject -> gameObjectTypeService.isGiftObject(gameObject.getType())).count() <= MAX_GIFTS_AROUND) {
                 GameObject gift = new GameObject();
                 gift.setIdentityId(userService.getIdentity().getId());
                 gift.setType(gameObjectTypeService.loadByPrefab(GameObjectTypeService.GIFT_CHEST_OBJECT_TYPE_PREFAB));

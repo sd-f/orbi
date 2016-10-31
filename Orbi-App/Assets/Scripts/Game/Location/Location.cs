@@ -19,6 +19,10 @@ namespace GameController
         private float compassDelta = 0.0f;
         private bool deltaUpdated = false;
 
+        // for debug in editor only
+        public double latitude = 0.0f;
+        public double longitude = 0.0f;
+
         void Start()
         {
             if (Game.Instance.GetClient().randomLocation)
@@ -70,6 +74,8 @@ namespace GameController
 
         void UpdateLocation()
         {
+            this.latitude = position.latitude;
+            this.longitude = position.longitude;
             if (!paused)
             {
                 position.latitude = Input.location.lastData.latitude;

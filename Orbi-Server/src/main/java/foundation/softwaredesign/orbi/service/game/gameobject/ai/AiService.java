@@ -48,7 +48,7 @@ public class AiService {
 
             if (isNull(properties.getLastTargetUpdate())
                     || (nonNull(properties.getLastTargetUpdate())
-                    && DateComparator.isTimeOlderThan(Calendar.SECOND, -30, properties.getLastTargetUpdate()))) {
+                    && DateComparator.isTimeOlderThan(Calendar.SECOND, ThreadLocalRandom.current().nextInt(10, 30), properties.getLastTargetUpdate()))) {
                 properties.setLastTargetUpdate(new Date());
                 setNewRandomAiTarget(aiGameObject);
             }

@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -82,8 +83,8 @@ public class InventoryService {
             characterService.incrementXp(CharacterDevelopment.XP_LOGIN);
             addRandomGifts();
         }
-
-        for (InventoryEntity inventoryEntity : repository.findByIdentityId(userService.getIdentity().getId())) {
+        List<InventoryEntity> items = loadCraftable();
+        for (InventoryEntity inventoryEntity : items) {
             InventoryItem newItem = new InventoryItem();
             newItem.setAmount(inventoryEntity.getAmount());
             newItem.setType(new GameObjectTypeMappper().toDto(inventoryEntity.getGameObjectType()));
@@ -93,6 +94,13 @@ public class InventoryService {
         }
         inventory.setCategories(gameObjectTypeCategory.loadAll());
         return inventory;
+    }
+
+    private List<InventoryEntity> loadCraftable() {
+        return repository.findByIdentityId(userService.getIdentity().getId())
+                .stream()
+                .filter(inventoryEntity -> inventoryEntity.getGameObjectType().getGameObjectTypeCategoryEntity().getCraftable())
+                .collect(Collectors.toList());
     }
 
     public void use(GameObject gameObject) {

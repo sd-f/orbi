@@ -12,10 +12,11 @@ namespace GameScene
         //public Image compassImage;
         public Image buttonBackground;
         public Text compassIcon;
-        public GameObject playerBody;
+        public PlayerBodyController controller;
 
         private float heading = 0.0f;
         private bool headingNorth = false;
+
 
         void Start()
         {
@@ -68,7 +69,8 @@ namespace GameScene
 
         public void OnCalibrate()
         {
-            playerBody.GetComponent<PlayerBodyController>().UpdateDeltaCompass();
+            Game.Instance.GetLocation().SetDeltaUpdated(false);
+            controller.UpdateDeltaCompass();
         }
 
         private bool isNorth()

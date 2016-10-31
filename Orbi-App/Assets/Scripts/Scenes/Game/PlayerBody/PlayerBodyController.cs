@@ -40,6 +40,8 @@ namespace GameScene
             Input.gyro.enabled = true;
             // restore rotation + position
             SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
+            Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
+            deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
 
         }
 
@@ -50,7 +52,7 @@ namespace GameScene
             if (!IsInvoking("UpdateTransformInModel"))
                 InvokeRepeating("UpdateTransformInModel", 1f, 1f);
             if (!IsInvoking("UpdateDeltaCompass"))
-                Invoke("UpdateDeltaCompass", 0.1f);
+                Invoke("UpdateDeltaCompass", 2f);
         }
 
 
@@ -115,8 +117,12 @@ namespace GameScene
 
         public void UpdateDeltaCompass()
         {
-            Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
-            deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
+            if (!Game.Instance.GetLocation().IsDeltaUpdated())
+            {
+                Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
+                deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
+            }
+            Game.Instance.GetLocation().SetDeltaUpdated(true);
         }
 
         void ApplyGyroRotation()

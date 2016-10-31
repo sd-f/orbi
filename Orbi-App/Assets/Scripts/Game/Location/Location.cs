@@ -17,6 +17,7 @@ namespace GameController
         private bool ready = false;
         private float compassValue = 0.0f;
         private float compassDelta = 0.0f;
+        private bool deltaUpdated = false;
 
         void Start()
         {
@@ -45,6 +46,16 @@ namespace GameController
             Sensor.Activate(Sensor.Type.Gyroscope);
             SensorHelper.ActivateRotation();
             Input.location.Start();
+        }
+
+        public bool IsDeltaUpdated()
+        {
+            return this.deltaUpdated;
+        }
+
+        public void SetDeltaUpdated(bool updated)
+        {
+            this.deltaUpdated = updated;
         }
 
         public bool IsReady()

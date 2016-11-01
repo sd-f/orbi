@@ -149,18 +149,27 @@ namespace GameController.Services
                     return;
                 if ((code == 505))
                 {
-                    StartCoroutine(RedirectToUpdateSite());
+                    StartCoroutine(ShowUpdateInfo());
                     return;
                 }
                 Error.Show(message);
             }
         }
 
+        System.Collections.IEnumerator ShowUpdateInfo()
+        {
+            Warning.Show("Update required");
+            yield return new WaitForSeconds(5);
+            Application.OpenURL("https://softwaredesign.foundation/orbi/");
+            StartCoroutine(RedirectToUpdateSite());
+            Application.Quit();
+        }
+
         System.Collections.IEnumerator RedirectToUpdateSite()
         {
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             Application.OpenURL("https://softwaredesign.foundation/orbi/");
-            Application.Quit();
+            yield break;
         }
 
         public void IndicateRequestStart()

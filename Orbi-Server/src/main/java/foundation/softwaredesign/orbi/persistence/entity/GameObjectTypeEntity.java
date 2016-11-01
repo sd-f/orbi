@@ -32,6 +32,9 @@ public class GameObjectTypeEntity implements Serializable {
     @Column
     @NotNull
     private Boolean ai;
+    @Column
+    @NotNull
+    private Boolean gift;
     @ManyToOne
     @BatchFetch(BatchFetchType.JOIN)
     @JoinColumn(name = "category_id")
@@ -107,5 +110,13 @@ public class GameObjectTypeEntity implements Serializable {
 
     public void setAi(Boolean ai) {
         this.ai = ai;
+    }
+
+    public Boolean getGift() {
+        return gift;
+    }
+
+    public void setGift(Boolean gift) {
+        this.gift = gift;
     }
 }

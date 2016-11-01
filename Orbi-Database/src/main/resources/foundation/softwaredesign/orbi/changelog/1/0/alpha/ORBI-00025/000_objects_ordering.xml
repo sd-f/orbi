@@ -69,4 +69,10 @@
         <sql>update public.game_object_type set ai = 1 where id = 3</sql>
     </changeSet>
 
+    <changeSet id="objects_type_gift_col" author="Lucas Reeh">
+        <sql>ALTER TABLE public.game_object_type ADD COLUMN gift smallint NOT NULL DEFAULT 0;</sql>
+        <sql>update public.game_object_type set gift = 1 where id = 3</sql>
+    </changeSet>
+
+
 </databaseChangeLog>

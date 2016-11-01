@@ -84,5 +84,6 @@
     </changeSet>
 
     <include file="ORBI-00025/000_objects_ordering.xml" relativeToChangelogFile="true"/>
+    <include file="ORBI-00025/001_objects_dragons.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

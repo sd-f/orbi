@@ -10,7 +10,8 @@ public class DateComparator {
 
     public static Boolean isTimeOlderThan(int field, int amount, Date olderThan) {
         Calendar cal = Calendar.getInstance();
-        cal.add(field,amount);
-        return olderThan.before(cal.getTime());
+        cal.add(field,-amount);
+        Date beforeDate = cal.getTime();
+        return olderThan.before(beforeDate);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using ClientModel;
 using UnityEngine;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 namespace GameController
 {
@@ -115,16 +116,40 @@ namespace GameController
             }
         }
 
+        internal static void UnFreeze(GameObject obj, RigidbodyConstraints constraints)
+        {
+            if (obj.GetComponent<Rigidbody>() != null)
+                obj.GetComponent<Rigidbody>().constraints = constraints;
+            if (obj.GetComponent<NavMeshAgent>() != null)
+            {
+                obj.GetComponent<NavMeshAgent>().updatePosition = true;
+                obj.GetComponent<NavMeshAgent>().enabled = true;
+            }
+            foreach (UnityEngine.Transform child in obj.transform)
+                UnFreeze(child.gameObject, constraints);
+        }
+
+        internal static void DisableAI(GameObject obj)
+        {
+            if (obj.GetComponent<AICharacterControl>() != null)
+            {
+                obj.GetComponent<AICharacterControl>().enabled = false;
+            }
+            foreach (UnityEngine.Transform child in obj.transform)
+                DisableAI(child.gameObject);
+        }
+
         internal static void Freeze(GameObject obj)
         {
             if (obj.GetComponent<Rigidbody>() != null)
-            {
                 obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            if (obj.GetComponent<NavMeshAgent>() != null)
+            {
+                obj.GetComponent<NavMeshAgent>().updatePosition = false;
+                obj.GetComponent<NavMeshAgent>().enabled = false;
             }
             foreach (UnityEngine.Transform child in obj.transform)
-            {
                 Freeze(child.gameObject);
-            }
         }
 
         public static GameObject FindChildWithName(GameObject obj, string name)
@@ -151,9 +176,9 @@ namespace GameController
             return null;
         }
 
-        internal static void Transform(GameObject gameObject, ClientModel.Transform transform)
+        internal static void Transform(GameObject gameObject, ClientModel.Transform transform, bool onNavMesh)
         {
-            Translate(gameObject, transform.geoPosition);
+            Translate(gameObject, transform.geoPosition, onNavMesh);
             Rotate(gameObject, transform.rotation);
             
         }
@@ -169,9 +194,21 @@ namespace GameController
                 
         }
 
-        internal static void Translate(GameObject gameObject, ServerModel.GeoPosition geoPosition)
+        internal static void Translate(GameObject gameObject, ServerModel.GeoPosition geoPosition, bool onNavMesh)
         {
             Vector3 b = geoPosition.ToPosition().ToVector3();
+            if (onNavMesh)
+            {
+                b = Game.Instance.GetWorld().GetTerrainService().ClampPosition(b);
+                NavMeshHit hit;
+                if (NavMesh.SamplePosition(b, out hit, 20f, 1))
+                {
+                    b = hit.position;
+                    //Debug.Log(gameObject.name + " hit " + b);
+                }
+                //Debug.Log(gameObject.name + " " + b);
+            }
+            
             if (!V3Equal(gameObject.transform.position,b))
             {
                 gameObject.transform.position = b;

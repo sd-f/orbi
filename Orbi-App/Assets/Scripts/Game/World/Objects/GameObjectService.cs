@@ -58,7 +58,10 @@ namespace GameController
                     child.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3(0f, (float)oldCharacter.transform.rotation.y, 0f)));
             foreach (Transform child in oldCharacter.gameObject.transform)
                 if (child.name.Equals("uma_target_" + oldCharacter.id))
-                    GameObjectUtility.Transform(child.gameObject, oldCharacter.transform);
+                {
+                    GameObjectUtility.Transform(child.gameObject, oldCharacter.transform, true);
+                }
+                    
         }
 
         void CreateCharacter(ServerModel.Character newCharacter)
@@ -70,20 +73,15 @@ namespace GameController
             newObjectContainer.transform.SetParent(charactersContainer.transform);
             newObjectContainer.tag = "DynamicCharacter";
             GameObjectUtility.SetLayer(newObjectContainer, LayerMask.NameToLayer("Objects"));
-            GameObjectUtility.Transform(newObjectContainer, newCharacter.transform);
+            GameObjectUtility.Transform(newObjectContainer, newCharacter.transform, true);
 
 
             GameObject newObject = Game.Instance.GetWorld().GetUMACreator().GenerateUMA(newObjectContainer, "uma_" + newCharacter.id);
             newObject.GetComponent<CharacterProperties>().SetCharacter(newCharacter);
             GameObjectUtility.SetLayer(newObject, LayerMask.NameToLayer("Objects"));
 
-            GameObject newObjectTarget = new GameObject();
-            GameObjectUtility.SetLayer(newObjectTarget, LayerMask.NameToLayer("Objects"));
-            newObjectTarget.name = "uma_target_" + newCharacter.id;
-            newObjectTarget.transform.SetParent(newObjectContainer.transform);
-
-            newObject.GetComponent<AICharacterControl>().SetTarget(newObjectTarget.transform);
-
+            newObject.GetComponent<ThirdPersonCharacter>().SetTarget(Game.Instance.GetWorld().GetTerrainService().ClampPosition(newObject.transform.position));
+            newObject.GetComponent<ThirdPersonCharacter>().Unfreeze();
             //newObject.gameObject.GetComponent<UMAMovement>().SetTransform(newObjectTarget.transform);
         }
 
@@ -99,7 +97,7 @@ namespace GameController
         {
             UpdateAi(oldObject.gameObject, newObject);
             oldObject.transform = newObject.transform;
-            GameObjectUtility.Transform(oldObject.gameObject, newObject.transform);
+            GameObjectUtility.Transform(oldObject.gameObject, newObject.transform, (newObject.type.ai));
         }
 
 
@@ -109,21 +107,25 @@ namespace GameController
             if (!String.IsNullOrEmpty(newObject.userText))
                 GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
             GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
-            if (newObject.type.ai)
-                UpdateAi(newGameObject, newObject);
+            UpdateAi(newGameObject, newObject);
             newObject.gameObject = newGameObject;
             oldObjects.Add(newObject);
-            GameObjectUtility.Transform(newGameObject, newObject.transform);
+            GameObjectUtility.Transform(newGameObject, newObject.transform, (newObject.type.ai));
         }
 
 
 
         private void UpdateAi(UnityEngine.GameObject gameObject, ServerModel.GameObject newObject)
         {
-            ToonTreasureChestBlueNpcController controller = gameObject.GetComponentInChildren<ToonTreasureChestBlueNpcController>();
-            if (controller != null)
+            if (newObject.type.ai)
             {
-                controller.SetTarget(newObject.aiProperties.target.geoPosition.ToPosition().ToVector3());
+                ThirdPersonCharacter controller = gameObject.GetComponentInChildren<ThirdPersonCharacter>();
+                if (controller != null)
+                {
+                    controller.SetTarget(newObject.aiProperties.target.geoPosition.ToPosition().ToVector3());
+                    controller.Unfreeze();
+                }
+                GameObjectUtility.UnFreeze(gameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
             }
         }
 
@@ -133,10 +135,12 @@ namespace GameController
             foreach (ServerModel.GameObject newObject in newObjects)
             {
                 ServerModel.GameObject oldObject = oldObjects.Find(o => o.id == newObject.id);
+                
                 if (oldObject != null)
                     UpdateObject(oldObject, newObject);
                 else
                     CreateObject(newObject);
+                    
             }
             foreach (ServerModel.GameObject oldObject in oldObjects)
                 if (newObjects.Find(o => o.id == oldObject.id) == null)

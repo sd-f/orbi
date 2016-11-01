@@ -16,6 +16,7 @@ public class GameObjectType {
     private Integer spawnAmount;
     private Boolean supportsUserText;
     private Boolean ai;
+    private Boolean gift;
     @XmlTransient
     private Long categoryId;
     private GameObjectTypeCategory category;
@@ -90,5 +91,13 @@ public class GameObjectType {
 
     public void setAi(Boolean ai) {
         this.ai = ai;
+    }
+
+    public Boolean getGift() {
+        return gift;
+    }
+
+    public void setGift(Boolean gift) {
+        this.gift = gift;
     }
 }

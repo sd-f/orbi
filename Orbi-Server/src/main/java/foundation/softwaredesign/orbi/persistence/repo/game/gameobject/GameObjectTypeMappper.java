@@ -27,6 +27,7 @@ public class GameObjectTypeMappper extends SimpleQueryInOutMapperBase<GameObject
         dto.setOrdering(entity.getOrdering());
         dto.setSpawnAmount(entity.getSpawnAmount());
         dto.setSupportsUserText(entity.getSupportsUserText());
+        dto.setGift(entity.getGift());
         dto.setAi(entity.getAi());
         if (nonNull(entity.getGameObjectTypeCategoryEntity()))
             dto.setCategory(new GameObjectTypeCategoryMappper().toDto(entity.getGameObjectTypeCategoryEntity()));
@@ -46,6 +47,7 @@ public class GameObjectTypeMappper extends SimpleQueryInOutMapperBase<GameObject
         newEntity.setSupportsUserText(dto.getSupportsUserText());
         newEntity.setSpawnAmount(dto.getSpawnAmount());
         newEntity.setOrdering(dto.getOrdering());
+        newEntity.setGift(dto.getGift());
         newEntity.setAi(dto.getAi());
         return newEntity;
     }

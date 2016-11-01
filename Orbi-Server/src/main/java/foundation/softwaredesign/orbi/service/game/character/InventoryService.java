@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class InventoryService {
 
     private static final String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
-    private static final Integer MAX_RARITY = 3;
+    public static final Integer MAX_RARITY = 4;
 
     @Inject
     InventoryRepository repository;
@@ -48,22 +48,27 @@ public class InventoryService {
     }
 
     private void addRandomGifts() {
-        // TODO find better algo for rarity -> probability
         List<GameObjectType> types = gameObjectType.loadAllCraftable();
-        List<GameObjectType> allIds = new ArrayList<>();
-        for (GameObjectType type : types) {
-            for (Integer i = 1; i < (((MAX_RARITY + 1) - type.getRarity()) * 10); i++) {
-                allIds.add(type);
-            }
-        }
-        Integer randomIndex = ThreadLocalRandom.current().nextInt(0, types.size());
-        GameObjectType randomType = types.get(randomIndex);
+        GameObjectType randomType = getRandomTypeByRarity(types);
         Long randomAmount = new Long(1);
         if (randomType.getSpawnAmount() > 1)
             randomAmount = new Long(ThreadLocalRandom.current().nextInt(1, randomType.getSpawnAmount()));
         addItem(randomType.getPrefab(), randomAmount);
     }
 
+    public GameObjectType getRandomTypeByRarity(List<GameObjectType> types) {
+        // TODO find better algo for rarity -> probability
+        List<GameObjectType> allIds = new ArrayList<>();
+        for (GameObjectType type : types) {
+            for (Integer i = 1; i < (((InventoryService.MAX_RARITY + 1) - type.getRarity()) * 10); i++) {
+                allIds.add(type);
+            }
+        }
+        // TODO will fail if types param is empty
+        Integer randomIndex = ThreadLocalRandom.current().nextInt(0, types.size());
+        GameObjectType randomType = types.get(randomIndex);
+        return randomType;
+    }
 
     public void checkBasicInventoryAndRestock() {
         InventoryEntity inventoryEntity =

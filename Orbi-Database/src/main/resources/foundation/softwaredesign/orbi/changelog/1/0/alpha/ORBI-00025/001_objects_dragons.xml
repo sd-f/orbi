@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+    <changeSet id="objects_dragons" author="Lucas Reeh">
+        <sql>insert into public.game_object_type_category(id,name,craftable,ordering)
+              values(6,'Little Mouse Dragons',1,70000)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(70,'LittleMouseDragons/MouseDragoBlue',0,6,70001,1,1,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(71,'LittleMouseDragons/MouseDragoPink',0,6,70002,1,2,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(72,'LittleMouseDragons/MouseDragoRed',0,6,70003,1,2,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(73,'LittleMouseDragons/MouseDragoPinkBig',0,6,70004,1,2,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(74,'LittleMouseDragons/MouseDragoRedBig',0,6,70005,1,2,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(75,'LittleMouseDragons/MouseDragoBlueBig',0,6,70006,1,2,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(76,'LittleMouseDragons/MouseDragoDarkGreen',0,6,70007,1,3,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(77,'LittleMouseDragons/MouseDragoDarkBrown',0,6,70008,1,3,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(78,'LittleMouseDragons/MouseDragoDarkGreenBig',0,6,70009,1,3,1,0)</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(79,'LittleMouseDragons/MouseDragoDarkBrownBig',0,6,70010,1,4,1,0)</sql>
+    </changeSet>
+
+    <changeSet id="objects_dragons_update" author="Lucas Reeh">
+        <sql>update public.game_object_type_category set name = 'Little Dragons' where id = 6</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoBlue' where id = 70</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoPink' where id = 71</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoRed' where id = 72</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoPinkBig' where id = 73</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoRedBig' where id = 74</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoBlueBig' where id = 75</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoDarkGreen' where id = 76</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoDarkBrown' where id = 77</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoDarkGreenBig' where id = 78</sql>
+        <sql>update public.game_object_type set prefab = 'LittleDragons/DragoDarkBrownBig' where id = 79</sql>
+    </changeSet>
+
+</databaseChangeLog>

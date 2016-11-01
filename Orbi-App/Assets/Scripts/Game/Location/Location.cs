@@ -130,15 +130,15 @@ namespace GameController
             int maxWait = 20;
             while (Input.location.status == LocationServiceStatus.Initializing && maxWait > 0)
             {
-                //Info.Show("Waiting for location service to start...");
-                yield return new WaitForSeconds(1);
+                Info.Show("Waiting for location service to start...");
+                yield return new WaitForSeconds(3);
                 maxWait--;
             }
 
             // Service didn't initialize in 20 seconds
             if (maxWait < 1)
             {
-                Error.Show("Waiting for GPS timed out");
+                Error.Show("Waiting for GPS timed out - Turn on GPS");
                 yield return new WaitForSeconds(3);
                 Application.Quit();
                 yield break;

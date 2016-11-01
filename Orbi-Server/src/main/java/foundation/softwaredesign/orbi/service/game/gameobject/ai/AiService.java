@@ -60,7 +60,7 @@ public class AiService {
     private void setNewRandomAiTarget(GameObject object) {
         Double randomX = ThreadLocalRandom.current().nextDouble(-25d, 25d);
         Double randomZ = ThreadLocalRandom.current().nextDouble(-25d, 25d);
-        Position position = new Position(randomX, 0.0d, randomZ);
+        Position position = new Position(randomX, 0.000001d, randomZ);
         GeoPosition geoPosition = worldAdapterService.toGeo(position, object.getTransform().getGeoPosition());
         object.getAiProperties().getTarget().setGeoPosition(geoPosition);
     }

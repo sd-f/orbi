@@ -29,7 +29,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         protected CapsuleCollider m_Capsule;
         protected bool m_Crouching;
 
-		public virtual void Start()
+        private AICharacterControl ai;
+        private ThirdPersonCharacter thirdPersonController;
+        private GameObject target;
+        private Vector3 targetVector = new Vector3(0, 0, 0);
+        private bool frozen = true;
+
+        public virtual void Start()
 		{
 			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
@@ -37,9 +43,60 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_CapsuleHeight = m_Capsule.height;
 			m_CapsuleCenter = m_Capsule.center;
 
-            m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-			m_OrigGroundCheckDistance = m_GroundCheckDistance;
-		}
+            
+            m_OrigGroundCheckDistance = m_GroundCheckDistance;
+
+            target = new GameObject("target_" + gameObject.name);
+            target.transform.SetParent(transform.parent);
+            ai = GetComponent<AICharacterControl>();
+            thirdPersonController = GetComponent<ThirdPersonCharacter>();
+            if (ai.agent != null)
+                ai.agent.updatePosition = !frozen;
+            ai.SetTarget(target.transform);
+            InvokeRepeating("UpdateTarget", 2, 2);
+        }
+
+        private void UpdateConstraints()
+        {
+            if (frozen)
+                m_Rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+            else
+                m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        }
+
+        public void Freeze()
+        {
+            this.frozen = true;
+        }
+
+        public bool IsFrozen()
+        {
+            return this.frozen;
+        }
+
+        public void Unfreeze()
+        { 
+            this.frozen = false;
+        }
+
+        void UpdateTarget()
+        {
+            Vector3 newTarget = ClampPosition(targetVector);
+            ai.SetTargetPosition(newTarget);
+        }
+
+        private Vector3 ClampPosition(Vector3 vector3)
+        {
+            float boundX = (512 / 2f);
+            float boundY = 600;
+            float boundZ = boundX;
+            return new Vector3(Mathf.Clamp(vector3.x, -boundX, +boundX), Mathf.Clamp(vector3.y, 0.00001f, boundY), Mathf.Clamp(vector3.z, -boundY, +boundY));
+        }
+
+        public void SetTarget(Vector3 newTargetPosition)
+        {
+            targetVector = newTargetPosition;
+        }
 
         public void SetAnimator(Animator animator)
         {
@@ -48,36 +105,40 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         }
 
 
-        public void Move(Vector3 move, bool crouch, bool jump)
+        public virtual void Move(Vector3 move, bool crouch, bool jump)
 		{
+            UpdateConstraints();
+            if (!IsFrozen())
+            {
+                // convert the world relative moveInput vector into a local-relative
+                // turn amount and forward amount required to head in the desired
+                // direction.
+                if (move.magnitude > 1f) move.Normalize();
+                move = transform.InverseTransformDirection(move);
+                CheckGroundStatus();
+                move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+                m_TurnAmount = Mathf.Atan2(move.x, move.z);
+                m_ForwardAmount = move.z;
 
-			// convert the world relative moveInput vector into a local-relative
-			// turn amount and forward amount required to head in the desired
-			// direction.
-			if (move.magnitude > 1f) move.Normalize();
-			move = transform.InverseTransformDirection(move);
-			CheckGroundStatus();
-			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
-			m_TurnAmount = Mathf.Atan2(move.x, move.z);
-			m_ForwardAmount = move.z;
+                ApplyExtraTurnRotation();
 
-			ApplyExtraTurnRotation();
+                // control and velocity handling is different when grounded and airborne:
+                if (m_IsGrounded)
+                {
+                    HandleGroundedMovement(crouch, jump);
+                }
+                else
+                {
+                    HandleAirborneMovement();
+                }
 
-			// control and velocity handling is different when grounded and airborne:
-			if (m_IsGrounded)
-			{
-				HandleGroundedMovement(crouch, jump);
-			}
-			else
-			{
-				HandleAirborneMovement();
-			}
+                ScaleCapsuleForCrouching(crouch);
+                PreventStandingInLowHeadroom();
 
-			ScaleCapsuleForCrouching(crouch);
-			PreventStandingInLowHeadroom();
-
-			// send input and other state parameters to the animator
-			UpdateAnimator(move);
+                // send input and other state parameters to the animator
+                UpdateAnimator(move);
+            }
+            
 		}
 
 
@@ -226,5 +287,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				//m_Animator.applyRootMotion = false;
 			}
 		}
-	}
+
+        void OnDestroy()
+        {
+            CancelInvoke();
+        }
+    }
 }

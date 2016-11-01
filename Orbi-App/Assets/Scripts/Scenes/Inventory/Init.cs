@@ -35,14 +35,16 @@ namespace InventoryScene
         private Color GetItemColor(ServerModel.GameObjectType type)
         {
             int rarity = type.rarity;
-            if (rarity == 1)
+            if (rarity == 0)
+                return Color.white;
+            else if (rarity == 1)
                 return Color.gray;
             else if (rarity == 2)
                 return Color.green;
             else if (rarity == 3)
                 return Color.blue;
             else if (rarity == 4)
-                return Color.yellow;
+                return new Color(1f, 0.843F, 0); // gold
             return Color.black;
         }
 
@@ -104,8 +106,15 @@ namespace InventoryScene
                             text.SetShadowColor(Color.white);
                             text.SetAlignment(TextAlignment.Center, TextAnchor.MiddleCenter);
                             GameObject newObject = GameObjectFactory.CreateObject(itemContainer.transform, item.type.prefab, id, null, layers);
+                            GameObjectUtility.Freeze(newObject);
+                            //body.constraints = RigidbodyConstraints.FreezeAll;
                             newObject.AddComponent<InventoryObjectSelected>();
                             newObject.transform.localRotation = Quaternion.Euler(-5f, -5f, 0f);
+                            if (item.type.ai)
+                            {
+                                newObject.transform.localRotation = Quaternion.Euler(-5f, 35f, 0f);
+                                GameObjectUtility.DisableAI(newObject);
+                            }
                             GameObjectUtility.NormalizeScale(newObject);
                             item.gameObject = newObject;
                             overall_items_collected++;

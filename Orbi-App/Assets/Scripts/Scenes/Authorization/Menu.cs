@@ -36,7 +36,7 @@ namespace StartScene
                 Error.Show("Email not valid");
                 return;
             }
-            Info.Show("Logging in...");
+            
             SetFormEnabled(false);
             Game.Instance.GetSettings().SetEmail(emailField.text);
             StartCoroutine(Login());
@@ -59,15 +59,15 @@ namespace StartScene
 
         public void OnRequestCode()
         {
-            Info.Show("Logging in...");
             if (!IsValidEmail(emailField.text))
             {
                 Error.Show("Email not valid");
                 return;
             }
-            Info.Show("Code requested...");
+            
             SetFormEnabled(false);
             Game.Instance.GetSettings().SetEmail(emailField.text);
+            
             StartCoroutine(RequestCode());
         }
 
@@ -75,6 +75,7 @@ namespace StartScene
         {
             yield return Game.Instance.GetAuthService().RequestCode(emailField.text);
             SetFormEnabled(true);
+           // Info.Show("Code requested...");
         }
 
         private IEnumerator Login()

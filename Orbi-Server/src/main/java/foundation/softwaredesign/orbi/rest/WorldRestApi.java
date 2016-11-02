@@ -7,15 +7,13 @@ import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.character.CharacterService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.world.ElevationService;
-import foundation.softwaredesign.orbi.service.game.world.WorldFactory;
 import foundation.softwaredesign.orbi.service.game.world.WorldService;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
+
 
 import static java.util.Objects.isNull;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -29,8 +27,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestScoped
 public class WorldRestApi {
 
-    @Inject
-    WorldFactory worldFactory;
     @Inject
     ElevationService elevationService;
     @Inject
@@ -55,14 +51,6 @@ public class WorldRestApi {
         if (isNull(player.getCharacter().getTransform().getGeoPosition())) {
             throw new BadRequestException();
         }
-    }
-
-    @GET
-    @Path("/reset")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String reset() {
-        worldFactory.reset();
-        return "OK";
     }
 
     @GET

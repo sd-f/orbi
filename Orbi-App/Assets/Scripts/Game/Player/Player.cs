@@ -16,6 +16,7 @@ namespace GameController
 #pragma warning disable 0649
         public PlayerService playerService;
         public MessageService messageService;
+        public InventoryService inventoryService;
         private bool loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
         private bool frozen = true;
@@ -23,7 +24,6 @@ namespace GameController
         private CraftingController craftingController = new CraftingController();
         private DestructionController destructionController = new DestructionController();
 
-        private List<CharacterMessage> messages = new List<CharacterMessage>();
 
         public static float HEIGHT = 0.9f;
 
@@ -38,6 +38,10 @@ namespace GameController
                 InvokeRepeating("CheckGPSPosition", 1f, 1f);
             if (!IsInvoking("CheckIfOutOfBounds"))
                 InvokeRepeating("CheckIfOutOfBounds", 1f, 1f);
+            if (!IsInvoking("CheckForMessages"))
+                Invoke("CheckForMessages", 3f);
+            if (!IsInvoking("CheckInventory"))
+                Invoke("CheckInventory", 0f);
         }
 
         internal bool IsFrozen()
@@ -63,6 +67,11 @@ namespace GameController
         public DestructionController GetDestructionController()
         {
             return this.destructionController;
+        }
+
+        public InventoryService GetInventoryService()
+        {
+            return this.inventoryService;
         }
 
         public ServerModel.Player GetModel()
@@ -111,10 +120,36 @@ namespace GameController
                     Game.Instance.GetWorld().SetCenterGeoPosition(Game.Instance.GetPlayer().GetModel().character.transform.position.ToGeoPosition());
                     Game.Instance.GetPlayer().GetModel().character.transform.position = new Position();
                     GetPlayerBodyController().ResetPosition();
-                    Game.Instance.LoadScene(Game.GameScene.LoadingScene);
+                    //Game.Instance.LoadScene(Game.GameScene.LoadingScene);
+                    // TODO
                 }
                 
             }
+        }
+
+        void CheckInventory()
+        {
+            StartCoroutine(LoadInventory());
+        }
+
+        IEnumerator LoadInventory()
+        {
+            yield return Game.Instance.GetPlayer().GetInventoryService().RequestInventory();
+            if (!IsInvoking("CheckInventory"))
+                Invoke("CheckInventory", 5f);
+        }
+
+
+        void CheckForMessages()
+        {
+            StartCoroutine(LoadMessages());
+        }
+
+        IEnumerator LoadMessages()
+        {
+            yield return Game.Instance.GetPlayer().GetMessageService().RequestMessages();
+            if (!IsInvoking("CheckForMessages"))
+                Invoke("CheckForMessages", 5f);
         }
 
         public PlayerBodyController GetPlayerBodyController()
@@ -145,11 +180,6 @@ namespace GameController
         public Boolean IsLoggedIn()
         {
             return this.loggedIn;
-        }
-
-        public List<CharacterMessage> GetMessages()
-        {
-            return this.messages;
         }
 
         void OnDestroy()

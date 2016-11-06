@@ -31,9 +31,6 @@ namespace GameController
         public IEnumerator RequestMapDataGoogle(GeoPosition geoPosition, SplatPrototype prototype)
         {
             IndicateRequestStart();
-            if (Game.Instance.GetSettings().IsSatelliteOverlayEnabled())
-                mapType = "satellite";
-            else
                 mapType = "roadmap";
 
 

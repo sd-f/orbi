@@ -44,20 +44,5 @@ namespace GameController
 
 
 
-        
-
-        
-        public static GameObject GetObject(GameObject obj)
-        {
-            foreach (Transform child in obj.transform)
-            {
-                if (child.gameObject.name.Contains("object_") && obj.name.Replace("container_", "").Equals(child.gameObject.name.Replace("object_", "")))
-                {
-                    return child.gameObject;
-                }
-            }
-            return null;
-        }
-
     }
 }

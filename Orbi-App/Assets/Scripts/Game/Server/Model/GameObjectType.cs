@@ -12,7 +12,7 @@ namespace ServerModel
         public bool supportsUserText;
         public int rarity;
         public bool ai;
-        public GameObjectTypeCategory category;
+        public SimpleGameObjectTypeCategory category;
 
 
     }

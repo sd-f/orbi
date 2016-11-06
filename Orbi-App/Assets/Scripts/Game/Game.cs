@@ -1,4 +1,5 @@
 ﻿using GameController.Services;
+using GameScene;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,21 +25,23 @@ namespace GameController
         public AuthService authService;
         public ServerService serverService;
 
+        public PlayerBodyController playerBodyController;
+
+        public delegate void TypingModeChangedEventHandler();
+        public static event TypingModeChangedEventHandler OnTypingModeChanged;
+
         private Ui ui = new Ui();
-        private GameScene currentScene = GameScene.StartScene;
+        private GameScene currentScene = GameScene.GameScene;
 
         private bool typingMode = false;
+        private bool ready = false;
 
         // settings
         public Settings settings;
 
         public enum GameScene {
-            SettingsScene,
             GameScene,
-            StartScene,
-            AuthorizationScene,
-            LoadingScene,
-            InventoryScene
+            AuthorizationScene
         }
 
         void Start()
@@ -60,15 +63,26 @@ namespace GameController
             }
         }
 
+        private void SendTypingModeChangedEvent()
+        {
+            // Send Event
+            if (OnTypingModeChanged != null)
+            {
+                OnTypingModeChanged();
+            }
+        }
+
         public void LoadScene(GameScene scene)
         {
-            if (currentScene == GameScene.GameScene)
-            {
-                //UnityEngine.GameObject.Find("ButtonSwitchView").GetComponent<ViewSwitcher>().StopWebCam();
-                Game.Instance.GetPlayer().SavePlayerTransform();
+            if (SceneManager.GetActiveScene().name != scene.ToString()) { 
+                if (currentScene == GameScene.GameScene)
+                {
+                    //UnityEngine.GameObject.Find("ButtonSwitchView").GetComponent<ViewSwitcher>().StopWebCam();
+                    //Game.Instance.GetPlayer().SavePlayerTransform();
+                }
+                currentScene = scene;
+                SceneManager.LoadScene(scene.ToString());
             }
-            currentScene = scene;
-            SceneManager.LoadScene(scene.ToString());
         }
 
         public ServerService GetServerService()
@@ -114,16 +128,28 @@ namespace GameController
         public void EnterTypingMode()
         {
             this.typingMode = true;
+            SendTypingModeChangedEvent();
         }
 
         public void LeaveTypingMode()
         {
             this.typingMode = false;
+            SendTypingModeChangedEvent();
         }
 
         public bool IsInTypingMode()
         {
             return typingMode;
+        }
+
+        public void SetReady(bool ready)
+        {
+            this.ready = ready;
+        }
+
+        public bool IsReady()
+        {
+            return ready;
         }
 
         public AuthService GetAuthService()

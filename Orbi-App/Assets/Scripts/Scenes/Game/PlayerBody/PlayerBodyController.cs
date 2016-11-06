@@ -9,12 +9,11 @@ using UnityStandardAssets.Characters.FirstPerson;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/PlayerBodyController")]
-    class PlayerBodyController : MonoBehaviour
+    class PlayerBodyController : InputModeMonoBehaviour
     {
 
         // handheld movement
         private Vector3 gyroRotation = new Vector3(0,0,0);
-        private bool gyroEnabled = false;
         private Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
         private float deltaCompass = 0.0f;
         private MyFirstPersonController firstPersonController;
@@ -28,22 +27,21 @@ namespace GameScene
             Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
             //SensorHelper.ActivateRotation();
-            gyroEnabled = Game.Instance.GetSettings().IsHandheldInputEnabled();
-
-            if (gyroEnabled)
+            if (!desktopMode)
             {
                 // TODO iphone initial attitude maybe different
                 gyroRotation.x = Input.gyro.attitude.eulerAngles.y - 90f;
                 //gyroRotation.y = Input.gyro.attitude.eulerAngles.z;
             }
             firstPersonController = GetComponent<MyFirstPersonController>();
-            Input.gyro.enabled = true;
             // restore rotation + position
             SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
             Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
             deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
 
         }
+
+        
 
         void Awake()
         {
@@ -58,8 +56,7 @@ namespace GameScene
 
         void Update()
         {
-            
-            if (gyroEnabled)
+            if (!desktopMode)
             {
                 this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
                 ApplyGyroRotation();
@@ -67,21 +64,35 @@ namespace GameScene
               
         }
 
+        public override void SetInputMode()
+        {
+            base.SetInputMode();
+            firstPersonController.enabled = desktopMode;
+            if (desktopMode) {
+                SetMouseRotationEnabled(typingMode);
+            }
+        }
+
+        public override void SetTypingMode()
+        {
+            base.SetTypingMode();
+            if (desktopMode)
+                SetMouseRotationEnabled(typingMode);
+        }
+
         public void SetMouseRotationEnabled(bool enabled)
         {
             if (enabled)
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                firstPersonController.enabled = true;
-                firstPersonController.mouseLook.SetCursorLock(true);
                 
+                firstPersonController.mouseLook.SetCursorLock(true);
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Confined;
                 Cursor.visible = true;
-                firstPersonController.enabled = false;
                 firstPersonController.mouseLook.SetCursorLock(false);
             }
         }

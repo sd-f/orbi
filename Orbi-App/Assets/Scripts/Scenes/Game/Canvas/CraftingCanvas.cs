@@ -1,4 +1,5 @@
-﻿using CanvasUtility;
+﻿using System;
+using CanvasUtility;
 using GameController;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/Canvas/CraftingCanvas")]
-    public class CraftingCanvas : MonoBehaviour
+    public class CraftingCanvas : InputModeMonoBehaviour
     {
 
         public GameObject craftButton;
@@ -14,16 +15,15 @@ namespace GameScene
         public GameObject craftCancelButton;
         public GameObject craftingContainer;
         private PlayerConstructionController controller;
-        private bool isDesktopMode = false;
 
         void Start()
         {
             controller = craftingContainer.GetComponent<PlayerConstructionController>();
         }
 
-        void Awake()
+        private void SetInputMode()
         {
-            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
+            desktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
         }
 
         public void OnCraft()
@@ -44,7 +44,7 @@ namespace GameScene
 
         void Update()
         {
-            if (isDesktopMode)
+            if (Game.Instance.GetSettings().IsDesktopInputEnabled())
             {
                 if (Input.GetKeyDown(KeyCode.C) && !Game.Instance.IsInTypingMode())
                     if (!Game.Instance.GetPlayer().GetCraftingController().IsCrafting())

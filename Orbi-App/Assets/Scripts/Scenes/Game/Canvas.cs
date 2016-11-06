@@ -7,21 +7,35 @@ namespace GameScene
     public class Canvas : MonoBehaviour
     {
 
-        public void OnSettings()
+        public GameObject settingsCanvas;
+        public GameObject gameCanvas;
+
+        public void OpenSettings()
         {
-            Game.Instance.LoadScene(Game.GameScene.SettingsScene);
+            Game.Instance.EnterTypingMode();
+            settingsCanvas.SetActive(true);
+            gameCanvas.SetActive(false);
         }
 
-        public void OnInventory()
+        public void CloseSettings()
         {
-            Game.Instance.LoadScene(Game.GameScene.InventoryScene);
+            Game.Instance.LeaveTypingMode();
+            settingsCanvas.SetActive(false);
+            gameCanvas.SetActive(true);
+        }
+
+        private void ToggleSettingsCanvas()
+        {
+            if (settingsCanvas.activeSelf)
+                CloseSettings();
+            else
+                OpenSettings();
         }
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.I) && !Game.Instance.IsInTypingMode())
-                Game.Instance.LoadScene(Game.GameScene.InventoryScene);
-
+            if (Input.GetKeyDown(KeyCode.Escape))
+                ToggleSettingsCanvas();
         }
 
     }

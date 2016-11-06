@@ -6,7 +6,7 @@ using System;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/Body/PlayerInteractionController")]
-    class PlayerInteractionController : MonoBehaviour
+    class PlayerInteractionController : InputModeMonoBehaviour
     {
 
         private bool isDesktopMode = false;
@@ -15,7 +15,6 @@ namespace GameScene
 
         void Awake()
         {
-            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
             centerOfScreen = new Vector2(Screen.width / 2f, Screen.height / 2f);
             selectionPoint = centerOfScreen; 
         }

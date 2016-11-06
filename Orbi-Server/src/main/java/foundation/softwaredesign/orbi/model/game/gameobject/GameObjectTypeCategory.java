@@ -1,5 +1,8 @@
 package foundation.softwaredesign.orbi.model.game.gameobject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
@@ -8,7 +11,7 @@ public class GameObjectTypeCategory {
     private Long id;
     private String name;
     private Boolean craftable;
-    private Long numberOfItems;
+    private List<GameObjectType> types = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -34,12 +37,11 @@ public class GameObjectTypeCategory {
         this.craftable = craftable;
     }
 
-    public Long getNumberOfItems() {
-        return numberOfItems;
+    public List<GameObjectType> getTypes() {
+        return types;
     }
 
-    public void setNumberOfItems(Long numberOfItems) {
-        this.numberOfItems = numberOfItems;
+    public void setTypes(List<GameObjectType> types) {
+        this.types = types;
     }
-
 }

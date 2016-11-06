@@ -10,10 +10,9 @@ namespace GameController
 {
     public class SettingsData
     {
-        public Boolean heightsEnabled = false;
-        public Boolean satelliteOverlayEnabled = false;
-        public Boolean handheldInputEnabled = false;
-        public Boolean desktopInputEnabled = true;
+        public Boolean musicEnabled = false;
+        public Boolean augmentedEnabled = false;
+        public Boolean desktopInputEnabled = false;
         public String token;
         public int clientVersion;
         public String email;

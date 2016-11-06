@@ -19,6 +19,13 @@ public class GameObjectTypeMappper extends SimpleQueryInOutMapperBase<GameObject
 
     @Override
     public GameObjectType toDto(GameObjectTypeEntity entity) {
+        GameObjectType dto = toSimpleDto(entity);
+        if (nonNull(entity.getGameObjectTypeCategoryEntity()))
+            dto.setCategory(new GameObjectTypeCategoryMappper().toDto(entity.getGameObjectTypeCategoryEntity()));
+        return dto;
+    }
+
+    public GameObjectType toSimpleDto(GameObjectTypeEntity entity) {
         GameObjectType dto = new GameObjectType();
         dto.setId(entity.getId());
         dto.setPrefab(entity.getPrefab());
@@ -29,8 +36,6 @@ public class GameObjectTypeMappper extends SimpleQueryInOutMapperBase<GameObject
         dto.setSupportsUserText(entity.getSupportsUserText());
         dto.setGift(entity.getGift());
         dto.setAi(entity.getAi());
-        if (nonNull(entity.getGameObjectTypeCategoryEntity()))
-            dto.setCategory(new GameObjectTypeCategoryMappper().toDto(entity.getGameObjectTypeCategoryEntity()));
         return dto;
     }
 

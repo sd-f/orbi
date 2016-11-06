@@ -32,9 +32,10 @@ namespace GameController
             GameObject statsGameObject = GameObject.Find("StatisticsPanel");
             if (statsGameObject != null)
             {
-                StartScene.Canvas statsCanvas = statsGameObject.GetComponent<StartScene.Canvas>();
-                if (statsCanvas != null)
-                    statsCanvas.UpdateStats();
+                //StartScene.Canvas statsCanvas = statsGameObject.GetComponent<StartScene.Canvas>();
+                /*if (statsCanvas != null)
+                    statsCanvas.UpdateStats();*/
+                    // TODO
             }
         }
 

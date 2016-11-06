@@ -5,13 +5,9 @@ using UnityEngine;
 namespace ServerModel
 {
     [Serializable]
-    public class GameObjectTypeCategory : AbstractModel
+    public class GameObjectTypeCategory : SimpleGameObjectTypeCategory
     {
-        public long id;
-        public string name;
-        public bool craftable;
-        public long numberOfItems;
-        public int rarity;
+        public List<GameObjectType> types = new List<GameObjectType>();
 
     }
 

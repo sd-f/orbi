@@ -81,7 +81,7 @@ namespace StartScene
         private IEnumerator Login()
         {
             yield return Game.Instance.GetAuthService().RequestLogin(emailField.text, codeField.text);
-            yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
+            //yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
             SetFormEnabled(true);
         }
 

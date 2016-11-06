@@ -6,7 +6,7 @@ using System;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/Body/PlayerDestructionController")]
-    class PlayerDestructionController : MonoBehaviour
+    class PlayerDestructionController : InputModeMonoBehaviour
     {
 #pragma warning disable 0649
         public GameObject Shot1;
@@ -14,21 +14,11 @@ namespace GameScene
         public GameObject explosionEffect;
         public GameObject earnedXPTextPrefab;
         public Camera cam;
-        private bool isDesktopMode = false;
-        
-
-        void Awake ()
-        {
-            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
-        }
 
         void Update()
         {
-            //create BasicBeamShot
-
-            if (Input.GetButtonDown("Fire2") && isDesktopMode)
+            if (Input.GetButtonDown("Fire2") && desktopMode)
                 Shoot();
-
         }
 
         public void Shoot()
@@ -55,7 +45,7 @@ namespace GameScene
                     earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_DESTROY);
                     Rigidbody body = GameObjectUtility.GetRigidBody(realContainer);
                     effect.transform.position = body.transform.position; // realContainer.transform.position;
-                    effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetSize(realContainer);
+                    effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(realContainer);
                     earnedText.transform.position = body.transform.position + (Vector3.up * 2f);
                     earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
                     

@@ -25,10 +25,25 @@ namespace GameController
                 TrySettingTextInChildren(child.gameObject, text);
         }
 
-        public static void NormalizeScale(GameObject obj)
+
+        public static GameObject GetObject(GameObject container)
         {
-            float size = 1.0f / GetSize(obj);
-            obj.transform.localScale = new Vector3(size, size, size);
+            foreach (UnityEngine.Transform child in container.transform)
+            {
+                if (child.gameObject.name.Contains("object_") && container.name.Replace("container_", "").Equals(child.gameObject.name.Replace("object_", "")))
+                {
+                    return child.gameObject;
+                }
+            }
+            return null;
+        }
+
+        public static void NormalizeScale(GameObject container)
+        {
+            GameObject realObject = GetObject(container);
+            float maxSize = Mathf.Clamp(GetMaxSize(realObject), 0.001f, 20f);
+            float normalSize = 1.0f / maxSize;
+            container.transform.localScale = new Vector3(normalSize, normalSize, normalSize);
         }
 
         public static Rigidbody GetRigidBody(GameObject obj)
@@ -62,31 +77,28 @@ namespace GameController
             }
         }
 
-        public static float GetSize(GameObject obj)
+        public static float GetMaxSize(GameObject obj)
         {
-            float size = 1.0f;
+            float size = 1f;
             Collider collider = GetCollider(obj);
             if (collider != null)
-                return GetDimension(collider.bounds.size);
+                return GetMaxDimension(collider.bounds.size);
             return size;
         }
 
         public static Collider GetCollider(GameObject obj)
         {
-            Collider collider;
+            Collider collider = obj.GetComponent<Collider>();
+            if (collider != null)
+                return collider;
             foreach (UnityEngine.Transform child in obj.transform)
-            {
-                collider = child.GetComponent<Collider>();
-                if (collider != null)
-                    return collider;
                 return GetCollider(child.gameObject);
-            }
             return null;
         }
 
-        private static float GetDimension(Vector3 vector)
+        private static float GetMaxDimension(Vector3 vector)
         {
-            float dim = 1f;
+            float dim = 0f;
             if (vector.x > dim)
                 dim = vector.x;
             if (vector.y > dim)

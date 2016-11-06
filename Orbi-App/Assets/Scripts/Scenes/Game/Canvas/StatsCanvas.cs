@@ -80,9 +80,9 @@ namespace GameScene
         private IEnumerator PlayerUpdate()
         {
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestStatsUpdate();
-            yield return Game.Instance.GetPlayer().GetPlayerService().RequestInventory();
+
             UpdateStatsLabels();
-            Invoke("UpdateStats", 5f);
+            Invoke("UpdateStats", 2f);
         }
 
         void UpdateStatsLabels()
@@ -97,7 +97,7 @@ namespace GameScene
             long newXP = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xp);
             if ((oldXP > 0) && (newXP > oldXP))
                 AddStatsInfo("+ " + (newXP - Convert.ToInt64(textXp.text)) + " xp");
-            long newNumberOfInventoryItems = GetNumberOfInventoryItems();
+            long newNumberOfInventoryItems = Game.Instance.GetPlayer().GetInventoryService().GetInventory().items.Count;
             if (inventoryItems > 0)
                 if (inventoryItems < newNumberOfInventoryItems)
                     AddNewItemsInfo("+ " + (newNumberOfInventoryItems - inventoryItems) + " items");
@@ -131,15 +131,6 @@ namespace GameScene
             Invoke("StartFadingNewItemsInfo", 2f);
         }
 
-        private long GetNumberOfInventoryItems()
-        {
-            long itemsCount = 0;
-            foreach(ServerModel.InventoryItem item in Game.Instance.GetPlayer().GetCraftingController().GetInventory().items)
-            {
-                itemsCount += item.amount;
-            }
-            return itemsCount;
-        }
 
         void OnDestroy()
         {

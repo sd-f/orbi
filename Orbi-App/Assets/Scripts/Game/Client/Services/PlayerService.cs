@@ -7,18 +7,6 @@ namespace GameController.Services
 
     public class PlayerService: AbstractHttpService
     {
-        public IEnumerator RequestInventory()
-        {
-            yield return Request("player/inventory", null, OnInventoryRecieved);
-        }
-
-        private void OnInventoryRecieved(string data)
-        {
-            ServerModel.Inventory inventory = JsonUtility.FromJson<ServerModel.Inventory>(data);
-            Game.Instance.GetPlayer().GetCraftingController().SetInventory(inventory);
-            IndicateRequestFinished();
-        }
-
         public IEnumerator RequestCraft(ServerModel.Player player)
         {
             yield return Request("player/craft", JsonUtility.ToJson(player), OnCrafted, player.gameObjectToCraft.type.prefab);
@@ -26,7 +14,7 @@ namespace GameController.Services
 
         private void OnCrafted(string data, object prefab)
         {
-            Game.Instance.GetPlayer().GetCraftingController().RemoveInventoryItem((string)prefab);
+            Game.Instance.GetPlayer().GetInventoryService().RemoveInventoryItem((string)prefab);
         }
 
         public IEnumerator RequestPlayer()

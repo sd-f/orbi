@@ -1,8 +1,7 @@
-﻿using CanvasUtility;
-using ServerModel;
-using System;
+﻿using ServerModel;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GameController.Services
 {
@@ -12,10 +11,10 @@ namespace GameController.Services
 
         public IEnumerator RequestInfo()
         {
-            yield return Request("server/info", null, OnServerInf);
+            yield return Request("server/info", null, OnServerInfo);
         }
 
-        private void OnServerInf(string data)
+        private void OnServerInfo(string data)
         {
             ServerInfo info = JsonUtility.FromJson<ServerInfo>(data);
             Game.Instance.GetClient().SetServerInfo(info);

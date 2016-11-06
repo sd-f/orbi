@@ -22,10 +22,6 @@ namespace GameScene
         private bool isChatWindowActive = false;
         private bool isInteractionWindowActive = false;
 
-        void Start()
-        {
-            Invoke("CheckForMessages", 5f);
-        }
 
         void Update()
         {
@@ -44,12 +40,14 @@ namespace GameScene
                 Game.Instance.GetPlayer().GetPlayerBodyController().SetMouseRotationEnabled(false);
                 
                 GameObjectUtility.DestroyAllChildObjects(messagesContainer);
+                /*
                 foreach(ServerModel.CharacterMessage message in Game.Instance.GetPlayer().GetMessages())
                 {
                     GameObject chatLine = GameObject.Instantiate(messagePrefab) as GameObject;
                     chatLine.transform.SetParent(messagesContainer.transform, false);
                     chatLine.GetComponent<Text>().text = message.fromCharacter + " > " + message.message;
                 }
+                */
             } else
             {
                 Game.Instance.LeaveTypingMode();
@@ -76,18 +74,6 @@ namespace GameScene
             
             yield return Game.Instance.GetPlayer().GetMessageService().RequestMessage(messageInputField.text, selectedCharacterId);
             CleanupAndHideForm();
-        }
-
-        void CheckForMessages()
-        {
-            StartCoroutine(LoadMessages());
-        }
-
-        IEnumerator LoadMessages()
-        {
-            yield return Game.Instance.GetPlayer().GetMessageService().RequestMessages(this);
-            if (!IsInvoking("CheckForMessages"))
-                Invoke("CheckForMessages", 5f);
         }
 
         public void ShowInteractionForm(string characterName, long characterId)

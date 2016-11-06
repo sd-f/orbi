@@ -12,6 +12,9 @@ namespace GameController
         private static string SETTINGS_FILE_PATH = "/settings.data";
         private SettingsData data = new SettingsData();
 
+        public delegate void InputModeChangedEventHandler();
+        public static event InputModeChangedEventHandler OnInputModeChanged;
+
         void Start()
         {
             Load();
@@ -20,29 +23,25 @@ namespace GameController
         public void Init()
         {
             Load();
-        }
-
-        public void SetHeightsEnabled(bool enabled)
-        {
-            this.data.heightsEnabled = false; // TODO disabled
-            Save();
-        }
-
-        public void SetSatelliteOverlayEnabled(bool enabled)
-        {
-            this.data.satelliteOverlayEnabled = false; // TODO disabled
-            Save();
-        }
-
-        public void SetHandheldInputEnabled(bool enabled)
-        {
-            this.data.handheldInputEnabled = enabled;
-            Save();
+            SendInputModeChangedEvent();
         }
 
         public void SetDesktopInputEnabled(bool enabled)
         {
             this.data.desktopInputEnabled = enabled;
+            SendInputModeChangedEvent();
+            Save();
+        }
+
+        public void SetMusicEnabled(bool enabled)
+        {
+            this.data.musicEnabled = enabled;
+            Save();
+        }
+
+        public void SetAugmentedEnabled(bool enabled)
+        {
+            this.data.augmentedEnabled = enabled;
             Save();
         }
 
@@ -61,26 +60,20 @@ namespace GameController
             Save();
         }
 
-        public bool IsHeightsEnabled()
-        {
-            return false; // TODO disabled
-            //return this.data.heightsEnabled;
-        }
-
-        public bool IsSatelliteOverlayEnabled()
-        {
-            return false; // TODO disabled no satellite available
-            //return this.data.satelliteOverlayEnabled;
-        }
-
-        public bool IsHandheldInputEnabled()
-        {
-            return this.data.handheldInputEnabled;
-        }
 
         public bool IsDesktopInputEnabled()
         {
             return this.data.desktopInputEnabled;
+        }
+
+        public bool IsMusicEnabled()
+        {
+            return this.data.musicEnabled;
+        }
+
+        public bool IsAugmentedEnabled()
+        {
+            return this.data.augmentedEnabled;
         }
 
         public string GetToken()
@@ -122,8 +115,9 @@ namespace GameController
             }
             else
             {
-                this.data.handheldInputEnabled = (SystemInfo.deviceType == DeviceType.Handheld);
                 this.data.desktopInputEnabled = (SystemInfo.deviceType == DeviceType.Desktop);
+                this.data.musicEnabled = false;
+                this.data.augmentedEnabled = false;
                 Save();
             } 
         }
@@ -136,6 +130,15 @@ namespace GameController
             } catch (Exception ex)
             {
                 Error.Show("Error saving game: " + ex.Message);
+            }
+        }
+
+        private void SendInputModeChangedEvent()
+        {
+            // Send Event
+            if (OnInputModeChanged != null)
+            {
+                OnInputModeChanged();
             }
         }
 

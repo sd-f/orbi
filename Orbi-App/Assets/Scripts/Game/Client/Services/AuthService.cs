@@ -19,9 +19,8 @@ namespace GameController.Services
 
         private void OnAuthUser(string data)
         {
-            Game.Instance.LoadScene(Game.GameScene.LoadingScene);
-            //Info.Show("Logged in successful");
             Game.Instance.GetPlayer().SetLoggedIn(true);
+            Game.Instance.SetReady(true);
         }
 
         public IEnumerator RequestCode(String email)
@@ -56,15 +55,8 @@ namespace GameController.Services
                 Game.Instance.GetSettings().SetToken(authInfo.token);
                 Game.Instance.GetPlayer().SetLoggedIn(true);
             }
-            StartCoroutine(BootLocationAndLoad());            
+            Game.Instance.LoadScene(Game.GameScene.GameScene);
         }
-
-        private IEnumerator BootLocationAndLoad()
-        {
-            yield return Game.Instance.GetLocation().Boot();
-            Game.Instance.LoadScene(Game.GameScene.LoadingScene);
-        }
-
 
         public IEnumerator LoadGameIfAuthorized()
         {

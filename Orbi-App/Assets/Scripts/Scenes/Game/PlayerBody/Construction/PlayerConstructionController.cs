@@ -6,14 +6,13 @@ using System;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/Body/PlayerConstructionController")]
-    class PlayerConstructionController : MonoBehaviour
+    class PlayerConstructionController : InputModeMonoBehaviour
     {
 #pragma warning disable 0649
         public GameObject mainCamera;
         public GameObject effectPrefab;
         public GameObject earnedXPTextPrefab;
         public Camera cam;
-        private bool isDesktopMode = false;
         private bool crafting = false;
         private GameObject newObject;
         private Vector3 rotation = new Vector3(0, 0, 0);
@@ -26,16 +25,11 @@ namespace GameScene
             Game.Instance.GetPlayer().GetCraftingController().SetCrafting(false, null);
         }
 
-        void Awake ()
-        {
-            isDesktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
-        }
-
         void Update()
         {
             if (crafting)
             {
-                if (isDesktopMode)
+                if (desktopMode)
                     desktopMovement();
                 else
                     mobileMovement();
@@ -120,7 +114,7 @@ namespace GameScene
             earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_CRAFT);
             earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
             effect.transform.position = newObject.transform.position;
-            effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetSize(newObject);
+            effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(newObject);
             earnedText.transform.position = newObject.transform.position + (Vector3.up * 2f);
             GameObject.Destroy(effect, 3f);
             yield return Game.Instance.GetPlayer().GetCraftingController().Craft(newObject);
@@ -142,8 +136,8 @@ namespace GameScene
 
         void checkInventory()
         {
-            if (!Game.Instance.GetPlayer().GetCraftingController().HasInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedType().prefab)) {
-                Game.Instance.GetPlayer().GetCraftingController().SetSelectedType(Game.Instance.GetPlayer().GetCraftingController().GetNextAvailableItem().type);
+            if (!Game.Instance.GetPlayer().GetInventoryService().HasInventoryItem(Game.Instance.GetPlayer().GetCraftingController().GetSelectedType().prefab)) {
+                Game.Instance.GetPlayer().GetCraftingController().SetSelectedType(Game.Instance.GetPlayer().GetInventoryService().GetNextAvailableItem().type);
             }
         }
 

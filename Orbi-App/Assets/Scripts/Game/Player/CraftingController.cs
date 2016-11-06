@@ -16,12 +16,9 @@ namespace GameController
         private string userText = "";
         private UnityEngine.GameObject objectToCraft;
         private bool crafting = false;
-        private Inventory inventory = new Inventory();
-        public List<string> itemsDiscovered { get; set; }
 
         public CraftingController()
         {
-            itemsDiscovered = null;
         }
 
         public void SetCrafting(Boolean crafting, UnityEngine.GameObject objectToCraft)
@@ -45,59 +42,14 @@ namespace GameController
             return this.selectedType;
         }
 
-        internal bool HasInventoryItem(string prefab)
-        {
-            InventoryItem itemToRemove = GetInventoryItem(prefab);
-            return ((itemToRemove != null) && (itemToRemove.amount > 0));
-        }
-
-        internal void RemoveInventoryItem(string prefab)
-        {
-            InventoryItem itemToRemove = GetInventoryItem(prefab);
-            if ((itemToRemove != null) && (itemToRemove.amount > 0))
-                itemToRemove.amount--;
-        }
-
-        internal InventoryItem GetInventoryItem(string prefab)
-        {
-            foreach(InventoryItem item in inventory.items)
-                if (item.type.prefab.Equals(prefab))
-                    return item;
-            return null;
-        }
-
-        internal InventoryItem GetNextAvailableItem()
-        {
-            foreach (InventoryItem item in inventory.items)
-                if (item.amount > 0)
-                    return item;
-            return null;
-        }
+        
 
         public void SetSelectedType(GameObjectType type)
         {
             this.selectedType = type;
         }
 
-        public Inventory GetInventory()
-        {
-            return this.inventory;
-        }
 
-        public void SetInventory(Inventory inventory)
-        {
-            // select first item
-            if (GetSelectedType() == null)
-            {
-                foreach (InventoryItem item in inventory.items)
-                {
-                    SetSelectedType(item.type);
-                    break;
-                }
-            }
-
-            this.inventory = inventory;
-        }
 
         public void SetColliding(bool collission)
         {
@@ -122,10 +74,7 @@ namespace GameController
                 this.userText = text;
         }
 
-        public IEnumerator LoadInventory()
-        {
-            yield return Game.Instance.GetPlayer().GetPlayerService().RequestInventory();
-        }
+
 
         public IEnumerator Craft(UnityEngine.GameObject gameObject)
         {
@@ -141,7 +90,7 @@ namespace GameController
             ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
             player.gameObjectToCraft = newObject;
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestCraft(player);
-            yield return LoadInventory();
+            yield return Game.Instance.GetPlayer().GetInventoryService().RequestInventory();
             yield return Game.Instance.GetWorld().UpdateObjects();
         }
 

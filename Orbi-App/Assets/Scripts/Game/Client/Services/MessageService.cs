@@ -11,6 +11,19 @@ namespace GameController.Services
     public class MessageService: AbstractHttpService
     {
 
+        private List<CharacterMessage> messages = new List<CharacterMessage>();
+        private List<CharacterMessage> messagesArchive = new List<CharacterMessage>();
+
+        public List<CharacterMessage> GetMessages()
+        {
+            return messages;
+        }
+
+        public List<CharacterMessage> GetMessagesArchive()
+        {
+            return messagesArchive;
+        }
+
         public IEnumerator RequestMessage(string messageText, long toCharacterId)
         {
             ServerModel.CharacterMessage newMessage = new ServerModel.CharacterMessage();
@@ -24,20 +37,17 @@ namespace GameController.Services
             Info.Show("Message sent.");
         }
 
-        public IEnumerator RequestMessages(MessagesCanvas canvas)
+        public IEnumerator RequestMessages()
         {
-            yield return Request("player/messages", null, OnMessagesRecieved, canvas);
+            yield return Request("player/messages", null, OnMessagesRecieved);
         }
 
-        private void OnMessagesRecieved(string data, object canvas)
+        private void OnMessagesRecieved(string data)
         {
             CharacterMessages messagesObject = JsonUtility.FromJson<CharacterMessages>(data);
-            if (messagesObject.messages != null)
+            if ((messagesObject.messages != null) && (messagesObject.messages.Count > 0))
             {
-                List<ServerModel.CharacterMessage> messages = messagesObject.messages;
-                Game.Instance.GetPlayer().GetMessages().AddRange(messages);
-                if ((messages.Count > 0) && (canvas != null))
-                    ((MessagesCanvas)canvas).Unread();
+                messages = messagesObject.messages;
             }
         }
 

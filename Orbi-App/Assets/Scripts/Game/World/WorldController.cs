@@ -25,8 +25,6 @@ namespace GameController
         public UnityEngine.GameObject streetLabelPrefab;
         public UnityEngine.GameObject mapContainer;
 
-        private bool skipRefresh = false;
-
         private ServerModel.GeoPosition centerGeoPosition;
         private UMACreator umaCreator;
         private ServerModel.Statistics stats = new ServerModel.Statistics();
@@ -100,28 +98,10 @@ namespace GameController
 
         public IEnumerator UpdateWorld()
         {
-            if (skipRefresh)
-            {
-                skipRefresh = false;
-            }
-            else
-            {
-                Mapity.Singleton.Unload();
-                //yield return terrainService.ResetTerrain();
-                //Game.Instance.GetClient().Log("Updating world...");
-                yield return Mapity.Singleton.LoadMap();
-                /*
-                 if (Game.Instance.GetSettings().IsHeightsEnabled())
-                 {
-                     //Debug.Log("heights");
-                     //yield return terrainService.RequestTerrain();
-                 }
-                 else
-                 {
-                     yield return terrainService.ResetTerrain();
-                 }
-                 */
-            }
+
+            Mapity.Singleton.Unload();
+            yield return Mapity.Singleton.LoadMap();
+
         }
 
         public void SetCenterGeoPosition(ServerModel.GeoPosition centerGeoPosition)
@@ -206,16 +186,6 @@ namespace GameController
             }
 
             return 0.0f;
-        }
-
-        public void ForceRefreshOnNextLoading()
-        {
-            this.skipRefresh = false;
-        }
-
-        public void SkipRefreshOnNextLoading()
-        {
-            this.skipRefresh = true;
         }
 
         void OnDestroy()

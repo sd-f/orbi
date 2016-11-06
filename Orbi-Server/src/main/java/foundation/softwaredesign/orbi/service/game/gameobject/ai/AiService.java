@@ -2,6 +2,7 @@ package foundation.softwaredesign.orbi.service.game.gameobject.ai;
 
 import foundation.softwaredesign.orbi.model.game.character.CharacterDevelopment;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
+import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.model.game.transform.GeoPosition;
 import foundation.softwaredesign.orbi.model.game.transform.Position;
@@ -33,7 +34,16 @@ public class AiService {
     WorldAdapterService worldAdapterService;
 
     public void updateAiTargets(List<GameObject> gameObjectList) {
-        List<GameObject> aiGameObjects = gameObjectList.stream().filter(gameObject -> gameObject.getType().getAi()).collect(Collectors.toList());
+        List<GameObject> aiGameObjects = gameObjectList
+                .stream()
+                .filter(gameObject -> {
+                    GameObjectType type = gameObject.getType();
+                    if (nonNull(type))
+                        if (nonNull(type.getAi()))
+                            return type.getAi();
+                    return false;
+                })
+                .collect(Collectors.toList());
         for (GameObject aiGameObject: aiGameObjects) {
             AiProperties properties = aiGameObject.getAiProperties();
             if (isNull(properties)) {

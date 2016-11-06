@@ -23,6 +23,8 @@ namespace GameController
         public double latitude = 0.0f;
         public double longitude = 0.0f;
 
+        private int failedPositionRequests;
+
         void Start()
         {
             if (Game.Instance.GetClient().randomLocation)
@@ -77,11 +79,10 @@ namespace GameController
             this.latitude = position.latitude;
             this.longitude = position.longitude;
             if (!paused)
-            {
-                position.latitude = Input.location.lastData.latitude;
-                position.longitude = Input.location.lastData.longitude;
+            {        
+                CheckLocation();
             }
-            Invoke("UpdateLocation", 0.5f);
+            
         }
 
         void RandomLocation()
@@ -107,6 +108,26 @@ namespace GameController
         {
             Input.location.Stop();
             CancelInvoke();
+        }
+
+        public void CheckLocation()
+        {
+            
+            if (Input.location.status == LocationServiceStatus.Running)
+            {
+                position.latitude = Input.location.lastData.latitude;
+                position.longitude = Input.location.lastData.longitude;
+            } else
+            {
+                failedPositionRequests++;
+                if (failedPositionRequests > 60)
+                {
+                    Error.Show("No GPS Postion");
+                    failedPositionRequests = 0;
+                }
+            }            
+
+            Invoke("UpdateLocation", 0.5f);
         }
 
         public IEnumerator Boot()

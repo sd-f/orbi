@@ -23,9 +23,9 @@ public class GameObjectTypeCategoryMappper extends SimpleQueryInOutMapperBase<Ga
         dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setCraftable(entity.getCraftable());
-        dto.setNumberOfItems(new Long(0));
         if (nonNull(entity.getGameObjectTypeEntities())) {
-            dto.setNumberOfItems(new Long(entity.getGameObjectTypeEntities().size()));
+            entity.getGameObjectTypeEntities()
+                    .forEach(gameObjectTypeEntity -> dto.getTypes().add(new GameObjectTypeMappper().toSimpleDto(gameObjectTypeEntity)));
         }
         return dto;
     }

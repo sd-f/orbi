@@ -124,7 +124,7 @@ public class UserService {
         String hashedToken = null;
         try {
             // useless hashing
-            hashedToken = Hasher.hashMD5(token);
+            hashedToken = Hasher.hashToken(token);
             identityEntity.setToken(hashedToken);
         } catch (NoSuchAlgorithmException e) {
             Logger.getLogger(UserService.class.getName()).severe(e.getMessage());

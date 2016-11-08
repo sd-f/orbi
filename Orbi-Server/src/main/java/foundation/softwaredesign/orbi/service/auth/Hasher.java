@@ -5,7 +5,6 @@ import org.apache.commons.codec.binary.Base64;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -57,20 +56,9 @@ public class Hasher {
             return Base64.encodeBase64String(key.getEncoded());
         }
 
-        public static String hashMD5(String token) throws NoSuchAlgorithmException {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            //Add password bytes to digest
-            md.update(token.getBytes());
-            //Get the hash's bytes
-            byte[] bytes = md.digest();
-            //This bytes[] has bytes in decimal format;
-            //Convert it to hexadecimal format
-            StringBuilder sb = new StringBuilder();
-            for(int i=0; i< bytes.length ;i++)
-            {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            //Get complete hashed password in hex format
-             return sb.toString();
+        public static String hashToken(String token) throws NoSuchAlgorithmException, InvalidKeySpecException {
+            String salted = getSaltedHash(token.toCharArray());
+            String[] saltAndPass = salted.split("\\$");
+            return saltAndPass[1];
         }
 }

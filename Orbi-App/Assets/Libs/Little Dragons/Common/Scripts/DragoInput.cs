@@ -6,8 +6,10 @@ using UnityStandardAssets.CrossPlatformInput;
 public class DragoInput : MonoBehaviour
 {
     private DragonController mydrago;
+#pragma warning disable 0169
     private Vector3 m_CamForward;
     private Vector3 m_Move;
+#pragma warning disable 0414
     private Transform m_Cam;
 
     [Header("INPUTS")]

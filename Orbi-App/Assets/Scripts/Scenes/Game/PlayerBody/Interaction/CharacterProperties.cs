@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using GameController;
-using ServerModel;
 
 namespace GameScene
 {
@@ -8,26 +6,22 @@ namespace GameScene
     class CharacterProperties : MonoBehaviour
     {
 
-        private Character character;
+        private ServerModel.Character character;
 
-        public void SetCharacter(Character character)
+        public void SetCharacter(ServerModel.Character character)
         {
             this.character = character;
         }
         
-        public Character GetCharacter()
+        public ServerModel.Character GetCharacter()
         {
             return this.character;
         }
 
         public void OnTouched()
         {
-            UnityEngine.GameObject messagesButton = UnityEngine.GameObject.Find("ButtonMessages");
-            if (messagesButton != null)
-            {
-                MessagesCanvas canvas = messagesButton.GetComponent<MessagesCanvas>();
-                canvas.ShowInteractionForm(character.name, character.id);
-            }
+            if (this.gameObject != null)
+                GameObject.Find("Canvas").GetComponent<MainCanvas>().OpenCharacterInfos(character);
         }
 
     }

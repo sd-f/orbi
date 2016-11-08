@@ -2,8 +2,6 @@ package foundation.softwaredesign.orbi.model.game.character;
 
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 
-import java.util.Date;
-
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
@@ -13,10 +11,10 @@ public class InventoryItem {
     private Long amount;
     private Boolean supportsUserText = false;
     private Long categoryId;
-    private Date discoveredOn;
+    private String discoveredOn;
 
 
-    public InventoryItem(GameObjectType type, Long amount, Boolean supportsUserText, Long categoryId, Date discoveredOn) {
+    public InventoryItem(GameObjectType type, Long amount, Boolean supportsUserText, Long categoryId, String discoveredOn) {
         this.type = type;
         this.amount = amount;
         this.supportsUserText = supportsUserText;
@@ -58,5 +56,13 @@ public class InventoryItem {
 
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getDiscoveredOn() {
+        return discoveredOn;
+    }
+
+    public void setDiscoveredOn(String discoveredOn) {
+        this.discoveredOn = discoveredOn;
     }
 }

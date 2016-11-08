@@ -31,9 +31,9 @@ namespace GameController
             foreach (UnityEngine.Transform child in container.transform)
             {
                 if (child.gameObject.name.Contains("object_") && container.name.Replace("container_", "").Equals(child.gameObject.name.Replace("object_", "")))
-                {
                     return child.gameObject;
-                }
+                if (child.gameObject.name.Contains("uma_") && container.name.Replace("uma_container_", "").Equals(child.gameObject.name.Replace("uma_", "")))
+                    return child.gameObject;
             }
             return null;
         }

@@ -6,10 +6,10 @@ import foundation.softwaredesign.orbi.model.auth.RequestCodeInfo;
 import foundation.softwaredesign.orbi.model.game.character.Character;
 import foundation.softwaredesign.orbi.persistence.entity.IdentityEntity;
 import foundation.softwaredesign.orbi.persistence.repo.auth.IdentityRepository;
-import foundation.softwaredesign.orbi.persistence.types.ChkPass;
-import foundation.softwaredesign.orbi.service.auth.IdentityThreadLocal;
 import foundation.softwaredesign.orbi.service.game.character.CharacterService;
+import foundation.softwaredesign.orbi.service.game.server.DateComparator;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -22,10 +22,12 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.persistence.NoResultException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.InternalServerErrorException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -74,9 +76,14 @@ public class UserService {
             isNewIdentity = true;
         }
         identityEntity.setLastInit(new Date());
+        String password = RandomStringUtils.randomAlphanumeric(10).toUpperCase();
 
-        String password = RandomStringUtils.randomAlphanumeric(20).toUpperCase();
-        identityEntity.setTmpPassword(new ChkPass(password));
+        try {
+            identityEntity.setTmpPassword(Hasher.getSaltedHash(password));
+        } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
+            Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
+            throw new InternalServerErrorException("Password could not be generated, try again");
+        }
 
         saveUser(identityEntity);
         if (isNewIdentity) {
@@ -93,23 +100,38 @@ public class UserService {
             throw new InternalServerErrorException("Email not valid");
         }
         IdentityEntity identityEntity = identityRepository.findByEmail(loginInfo.getEmail());
+
+        if (StringUtils.isEmpty(identityEntity.getTmpPassword())) {
+            throw new InternalServerErrorException("Password is invalid - please request new one");
+        }
         if (Objects.isNull(identityEntity)) {
             throw new InternalServerErrorException("Email not registered");
         }
         try {
-            Long id = identityRepository.findIdentityIdByEmailAndPassword(identityEntity.getEmail(), loginInfo.getPassword().toUpperCase());
-            identityEntity = identityRepository.findBy(id);
-        } catch (NoResultException ex) {
+            Hasher.check(loginInfo.getPassword().toUpperCase(), identityEntity.getTmpPassword());
+        } catch (Exception e) {
+            Logger.getLogger(UserService.class.getName()).fine(e.getMessage());
             throw new InternalServerErrorException("Email or Password incorrect");
         }
 
+
         identityEntity.setLastInit(new Date());
 
-        String token = RandomStringUtils.randomAlphanumeric(100);
-        identityEntity.setToken(new ChkPass(token));
-
+        String token = RandomStringUtils.randomAlphanumeric(42);
+        String hashedToken = null;
+        try {
+            // useless hashing
+            hashedToken = Hasher.getSaltedHash(token);
+            identityEntity.setToken(hashedToken);
+        } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
+            Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
+            throw new InternalServerErrorException("Password could not be generated, try again");
+        }
+        if (DateComparator.isTimeOlderThan(Calendar.MONTH, 2, identityEntity.getLastInit())) {
+            identityEntity.setTmpPassword("");
+        }
         AuthorizationInfo authorizationInfo = new AuthorizationInfo();
-        authorizationInfo.setToken(token);
+        authorizationInfo.setToken(hashedToken);
 
         saveUser(identityEntity);
         return authorizationInfo;

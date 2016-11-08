@@ -3,14 +3,17 @@ using ServerModel;
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace GameController.Services
 {
 
     public class AuthService: AbstractHttpService
     {
+
+        protected override bool IsReady()
+        {
+            return true;
+        }
 
         public IEnumerator RequestAuthUser()
         {
@@ -20,7 +23,6 @@ namespace GameController.Services
         private void OnAuthUser(string data)
         {
             Game.Instance.GetPlayer().SetLoggedIn(true);
-            Game.Instance.SetReady(true);
         }
 
         public IEnumerator RequestCode(String email)
@@ -42,12 +44,24 @@ namespace GameController.Services
             info.email = email;
             info.password = password;
             info.player = Game.Instance.GetPlayer().GetModel();
-            yield return Request("auth/login", JsonUtility.ToJson(info), OnLoginSucceded);
+
+            yield return Request("auth/login", JsonUtility.ToJson(info), OnLoginSucceded, null);
+
+        }
+
+        public IEnumerator RequestLoginAndLoad(String email, String password)
+        {
+            LoginInfo info = new LoginInfo();
+            info.email = email;
+            info.password = password;
+            info.player = Game.Instance.GetPlayer().GetModel();
+
+            yield return Request("auth/login", JsonUtility.ToJson(info), OnLoginSucceded, true);
 
         }
 
 
-        private void OnLoginSucceded(string data)
+        private void OnLoginSucceded(string data, object load)
         {
             AuthorizationInfo authInfo = JsonUtility.FromJson<AuthorizationInfo>(data);
             if (!String.IsNullOrEmpty(authInfo.token))
@@ -55,7 +69,11 @@ namespace GameController.Services
                 Game.Instance.GetSettings().SetToken(authInfo.token);
                 Game.Instance.GetPlayer().SetLoggedIn(true);
             }
-            Game.Instance.LoadScene(Game.GameScene.GameScene);
+            if (load != null)
+            {
+                Game.Instance.LoadScene(Game.GameScene.GameScene);
+            }
+                
         }
 
         public IEnumerator LoadGameIfAuthorized()

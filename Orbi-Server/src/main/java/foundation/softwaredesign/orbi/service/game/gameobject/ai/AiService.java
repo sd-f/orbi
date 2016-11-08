@@ -1,6 +1,5 @@
 package foundation.softwaredesign.orbi.service.game.gameobject.ai;
 
-import foundation.softwaredesign.orbi.model.game.character.CharacterDevelopment;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
@@ -9,6 +8,7 @@ import foundation.softwaredesign.orbi.model.game.transform.Position;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.server.DateComparator;
+import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 import foundation.softwaredesign.orbi.service.game.world.WorldAdapterService;
 
 import javax.enterprise.context.RequestScoped;
@@ -32,6 +32,8 @@ public class AiService {
     GameObjectService gameObjectService;
     @Inject
     WorldAdapterService worldAdapterService;
+    @Inject
+    DateConverter date;
 
     public void updateAiTargets(List<GameObject> gameObjectList) {
         List<GameObject> aiGameObjects = gameObjectList
@@ -58,8 +60,8 @@ public class AiService {
 
             if (isNull(properties.getLastTargetUpdate())
                     || (nonNull(properties.getLastTargetUpdate())
-                    && DateComparator.isTimeOlderThan(Calendar.SECOND, ThreadLocalRandom.current().nextInt(10, 30), properties.getLastTargetUpdate()))) {
-                properties.setLastTargetUpdate(new Date());
+                    && DateComparator.isTimeOlderThan(Calendar.SECOND, ThreadLocalRandom.current().nextInt(45, 90), date.toDate(properties.getLastTargetUpdate())))) {
+                properties.setLastTargetUpdate(date.toString(new Date()));
                 setNewRandomAiTarget(aiGameObject);
             }
 

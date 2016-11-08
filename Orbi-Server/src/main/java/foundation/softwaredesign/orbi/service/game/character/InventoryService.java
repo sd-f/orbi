@@ -5,13 +5,13 @@ import foundation.softwaredesign.orbi.model.game.character.Inventory;
 import foundation.softwaredesign.orbi.model.game.character.InventoryItem;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
-import foundation.softwaredesign.orbi.persistence.entity.GameObjectTypeEntity;
 import foundation.softwaredesign.orbi.persistence.entity.InventoryEntity;
 import foundation.softwaredesign.orbi.persistence.repo.game.character.InventoryRepository;
 import foundation.softwaredesign.orbi.persistence.repo.game.gameobject.GameObjectTypeMappper;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeCategoryService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
+import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -39,6 +39,8 @@ public class InventoryService {
     GameObjectTypeCategoryService gameObjectTypeCategory;
     @Inject
     CharacterService characterService;
+    @Inject
+    DateConverter date;
 
 
     public void checkForGiftChest(GameObject object) {
@@ -95,6 +97,7 @@ public class InventoryService {
             newItem.setType(new GameObjectTypeMappper().toDto(inventoryEntity.getGameObjectType()));
             newItem.setCategoryId(inventoryEntity.getGameObjectType().getGameObjectTypeCategoryEntity().getId());
             newItem.setSupportsUserText(inventoryEntity.getGameObjectType().getSupportsUserText());
+            newItem.setDiscoveredOn(date.toString(inventoryEntity.getDiscoveredOn()));
             inventory.getItems().add(newItem);
         }
         inventory.setCategories(gameObjectTypeCategory.loadAll());

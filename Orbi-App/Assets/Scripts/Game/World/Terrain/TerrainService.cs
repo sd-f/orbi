@@ -414,7 +414,7 @@ namespace GameController
             float boundX = (terrainSize / 2f);
             float boundY = 600;
             float boundZ = boundX;
-            return new Vector3(Mathf.Clamp(vector3.x, -boundX, +boundX), Mathf.Clamp(vector3.y, 0.00001f, boundY), Mathf.Clamp(vector3.z, -boundY, +boundY));
+            return new Vector3(Mathf.Clamp(vector3.x, -boundX, +boundX), Mathf.Clamp(vector3.y, 0.00001f, boundY), Mathf.Clamp(vector3.z, -boundZ, +boundZ));
         }
     }
 

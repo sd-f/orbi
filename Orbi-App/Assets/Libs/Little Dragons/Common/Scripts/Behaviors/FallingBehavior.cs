@@ -4,6 +4,7 @@ using System.Collections;
 public class FallingBehavior : StateMachineBehaviour
 {
     RaycastHit JumpRay;
+#pragma warning disable 0169
     float dragoFloat, MaxHeight;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

@@ -11,6 +11,7 @@ namespace ServerModel
         public long fromCharacterId;
         public String toCharacter;
         public long toCharacterId;
+        public string date;
 
     }
 

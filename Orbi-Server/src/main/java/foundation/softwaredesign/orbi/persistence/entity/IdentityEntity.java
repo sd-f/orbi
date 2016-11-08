@@ -1,8 +1,5 @@
 package foundation.softwaredesign.orbi.persistence.entity;
 
-import foundation.softwaredesign.orbi.persistence.types.ChkPass;
-import foundation.softwaredesign.orbi.persistence.types.ChkPassConverter;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -21,11 +18,9 @@ public class IdentityEntity {
     @NotNull
     private String email;
     @Column
-    @Convert(converter = ChkPassConverter.class)
-    private ChkPass tmpPassword;
+    private String tmpPassword;
     @Column
-    @Convert(converter = ChkPassConverter.class)
-    private ChkPass token;
+    private String token;
     @Column
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
@@ -39,11 +34,11 @@ public class IdentityEntity {
         this.id = id;
     }
 
-    public ChkPass getToken() {
+    public String getToken() {
         return token;
     }
 
-    public void setToken(ChkPass token) {
+    public void setToken(String token) {
         this.token = token;
     }
 
@@ -55,11 +50,11 @@ public class IdentityEntity {
         this.email = email;
     }
 
-    public ChkPass getTmpPassword() {
+    public String getTmpPassword() {
         return tmpPassword;
     }
 
-    public void setTmpPassword(ChkPass tmpPassword) {
+    public void setTmpPassword(String tmpPassword) {
         this.tmpPassword = tmpPassword;
     }
 

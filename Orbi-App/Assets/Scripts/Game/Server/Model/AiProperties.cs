@@ -8,7 +8,7 @@ namespace ServerModel
     public class AiProperties: AbstractModel
     {
         public ClientModel.Transform target;
-        public DateTime lastTargetUpdate;
+        public string lastTargetUpdate; // date
 
 
     }

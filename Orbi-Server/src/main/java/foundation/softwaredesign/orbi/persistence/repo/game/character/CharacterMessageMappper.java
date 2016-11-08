@@ -3,6 +3,7 @@ package foundation.softwaredesign.orbi.persistence.repo.game.character;
 import foundation.softwaredesign.orbi.model.game.character.CharacterMessage;
 import foundation.softwaredesign.orbi.persistence.entity.CharacterMessageEntity;
 import foundation.softwaredesign.orbi.service.game.character.CharacterService;
+import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
 import javax.inject.Inject;
@@ -17,6 +18,8 @@ public class CharacterMessageMappper extends SimpleQueryInOutMapperBase<Characte
 
     @Inject
     CharacterService characterService;
+    @Inject
+    DateConverter dateConverter;
 
     @Override
     protected Object getPrimaryKey(CharacterMessage character) {
@@ -32,6 +35,7 @@ public class CharacterMessageMappper extends SimpleQueryInOutMapperBase<Characte
         dto.setFromCharacter(characterService.loadById(entity.getFromCharacterId()).getName());
         dto.setToCharacterId(entity.getToCharacterId());
         dto.setToCharacter(characterService.loadById(entity.getToCharacterId()).getName());
+        dto.setDate(dateConverter.toString(entity.getCreatedOn()));
         return dto;
     }
 
@@ -45,6 +49,7 @@ public class CharacterMessageMappper extends SimpleQueryInOutMapperBase<Characte
         newEntity.setToCharacterId(dto.getToCharacterId());
         newEntity.setFromCharacterId(dto.getFromCharacterId());
         newEntity.setMessage(dto.getMessage());
+
         return newEntity;
     }
 }

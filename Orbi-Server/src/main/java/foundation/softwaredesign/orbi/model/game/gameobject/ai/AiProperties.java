@@ -3,7 +3,6 @@ package foundation.softwaredesign.orbi.model.game.gameobject.ai;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import java.util.Date;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -11,7 +10,8 @@ import java.util.Date;
 @XmlRootElement
 public class AiProperties {
     private Transform target = new Transform();
-    private Date lastTargetUpdate;
+
+    private String lastTargetUpdate;
 
     public Transform getTarget() {
         return target;
@@ -21,11 +21,11 @@ public class AiProperties {
         this.target = target;
     }
 
-    public Date getLastTargetUpdate() {
+    public String getLastTargetUpdate() {
         return lastTargetUpdate;
     }
 
-    public void setLastTargetUpdate(Date lastTargetUpdate) {
+    public void setLastTargetUpdate(String lastTargetUpdate) {
         this.lastTargetUpdate = lastTargetUpdate;
     }
 }

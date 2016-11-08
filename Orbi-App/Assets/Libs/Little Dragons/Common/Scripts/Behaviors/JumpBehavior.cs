@@ -6,6 +6,7 @@ public class JumpBehavior : StateMachineBehaviour
 
     RaycastHit JumpRay;
     DragonController myDrago;
+#pragma warning disable 0169
     float dragoFloat, MaxJumpPoint;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)

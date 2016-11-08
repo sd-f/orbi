@@ -7,6 +7,7 @@ public class DragonEggEditor : Editor
 {
 
     private SerializedObject serObj;
+#pragma warning disable 0169
     private SerializedProperty key, input, time, click, hatchtype;
     private void OnEnable()
     {

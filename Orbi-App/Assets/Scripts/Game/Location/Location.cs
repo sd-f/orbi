@@ -24,9 +24,14 @@ namespace GameController
         public double longitude = 0.0f;
 
         private int failedPositionRequests;
+        public static ServerModel.GeoPosition FALLBACK_START_POSITION; // Schlossberg, Graz, Austria
 
         void Start()
         {
+            if (Game.Instance.GetClient().serverType == ServerType.LOCAL || Game.Instance.GetClient().serverType == ServerType.DEV)
+                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.0678d, 15.5552d, 0.0d);
+            else
+                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.073158d, 15.438000d, 0.0d);
             if (Game.Instance.GetClient().randomLocation)
                 InvokeRepeating("RandomLocation", 10f, 10f);
         }
@@ -132,12 +137,12 @@ namespace GameController
 
         public IEnumerator Boot()
         {
-            position = Game.FALLBACK_START_POSITION;
+            position = FALLBACK_START_POSITION;
             if (Game.Instance.GetClient().serverType == ServerType.LOCAL || Game.Instance.GetClient().serverType == ServerType.DEV)
             {
                 //Debug.Log(Game.Instance.FALLBACK_START_POSITION);
-                Game.Instance.GetWorld().SetCenterGeoPosition(Game.FALLBACK_START_POSITION);
-                Game.Instance.GetPlayer().GetModel().character.transform.geoPosition = Game.FALLBACK_START_POSITION;
+                Game.Instance.GetWorld().SetCenterGeoPosition(FALLBACK_START_POSITION);
+                Game.Instance.GetPlayer().GetModel().character.transform.geoPosition = FALLBACK_START_POSITION;
                 this.ready = true;
                 Resume();
                 Warning.Show("Location running in LOCAL-mode");

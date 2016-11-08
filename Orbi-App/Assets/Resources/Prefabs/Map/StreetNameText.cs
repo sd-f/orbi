@@ -16,6 +16,7 @@ public class StreetNameText : MonoBehaviour {
         //
         scale = background.transform.localScale;
         //scale.x = textMesh.GetComponent<Renderer>().bounds.size.x / 3f;
+#pragma warning disable 0219
         Vector3 dimensions = textMesh.GetComponent<Renderer>().bounds.size;
         
         scale.x = textMesh.text.Length * 0.075f;

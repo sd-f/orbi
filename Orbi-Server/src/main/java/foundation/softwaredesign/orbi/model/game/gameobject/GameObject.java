@@ -4,18 +4,19 @@ import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import java.util.Date;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
+@XmlRootElement
 public class GameObject {
 
     private Long id;
     private Transform transform = new Transform();
     private String name;
     private GameObjectType type;
-    private Date createDate;
+    private String createDate;
     private Long identityId;
     private String userText;
     private Integer constraints;
@@ -50,11 +51,11 @@ public class GameObject {
         return ToStringBuilder.reflectionToString(this);
     }
 
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 

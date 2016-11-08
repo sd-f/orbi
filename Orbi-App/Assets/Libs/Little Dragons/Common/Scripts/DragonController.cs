@@ -37,6 +37,7 @@ public class DragonController : MonoBehaviour
     private Transform DragoTransform;
     private Rigidbody dragoRigidBody;
     private CapsuleCollider dragoCollider;
+#pragma warning disable 0169
     private Transform Cam;
     #endregion
 
@@ -598,13 +599,13 @@ public class DragonController : MonoBehaviour
         //Rotation left/right
 
 
-        transform.RotateAround(Vector3.up, UnderTurn * horizontal * Time.fixedDeltaTime);
+        transform.Rotate(Vector3.up, UnderTurn * horizontal * Time.fixedDeltaTime);
 
         //  transform.Rotate(Vector3.up, 100 * horizontal * Time.fixedDeltaTime, Space.World);
 
         if ((Vector3.Angle(transform.forward, Vector3.up) > 30 && jump) || (Vector3.Angle(transform.forward, Vector3.up) < 170 && down) || UpDownAxis && cameraMove) //Limit Up Down Axis
         {
-            transform.RotateAround(transform.right, 2 * -upDown * Time.fixedDeltaTime);
+            transform.Rotate(transform.right, 2 * -upDown * Time.fixedDeltaTime);
         }
 
         if (!jump && !down)

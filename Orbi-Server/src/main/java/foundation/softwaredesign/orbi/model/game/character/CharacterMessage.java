@@ -1,11 +1,12 @@
 package foundation.softwaredesign.orbi.model.game.character;
 
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
-
+@XmlRootElement
 public class CharacterMessage {
 
     @Transient
@@ -15,6 +16,7 @@ public class CharacterMessage {
     private Long fromCharacterId;
     private String toCharacter;
     private Long toCharacterId;
+    private String date;
 
     public Long getId() {
         return id;
@@ -62,5 +64,13 @@ public class CharacterMessage {
 
     public void setToCharacterId(Long toCharacterId) {
         this.toCharacterId = toCharacterId;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

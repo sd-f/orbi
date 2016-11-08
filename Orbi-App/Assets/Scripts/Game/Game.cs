@@ -9,7 +9,10 @@ namespace GameController
     [AddComponentMenu("App/Game/Game")]
     class Game : MonoBehaviour
     {
-        public static ServerModel.GeoPosition FALLBACK_START_POSITION; // Schlossberg, Graz, Austria
+        public delegate void OnReadyEventHandler();
+        public static event OnReadyEventHandler OnReady;
+
+
         public static Game Instance { get; private set; }
 
         // holding all scene persistent objects
@@ -39,28 +42,40 @@ namespace GameController
         // settings
         public Settings settings;
 
+        public Game()
+        {
+
+        }
+
         public enum GameScene {
             GameScene,
             AuthorizationScene
         }
 
-        void Start()
+        private void SendOnReadyEvent()
         {
-            DontDestroyOnLoad(gameObject);
-            if (Game.Instance.GetClient().serverType == ServerType.LOCAL || Game.Instance.GetClient().serverType == ServerType.DEV)
-                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.0678d, 15.5552d, 0.0d);
-            else
-                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.073158d, 15.438000d, 0.0d); // schlossberg
-            // FALLBACK_START_POSITION = new GeoPosition(31.635890d, -8.012014d, 0.0d); // marakesh
-            //FALLBACK_START_POSITION = new GeoPosition(47.0678d, 15.5552d, 0.0d); // lahö
+            // Send Event
+            if (OnReady != null)
+            {
+                OnReady();
+            }
+            player.gameObject.SetActive(true);
         }
+
 
         void Awake()
         {
+            DontDestroyOnLoad(this);
             if (Instance == null)
             {
                 Instance = this as Game;
             }
+            
+            /*
+            if (FindObjectsOfType(GetType()).Length > 1)
+            {
+                Destroy(gameObject);
+            }*/
         }
 
         private void SendTypingModeChangedEvent()
@@ -77,8 +92,8 @@ namespace GameController
             if (SceneManager.GetActiveScene().name != scene.ToString()) { 
                 if (currentScene == GameScene.GameScene)
                 {
-                    //UnityEngine.GameObject.Find("ButtonSwitchView").GetComponent<ViewSwitcher>().StopWebCam();
-                    //Game.Instance.GetPlayer().SavePlayerTransform();
+                    // UnityEngine.GameObject.Find("ButtonSwitchView").GetComponent<ViewSwitcher>().StopWebCam();
+                    // Game.Instance.GetPlayer().SavePlayerTransform();
                 }
                 currentScene = scene;
                 SceneManager.LoadScene(scene.ToString());
@@ -145,6 +160,7 @@ namespace GameController
         public void SetReady(bool ready)
         {
             this.ready = ready;
+            SendOnReadyEvent();
         }
 
         public bool IsReady()

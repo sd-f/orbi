@@ -8,6 +8,7 @@ namespace GameController.Services
 
     public class InventoryService: AbstractHttpService
     {
+        public static String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
 
         private Inventory inventory = new Inventory();
         private bool newItems = false;
@@ -59,6 +60,8 @@ namespace GameController.Services
 
         internal bool HasInventoryItem(string prefab)
         {
+            if (prefab != null && prefab.Equals(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB))
+                return true;
             InventoryItem itemToRemove = GetInventoryItem(prefab);
             return ((itemToRemove != null) && (itemToRemove.amount > 0));
         }
@@ -73,11 +76,11 @@ namespace GameController.Services
         public void SetInventory(Inventory inventory)
         {
             // select first item
-            if (Game.Instance.GetPlayer().GetCraftingController().GetSelectedType() == null)
+            if (Game.Instance.GetPlayer().GetConstructionController().GetSelectedType() == null)
             {
                 foreach (InventoryItem item in inventory.items)
                 {
-                    Game.Instance.GetPlayer().GetCraftingController().SetSelectedType(item.type);
+                    Game.Instance.GetPlayer().GetConstructionController().SetSelectedType(item.type);
                     break;
                 }
             }

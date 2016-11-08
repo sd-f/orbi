@@ -11,6 +11,7 @@ import foundation.softwaredesign.orbi.service.game.character.SpawnService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.game.gameobject.ai.AiService;
+import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -37,6 +38,8 @@ public class WorldService {
     WorldAdapterService worldAdapterService;
     @Inject
     SpawnService spawnService;
+    @Inject
+    DateConverter date;
 
     public World getWorld(GeoPosition geoPosition) {
         World world = new World();
@@ -54,7 +57,7 @@ public class WorldService {
     public void create(GameObject gameObject) {
         if (gameObject.getType().getAi())
             gameObject.setConstraints(BodyConstraints.FREEZE_ROTATION.value());
-        gameObject.setCreateDate(new Date());
+        gameObject.setCreateDate(date.toString(new Date()));
         gameObjectService.save(gameObject);
     }
 

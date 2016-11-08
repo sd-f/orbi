@@ -10,6 +10,7 @@ namespace GameScene
     class SettingsCanvasInfos : MonoBehaviour
     {
 
+#pragma warning disable 0649
         public Text motdText;
         public Text version;
         public Text objects;

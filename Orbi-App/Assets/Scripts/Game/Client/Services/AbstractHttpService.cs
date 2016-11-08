@@ -12,10 +12,27 @@ namespace GameController.Services
     public abstract class AbstractHttpService : MonoBehaviour
     {
         private static int numberOfUnknownErrors = 0;
-        private static int MAX_REQUESTS = 3;
+        public static int MAX_REQUESTS = 3;
         private static int REQUEST_QUEUE_WAIT_TIME = 1;
         private static int REQUEST_QUEUE_MAX_WAITS = 3;
         private int waited = 0;
+
+        public delegate void OnNumberOfRequestsChangedEventHandler();
+        public static event OnNumberOfRequestsChangedEventHandler OnNumberOfRequestsChanged;
+
+        protected virtual bool IsReady()
+        {
+            return Game.Instance.IsReady();
+        }
+
+        private void SendOnNumberOfRequestsChanged()
+        {
+            // Send Event
+            if (OnNumberOfRequestsChanged != null)
+            {
+                OnNumberOfRequestsChanged();
+            }
+        }
 
         System.Collections.IEnumerator CheckRequestQueue()
         {
@@ -45,6 +62,10 @@ namespace GameController.Services
 
         public System.Collections.IEnumerator Request(string apiPath, string jsonString, Action<string> onSuccess)
         {
+            if (!IsReady())
+            {
+                yield break;
+            }
             yield return CheckRequestQueue();
             IndicateRequestStart();
             WWW request = Request(apiPath, jsonString);
@@ -58,6 +79,7 @@ namespace GameController.Services
 
         public WWW Request(string apiPath, string jsonString)
         {
+            
             //Debug.Log(apiPath + "\n" + jsonString);
             string uri = ServerConstants.GetServerUrl(Game.Instance.GetClient().serverType) + "/" + apiPath;
             UTF8Encoding encoding = new UTF8Encoding();
@@ -172,11 +194,13 @@ namespace GameController.Services
         public void IndicateRequestStart()
         {
             Game.Instance.GetClient().IncRunningRequests();
+            SendOnNumberOfRequestsChanged();
         }
 
         public void IndicateRequestFinished()
         {
             Game.Instance.GetClient().DecRunningRequests();
+            SendOnNumberOfRequestsChanged();
         }
     }
 }

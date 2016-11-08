@@ -28,6 +28,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         protected Vector3 m_CapsuleCenter;
         protected CapsuleCollider m_Capsule;
         protected bool m_Crouching;
+        protected Vector3 m_originalMove;
 
         private AICharacterControl ai;
         private ThirdPersonCharacter thirdPersonController;
@@ -110,6 +111,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             UpdateConstraints();
             if (!IsFrozen())
             {
+                m_originalMove = move;
                 // convert the world relative moveInput vector into a local-relative
                 // turn amount and forward amount required to head in the desired
                 // direction.
@@ -242,7 +244,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			}
 		}
 
-		void ApplyExtraTurnRotation()
+		protected virtual void ApplyExtraTurnRotation()
 		{
 			// help the character turn faster (this is in addition to root rotation in the animation)
 			float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
@@ -265,7 +267,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		void CheckGroundStatus()
+		protected void CheckGroundStatus()
 		{
 			RaycastHit hitInfo;
 #if UNITY_EDITOR

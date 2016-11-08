@@ -10,11 +10,11 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Canvas/SettingsCanvas/InventoryContentTab")]
     class InventoryContentTab : MonoBehaviour
     {
+#pragma warning disable 0649
         public GameObject inventoryContent;
         public GameObject categoryPrefab;
         public GameObject inventoryItemPrefab;
         private float categoryOffsetY = 0f;
-        private static float OBJECT_PADDING_VERTICAL = 20f;
         private List<GameObject> categoriesObjects = new List<GameObject>();
         private List<ServerModel.GameObjectTypeCategory> categories;
         private List<ServerModel.InventoryItem> items;

@@ -17,22 +17,20 @@ namespace GameController
         public PlayerService playerService;
         public MessageService messageService;
         public InventoryService inventoryService;
+        public ConstructionController constructionController;
+
         private bool loggedIn = false;
         private ServerModel.Player player = new ServerModel.Player();
         private bool frozen = true;
-        
-        private CraftingController craftingController = new CraftingController();
-        private DestructionController destructionController = new DestructionController();
-
 
         public static float HEIGHT = 0.9f;
 
         void Start()
         {
-            player.character.transform.geoPosition = Game.FALLBACK_START_POSITION;
+            player.character.transform.geoPosition = Location.FALLBACK_START_POSITION;
         }
 
-        void Awake()
+        void OnEnable()
         {
             if (!IsInvoking("CheckGPSPosition"))
                 InvokeRepeating("CheckGPSPosition", 1f, 1f);
@@ -42,6 +40,11 @@ namespace GameController
                 Invoke("CheckForMessages", 3f);
             if (!IsInvoking("CheckInventory"))
                 Invoke("CheckInventory", 0f);
+        }
+
+        void OnDisable()
+        {
+            CancelInvoke();
         }
 
         internal bool IsFrozen()
@@ -59,14 +62,9 @@ namespace GameController
             this.frozen = false;
         }
 
-        public CraftingController GetCraftingController()
+        public ConstructionController GetConstructionController()
         {
-            return this.craftingController;
-        }
-
-        public DestructionController GetDestructionController()
-        {
-            return this.destructionController;
+            return constructionController;
         }
 
         public InventoryService GetInventoryService()
@@ -86,7 +84,8 @@ namespace GameController
 
         internal void SavePlayerTransform()
         {
-            if (GetPlayerBody() != null)
+            Debug.Log(Game.Instance.IsReady());
+            if (GetPlayerBody() != null && Game.Instance.IsReady())
                 GetPlayerBodyController().UpdateTransformInModel();
         }
 
@@ -132,7 +131,7 @@ namespace GameController
             StartCoroutine(LoadInventory());
         }
 
-        IEnumerator LoadInventory()
+        public IEnumerator LoadInventory()
         {
             yield return Game.Instance.GetPlayer().GetInventoryService().RequestInventory();
             if (!IsInvoking("CheckInventory"))

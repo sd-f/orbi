@@ -2,7 +2,6 @@ package foundation.softwaredesign.orbi.model.game.server;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import java.util.Date;
 
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
@@ -14,8 +13,8 @@ public class MessageOfTheDay {
     private Long id;
     private String message;
     @XmlTransient
-    private Date expires;
-    private Date created;
+    private String expires;
+    private String created;
 
     public Long getId() {
         return id;
@@ -33,19 +32,19 @@ public class MessageOfTheDay {
         this.message = message;
     }
 
-    public Date getExpires() {
+    public String getExpires() {
         return expires;
     }
 
-    public void setExpires(Date expires) {
+    public void setExpires(String expires) {
         this.expires = expires;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 }

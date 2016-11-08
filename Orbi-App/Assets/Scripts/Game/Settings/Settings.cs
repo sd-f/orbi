@@ -11,6 +11,7 @@ namespace GameController
     {
         private static string SETTINGS_FILE_PATH = "/settings.data";
         private SettingsData data = new SettingsData();
+        private bool augmented = false;
 
         public delegate void InputModeChangedEventHandler();
         public static event InputModeChangedEventHandler OnInputModeChanged;
@@ -41,8 +42,7 @@ namespace GameController
 
         public void SetAugmentedEnabled(bool enabled)
         {
-            this.data.augmentedEnabled = enabled;
-            Save();
+            this.augmented = enabled;
         }
 
         public void SetToken(string token)
@@ -73,7 +73,7 @@ namespace GameController
 
         public bool IsAugmentedEnabled()
         {
-            return this.data.augmentedEnabled;
+            return this.augmented;
         }
 
         public string GetToken()

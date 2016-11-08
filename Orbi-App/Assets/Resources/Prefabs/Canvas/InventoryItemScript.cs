@@ -3,6 +3,7 @@ using GameController;
 using UnityEngine;
 using UnityEngine.UI;
 using GameScene;
+using GameController.Services;
 
 public class InventoryItemScript : MonoBehaviour {
 
@@ -18,16 +19,24 @@ public class InventoryItemScript : MonoBehaviour {
             GameObject label = transform.Find("LabelBackground").gameObject;
             label.SetActive(true);
             GameObject gameObjectContainer = transform.Find("InventoryItemGameObject").gameObject;
-            if (Game.Instance.GetPlayer().GetCraftingController().GetSelectedType().id == item.type.id)
+            if (Game.Instance.GetPlayer().GetConstructionController().GetSelectedType().id == item.type.id)
                 gameObjectContainer.GetComponent<Outline>().effectColor = new Color(0, 0, 0, 0.5f);
             gameObjectContainer.transform.Find("UnknownText").gameObject.SetActive(false);
             transform.Find("LabelBackground").GetComponent<Image>().color = GetItemColor(item.type);
-            label.transform.Find("AmountText").GetComponent<Text>().text = "x " + item.amount;
+            string text = "x " + item.amount;
+            if (item.type.prefab.Equals(InventoryService.ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB))
+                text = "∞";
+            label.transform.Find("AmountText").GetComponent<Text>().text = text;
             gameObjectContainer.GetComponent<Button>().onClick.AddListener(() => { OnSelected(); });
 
             GameObject newObject = GameObjectFactory.CreateObject(gameObjectContainer.transform, item.type.prefab, item.type.id, null, LayerMask.NameToLayer("Inventory"));
             
+            
             newObject.transform.localRotation = Quaternion.Euler(-5f, 25f, 0f);
+            if (item.type.ai)
+            {
+                newObject.transform.localRotation = Quaternion.Euler(-5f, 205f, 0f);
+            }
             newObject.transform.localPosition = new Vector3(0f,15f, -100f);
             GameObjectUtility.DisableAI(newObject);
             GameObjectUtility.NormalizeScale(newObject);
@@ -38,8 +47,8 @@ public class InventoryItemScript : MonoBehaviour {
 
     public void OnSelected()
     {
-        Game.Instance.GetPlayer().GetCraftingController().SetSelectedType(item.type);
-        GameObject.Find("Canvas").GetComponent<GameScene.Canvas>().CloseSettings();
+        Game.Instance.GetPlayer().GetConstructionController().SetSelectedType(item.type);
+        GameObject.Find("Canvas").GetComponent<GameScene.MainCanvas>().Reset();
     }
 
 

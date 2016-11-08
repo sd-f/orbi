@@ -9,12 +9,6 @@ namespace AuthorizationScene
 
         void Awake()
         {
-            //Game.Instance.GetLocation().Pause();
-            Game.Instance.GetPlayer().Freeze();
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            // screen always awake
-            Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
             Game.Instance.EnterTypingMode();
         }
 

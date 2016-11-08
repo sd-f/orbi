@@ -27,11 +27,16 @@ namespace GameScene
 
         private long inventoryItems = 0;
 
-        void Start()
+
+        void OnEnable()
         {
             UpdateStatsLabels();
             Invoke("UpdateStats", 5f);
-            
+        }
+
+        void OnDisable()
+        {
+            CancelInvoke();
         }
 
         void UpdateStats()
@@ -108,6 +113,7 @@ namespace GameScene
             float xpToGo = xpInLevel / xpInNextLevel;
             xpBar.fillAmount = xpToGo;
             string levelText = "lvl " + newLevel.ToString();
+
             level.text = levelText;
             inventoryItems = newNumberOfInventoryItems;
             oldLevel = newLevel;

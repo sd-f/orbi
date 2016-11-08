@@ -1,20 +1,24 @@
 ﻿using GameController;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/Init")]
     class Init : MonoBehaviour
     {
+        private int waited = 0;
 
-        public GameObject splashScreen;
+        void Awake()
+        {
+            Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
+        }
 
-        void Start()
+        IEnumerator Start()
         {
             Game.Instance.GetClient().Log("Debug: Orbi started.", this);
             print("Orbi started.");
+            Game.Instance.SetReady(false);
 
             Game.Instance.EnterTypingMode();
 
@@ -25,35 +29,39 @@ namespace GameScene
 
             // udpating game settings
             Game.Instance.GetSettings().SetClientVersion(Client.VERSION);
-
-            StartCoroutine(Boot());
+            yield return StartCoroutine(Boot());
+            waited = 0;
+            Game.Instance.LeaveTypingMode();
+            if (!Game.Instance.GetPlayer().IsLoggedIn())
+                Game.Instance.LoadScene(Game.GameScene.AuthorizationScene);
+            Game.Instance.SetReady(true);
         }
 
         IEnumerator Boot()
         {
-            // check client version
-            yield return Game.Instance.GetServerService().RequestInfo();
-
-            // check logged in
-            yield return Game.Instance.GetAuthService().LoadGameIfAuthorized();
-
-            yield return Game.Instance.GetLocation().Boot();
-
-            while (!Game.Instance.IsReady())
+            if ((Application.GetStreamProgressForLevel(1) == 1) || (waited > 20))
+            {
+                yield return Load();
+            } else
             {
                 yield return new WaitForSeconds(1);
+                yield return Boot();
             }
-            Game.Instance.LeaveTypingMode();
-            splashScreen.SetActive(false);
         }
 
-        void Awake()
+        IEnumerator Load()
         {
-            // screen always awake
-            Screen.sleepTimeout = (int)SleepTimeout.NeverSleep;
+            yield return Game.Instance.GetServerService().RequestInfo();
+            yield return Game.Instance.GetAuthService().LoadGameIfAuthorized();
+            yield return Game.Instance.GetLocation().Boot();
+            yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
+            yield return Game.Instance.GetPlayer().LoadInventory();
+            yield return new WaitForSeconds(1);
         }
 
-        
+
+
+
 
     }
 }

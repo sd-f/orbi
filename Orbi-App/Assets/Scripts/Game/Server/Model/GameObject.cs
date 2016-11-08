@@ -14,6 +14,7 @@ namespace ServerModel
         public int constraints;
         public ClientModel.Transform transform = new ClientModel.Transform();
         public AiProperties aiProperties;
+        public string createDate;
         [NonSerialized]
         public UnityEngine.GameObject gameObject;
         

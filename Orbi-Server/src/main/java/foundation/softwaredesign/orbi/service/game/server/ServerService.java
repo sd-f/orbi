@@ -15,7 +15,7 @@ public class ServerService {
     @Inject
     MessageOfTheDayService messageOfTheDayService;
 
-    private static Long SERVER_VERSION = new Long(29);
+    private static Long SERVER_VERSION = new Long(30);
 
     public Long getVersion() {
         return SERVER_VERSION;

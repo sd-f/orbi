@@ -7,7 +7,7 @@ using CanvasUtility;
 using System;
 using System.Net.Mail;
 
-namespace StartScene
+namespace AuthorizationScene
 {
     [AddComponentMenu("App/Scenes/Authorization/Menu")]
     public class Menu : MonoBehaviour
@@ -80,7 +80,7 @@ namespace StartScene
 
         private IEnumerator Login()
         {
-            yield return Game.Instance.GetAuthService().RequestLogin(emailField.text, codeField.text);
+            yield return Game.Instance.GetAuthService().RequestLoginAndLoad(emailField.text, codeField.text);
             //yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
             SetFormEnabled(true);
         }

@@ -13,6 +13,7 @@ public class DragoFire : MonoBehaviour {
          
     public GameObject FireBall;
     public GameObject FireBreath;
+#pragma warning disable 0169
     GameObject firebreathinstance;
     ParticleSystem.EmissionModule emision;
     [Space]

@@ -8,6 +8,7 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Canvas/SettingsCanvas/SettingsOptions")]
     class SettingsOptions : MonoBehaviour
     {
+#pragma warning disable 0649
         public Button musicToggleOn;
         public Button musicToggleOff;
         public Button desktopToggleOn;
@@ -19,6 +20,8 @@ namespace GameScene
         public EasyTween desktopToggle;
         public EasyTween augmentedToggle;
 
+        public GameObject augmentedCanvas;
+
         private bool initialized = false;
 
         void Start()
@@ -27,7 +30,8 @@ namespace GameScene
                 Toggle(desktopToggle, desktopToggleOn, desktopToggleOff);
             if (!Game.Instance.GetSettings().IsMusicEnabled())
                 Toggle(musicToggle, musicToggleOn, musicToggleOff);
-            Toggle(augmentedToggle, augmentedToggleOn, augmentedToggleOff);
+            if (!Game.Instance.GetSettings().IsAugmentedEnabled())
+                Toggle(augmentedToggle, augmentedToggleOn, augmentedToggleOff);
             initialized = true;
         }
 
@@ -52,27 +56,31 @@ namespace GameScene
 
         public void SetAugmented(bool enabled)
         {
-            // always false on start
+            if (initialized)
+            {
+                Game.Instance.GetSettings().SetAugmentedEnabled(enabled);
+                augmentedCanvas.SetActive(enabled);
+            }
         }
 
         public void ToggleMusic()
         {
-            bool enabled = Toggle(musicToggle, musicToggleOn, musicToggleOff);
+            Toggle(musicToggle, musicToggleOn, musicToggleOff);
         }
 
         public void ToggleDesktop()
         {
-            bool enabled = Toggle(desktopToggle, desktopToggleOn, desktopToggleOff);
+            Toggle(desktopToggle, desktopToggleOn, desktopToggleOff);
         }
 
         public void ToggleAugmented()
         {
-            bool enabled = Toggle(augmentedToggle, augmentedToggleOn, augmentedToggleOff);
+            Toggle(augmentedToggle, augmentedToggleOn, augmentedToggleOff);
         }
 
         private bool Toggle(EasyTween tween, Button on, Button off)
         {
-            bool enabled = tween.IsObjectOpened();
+            bool enabled = !tween.IsObjectOpened();
             if (enabled)
                 on.onClick.Invoke();
             else

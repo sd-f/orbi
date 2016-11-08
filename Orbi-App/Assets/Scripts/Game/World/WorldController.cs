@@ -8,7 +8,7 @@ namespace GameController
 {
 
     [AddComponentMenu("App/Game/WorldCopy")]
-    public class WorldController : MonoBehaviour
+    public class WorldController : GameMonoBehaviour
     {
 
         public LayerMask terrainLayer;
@@ -29,13 +29,16 @@ namespace GameController
         private UMACreator umaCreator;
         private ServerModel.Statistics stats = new ServerModel.Statistics();
 
-        void Start()
+        public override void OnReady()
         {
+            base.OnReady();
             Invoke("RefreshObjects", 2f);
         }
 
-        void OnEnable()
+
+        public override void OnEnable()
         {
+            base.OnEnable();
             // Register Map-ity's Loaded Event
             Mapity.MapityLoaded += OnMapityLoaded;
         }
@@ -43,8 +46,9 @@ namespace GameController
         /// <summary>
         /// Raises the disable event.
         /// </summary>
-        void OnDisable()
+        public override void OnDisable()
         {
+            base.OnDisable();
             // Un-Register Map-ity's Loaded Event
             Mapity.MapityLoaded -= OnMapityLoaded;
         }
@@ -110,6 +114,7 @@ namespace GameController
             Mapity.Singleton.SetLattitude(centerGeoPosition.latitude.ToString());
             this.centerGeoPosition = new ServerModel.GeoPosition(centerGeoPosition);
             GetGameObjectService().ClearAll();
+            StartCoroutine(UpdateWorld());
         }
 
         public ServerModel.GeoPosition GetCenterGeoPostion()

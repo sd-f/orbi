@@ -38,7 +38,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String path = requestContext.getUriInfo().getPath();
-        if (path.equals("server/version") || path.equals("auth/login") || path.equals("auth/requestcode")) {
+        if (path.equals("server/version") || path.equals("server/info") || path.equals("auth/login") || path.equals("auth/requestcode")) {
             return;
         }
         String bearerString = requestContext.getHeaderString("Authorization");
@@ -61,10 +61,9 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
         IdentityEntity identityEntity = null;
         try {
-            Long id = identityRepository.findIdentityIdByToken(berearStringSplitted[1]);
-            identityEntity = identityRepository.findBy(id);
+            identityEntity = identityRepository.findByToken(berearStringSplitted[1]);
 
-        } catch (NoResultException|NullPointerException ex) {
+        } catch (NoResultException|NullPointerException|IllegalStateException ex) {
             abort(requestContext, "Please log in");
         }
         IdentityThreadLocal.set(identityEntity);

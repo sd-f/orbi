@@ -5,6 +5,7 @@ import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.auth.UserService;
+import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 
 import javax.inject.Inject;
@@ -30,6 +31,9 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
     @Inject
     GameObjectTypeService gameObjectType;
 
+    @Inject
+    DateConverter date;
+
     @Override
     protected Object getPrimaryKey(GameObject gameObject) {
         return gameObject.getId();
@@ -46,7 +50,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
         if (nonNull(objectEntity.getGameObjectType())) {
             gameObject.setType(new GameObjectTypeMappper().toDto(objectEntity.getGameObjectType()));
         }
-        gameObject.setCreateDate(objectEntity.getCreateDate());
+        gameObject.setCreateDate(date.toString(objectEntity.getCreateDate()));
         gameObject.setIdentityId(objectEntity.getIdentity().getId());
         gameObject.setUserText(objectEntity.getUserText());
         gameObject.setName(objectEntity.getName());
@@ -106,7 +110,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
             Unmarshaller unmarshaller = context.createUnmarshaller();
             properties = (AiProperties) unmarshaller.unmarshal( sr );
         } catch (JAXBException e) {
-            e.printStackTrace();
+            Logger.getLogger(GameObjectMappper.class.getSimpleName()).finest(e.getMessage());
         }
         return properties;
     }
@@ -122,7 +126,7 @@ public class GameObjectMappper extends SimpleQueryInOutMapperBase<GameObjectEnti
             marshaller.marshal(gameObject.getAiProperties(), sw );
         } catch (JAXBException e) {
             // slient
-            Logger.getLogger(GameObjectMappper.class.getName()).fine(e.getMessage());
+            Logger.getLogger(GameObjectMappper.class.getName()).finest(e.getMessage());
         }
         return sw.toString();
     }

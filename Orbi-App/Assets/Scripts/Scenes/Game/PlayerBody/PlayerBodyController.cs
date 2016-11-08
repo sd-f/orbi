@@ -9,7 +9,7 @@ using UnityStandardAssets.Characters.FirstPerson;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/PlayerBodyController")]
-    class PlayerBodyController : InputModeMonoBehaviour
+    class PlayerBodyController : GameMonoBehaviour
     {
 
         // handheld movement
@@ -22,8 +22,9 @@ namespace GameScene
 
         private long updateCounter = 0;
 
-        void Start()
+        public override void Start()
         {
+            base.Start();
             Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
             //SensorHelper.ActivateRotation();
@@ -36,8 +37,6 @@ namespace GameScene
             firstPersonController = GetComponent<MyFirstPersonController>();
             // restore rotation + position
             SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
-            Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
-            deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
 
         }
 
@@ -45,18 +44,25 @@ namespace GameScene
 
         void Awake()
         {
-            
+            Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
+        }
+
+        public override void OnReady()
+        {
+            base.OnReady();
             if (!IsInvoking("UpdateTransformInModel"))
                 InvokeRepeating("UpdateTransformInModel", 1f, 1f);
             if (!IsInvoking("UpdateDeltaCompass"))
                 Invoke("UpdateDeltaCompass", 2f);
+            Game.Instance.GetLocation().SetCompassDelta(gyroRotation.y - Game.Instance.GetLocation().GetCompassValue());
+            deltaCompass = Game.Instance.GetLocation().GetCompassDelta();
         }
 
 
         void Update()
         {
-            if (!desktopMode)
+            if (!desktopMode && ready)
             {
                 this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
                 ApplyGyroRotation();
@@ -69,7 +75,8 @@ namespace GameScene
             base.SetInputMode();
             firstPersonController.enabled = desktopMode;
             if (desktopMode) {
-                SetMouseRotationEnabled(typingMode);
+                firstPersonController.enabled = !typingMode;
+                firstPersonController.mouseLook.SetCursorLock(!typingMode);
             }
         }
 
@@ -77,24 +84,11 @@ namespace GameScene
         {
             base.SetTypingMode();
             if (desktopMode)
-                SetMouseRotationEnabled(typingMode);
-        }
-
-        public void SetMouseRotationEnabled(bool enabled)
-        {
-            if (enabled)
             {
+                firstPersonController.enabled = !typingMode;
+                firstPersonController.mouseLook.SetCursorLock(!typingMode);
+            }
                 
-                firstPersonController.mouseLook.SetCursorLock(true);
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
-            }
-            else
-            {
-                Cursor.lockState = CursorLockMode.Confined;
-                Cursor.visible = true;
-                firstPersonController.mouseLook.SetCursorLock(false);
-            }
         }
 
         public void UpdateTransformInModel()

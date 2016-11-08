@@ -10,7 +10,7 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/Canvas/SettingsCanvas/MessagesContentTab")]
     class MessagesContentTab : MonoBehaviour
     {
-
+#pragma warning disable 0649
         public GameObject contentContainer;
         public GameObject messageLinePrefab;
         private static Color COLOR_ACTIVE = new Color(0.259f, 0.522f, 0.957f);

@@ -14,10 +14,11 @@ namespace GameController
 
         public GameObject gameObjectsContainer;
         public GameObject charactersContainer;
-
+        public GameObject objectCreatedEffect;
+        public GameObject characterCreatedEffect;
         private List<ServerModel.Character> oldCharacters = new List<ServerModel.Character>();
         private List<ServerModel.GameObject> oldObjects = new List<ServerModel.GameObject>();
-
+        private bool initialized = false;
 
         public IEnumerator RequestStatistics()
         {
@@ -49,6 +50,7 @@ namespace GameController
         {
             ServerModel.World newWorld = JsonUtility.FromJson<ServerModel.World>(data);
             RefreshWorld(Game.Instance.GetPlayer().GetModel(), newWorld);
+            initialized = true;
         }
 
         void UpdateCharacter(ServerModel.Character oldCharacter, ServerModel.Character newCharacter)
@@ -83,6 +85,11 @@ namespace GameController
 
             newObject.GetComponent<ThirdPersonCharacter>().SetTarget(Game.Instance.GetWorld().GetTerrainService().ClampPosition(newObject.transform.position));
             newObject.GetComponent<ThirdPersonCharacter>().Unfreeze();
+
+            UnityEngine.GameObject effect = UnityEngine.GameObject.Instantiate(characterCreatedEffect) as UnityEngine.GameObject;
+            effect.transform.position = newObject.transform.position;
+            effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(newObject);
+            Destroy(effect, 2f);
             //newObject.gameObject.GetComponent<UMAMovement>().SetTransform(newObjectTarget.transform);
         }
 
@@ -104,7 +111,10 @@ namespace GameController
 
         void CreateObject(ServerModel.GameObject newObject)
         {
+           
             UnityEngine.GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.type.prefab, newObject.id, "DynamicGameObject");
+            ObjectProperties props = GameObjectUtility.GetCollider(newGameObject).gameObject.AddComponent<ObjectProperties>();
+            props.SetObject(newObject);
             if (!String.IsNullOrEmpty(newObject.userText))
                 GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
             GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
@@ -112,6 +122,15 @@ namespace GameController
             newObject.gameObject = newGameObject;
             oldObjects.Add(newObject);
             GameObjectUtility.Transform(newGameObject, newObject.transform, (newObject.type.ai));
+
+            if (initialized)
+            {
+                UnityEngine.GameObject effect = UnityEngine.GameObject.Instantiate(objectCreatedEffect) as UnityEngine.GameObject;
+                effect.transform.position = newGameObject.transform.position;
+                effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(newGameObject) * 2f;
+                Destroy(effect, 3.5f);
+            }
+
         }
 
 
@@ -146,8 +165,11 @@ namespace GameController
             foreach (ServerModel.GameObject oldObject in oldObjects)
                 if (newObjects.Find(o => o.id == oldObject.id) == null)
                 {
-                    UnityEngine.GameObject.Destroy(oldObject.gameObject);
+                    GameObject gameObject = oldObject.gameObject;
                     oldObject.gameObject = null;
+                    GetComponent<DestructionController>().RemoveObject(gameObject);
+                    
+
                 }
             oldObjects.RemoveAll(r => r.gameObject == null);
 

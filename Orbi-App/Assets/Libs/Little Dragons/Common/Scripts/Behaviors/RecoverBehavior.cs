@@ -4,6 +4,7 @@ using System.Collections;
 public class RecoverBehavior : StateMachineBehaviour
 {
 
+#pragma warning disable 0169
     RaycastHit JumpRay;
     float dragoFloat, MaxHeight;
 

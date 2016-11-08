@@ -8,12 +8,12 @@ import foundation.softwaredesign.orbi.service.game.character.CharacterService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.world.ElevationService;
 import foundation.softwaredesign.orbi.service.game.world.WorldService;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.*;
+
 
 import static java.util.Objects.isNull;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -27,7 +27,6 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @RequestScoped
 public class WorldRestApi {
 
-    @Inject
     ElevationService elevationService;
     @Inject
     WorldService worldService;
@@ -53,7 +52,6 @@ public class WorldRestApi {
         }
     }
 
-    @GET
     @Path("/statistics")
     public Statistics statistics() {
         Statistics statistics = new Statistics();

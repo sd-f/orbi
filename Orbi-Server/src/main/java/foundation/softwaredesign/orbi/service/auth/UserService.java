@@ -79,7 +79,7 @@ public class UserService {
         String password = RandomStringUtils.randomAlphanumeric(10).toUpperCase();
 
         try {
-            identityEntity.setTmpPassword(Hasher.getSaltedHash(password));
+            identityEntity.setTmpPassword(Hasher.getSaltedHash(password.toCharArray()));
         } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
             Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
             throw new InternalServerErrorException("Password could not be generated, try again");
@@ -108,7 +108,10 @@ public class UserService {
             throw new InternalServerErrorException("Email not registered");
         }
         try {
-            Hasher.check(loginInfo.getPassword().toUpperCase(), identityEntity.getTmpPassword());
+            if (!Hasher.check(loginInfo.getPassword().toUpperCase().toCharArray(), identityEntity.getTmpPassword())) {
+                throw new InternalServerErrorException("Password incorrect");
+            }
+
         } catch (Exception e) {
             Logger.getLogger(UserService.class.getName()).fine(e.getMessage());
             throw new InternalServerErrorException("Email or Password incorrect");
@@ -121,9 +124,9 @@ public class UserService {
         String hashedToken = null;
         try {
             // useless hashing
-            hashedToken = Hasher.getSaltedHash(token);
+            hashedToken = Hasher.hashMD5(token);
             identityEntity.setToken(hashedToken);
-        } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
+        } catch (NoSuchAlgorithmException e) {
             Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
             throw new InternalServerErrorException("Password could not be generated, try again");
         }

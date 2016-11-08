@@ -11,7 +11,7 @@ using UnityEngine;
 namespace GameController
 {
     [AddComponentMenu("App/Game/Player")]
-    class Player : MonoBehaviour
+    class Player : GameMonoBehaviour
     {
 #pragma warning disable 0649
         public PlayerService playerService;
@@ -25,13 +25,14 @@ namespace GameController
 
         public static float HEIGHT = 0.9f;
 
-        void Start()
+        Player()
         {
             player.character.transform.geoPosition = Location.FALLBACK_START_POSITION;
         }
 
-        void OnEnable()
+        public override void OnReady()
         {
+            base.OnReady();
             if (!IsInvoking("CheckGPSPosition"))
                 InvokeRepeating("CheckGPSPosition", 1f, 1f);
             if (!IsInvoking("CheckIfOutOfBounds"))
@@ -42,8 +43,9 @@ namespace GameController
                 Invoke("CheckInventory", 0f);
         }
 
-        void OnDisable()
+        public override void OnDisable()
         {
+            base.OnDisable();
             CancelInvoke();
         }
 

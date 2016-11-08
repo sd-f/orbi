@@ -110,11 +110,16 @@ namespace GameController
 
         public void SetCenterGeoPosition(ServerModel.GeoPosition centerGeoPosition)
         {
-            Mapity.Singleton.SetLongitude(centerGeoPosition.longitude.ToString());
-            Mapity.Singleton.SetLattitude(centerGeoPosition.latitude.ToString());
-            this.centerGeoPosition = new ServerModel.GeoPosition(centerGeoPosition);
-            GetGameObjectService().ClearAll();
-            StartCoroutine(UpdateWorld());
+            if (!centerGeoPosition.Equals(this.centerGeoPosition))
+            {
+                Mapity.Singleton.SetLongitude(centerGeoPosition.longitude.ToString());
+                Mapity.Singleton.SetLattitude(centerGeoPosition.latitude.ToString());
+
+                this.centerGeoPosition = new ServerModel.GeoPosition(centerGeoPosition);
+
+                GetGameObjectService().ClearAll();
+                StartCoroutine(UpdateWorld());
+            }
         }
 
         public ServerModel.GeoPosition GetCenterGeoPostion()

@@ -29,9 +29,9 @@ namespace GameController
         void Start()
         {
             if (Game.Instance.GetClient().serverType == ServerType.LOCAL || Game.Instance.GetClient().serverType == ServerType.DEV)
-                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.0678d, 15.5552d, 0.0d);
+                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.0678d, 15.5552d, Player.HEIGHT);
             else
-                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.073158d, 15.438000d, 0.0d);
+                FALLBACK_START_POSITION = new ServerModel.GeoPosition(47.073158d, 15.438000d, Player.HEIGHT);
             if (Game.Instance.GetClient().randomLocation)
                 InvokeRepeating("RandomLocation", 10f, 10f);
         }

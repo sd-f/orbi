@@ -30,16 +30,18 @@ namespace AuthorizationScene
 
         public void OnLogin()
         {
-            
+
             if (!IsValidEmail(emailField.text))
             {
                 Error.Show("Email not valid");
+                SetFormEnabled(false);
                 return;
             }
             
-            SetFormEnabled(false);
+            
             Game.Instance.GetSettings().SetEmail(emailField.text);
             StartCoroutine(Login());
+            
         }
 
         bool IsValidEmail(string emailAddress)
@@ -62,10 +64,10 @@ namespace AuthorizationScene
             if (!IsValidEmail(emailField.text))
             {
                 Error.Show("Email not valid");
+                SetFormEnabled(true);
                 return;
             }
-            
-            SetFormEnabled(false);
+
             Game.Instance.GetSettings().SetEmail(emailField.text);
             
             StartCoroutine(RequestCode());

@@ -33,8 +33,11 @@ namespace GameScene
             waited = 0;
             Game.Instance.LeaveTypingMode();
             if (!Game.Instance.GetPlayer().IsLoggedIn())
+            {
                 Game.Instance.LoadScene(Game.GameScene.AuthorizationScene);
-            Game.Instance.SetReady(true);
+                Game.Instance.SetReady(true);
+            }
+                
         }
 
         IEnumerator Boot()

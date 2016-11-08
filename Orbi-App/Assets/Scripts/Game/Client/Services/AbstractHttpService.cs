@@ -49,19 +49,7 @@ namespace GameController.Services
 
         public System.Collections.IEnumerator Request(string apiPath, string jsonString, Action<string,object> onSuccess, object callbackLoad)
         {
-            yield return CheckRequestQueue();
-            IndicateRequestStart();
-            WWW request = Request(apiPath, jsonString);
-            yield return request;
-            IndicateRequestFinished();
-            if (request.error == null)
-                onSuccess.DynamicInvoke(request.text, callbackLoad);
-            else
-                HandleError(request);
-        }
-
-        public System.Collections.IEnumerator Request(string apiPath, string jsonString, Action<string> onSuccess)
-        {
+            Debug.Log(apiPath);
             if (!IsReady())
             {
                 yield break;
@@ -72,9 +60,34 @@ namespace GameController.Services
             yield return request;
             IndicateRequestFinished();
             if (request.error == null)
-                    onSuccess.Invoke(request.text);
+            {
+                onSuccess.DynamicInvoke(request.text, callbackLoad);
+                IndicateRequestFinished();
+            }
             else
                 HandleError(request);
+        }
+
+        public System.Collections.IEnumerator Request(string apiPath, string jsonString, Action<string> onSuccess)
+        {
+            Debug.Log(apiPath);
+            if (!IsReady())
+            {
+                yield break;
+            }
+            yield return CheckRequestQueue();
+            IndicateRequestStart();
+            WWW request = Request(apiPath, jsonString);
+            yield return request;
+            
+            if (request.error == null)
+            {
+                onSuccess.Invoke(request.text);
+                IndicateRequestFinished();
+            }     
+            else 
+                HandleError(request);
+            
         }
 
         public WWW Request(string apiPath, string jsonString)
@@ -148,7 +161,7 @@ namespace GameController.Services
         {
             Debug.LogError("Orbi-Error: " + code + ": " + message);
             // silent numbers unknown errors
-            if ((code == 502) || (code == 503) || (code == 504))
+            if ((code == 502) || (code == 504))
             {
                 return;
             }
@@ -179,7 +192,6 @@ namespace GameController.Services
         {
             Warning.Show("Update required");
             yield return new WaitForSeconds(5);
-            Application.OpenURL("https://softwaredesign.foundation/orbi/");
             StartCoroutine(RedirectToUpdateSite());
             Application.Quit();
         }

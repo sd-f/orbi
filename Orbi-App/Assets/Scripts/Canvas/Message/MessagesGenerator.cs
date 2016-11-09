@@ -37,6 +37,12 @@ namespace CanvasUtility
         {
             GameObject parent = GameObject.Find("Canvas");
             GameObject newMessage = UnityEngine.GameObject.Instantiate(messagePrefab, parent.transform, false) as GameObject;
+            StartCoroutine(DelayedPositioning(newMessage, message));
+        }
+
+        private IEnumerator DelayedPositioning(GameObject newMessage, Message message)
+        {
+            yield return new WaitForEndOfFrame();
             Color bgColor = message.GetBackgroundColor();
             bgColor.a = 0.7f;
             newMessage.GetComponent<Image>().color = bgColor;

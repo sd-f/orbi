@@ -18,8 +18,8 @@ namespace GameScene
         private List<GameObject> categoriesObjects = new List<GameObject>();
         private List<ServerModel.GameObjectTypeCategory> categories;
         private List<ServerModel.InventoryItem> items;
-        private static int ITEMS_PER_LINE = 5;
-        private static float ITEM_SIZE = 200f;
+        private static int ITEMS_PER_LINE = 4;
+        private static float ITEM_SIZE = 275f;
         private InventoryService service;
 
         void OnEnable()
@@ -86,7 +86,7 @@ namespace GameScene
             foreach (GameObject category in categoriesObjects)
             {
                 category.transform.localPosition = new Vector2(0, -categoryOffsetY);
-                categoryOffsetY += (category.transform.Find("CategoryContent").GetComponent<RectTransform>().rect.height + 200f); // - header
+                categoryOffsetY += (category.transform.Find("CategoryContent").GetComponent<RectTransform>().rect.height + ITEM_SIZE); // - header
             }
             inventoryContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, categoryOffsetY);
         }

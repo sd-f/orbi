@@ -37,11 +37,11 @@ public class InventoryItemScript : MonoBehaviour {
             {
                 newObject.transform.localRotation = Quaternion.Euler(-5f, 205f, 0f);
             }
-            newObject.transform.localPosition = new Vector3(0f,15f, -100f);
+            newObject.transform.localPosition = new Vector3(0f,25f, -200f);
             GameObjectUtility.DisableAI(newObject);
             GameObjectUtility.NormalizeScale(newObject);
            // GameObject realObject = GameObjectFactory.GetObject(newObject);
-            newObject.transform.localScale = newObject.transform.localScale * 0.75f;
+            newObject.transform.localScale = newObject.transform.localScale * 1.25f;
         }
     }
 

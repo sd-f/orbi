@@ -15,17 +15,15 @@ namespace AuthorizationScene
     {
         public AuthService authService;
 
-        private InputField emailField;
-        private InputField codeField;
-        private Button loginButton;
+        public InputField emailField;
+        public InputField codeField;
+        public Button loginButton;
+        public Button requestCodeButton;
 
 
         void Start()
         {
-            emailField = GameObject.Find("InputFieldEmail").GetComponent<InputField>();
             emailField.text = Game.Instance.GetSettings().GetEmail();
-            codeField = GameObject.Find("InputFieldCode").GetComponent<InputField>();
-            loginButton = GameObject.Find("ButtonLogin").GetComponent<Button>();
             if (!Game.Instance.GetPlayer().IsLoggedIn())
                 SetFormEnabled(true);
             else
@@ -34,11 +32,11 @@ namespace AuthorizationScene
 
         public void OnLogin()
         {
-            
+            SetFormEnabled(false);
             if (!IsValidEmail(emailField.text))
             {
                 Error.Show("Email not valid");
-                SetFormEnabled(false);
+                SetFormEnabled(true);
                 return;
             }
 
@@ -65,6 +63,7 @@ namespace AuthorizationScene
 
         public void OnRequestCode()
         {
+            SetFormEnabled(false);
             if (!IsValidEmail(emailField.text))
             {
                 Error.Show("Email not valid");
@@ -95,8 +94,8 @@ namespace AuthorizationScene
         {
             emailField.interactable = enabled;
             codeField.interactable = enabled;
-            codeField.interactable = enabled;
             loginButton.interactable = enabled;
+            requestCodeButton.interactable = enabled;
         }
 
     }

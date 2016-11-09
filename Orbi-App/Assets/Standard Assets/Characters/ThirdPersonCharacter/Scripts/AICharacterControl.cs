@@ -27,8 +27,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         {
             // out of bounds check TODO
             //Debug.Log(agent.gameObject + " " + agent);
-            if (target != null)
-                agent.SetDestination(target.position);
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(target.transform.position, out hit, MOVE_RADIUS, 1))
+            {
+                target.position = hit.position;
+                if (target != null)
+                    agent.SetDestination(target.position);
+            }
+
+            
 
             if (agent.remainingDistance > agent.stoppingDistance)
                 character.Move(agent.desiredVelocity, false, false);
@@ -47,7 +54,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (NavMesh.SamplePosition(pos, out hit, MOVE_RADIUS, 1))
             {
                 target.transform.position = hit.position;
-            }
+            } 
         }
     }
 }

@@ -32,8 +32,8 @@ namespace GameController
 
         private float[,] hm;
         private float[,,] alphaMaps;
-        public static int L_WHITE = 1;
-        public static int L_BLACK = 0;
+        public static int L_SAND_LIGHT_ALPHA_1 = 1;
+        public static int L_WHITE_ALPHA_0 = 0;
         public static int L_GROUND = 2;
         public static int L_GRAS = 3;
         public static int L_STREET = 4;
@@ -119,8 +119,8 @@ namespace GameController
             for (int y = 0; y < amSizeY; y++)
                 for (int x = 0; x < amSizeX; x++)
                 {
-                    alphaMaps[x, y, L_WHITE] = 0.01f;
-                    alphaMaps[x, y, L_BLACK] = 0f;
+                    alphaMaps[x, y, L_SAND_LIGHT_ALPHA_1] = 0.01f;
+                    alphaMaps[x, y, L_WHITE_ALPHA_0] = 0f;
                     Paint(x, y, L_GRAS, 0.99f);
                 }
                     
@@ -144,7 +144,7 @@ namespace GameController
         public IEnumerator ResetTerrain()
         {
             SetHeightMin(0.0f);
-            SetHeightsToMin();
+            //SetHeightsToMin();
             ResetAlpha();
             Flush();
             yield return null;

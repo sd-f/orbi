@@ -17,6 +17,8 @@ namespace GameController.Services
         private static int REQUEST_QUEUE_MAX_WAITS = 3;
         private int waited = 0;
 
+        private static List<string> runningRequests = new List<string>();
+
         public delegate void OnNumberOfRequestsChangedEventHandler();
         public static event OnNumberOfRequestsChangedEventHandler OnNumberOfRequestsChanged;
 
@@ -49,50 +51,62 @@ namespace GameController.Services
 
         public System.Collections.IEnumerator Request(string apiPath, string jsonString, Action<string,object> onSuccess, object callbackLoad)
         {
-            Debug.Log(apiPath);
-            if (!IsReady())
+            if (runningRequests.Exists(l => l.Equals(apiPath)))
             {
                 yield break;
             }
             yield return CheckRequestQueue();
-            IndicateRequestStart();
+            IndicateRequestStart(apiPath);
             WWW request = Request(apiPath, jsonString);
             yield return request;
-            IndicateRequestFinished();
-            if (request.error == null)
+            
+            try
             {
-                onSuccess.DynamicInvoke(request.text, callbackLoad);
-                IndicateRequestFinished();
+                if (request.error == null)
+                    onSuccess.DynamicInvoke(request.text, callbackLoad);
+                else
+                    HandleError(request);
+            } catch (Exception e)
+            {
+                Debug.LogError(e);
+            } finally
+            {
+                IndicateRequestFinished(apiPath);
             }
-            else
-                HandleError(request);
+            
         }
 
         public System.Collections.IEnumerator Request(string apiPath, string jsonString, Action<string> onSuccess)
         {
-            Debug.Log(apiPath);
-            if (!IsReady())
+            if (runningRequests.Exists(l => l.Equals(apiPath)))
             {
                 yield break;
             }
             yield return CheckRequestQueue();
-            IndicateRequestStart();
+            IndicateRequestStart(apiPath);
             WWW request = Request(apiPath, jsonString);
             yield return request;
             
-            if (request.error == null)
+            try
             {
-                onSuccess.Invoke(request.text);
-                IndicateRequestFinished();
-            }     
-            else 
-                HandleError(request);
-            
+                if (request.error == null)
+                    onSuccess.Invoke(request.text);
+                else
+                    HandleError(request);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+            finally
+            {
+                IndicateRequestFinished(apiPath);
+            }
         }
 
         public WWW Request(string apiPath, string jsonString)
         {
-            
+
             //Debug.Log(apiPath + "\n" + jsonString);
             string uri = ServerConstants.GetServerUrl(Game.Instance.GetClient().serverType) + "/" + apiPath;
             UTF8Encoding encoding = new UTF8Encoding();
@@ -117,7 +131,6 @@ namespace GameController.Services
 
         public void HandleError(WWW request)
         {
-            IndicateRequestFinished();
             ErrorMessage message = null;
             try
             {
@@ -133,33 +146,33 @@ namespace GameController.Services
                 Debug.Log(request.text);
                 Debug.LogError(ex);
             }
-            HandleErrorCode(request.error, message);
+            HandleErrorCode(request.error, message, request.url);
         }
 
-        private void HandleErrorCode(string error, ErrorMessage message)
+        private void HandleErrorCode(string error, ErrorMessage message, string api)
         {
             if (message != null)
-                CheckErrorCode((int)message.status, message.message, true);
+                CheckErrorCode((int)message.status, message.message, true, api);
             else
             {
                 if (error.Contains("500"))
-                    CheckErrorCode(500, "Server is doing weird stuff", false);
+                    CheckErrorCode(500, "Server is doing weird stuff", false, api);
                 else if (error.Contains("502"))
-                    CheckErrorCode(502, "Server is sending weird stuff", false);
+                    CheckErrorCode(502, "Server is sending weird stuff", false, api);
                 else if (error.Contains("503"))
-                    CheckErrorCode(503, "No connection or server is down", false);
+                    CheckErrorCode(503, "No connection or server is down", false, api);
                 else if (error.Contains("504"))
-                    CheckErrorCode(504, "Connection too slow", false);
+                    CheckErrorCode(504, "Connection too slow", false, api);
                 else if (error.Contains("400"))
-                    CheckErrorCode(400, "App is sending weird stuff", false);
+                    CheckErrorCode(400, "App is sending weird stuff", false, api);
                 else
-                    CheckErrorCode(500, "Sorry something went wrong", false);
+                    CheckErrorCode(500, "Sorry something went wrong", false, api);
             }
         }
 
-        private void CheckErrorCode(int code, string message, bool custommessage)
+        private void CheckErrorCode(int code, string message, bool custommessage, string api)
         {
-            Debug.LogError("Orbi-Error: " + code + ": " + message);
+            Debug.LogError("Orbi-Error: " + code + "("+api+"): " + message);
             // silent numbers unknown errors
             if ((code == 502) || (code == 504))
             {
@@ -203,14 +216,16 @@ namespace GameController.Services
             yield break;
         }
 
-        public void IndicateRequestStart()
+        public void IndicateRequestStart(string api)
         {
+            runningRequests.Add(api);
             Game.Instance.GetClient().IncRunningRequests();
             SendOnNumberOfRequestsChanged();
         }
 
-        public void IndicateRequestFinished()
+        public void IndicateRequestFinished(string api)
         {
+            runningRequests.RemoveAll(l => api.Equals(l));
             Game.Instance.GetClient().DecRunningRequests();
             SendOnNumberOfRequestsChanged();
         }

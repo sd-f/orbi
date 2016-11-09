@@ -102,7 +102,7 @@ namespace GameScene
             long newXP = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xp);
             if ((oldXP > 0) && (newXP > oldXP))
                 AddStatsInfo("+ " + (newXP - Convert.ToInt64(textXp.text)) + " xp");
-            long newNumberOfInventoryItems = Game.Instance.GetPlayer().GetInventoryService().GetInventory().items.Count;
+            long newNumberOfInventoryItems = Game.Instance.GetPlayer().GetInventoryService().GetNumberOfItems();
             if (inventoryItems > 0)
                 if (inventoryItems < newNumberOfInventoryItems)
                     AddNewItemsInfo("+ " + (newNumberOfInventoryItems - inventoryItems) + " items");

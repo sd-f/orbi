@@ -6,15 +6,19 @@ using UnityEngine.UI;
 using CanvasUtility;
 using System;
 using System.Net.Mail;
+using GameController.Services;
 
 namespace AuthorizationScene
 {
     [AddComponentMenu("App/Scenes/Authorization/Menu")]
     public class Menu : MonoBehaviour
     {
+        public AuthService authService;
+
         private InputField emailField;
         private InputField codeField;
         private Button loginButton;
+
 
         void Start()
         {
@@ -30,15 +34,15 @@ namespace AuthorizationScene
 
         public void OnLogin()
         {
-
+            
             if (!IsValidEmail(emailField.text))
             {
                 Error.Show("Email not valid");
                 SetFormEnabled(false);
                 return;
             }
-            
-            
+
+            Info.Show("Logging in...");
             Game.Instance.GetSettings().SetEmail(emailField.text);
             StartCoroutine(Login());
             

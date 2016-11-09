@@ -2,6 +2,7 @@
 using GameController;
 using UnityEngine;
 using UnityEngine.UI;
+using CanvasUtility;
 
 namespace GameScene
 {
@@ -45,7 +46,12 @@ namespace GameScene
         public void SetMusic(bool enabled)
         {
             if (initialized)
+            {
                 Game.Instance.GetSettings().SetMusicEnabled(enabled);
+                if (enabled)
+                    Info.Show("Not available at the moment");
+            }
+                
         }
 
         public void SetDesktop(bool enabled)

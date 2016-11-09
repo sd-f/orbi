@@ -30,7 +30,7 @@ namespace GameController
 
         public IEnumerator RequestMapDataGoogle(GeoPosition geoPosition, SplatPrototype prototype)
         {
-            IndicateRequestStart();
+            IndicateRequestStart("googlemap");
                 mapType = "roadmap";
 
 
@@ -41,7 +41,7 @@ namespace GameController
             Game.Instance.GetClient().Log("google map request = " + url);
             WWW request = new WWW(url);
             yield return request;
-            IndicateRequestFinished();
+            IndicateRequestFinished("googlemap");
             if (request.error == null)
             {
                 Texture2D tex = new Texture2D(1024, 1024);
@@ -56,7 +56,7 @@ namespace GameController
 
         public IEnumerator RequestMapDataOsm(long latitude, long longitude, SplatPrototype prototype)
         {
-            IndicateRequestStart();
+            IndicateRequestStart("osmmap");
 
             string url = OSM_URL
                 + latitude + "/" + longitude + ".png";
@@ -64,7 +64,7 @@ namespace GameController
             Game.Instance.GetClient().Log("osm map request = " + url);
             WWW request = new WWW(url);
             yield return request;
-            IndicateRequestFinished();
+            IndicateRequestFinished("osmmap");
             if (request.error == null)
             {
                 Texture2D tex = new Texture2D(256, 256); // TODO change if sd-f osm server is running

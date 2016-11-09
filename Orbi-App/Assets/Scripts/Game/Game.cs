@@ -65,17 +65,18 @@ namespace GameController
 
         void Awake()
         {
-            DontDestroyOnLoad(this);
+            //DontDestroyOnLoad(this);
             if (Instance == null)
             {
                 Instance = this as Game;
             }
-            
             /*
+           
             if (FindObjectsOfType(GetType()).Length > 1)
             {
                 Destroy(gameObject);
-            }*/
+            }
+            */
         }
 
         private void SendTypingModeChangedEvent()

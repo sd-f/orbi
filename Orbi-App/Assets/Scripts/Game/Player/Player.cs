@@ -23,7 +23,7 @@ namespace GameController
         private ServerModel.Player player = new ServerModel.Player();
         private bool frozen = true;
 
-        public static float HEIGHT = 0.9f;
+        public static float HEIGHT = 0.91f;
 
         Player()
         {

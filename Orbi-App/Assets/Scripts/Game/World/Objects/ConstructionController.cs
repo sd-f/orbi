@@ -26,7 +26,6 @@ namespace GameScene
         private string userText = "";
         private UnityEngine.GameObject objectToCraft;
         private UnityEngine.GameObject processingEffectGameObject;
-        private Text craftingAmount;
 
         public override void Start()
         {
@@ -143,8 +142,11 @@ namespace GameScene
 
         public void CheckInventory()
         {
-            if ((GetSelectedType() == null) || ((GetSelectedType() != null) && !Game.Instance.GetPlayer().GetInventoryService().HasInventoryItem(GetSelectedType().prefab))) {
-                SetSelectedType(Game.Instance.GetPlayer().GetInventoryService().GetNextAvailableItem().type);
+            GameObjectType type = GetSelectedType();
+            if ((type == null) || ((type != null) && !Game.Instance.GetPlayer().GetInventoryService().HasInventoryItem(type.prefab))) {
+                InventoryItem nextItem = Game.Instance.GetPlayer().GetInventoryService().GetNextAvailableItem();
+                if (nextItem != null)
+                    SetSelectedType(nextItem.type);
             }
         }
 
@@ -152,7 +154,7 @@ namespace GameScene
         {
             if (processingEffectGameObject != null)
             {
-                UnityEngine.GameObject.Destroy(processingEffectGameObject);
+                UnityEngine.GameObject.Destroy(processingEffectGameObject, 1);
             }
             GameObjectUtility.DestroyAllChildObjects(this.gameObject);
         }

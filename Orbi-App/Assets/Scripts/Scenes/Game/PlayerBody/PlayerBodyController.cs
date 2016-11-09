@@ -14,7 +14,7 @@ namespace GameScene
 
         // handheld movement
         private Vector3 gyroRotation = new Vector3(0,0,0);
-        private Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
+        public Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
         private float deltaCompass = 0.0f;
         private MyFirstPersonController firstPersonController;
 #pragma warning disable 0649
@@ -25,6 +25,7 @@ namespace GameScene
         public override void Start()
         {
             base.Start();
+            targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
             Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
             //SensorHelper.ActivateRotation();
@@ -36,7 +37,7 @@ namespace GameScene
             }
             firstPersonController = GetComponent<MyFirstPersonController>();
             // restore rotation + position
-            SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
+            //SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
 
         }
 
@@ -198,9 +199,9 @@ namespace GameScene
 
         public void ResetPosition()
         {
-            transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
+            transform.position = new Vector3(0.0f, GameController.Player.HEIGHT, 0.0f);
             targetPosition = transform.position;
-            this.GetComponent<Rigidbody>().transform.position = new Vector3(0.0f, transform.position.y, 0.0f);
+            this.GetComponent<Rigidbody>().transform.position = new Vector3(0.0f, GameController.Player.HEIGHT, 0.0f);
         }
 
         public void SetTransform(Vector3 position, Vector3 rotation)

@@ -35,6 +35,9 @@ namespace GameScene
             if (!Game.Instance.GetPlayer().IsLoggedIn())
             {
                 Game.Instance.LoadScene(Game.GameScene.AuthorizationScene);
+               
+            } else
+            {
                 Game.Instance.SetReady(true);
             }
                 
@@ -55,6 +58,7 @@ namespace GameScene
         IEnumerator Load()
         {
             yield return Game.Instance.GetServerService().RequestInfo();
+            yield return Game.Instance.GetWorld().GetGameObjectService().RequestStatistics();
             yield return Game.Instance.GetAuthService().LoadGameIfAuthorized();
             yield return Game.Instance.GetLocation().Boot();
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();

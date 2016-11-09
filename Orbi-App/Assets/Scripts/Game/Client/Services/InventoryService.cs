@@ -11,8 +11,10 @@ namespace GameController.Services
         public static String ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB = "Cubes/Bricks";
 
         private Inventory inventory = new Inventory();
+        private Inventory newInventory = new Inventory();
         private bool newItems = false;
         private bool checkForNew = false;
+        private bool initialized = false;
 
         public IEnumerator RequestInventory()
         {
@@ -23,8 +25,9 @@ namespace GameController.Services
         {
             Inventory inventory = JsonUtility.FromJson<Inventory>(data);
             newItems = checkForNew && (inventory.items.Count > this.inventory.items.Count);
+            
             SetInventory(inventory);
-            IndicateRequestFinished();
+            initialized = true;
         }
 
         public bool HasNewItems()
@@ -50,6 +53,9 @@ namespace GameController.Services
             foreach (InventoryItem item in inventory.items)
                 if (item.amount > 0)
                     return item;
+            foreach (InventoryItem item in inventory.items)
+                if (item.type.prefab.Equals(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB))
+                    return item;
             return null;
         }
 
@@ -60,8 +66,6 @@ namespace GameController.Services
 
         internal bool HasInventoryItem(string prefab)
         {
-            if (prefab != null && prefab.Equals(ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB))
-                return true;
             InventoryItem itemToRemove = GetInventoryItem(prefab);
             return ((itemToRemove != null) && (itemToRemove.amount > 0));
         }
@@ -71,6 +75,14 @@ namespace GameController.Services
             InventoryItem itemToRemove = GetInventoryItem(prefab);
             if ((itemToRemove != null) && (itemToRemove.amount > 0))
                 itemToRemove.amount--;
+        }
+
+        public int GetNumberOfItems()
+        {
+            int items = 0;
+            foreach (InventoryItem item in this.inventory.items)
+                items += item.amount;
+            return items;
         }
 
         public void SetInventory(Inventory inventory)
@@ -84,6 +96,22 @@ namespace GameController.Services
                     break;
                 }
             }
+            if (initialized)
+            {
+                bool alreadythere = false;
+
+                foreach (InventoryItem item in inventory.items)
+                {
+                    alreadythere = false;
+                    foreach (InventoryItem oldItem in this.inventory.items)
+                        if (oldItem.type.id.Equals(item.type.id))
+                            alreadythere = true;
+                    if (!alreadythere)
+                        this.newInventory.items.Add(item);
+                }
+
+            }
+
             checkForNew = true;
             this.inventory = inventory;
         }

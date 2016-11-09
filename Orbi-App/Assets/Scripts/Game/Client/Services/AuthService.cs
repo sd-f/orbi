@@ -9,6 +9,7 @@ namespace GameController.Services
 
     public class AuthService: AbstractHttpService
     {
+        public Settings settings;
 
         protected override bool IsReady()
         {

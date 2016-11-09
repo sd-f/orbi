@@ -52,6 +52,7 @@ public class WorldRestApi {
         }
     }
 
+    @GET
     @Path("/statistics")
     public Statistics statistics() {
         Statistics statistics = new Statistics();

@@ -119,9 +119,9 @@ namespace GameController
             for (int y = 0; y < amSizeY; y++)
                 for (int x = 0; x < amSizeX; x++)
                 {
-                    alphaMaps[x, y, L_WHITE] = 0f;
+                    alphaMaps[x, y, L_WHITE] = 0.01f;
                     alphaMaps[x, y, L_BLACK] = 0f;
-                    Paint(x, y, L_GRAS, 1.0f);
+                    Paint(x, y, L_GRAS, 0.99f);
                 }
                     
         }
@@ -178,7 +178,7 @@ namespace GameController
 
         public void Flush()
         {
-            //Normalize(alphaMaps);
+            Normalize(alphaMaps);
             SetAlphaMaps(alphaMaps);
             terrain.Flush();
         }

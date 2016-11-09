@@ -6,7 +6,6 @@ using System.Collections;
 
 namespace CanvasUtility
 {
-    
 
     [AddComponentMenu("App/Canvas/Message/Generator")]
     class MessagesGenerator : MonoBehaviour

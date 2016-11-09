@@ -31,6 +31,7 @@ namespace GameScene
             version.text = "v " + Client.VERSION.ToString();
             objects.text = Game.Instance.GetWorld().GetStatistics().numberOfObjects.ToString();
             ServerModel.ServerInfo serverInfo = Game.Instance.GetClient().GetServerInfo();
+            
             motdText.text = "";
             if (serverInfo != null && serverInfo.messages != null)
                 foreach (ServerModel.MessageOfTheDay motd in serverInfo.messages)

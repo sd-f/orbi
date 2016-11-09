@@ -126,7 +126,7 @@ public class UserService {
             // useless hashing
             hashedToken = Hasher.hashToken(token);
             identityEntity.setToken(hashedToken);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
             Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
             throw new InternalServerErrorException("Password could not be generated, try again");
         }

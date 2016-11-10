@@ -6,6 +6,7 @@ public class NewItemText : MonoBehaviour {
     private bool fading = false;
     private TextMesh textMesh;
     private static float scaleFactor = 0.002f;
+#pragma warning disable 0414
     private Vector3 scaleVector = new Vector3(scaleFactor, scaleFactor, scaleFactor);
 
 

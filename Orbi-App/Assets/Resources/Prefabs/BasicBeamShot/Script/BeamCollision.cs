@@ -12,7 +12,7 @@ public class BeamCollision : MonoBehaviour {
 	private bool bHit = false;
 
 	private BeamParam BP;
-
+#pragma warning disable 0414
     private GameObject destructionContainer;
 
 	// Use this for initialization

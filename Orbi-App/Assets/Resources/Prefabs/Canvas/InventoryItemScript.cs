@@ -24,10 +24,15 @@ public class InventoryItemScript : MonoBehaviour {
             gameObjectContainer.transform.Find("UnknownText").gameObject.SetActive(false);
             transform.Find("LabelBackground").GetComponent<Image>().color = GetItemColor(item.type);
             string text = "x " + item.amount;
+            bool selectable = item.amount > 0;
             if (item.type.prefab.Equals(InventoryService.ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB))
+            {
                 text = "∞";
+                selectable = true;
+            }
             label.transform.Find("AmountText").GetComponent<Text>().text = text;
-            gameObjectContainer.GetComponent<Button>().onClick.AddListener(() => { OnSelected(); });
+            if (selectable)
+                gameObjectContainer.GetComponent<Button>().onClick.AddListener(() => { OnSelected(); });
 
             GameObject newObject = GameObjectFactory.CreateObject(gameObjectContainer.transform, item.type.prefab, item.type.id, null, LayerMask.NameToLayer("Inventory"));
             
@@ -41,7 +46,7 @@ public class InventoryItemScript : MonoBehaviour {
             GameObjectUtility.DisableAI(newObject);
             GameObjectUtility.NormalizeScale(newObject);
            // GameObject realObject = GameObjectFactory.GetObject(newObject);
-            newObject.transform.localScale = newObject.transform.localScale * 1.25f;
+            newObject.transform.localScale = newObject.transform.localScale * 0.25f;
         }
     }
 
@@ -49,6 +54,7 @@ public class InventoryItemScript : MonoBehaviour {
     {
         Game.Instance.GetPlayer().GetConstructionController().SetSelectedType(item.type);
         GameObject.Find("Canvas").GetComponent<GameScene.MainCanvas>().Reset();
+        GameObject.Find("CraftingCanvas").GetComponent<CraftingCanvas>().OnCraft();
     }
 
 

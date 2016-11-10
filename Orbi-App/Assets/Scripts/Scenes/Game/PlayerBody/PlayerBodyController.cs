@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using ServerModel;
 using ClientModel;
 using UnityStandardAssets.Characters.FirstPerson;
+using UnityStandardAssets.CrossPlatformInput;
 
 namespace GameScene
 {
@@ -37,14 +38,15 @@ namespace GameScene
             }
             firstPersonController = GetComponent<MyFirstPersonController>();
             // restore rotation + position
-            //SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
+            SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
 
         }
 
         
 
-        void Awake()
+        public override void Awake()
         {
+            base.Awake();
             Input.gyro.enabled = true;
             SensorHelper.ActivateRotation();
         }
@@ -71,19 +73,21 @@ namespace GameScene
               
         }
 
-        public override void SetInputMode()
+        public override void OnInputModeChanged()
         {
-            base.SetInputMode();
             firstPersonController.enabled = desktopMode;
             if (desktopMode) {
+                CrossPlatformInputManager.SwitchActiveInputMethod(CrossPlatformInputManager.ActiveInputMethod.Hardware);
                 firstPersonController.enabled = !typingMode;
                 firstPersonController.mouseLook.SetCursorLock(!typingMode);
+            } else
+            {
+                CrossPlatformInputManager.SwitchActiveInputMethod(CrossPlatformInputManager.ActiveInputMethod.Touch);
             }
         }
 
-        public override void SetTypingMode()
+        public override void OnTypingModeChanged()
         {
-            base.SetTypingMode();
             if (desktopMode)
             {
                 firstPersonController.enabled = !typingMode;
@@ -212,8 +216,9 @@ namespace GameScene
             SetRotation(rotation);
         }
 
-        void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
             CancelInvoke();
         }
 

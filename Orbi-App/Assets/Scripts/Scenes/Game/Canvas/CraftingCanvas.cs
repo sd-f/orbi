@@ -16,6 +16,7 @@ namespace GameScene
         public GameObject craftCancelButton;
         public GameObject craftingContainer;
         public Text craftingAmount;
+        public GameObject crosshair;
 
         public void OnCraft()
         {
@@ -30,10 +31,26 @@ namespace GameScene
 
         public override void OnReady()
         {
-            base.OnReady();
             Game.Instance.GetPlayer().GetConstructionController().CheckInventory();
-            
         }
+
+        public override void Awake()
+        {
+            base.Awake();
+            crosshair.SetActive(desktopMode);
+        }
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            crosshair.SetActive(desktopMode);
+        }
+
+        public override void OnInputModeChanged()
+        {
+            crosshair.SetActive(desktopMode);
+        }
+
 
         private void SetAmount()
         {

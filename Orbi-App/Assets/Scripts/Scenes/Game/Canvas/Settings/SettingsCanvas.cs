@@ -12,8 +12,8 @@ namespace GameScene
         public GameObject contentTabInventory;
         public GameObject contentTabSettings;
         public GameObject contentTabMessages;
-        public GameObject inventoryCanvas;
-        public GameObject inventoryCamera;
+        public Canvas inventoryCanvas;
+        public Camera inventoryCamera;
         public GameObject messagesNewIndicator;
         public GameObject inventoryNewIndicator;
         private SettingsTabs currentTab = SettingsTabs.Settings;
@@ -42,8 +42,8 @@ namespace GameScene
         {
             if (currentTab == SettingsTabs.Inventory)
             {
-                inventoryCanvas.SetActive(false);
-                inventoryCamera.SetActive(false);
+                inventoryCanvas.enabled = false;
+                inventoryCamera.enabled = false;
             }
                 
         }
@@ -73,8 +73,8 @@ namespace GameScene
             GetContentTab(tab).SetActive(state);
             if (tab == SettingsTabs.Inventory)
             {
-                inventoryCanvas.SetActive(state);
-                inventoryCamera.SetActive(state);
+                inventoryCanvas.enabled = state;
+                inventoryCamera.enabled = state;
             }
                 
             GameObject.Find(tab.ToString() + "TabTextInfo").GetComponent<Text>().color = GetColorFromState(state);

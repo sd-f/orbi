@@ -17,10 +17,12 @@ namespace GameScene
         private float categoryOffsetY = 0f;
         private List<GameObject> categoriesObjects = new List<GameObject>();
         private List<ServerModel.GameObjectTypeCategory> categories;
+#pragma warning disable 0414
         private List<ServerModel.InventoryItem> items;
         private static int ITEMS_PER_LINE = 4;
-        private static float ITEM_SIZE = 275f;
+        private static float ITEM_SIZE = 300f;
         private InventoryService service;
+
 
         void OnEnable()
         {
@@ -38,8 +40,11 @@ namespace GameScene
             categoryObject.transform.SetParent(inventoryContent.transform, false);
             CategoryContainerScript categoryScript = categoryObject.GetComponent<CategoryContainerScript>();
             categoryScript.SetCategory(category);
-            
-            categoryObject.transform.Find("CategoryContent").GetComponent<RectTransform>().sizeDelta = new Vector3(1000f, ((category.types.Count / ITEMS_PER_LINE) + 1) * ITEM_SIZE);
+            int lines = (category.types.Count / ITEMS_PER_LINE) + 1;
+            if ((category.types.Count % ITEMS_PER_LINE) == 0)
+                lines = category.types.Count / ITEMS_PER_LINE;
+            lines = lines * (int)ITEM_SIZE;
+            categoryObject.transform.Find("CategoryContent").GetComponent<RectTransform>().sizeDelta = new Vector3(1000f, lines);
             categoriesObjects.Add(categoryObject);
             float offsetY = 0;
             float offsetX = 0;
@@ -86,9 +91,11 @@ namespace GameScene
             foreach (GameObject category in categoriesObjects)
             {
                 category.transform.localPosition = new Vector2(0, -categoryOffsetY);
-                categoryOffsetY += (category.transform.Find("CategoryContent").GetComponent<RectTransform>().rect.height + ITEM_SIZE); // - header
+                categoryOffsetY += (category.transform.Find("CategoryContent").GetComponent<RectTransform>().rect.height) + (ITEM_SIZE / 2f); // - header
             }
+            yield return new WaitForEndOfFrame();
             inventoryContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, categoryOffsetY);
+            //camera.enabled = true;
         }
 
         public void OnItemSelected(GameObject item)

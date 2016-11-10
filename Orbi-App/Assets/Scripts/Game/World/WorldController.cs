@@ -39,22 +39,20 @@ namespace GameController
         public override void OnEnable()
         {
             base.OnEnable();
-            // Register Map-ity's Loaded Event
             Mapity.MapityLoaded += OnMapityLoaded;
         }
 
         /// <summary>
         /// Raises the disable event.
         /// </summary>
-        public override void OnDisable()
+        public void OnDisable()
         {
-            base.OnDisable();
-            // Un-Register Map-ity's Loaded Event
             Mapity.MapityLoaded -= OnMapityLoaded;
         }
 
-        void Awake()
+        public override void Awake()
         {
+            base.Awake();
             this.backGroundLayerMask = backgroundLayersTerrain;
             this.umaCreator = this.GetComponent<UMACreator>();
 
@@ -198,8 +196,9 @@ namespace GameController
             return 0.0f;
         }
 
-        void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
             // cleanup dynamic splats
             CancelInvoke();
             GetTerrainService().CleanSplats();

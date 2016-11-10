@@ -13,7 +13,7 @@ namespace CanvasUtility
 
         void Awake()
         {
-            Invoke("StartFading", 3);
+            Invoke("StartFading", 2.5f);
         }
 
         void StartFading()
@@ -26,10 +26,10 @@ namespace CanvasUtility
             if (fading)
             {
                 Color backgroundColor = gameObject.GetComponent<Image>().color;
-                backgroundColor.a = backgroundColor.a - 0.01f;
+                backgroundColor.a = backgroundColor.a - 0.08f;
                 gameObject.GetComponent<Image>().color = backgroundColor;
                 Color color = gameObject.GetComponentInChildren<Text>().color;
-                color.a = color.a - 0.01f;
+                color.a = color.a - 0.08f;
                 gameObject.gameObject.GetComponentInChildren<Text>().color = color;
                 if (color.a < 0)
                     Invoke("Destroy", 0);

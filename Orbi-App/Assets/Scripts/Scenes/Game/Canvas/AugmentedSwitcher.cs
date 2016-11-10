@@ -16,18 +16,20 @@ namespace GameScene
 
         void OnEnable()
         {
-            augmentedCamera.gameObject.SetActive(true);
+            augmentedCamera.enabled = true;
             webcamTexture.Play();
             playerCamera.cullingMask = Game.Instance.GetWorld().backgroundLayersCamera;
-            Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersCamera;
+            playerCamera.clearFlags = CameraClearFlags.Depth;
+            //Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersCamera;
         }
 
         void OnDisable()
         {
-            augmentedCamera.gameObject.SetActive(false);
+            augmentedCamera.enabled = false;
             webcamTexture.Stop();
             playerCamera.cullingMask = Game.Instance.GetWorld().backgroundLayersTerrain;
-            Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersTerrain;
+            playerCamera.clearFlags = CameraClearFlags.Skybox;
+            //Game.Instance.GetWorld().backGroundLayerMask = Game.Instance.GetWorld().backgroundLayersTerrain;
         }
 
         void Awake()

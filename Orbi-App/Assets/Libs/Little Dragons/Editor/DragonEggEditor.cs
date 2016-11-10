@@ -29,6 +29,7 @@ public class DragonEggEditor : Editor
         DragonEgg MyDragoEgg = (DragonEgg)target;
 
         DragonEgg.HatchType ht = (DragonEgg.HatchType) hatchtype.enumValueIndex;
+#pragma warning disable 0219
         KeyCode k = (KeyCode)key.enumValueIndex;
 
         switch (ht)

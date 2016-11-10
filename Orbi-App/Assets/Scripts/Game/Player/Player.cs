@@ -43,9 +43,8 @@ namespace GameController
                 Invoke("CheckInventory", 0f);
         }
 
-        public override void OnDisable()
+        public void OnDisable()
         {
-            base.OnDisable();
             CancelInvoke();
         }
 
@@ -183,8 +182,9 @@ namespace GameController
             return this.loggedIn;
         }
 
-        void OnDestroy()
+        public override void OnDestroy()
         {
+            base.OnDestroy();
             CancelInvoke();
         }
 

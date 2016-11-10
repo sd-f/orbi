@@ -11,6 +11,13 @@ namespace GameScene
         protected bool desktopMode = false;
         protected bool typingMode = false;
 
+        public virtual void Awake()
+        {
+            Settings.OnInputModeChanged += SetInputMode;
+            Game.OnTypingModeChanged += SetTypingMode;
+            Game.OnReady += SetReady;
+        }
+
         public virtual void Start()
         {
             ready = Game.Instance.IsReady();
@@ -20,13 +27,16 @@ namespace GameScene
 
         public virtual void OnEnable()
         {
-            Settings.OnInputModeChanged += SetInputMode;
-            Game.OnTypingModeChanged += SetTypingMode;
-            Game.OnReady += SetReady;
+            if (Game.Instance != null)
+            {
+                ready = Game.Instance.IsReady();
+                typingMode = Game.Instance.IsInTypingMode();
+                desktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
+            }
         }
 
-        
-        public virtual void OnDisable()
+
+        public virtual void OnDestroy()
         {
             Settings.OnInputModeChanged -= SetInputMode;
             Game.OnTypingModeChanged -= SetTypingMode;
@@ -34,27 +44,40 @@ namespace GameScene
         }
         
 
-        public virtual void SetReady()
+        private void SetReady()
         {
             ready = Game.Instance.IsReady();
             if (ready)
+            {
+                SetInputMode();
+                SetTypingMode();
                 OnReady();
+            }
+                
         }
 
-        public virtual void SetInputMode()
+        private void SetInputMode()
         {
             desktopMode = Game.Instance.GetSettings().IsDesktopInputEnabled();
+            OnInputModeChanged();
         }
 
-        public virtual void SetTypingMode()
+        private void SetTypingMode()
         {
             typingMode = Game.Instance.IsInTypingMode();
+            OnTypingModeChanged();
         }
 
         public virtual void OnReady()
         {
-            SetInputMode();
-            SetTypingMode();
+        }
+
+        public virtual void OnTypingModeChanged()
+        {
+        }
+
+        public virtual void OnInputModeChanged()
+        {
         }
 
 

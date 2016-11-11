@@ -48,7 +48,7 @@ public class ObjectSelector : GameMonoBehaviour
     {
         RaycastHit hit = new RaycastHit();
         Ray ray = Camera.main.ScreenPointToRay(position);
-        if (Physics.SphereCast(ray, 0.5f, out hit, 200f))
+        if (Physics.SphereCast(ray, 1f, out hit, 500f))
         {
             hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
         }

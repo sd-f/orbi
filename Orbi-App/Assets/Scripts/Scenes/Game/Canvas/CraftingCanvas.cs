@@ -15,6 +15,7 @@ namespace GameScene
         public GameObject craftOkButton;
         public GameObject craftCancelButton;
         public GameObject craftingContainer;
+        public ObjectSelector selector;
         public Text craftingAmount;
         public GameObject crosshair;
 
@@ -84,6 +85,7 @@ namespace GameScene
 
         private void StartCrafting()
         {
+            selector.enabled = false;
             ButtonUtility.SetButtonState(craftButton, false);
             ButtonUtility.SetButtonState(craftOkButton, true);
             ButtonUtility.SetButtonState(craftCancelButton, true);
@@ -94,6 +96,7 @@ namespace GameScene
 
         private void StopCrafting()
         {
+            selector.enabled = true;
             ButtonUtility.SetButtonState(craftButton, true);
             ButtonUtility.SetButtonState(craftOkButton, false);
             ButtonUtility.SetButtonState(craftCancelButton, false);

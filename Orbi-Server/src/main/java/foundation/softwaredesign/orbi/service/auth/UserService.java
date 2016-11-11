@@ -79,7 +79,9 @@ public class UserService {
         String password = RandomStringUtils.randomAlphanumeric(10).toUpperCase();
 
         try {
-            identityEntity.setTmpPassword(Hasher.getSaltedHash(password.toCharArray()));
+            if (!identityEntity.getEmail().endsWith("demo@softwaredesign.foundation")) {
+                identityEntity.setTmpPassword(Hasher.getSaltedHash(password.toCharArray()));
+            }
         } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
             Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
             throw new InternalServerErrorException("Password could not be generated, try again");
@@ -121,7 +123,7 @@ public class UserService {
         identityEntity.setLastInit(new Date());
 
         String token = RandomStringUtils.randomAlphanumeric(42);
-        String hashedToken = null;
+        String hashedToken;
         try {
             // useless hashing
             hashedToken = Hasher.hashToken(token);
@@ -145,6 +147,9 @@ public class UserService {
     }
 
     private Boolean sendPasswordMail(String email, String password) {
+        if (email.endsWith("demo@softwaredesign.foundation")) {
+            return true;
+        }
 
         final Message message = new MimeMessage(smtpSession);
         try {
@@ -164,14 +169,13 @@ public class UserService {
     }
 
     public static boolean isValidEmailAddress(String email) {
-        boolean result = true;
         try {
             InternetAddress emailAddr = new InternetAddress(email);
             emailAddr.validate();
+            return true;
         } catch (AddressException ex) {
-            result = false;
+            return false;
         }
-        return result;
     }
 
     public void updateLastInit() {

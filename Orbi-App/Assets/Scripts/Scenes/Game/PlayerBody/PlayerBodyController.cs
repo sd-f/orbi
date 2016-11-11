@@ -6,6 +6,7 @@ using ServerModel;
 using ClientModel;
 using UnityStandardAssets.Characters.FirstPerson;
 using UnityStandardAssets.CrossPlatformInput;
+using CanvasUtility;
 
 namespace GameScene
 {
@@ -37,9 +38,7 @@ namespace GameScene
                 //gyroRotation.y = Input.gyro.attitude.eulerAngles.z;
             }
             firstPersonController = GetComponent<MyFirstPersonController>();
-            // restore rotation + position
-            SetTransform(Game.Instance.GetPlayer().GetModel().character.transform.position.ToVector3(), Game.Instance.GetPlayer().GetModel().character.transform.rotation.ToVector3());
-
+            SetTransform(new Vector3(0, GameController.Player.HEIGHT, 0), new Vector3(0, 0.5f, 0));
         }
 
         
@@ -65,6 +64,7 @@ namespace GameScene
 
         void Update()
         {
+           // CanvasDebug.Log(targetPosition.ToString());
             if (!desktopMode && ready)
             {
                 this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
@@ -114,9 +114,10 @@ namespace GameScene
 
         public void SetTargetPosition(Vector3 targetPosition)
         {
+
             this.targetPosition.x = targetPosition.x;
             this.targetPosition.z = targetPosition.z;
-            this.targetPosition.y = this.transform.position.y;
+            this.targetPosition.y = targetPosition.y;
         }
 
         public void SetRotation(Vector3 rotation)

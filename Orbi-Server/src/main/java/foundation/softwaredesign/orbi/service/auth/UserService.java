@@ -109,7 +109,7 @@ public class UserService {
         if (StringUtils.isEmpty(identityEntity.getTmpPassword())) {
             throw new InternalServerErrorException("Password is invalid - please request new one");
         }
-        Logger.getLogger(UserService.class.getSimpleName()).info("Login: " + loginInfo.getPassword());
+        Logger.getLogger(UserService.class.getSimpleName()).info("Login: " + loginInfo.getEmail());
         if (Objects.isNull(identityEntity)) {
             throw new InternalServerErrorException("Email not registered");
         }

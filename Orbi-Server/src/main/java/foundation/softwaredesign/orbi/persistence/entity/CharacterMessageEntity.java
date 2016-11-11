@@ -12,6 +12,7 @@ import java.util.Date;
 public class CharacterMessageEntity {
 
     @Id
+    @SequenceGenerator(name="character_message_id_gen", sequenceName="character_message_id_gen")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "character_message_id_gen")
     private Long id;
     @Column

@@ -12,6 +12,7 @@ import java.util.Date;
 public class IdentityEntity {
 
     @Id
+    @SequenceGenerator(name="identity_id_gen", sequenceName="identity_id_gen")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "identity_id_gen")
     private Long id;
     @Column

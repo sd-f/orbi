@@ -12,6 +12,7 @@ import java.util.Date;
 public class GameObjectEntity {
 
     @Id
+    @SequenceGenerator(name="game_object_id_gen", sequenceName="game_object_id_gen")
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "game_object_id_gen")
     private Long id;
     @Column

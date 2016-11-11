@@ -58,15 +58,32 @@ public class AiService {
             }
 
 
-            if (isNull(properties.getLastTargetUpdate())
-                    || (nonNull(properties.getLastTargetUpdate())
-                    && DateComparator.isTimeOlderThan(Calendar.SECOND, ThreadLocalRandom.current().nextInt(45, 90), date.toDate(properties.getLastTargetUpdate())))) {
+            if (wantsNewTarget(properties, aiGameObject)) {
                 properties.setLastTargetUpdate(date.toString(new Date()));
                 setNewRandomAiTarget(aiGameObject);
             }
 
             gameObjectService.saveAndRefresh(aiGameObject);
         }
+    }
+
+    private Boolean wantsNewTarget(AiProperties properties, GameObject object) {
+        if (isNull(properties.getLastTargetUpdate())) {
+            return true;
+        }
+        if (DateComparator.isTimeOlderThan(Calendar.SECOND, ThreadLocalRandom.current().nextInt(45, 90), date.toDate(properties.getLastTargetUpdate()))) {
+            return true;
+        }
+        if (nonNull(properties.getTarget())) {
+            Double distance = properties.getTarget().getGeoPosition().distanceTo(object.getTransform().getGeoPosition());
+            if (isNull(distance)) {
+                return true;
+            }
+            if (distance <= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setNewRandomAiTarget(GameObject object) {

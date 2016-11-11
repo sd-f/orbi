@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import static java.util.Objects.isNull;
+
 /**
  * @author Lucas Reeh <lr86gm@gmail.com>
  */
@@ -14,9 +16,9 @@ public class GeoPosition {
     @NotNull
     private Double latitude = new Double(0);
     @NotNull
-    private Double longitude = new Double(0);;
+    private Double longitude = new Double(0);
     @NotNull
-    private Double altitude = new Double(0);;
+    private Double altitude = new Double(0);
 
     public GeoPosition() {
     }
@@ -59,5 +61,21 @@ public class GeoPosition {
     @Override
     public GeoPosition clone() {
         return new GeoPosition(this.latitude.doubleValue(),this.longitude.doubleValue(),this.altitude.doubleValue());
+    }
+
+    public Double distanceTo(GeoPosition geoPosition) {
+        if (isNull(geoPosition)) {
+            return null;
+        }
+        if (isNull(geoPosition.getAltitude()) || isNull(geoPosition.getLatitude()) || isNull(geoPosition.getLongitude())) {
+            return null;
+        }
+        if (isNull(this.getAltitude()) || isNull(this.getLatitude()) || isNull(this.getLongitude())) {
+            return null;
+        }
+        Double s1 = Math.pow(getAltitude() - geoPosition.getAltitude(),2);
+        Double s2 = Math.pow(getLatitude() - geoPosition.getLatitude(),2);
+        Double s3 = Math.pow(getLongitude() - geoPosition.getLongitude(),2);
+        return Math.sqrt(s1+s2+s3);
     }
 }

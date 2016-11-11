@@ -82,10 +82,13 @@ public class UserService {
             if (!identityEntity.getEmail().endsWith("demo@softwaredesign.foundation")) {
                 identityEntity.setTmpPassword(Hasher.getSaltedHash(password.toCharArray()));
             }
+
         } catch (NoSuchAlgorithmException|InvalidKeySpecException e) {
             Logger.getLogger(UserService.class.getName()).severe(e.getMessage());
             throw new InternalServerErrorException("Password could not be generated, try again");
         }
+
+        identityEntity.setToken(null);
 
         saveUser(identityEntity);
         if (isNewIdentity) {

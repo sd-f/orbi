@@ -10,6 +10,7 @@ import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.server.DateComparator;
 import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 import foundation.softwaredesign.orbi.service.game.world.WorldAdapterService;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -68,7 +69,7 @@ public class AiService {
     }
 
     private Boolean wantsNewTarget(AiProperties properties, GameObject object) {
-        if (isNull(properties.getLastTargetUpdate())) {
+        if (StringUtils.isEmpty(properties.getLastTargetUpdate())) {
             return true;
         }
         if (DateComparator.isTimeOlderThan(Calendar.SECOND, ThreadLocalRandom.current().nextInt(45, 90), date.toDate(properties.getLastTargetUpdate()))) {

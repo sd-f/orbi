@@ -46,7 +46,7 @@ public class InventoryItemScript : MonoBehaviour {
             GameObjectUtility.DisableAI(newObject);
             GameObjectUtility.NormalizeScale(newObject);
            // GameObject realObject = GameObjectFactory.GetObject(newObject);
-            newObject.transform.localScale = newObject.transform.localScale * 0.25f;
+            newObject.transform.localScale = newObject.transform.localScale * 0.2f;
         }
     }
 

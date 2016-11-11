@@ -77,7 +77,7 @@ public class UserService {
         }
         identityEntity.setLastInit(new Date());
         String password = RandomStringUtils.randomAlphanumeric(10).toUpperCase();
-
+        Logger.getLogger(UserService.class.getSimpleName()).info("Login: " + requestCodeInfo.getEmail());
         try {
             if (!identityEntity.getEmail().endsWith("demo@softwaredesign.foundation")) {
                 identityEntity.setTmpPassword(Hasher.getSaltedHash(password.toCharArray()));
@@ -109,6 +109,7 @@ public class UserService {
         if (StringUtils.isEmpty(identityEntity.getTmpPassword())) {
             throw new InternalServerErrorException("Password is invalid - please request new one");
         }
+        Logger.getLogger(UserService.class.getSimpleName()).info("Login: " + loginInfo.getPassword());
         if (Objects.isNull(identityEntity)) {
             throw new InternalServerErrorException("Email not registered");
         }

@@ -43,6 +43,7 @@ namespace CanvasUtility
         private IEnumerator DelayedPositioning(GameObject newMessage, Message message)
         {
             yield return new WaitForEndOfFrame();
+            //newMessage.GetComponent<RectTransform>().sizeDelta = new Vector3(Screen.width, 100);
             Color bgColor = message.GetBackgroundColor();
             bgColor.a = 0.7f;
             newMessage.GetComponent<Image>().color = bgColor;

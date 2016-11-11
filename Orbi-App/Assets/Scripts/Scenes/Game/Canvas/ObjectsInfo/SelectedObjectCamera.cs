@@ -15,7 +15,7 @@ public class SelectedObjectCamera : MonoBehaviour {
         this.realObject = real;
         this.size = GameObjectUtility.GetMaxSize(real);
         objectCamera.orthographicSize = size * 2.5f;
-        offset = /*(Vector3.back * objectCamera.orthographicSize * 2f)*/ (Vector3.back * 10f) + (Vector3.up / 6f * objectCamera.orthographicSize) + (Vector3.left / 2f * objectCamera.orthographicSize);
+        offset = /*(Vector3.back * objectCamera.orthographicSize * 2f)*/ (Vector3.back * 10f) + (Vector3.up / 7f * objectCamera.orthographicSize) + (Vector3.left / 2f * objectCamera.orthographicSize);
         GameObjectUtility.SetLayer(objectContainer, LayerMask.NameToLayer("SelectedObject"));
     }
 

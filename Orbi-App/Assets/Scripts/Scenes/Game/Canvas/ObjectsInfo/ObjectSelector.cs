@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using GameScene;
+using UnityStandardAssets.CrossPlatformInput;
 
 public class ObjectSelector : GameMonoBehaviour
 {
+    public Camera playerBodyCamera;
+    public LayerMask layersToCast;
     private Vector3 firstpoint;
     private Vector3 secondpoint;
     private Vector2 centerOfScreen = new Vector2(Screen.width / 2f, Screen.height / 2f);
@@ -12,7 +15,7 @@ public class ObjectSelector : GameMonoBehaviour
     public override void Start()
     {
         base.Start();
-        centerOfScreen = new Vector2(Screen.width / 2f, Screen.height / 2f);
+        
         touchThresholdX = Screen.width * 20;
         touchThresholdX = Screen.height * 20;
     }
@@ -21,8 +24,15 @@ public class ObjectSelector : GameMonoBehaviour
     {
         if (desktopMode)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            
+            
+            if (Input.GetKeyDown(KeyCode.F) || CrossPlatformInputManager.GetButton("Fire1"))
+            {
+                centerOfScreen = new Vector2(Screen.width / 2f, Screen.height / 2f);
                 checkTouchObjectSingleTouch(centerOfScreen);
+            }
+                
+            
         }
         else
         {
@@ -47,10 +57,18 @@ public class ObjectSelector : GameMonoBehaviour
     private void checkTouchObjectSingleTouch(Vector2 position)
     {
         RaycastHit hit = new RaycastHit();
-        Ray ray = Camera.main.ScreenPointToRay(position);
-        if (Physics.SphereCast(ray, 1f, out hit, 500f))
+        Ray ray = playerBodyCamera.ScreenPointToRay(position);
+        
+        if (Physics.Raycast(ray, out hit, 128f, layersToCast, QueryTriggerInteraction.Collide))
         {
             hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
+            return;
         }
+        if (Physics.SphereCast(ray, 1f, out hit, 128f, layersToCast, QueryTriggerInteraction.Collide))
+        {
+            hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
+            return;
+        }
+
     }
 }

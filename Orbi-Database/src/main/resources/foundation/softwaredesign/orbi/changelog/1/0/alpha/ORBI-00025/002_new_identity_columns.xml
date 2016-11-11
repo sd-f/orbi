@@ -14,4 +14,11 @@
         <sql>ALTER TABLE public.identity ADD COLUMN token character varying(1000);</sql>
     </changeSet>
 
+    <changeSet id="sequence_fixes" author="Lucas Reeh">
+        <sql>ALTER SEQUENCE character_id_gen RESTART WITH 10000;</sql>
+        <sql>ALTER SEQUENCE character_message_id_gen RESTART WITH 10000;</sql>
+        <sql>ALTER SEQUENCE game_object_id_gen RESTART WITH 10000;</sql>
+        <sql>ALTER SEQUENCE identity_id_gen RESTART WITH 10000;</sql>
+    </changeSet>
+
 </databaseChangeLog>

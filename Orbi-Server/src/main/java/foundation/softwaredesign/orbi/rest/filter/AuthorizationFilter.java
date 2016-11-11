@@ -37,6 +37,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
+        IdentityThreadLocal.set(null);
         String path = requestContext.getUriInfo().getPath();
         if (path.equals("server/version") || path.equals("server/info") || path.equals("auth/login") || path.equals("auth/requestcode")) {
             return;

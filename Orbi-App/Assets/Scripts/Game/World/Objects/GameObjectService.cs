@@ -49,8 +49,8 @@ namespace GameController
         private void OnObjectsLoaded(string data)
         {
             ServerModel.World newWorld = JsonUtility.FromJson<ServerModel.World>(data);
-            RefreshWorld(Game.Instance.GetPlayer().GetModel(), newWorld);
-            initialized = true;
+            StartCoroutine(RefreshWorld(Game.Instance.GetPlayer().GetModel(), newWorld));
+            
         }
 
         void UpdateCharacter(ServerModel.Character oldCharacter, ServerModel.Character newCharacter)
@@ -101,17 +101,18 @@ namespace GameController
             GameObjectUtility.DestroyAllChildObjects(charactersContainer);
         }
 
-        void UpdateObject(ServerModel.GameObject oldObject, ServerModel.GameObject newObject)
+        private IEnumerator UpdateObject(ServerModel.GameObject oldObject, ServerModel.GameObject newObject)
         {
             UpdateAi(oldObject.gameObject, newObject);
             oldObject.transform = newObject.transform;
             GameObjectUtility.Transform(oldObject.gameObject, newObject.transform, (newObject.type.ai));
+            yield return null;
         }
 
 
-        void CreateObject(ServerModel.GameObject newObject)
+        private IEnumerator CreateObject(ServerModel.GameObject newObject)
         {
-           
+            //yield return new WaitForEndOfFrame();
             UnityEngine.GameObject newGameObject = GameObjectFactory.CreateObject(gameObjectsContainer.transform, newObject.type.prefab, newObject.id, "DynamicGameObject");
             ObjectProperties props = GameObjectUtility.GetCollider(newGameObject).gameObject.AddComponent<ObjectProperties>();
             props.SetObject(newObject);
@@ -130,6 +131,7 @@ namespace GameController
                 effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(newGameObject) * 2f;
                 Destroy(effect, 3.5f);
             }
+            yield return null;
 
         }
 
@@ -149,7 +151,7 @@ namespace GameController
             }
         }
 
-        void UpdateGameObjects(ServerModel.World world)
+        private IEnumerator UpdateGameObjects(ServerModel.World world)
         {
             List<ServerModel.GameObject> newObjects = world.gameObjects;
             foreach (ServerModel.GameObject newObject in newObjects)
@@ -157,9 +159,9 @@ namespace GameController
                 ServerModel.GameObject oldObject = oldObjects.Find(o => o.id == newObject.id);
                 
                 if (oldObject != null)
-                    UpdateObject(oldObject, newObject);
+                    yield return UpdateObject(oldObject, newObject);
                 else
-                    CreateObject(newObject);
+                    yield return CreateObject(newObject);
                     
             }
             foreach (ServerModel.GameObject oldObject in oldObjects)
@@ -172,10 +174,11 @@ namespace GameController
 
                 }
             oldObjects.RemoveAll(r => r.gameObject == null);
+            yield return null;
 
         }
 
-        void UpdateCharacters(ServerModel.World world)
+        private IEnumerator UpdateCharacters(ServerModel.World world)
         {
             List<ServerModel.Character> newCharacters = world.characters;
             foreach (ServerModel.Character newCharacter in newCharacters)
@@ -193,6 +196,7 @@ namespace GameController
                     oldCharacter.gameObject = null;
                 }
             oldCharacters.RemoveAll(r => r.gameObject == null);
+            yield return null;
         }
 
         public void RemoveObject(GameObject objectToRemove)
@@ -200,13 +204,13 @@ namespace GameController
             oldObjects.RemoveAll(r => GameObject.ReferenceEquals(r.gameObject,objectToRemove));
         }
 
-        public void RefreshWorld(ServerModel.Player player, ServerModel.World world)
+        private IEnumerator RefreshWorld(ServerModel.Player player, ServerModel.World world)
         {
             // game objects
-            UpdateGameObjects(world);
+            yield return UpdateGameObjects(world);
             // update characters maybe reduce update interval
-            UpdateCharacters(world);
-            
+            yield return UpdateCharacters(world);
+            initialized = true;
         }
 
     }

@@ -59,6 +59,7 @@ namespace GameScene
         {
             yield return Game.Instance.GetServerService().RequestInfo();
             yield return Game.Instance.GetWorld().GetGameObjectService().RequestStatistics();
+            yield return Game.Instance.GetWorld().GetTerrainService().ResetTerrain();
             yield return Game.Instance.GetAuthService().LoadGameIfAuthorized();
             yield return Game.Instance.GetLocation().Boot();
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();

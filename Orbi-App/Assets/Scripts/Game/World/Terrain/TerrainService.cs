@@ -114,6 +114,11 @@ namespace GameController
             terrain.terrainData.SetAlphamaps(0, 0, maps);
         }
 
+        public void SetAlphaMapsAsync(float[,,] maps)
+        {
+            terrain.terrainData.SetAlphamaps(0, 0, maps);
+        }
+
         private void ResetAlpha()
         {
             for (int y = 0; y < amSizeY; y++)
@@ -180,6 +185,7 @@ namespace GameController
         {
             Normalize(alphaMaps);
             SetAlphaMaps(alphaMaps);
+            //SetAlphaMapsAsync(alphaMaps);
             terrain.Flush();
         }
 
@@ -214,7 +220,7 @@ namespace GameController
             //Debug.Log("Normalize Alphamap: " + debugFixed);
         }
 
-        public void PaintTerrainFromMapity()
+        public IEnumerator PaintTerrainFromMapity()
         {
             ResetAlpha();
             // Example #1
@@ -234,6 +240,7 @@ namespace GameController
                     {
                         for (int j = 0; j < (mapWay.wayMapNodes.Count - 1); j++)
                         {
+                            yield return null;
                             // Get the node
                             Mapity.MapNode node_start = (Mapity.MapNode)mapWay.wayMapNodes[j];
                             Mapity.MapNode node_end = (Mapity.MapNode)mapWay.wayMapNodes[j + 1];
@@ -276,7 +283,7 @@ namespace GameController
                     }
                 }
             }
-            
+            yield return null;
             /* forest
             Mapity.MapRelation relation = null;
             

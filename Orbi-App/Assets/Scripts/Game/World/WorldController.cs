@@ -207,7 +207,7 @@ namespace GameController
         void OnMapityLoaded()
         {
             //Debug.Log("OnMapityLoaded");
-            GetTerrainService().PaintTerrainFromMapity();
+            StartCoroutine( GetTerrainService().PaintTerrainFromMapity() );
         }
 
 

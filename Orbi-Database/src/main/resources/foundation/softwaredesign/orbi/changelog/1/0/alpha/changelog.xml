@@ -86,5 +86,6 @@
     <include file="ORBI-00025/000_objects_ordering.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00025/001_objects_dragons.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00025/002_new_identity_columns.xml" relativeToChangelogFile="true"/>
+    <include file="ORBI-00025/003_sequence_renaming.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

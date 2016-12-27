@@ -88,4 +88,10 @@
     <include file="ORBI-00025/002_new_identity_columns.xml" relativeToChangelogFile="true"/>
     <include file="ORBI-00025/003_sequence_renaming.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00026" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00026" />
+    </changeSet>
+
+    <include file="ORBI-00026/000_songs.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

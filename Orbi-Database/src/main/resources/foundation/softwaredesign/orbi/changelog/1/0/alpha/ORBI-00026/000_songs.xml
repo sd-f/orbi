@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <changeSet id="create_table_songs" author="Lucas Reeh">
+        <sql>
+            CREATE TABLE public.songs
+            (
+            id bigint NOT NULL,
+            title character varying(1000) NOT NULL,
+            url character varying(1000) NOT NULL,
+            CONSTRAINT songs_pkey PRIMARY KEY (id)
+            );
+        </sql>
+        <sql>
+            CREATE INDEX songs_id_idx
+            ON public.songs (id);
+        </sql>
+    </changeSet>
+
+    <changeSet id="songs_lookup_0" author="Lucas Reeh">
+        <sql>insert into public.songs(id,title,url)
+            values(1,'Jonas78 - Workout anders 1','https://softwaredesign.foundation/orbi/music/Jonas78_-_09_-_Workout_anders_1.mp3')</sql>
+        <sql>insert into public.songs(id,title,url)
+            values(2,'Jonas78 - Workout anders 2','https://softwaredesign.foundation/orbi/music/Jonas78_-_07_-_Workout_anders_2.mp3')</sql>
+        <sql>insert into public.songs(id,title,url)
+            values(3,'Weldroid - Flowershop Monsters [S27 Version]','https://softwaredesign.foundation/orbi/music/Weldroid_-_85_-_Flowershop_Monsters_S27_Version.mp3')</sql>
+    </changeSet>
+
+</databaseChangeLog>

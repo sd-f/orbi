@@ -12,8 +12,11 @@ import java.util.Date;
 public class CharacterEntity {
 
     @Id
-    @SequenceGenerator(name="character_id_gen", schema = "public", sequenceName="character_id_gen")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "character_id_gen")
+    @SequenceGenerator(name="character_id_seq",
+            schema = "public",
+            sequenceName="character_id_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "character_id_seq")
+    @Column(updatable = false)
     private Long id;
     @Column
     @NotNull

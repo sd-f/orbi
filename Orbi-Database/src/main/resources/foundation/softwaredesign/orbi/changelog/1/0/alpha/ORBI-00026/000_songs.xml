@@ -32,4 +32,19 @@
             values(3,'Weldroid - Flowershop Monsters [S27 Version]','https://softwaredesign.foundation/orbi/music/Weldroid_-_85_-_Flowershop_Monsters_S27_Version.mp3')</sql>
     </changeSet>
 
+    <changeSet id="songs_lookup_1" author="Lucas Reeh">
+        <sql>insert into public.songs(id,title,url)
+            values(4,'Orbique - simple','https://softwaredesign.foundation/orbi/music/Orbique_-_17_-_simple.mp3')
+        </sql>
+        <sql>insert into public.songs(id,title,url)
+            values(5,'LASERS - Amsterdam','https://softwaredesign.foundation/orbi/music/LASERS_-_01_-_Amsterdam.mp3')
+        </sql>
+        <sql>insert into public.songs(id,title,url)
+            values(6,'Kai Engel - Moonlight Reprise','https://softwaredesign.foundation/orbi/music/Kai_Engel_-_04_-_Moonlight_Reprise.mp3')
+        </sql>
+        <sql>insert into public.songs(id,title,url)
+            values(7,'Chris Zabriskie - The Temperature of the Air on the Bow of the Kaleetan','https://softwaredesign.foundation/orbi/music/Chris_Zabriskie_-_01_-_The_Temperature_of_the_Air_on_the_Bow_of_the_Kaleetan.mp3')
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

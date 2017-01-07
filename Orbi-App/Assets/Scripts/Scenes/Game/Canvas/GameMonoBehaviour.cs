@@ -14,6 +14,7 @@ namespace GameScene
         public virtual void Awake()
         {
             Settings.OnInputModeChanged += SetInputMode;
+            Settings.OnMusicChanged += OnMusicSettingsChanged;
             Game.OnTypingModeChanged += SetTypingMode;
             Game.OnReady += SetReady;
         }
@@ -40,6 +41,7 @@ namespace GameScene
         {
             Settings.OnInputModeChanged -= SetInputMode;
             Game.OnTypingModeChanged -= SetTypingMode;
+            Settings.OnMusicChanged -= OnMusicSettingsChanged;
             Game.OnReady -= SetReady;
         }
         
@@ -77,6 +79,10 @@ namespace GameScene
         }
 
         public virtual void OnInputModeChanged()
+        {
+        }
+
+        public virtual void OnMusicSettingsChanged()
         {
         }
 

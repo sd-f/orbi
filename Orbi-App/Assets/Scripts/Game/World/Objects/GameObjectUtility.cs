@@ -209,14 +209,16 @@ namespace GameController
         internal static void Translate(GameObject gameObject, ServerModel.GeoPosition geoPosition, bool onNavMesh)
         {
             Vector3 b = geoPosition.ToPosition().ToVector3();
+            
             if (onNavMesh)
             {
+                //Debug.Log(gameObject.name + " " + b);
                 b = Game.Instance.GetWorld().GetTerrainService().ClampPosition(b);
                 NavMeshHit hit;
-                if (NavMesh.SamplePosition(b, out hit, 20f, 1))
+                if (NavMesh.SamplePosition(b, out hit, AICharacterControl.MOVE_RADIUS, NavMesh.AllAreas))
                 {
                     b = hit.position;
-                    //Debug.Log(gameObject.name + " hit " + b);
+                   // Debug.Log(gameObject.name + " hit " + b);
                 }
                 //Debug.Log(gameObject.name + " " + b);
             }

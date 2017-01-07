@@ -1,7 +1,6 @@
 package foundation.softwaredesign.orbi.service.game.gameobject;
 
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
-import foundation.softwaredesign.orbi.persistence.entity.GameObjectTypeEntity;
 import foundation.softwaredesign.orbi.persistence.repo.game.gameobject.GameObjectTypeRepository;
 
 import javax.enterprise.context.RequestScoped;

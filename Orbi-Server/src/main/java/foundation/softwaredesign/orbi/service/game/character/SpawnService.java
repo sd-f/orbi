@@ -5,7 +5,6 @@ import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObjectType;
 import foundation.softwaredesign.orbi.model.game.transform.GeoPosition;
 import foundation.softwaredesign.orbi.model.game.transform.Position;
-import foundation.softwaredesign.orbi.model.game.transform.Transform;
 import foundation.softwaredesign.orbi.persistence.entity.BodyConstraints;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
@@ -16,7 +15,6 @@ import foundation.softwaredesign.orbi.service.game.world.WorldService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

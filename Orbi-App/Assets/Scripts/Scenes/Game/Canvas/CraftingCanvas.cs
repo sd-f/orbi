@@ -15,43 +15,33 @@ namespace GameScene
         public GameObject craftOkButton;
         public GameObject craftCancelButton;
         public GameObject craftingContainer;
-        public ObjectSelector selector;
+        public MainCanvas canvas;
         public Text craftingAmount;
-        public GameObject crosshair;
-
-        public void OnCraft()
-        {
-            StartCrafting();
-        }
-
+        
         public void OnCraftOk()
         {
-            Game.Instance.GetPlayer().GetConstructionController().Craft();
-            StopCrafting();
+            if (!Game.Instance.GetPlayer().GetConstructionController().IsColliding())
+            {
+                Game.Instance.GetPlayer().GetConstructionController().Craft();
+                canvas.StopCrafting();
+            }
+        }
+
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            Game.Instance.GetPlayer().GetConstructionController().StartCrafting();
+        }
+
+        public void OnDisable()
+        {
+            Game.Instance.GetPlayer().GetConstructionController().StopCrafting();
         }
 
         public override void OnReady()
         {
             Game.Instance.GetPlayer().GetConstructionController().CheckInventory();
         }
-
-        public override void Awake()
-        {
-            base.Awake();
-            crosshair.SetActive(desktopMode);
-        }
-
-        public override void OnEnable()
-        {
-            base.OnEnable();
-            crosshair.SetActive(desktopMode);
-        }
-
-        public override void OnInputModeChanged()
-        {
-            crosshair.SetActive(desktopMode);
-        }
-
 
         private void SetAmount()
         {
@@ -64,44 +54,20 @@ namespace GameScene
 
         public void OnCraftCancel()
         {
-            StopCrafting();
+            canvas.StopCrafting();
         }
 
         void Update()
         {
             if (desktopMode)
             {
-                if (Input.GetKeyDown(KeyCode.C) && !Game.Instance.IsInTypingMode())
-                    if (!Game.Instance.GetPlayer().GetConstructionController().IsCrafting())
-                        OnCraft();
-                    else
-                        OnCraftCancel();
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    OnCraftCancel();
                 if ((Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Fire1")) && !Game.Instance.IsInTypingMode())
                     if (Game.Instance.GetPlayer().GetConstructionController().IsCrafting())
                         OnCraftOk();
             }
             
-        }
-
-        private void StartCrafting()
-        {
-            selector.enabled = false;
-            ButtonUtility.SetButtonState(craftButton, false);
-            ButtonUtility.SetButtonState(craftOkButton, true);
-            ButtonUtility.SetButtonState(craftCancelButton, true);
-            Game.Instance.GetPlayer().GetConstructionController().StartCrafting();
-            craftingAmount.gameObject.SetActive(true);
-            SetAmount();
-        }
-
-        private void StopCrafting()
-        {
-            selector.enabled = true;
-            ButtonUtility.SetButtonState(craftButton, true);
-            ButtonUtility.SetButtonState(craftOkButton, false);
-            ButtonUtility.SetButtonState(craftCancelButton, false);
-            Game.Instance.GetPlayer().GetConstructionController().StopCrafting();
-            craftingAmount.gameObject.SetActive(false);
         }
 
         

@@ -43,7 +43,6 @@ public class InventoryItemScript : MonoBehaviour {
                 newObject.transform.localRotation = Quaternion.Euler(-5f, 205f, 0f);
             }
             newObject.transform.localPosition = new Vector3(0f,25f, -200f);
-            GameObjectUtility.DisableAI(newObject);
             GameObjectUtility.NormalizeScale(newObject);
            // GameObject realObject = GameObjectFactory.GetObject(newObject);
             newObject.transform.localScale = newObject.transform.localScale * 0.2f;
@@ -53,8 +52,7 @@ public class InventoryItemScript : MonoBehaviour {
     public void OnSelected()
     {
         Game.Instance.GetPlayer().GetConstructionController().SetSelectedType(item.type);
-        GameObject.Find("Canvas").GetComponent<GameScene.MainCanvas>().Reset();
-        GameObject.Find("CraftingCanvas").GetComponent<CraftingCanvas>().OnCraft();
+        GameObject.Find("Canvas").GetComponent<GameScene.MainCanvas>().StartCrafting();
     }
 
 

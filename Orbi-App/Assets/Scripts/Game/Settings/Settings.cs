@@ -16,6 +16,9 @@ namespace GameController
         public delegate void InputModeChangedEventHandler();
         public static event InputModeChangedEventHandler OnInputModeChanged;
 
+        public delegate void MusicChangedEventHandler();
+        public static event MusicChangedEventHandler OnMusicChanged;
+
         void Start()
         {
             Load();
@@ -30,14 +33,15 @@ namespace GameController
         public void SetDesktopInputEnabled(bool enabled)
         {
             this.data.desktopInputEnabled = enabled;
-            SendInputModeChangedEvent();
             Save();
+            SendInputModeChangedEvent();
         }
 
         public void SetMusicEnabled(bool enabled)
         {
             this.data.musicEnabled = enabled;
             Save();
+            SendMusicChangedEvent();
         }
 
         public void SetAugmentedEnabled(bool enabled)
@@ -139,6 +143,15 @@ namespace GameController
             if (OnInputModeChanged != null)
             {
                 OnInputModeChanged();
+            }
+        }
+
+        private void SendMusicChangedEvent()
+        {
+            // Send Event
+            if (OnMusicChanged != null)
+            {
+                OnMusicChanged();
             }
         }
 

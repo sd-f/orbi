@@ -142,6 +142,7 @@ namespace GameController
 
                 // checking bounds (no loop)
                 height = GetHeight(x, z);
+                return height;
                 newHeight = GetHeight(x - box.x, z - box.z);
                 if (newHeight > height)
                     height = newHeight;

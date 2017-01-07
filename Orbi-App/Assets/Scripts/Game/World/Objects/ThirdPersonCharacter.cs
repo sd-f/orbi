@@ -1,3 +1,5 @@
+using GameController;
+using System;
 using UnityEngine;
 
 namespace UnityStandardAssets.Characters.ThirdPerson
@@ -5,7 +7,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(CapsuleCollider))]
 	[RequireComponent(typeof(Animator))]
-	public class ThirdPersonCharacter : MonoBehaviour
+    [RequireComponent(typeof(NavMeshAgent))]
+    public class ThirdPersonCharacter : MonoBehaviour
 	{
 		[SerializeField] float m_MovingTurnSpeed = 360;
 		[SerializeField] float m_StationaryTurnSpeed = 180;
@@ -31,7 +34,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         protected Vector3 m_originalMove;
 
         private AICharacterControl ai;
-        private ThirdPersonCharacter thirdPersonController;
+        private NavMeshAgent agent;
         private GameObject target;
         private Vector3 targetVector = new Vector3(0, 0, 0);
         private bool frozen = true;
@@ -43,18 +46,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_Capsule = GetComponent<CapsuleCollider>();
 			m_CapsuleHeight = m_Capsule.height;
 			m_CapsuleCenter = m_Capsule.center;
-
+            agent = GetComponent<NavMeshAgent>();
             
             m_OrigGroundCheckDistance = m_GroundCheckDistance;
 
             target = new GameObject("target_" + gameObject.name);
             target.transform.SetParent(transform.parent);
             ai = GetComponent<AICharacterControl>();
-            thirdPersonController = GetComponent<ThirdPersonCharacter>();
-            if (ai.agent != null)
-                ai.agent.updatePosition = !frozen;
-            ai.SetTarget(target.transform);
-            InvokeRepeating("UpdateTarget", 2, 2);
         }
 
         private void UpdateConstraints()
@@ -80,23 +78,19 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             this.frozen = false;
         }
 
-        void UpdateTarget()
-        {
-            Vector3 newTarget = ClampPosition(targetVector);
-            ai.SetTargetPosition(newTarget);
-        }
-
-        private Vector3 ClampPosition(Vector3 vector3)
-        {
-            float boundX = (512 / 2f);
-            float boundY = 600;
-            float boundZ = boundX;
-            return new Vector3(Mathf.Clamp(vector3.x, -boundX, +boundX), Mathf.Clamp(vector3.y, 0.00001f, boundY), Mathf.Clamp(vector3.z, -boundY, +boundY));
-        }
-
         public void SetTarget(Vector3 newTargetPosition)
         {
-            targetVector = newTargetPosition;
+            Vector3 clampedTargetPosition = Game.Instance.GetWorld().GetTerrainService().ClampPosition(newTargetPosition);
+            NavMeshHit hit;
+            if (NavMesh.SamplePosition(clampedTargetPosition, out hit, AICharacterControl.MOVE_RADIUS, NavMesh.AllAreas))
+            {
+                InitAi();
+                target.transform.position = hit.position;
+                ai.SetTarget(target.transform);
+                
+                Unfreeze();
+            }
+            
         }
 
         public void SetAnimator(Animator animator)
@@ -143,8 +137,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             
 		}
 
+        private void InitAi()
+        {
+            agent.enabled = true;
+            ai.enabled = true;
+            agent.updatePosition = !frozen;
+        }
 
-		void ScaleCapsuleForCrouching(bool crouch)
+        void ScaleCapsuleForCrouching(bool crouch)
 		{
 			if (m_IsGrounded && crouch)
 			{

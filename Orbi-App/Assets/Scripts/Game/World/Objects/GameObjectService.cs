@@ -55,15 +55,14 @@ namespace GameController
 
         void UpdateCharacter(ServerModel.Character oldCharacter, ServerModel.Character newCharacter)
         {
+            
             oldCharacter.transform = newCharacter.transform;
             foreach (Transform child in oldCharacter.gameObject.transform)
                 if (child.name.Equals("uma_" + oldCharacter.id))
-                    child.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3(0f, (float)oldCharacter.transform.rotation.y, 0f)));
-            foreach (Transform child in oldCharacter.gameObject.transform)
-                if (child.name.Equals("uma_target_" + oldCharacter.id))
                 {
-                    GameObjectUtility.Transform(child.gameObject, oldCharacter.transform, true);
-                }
+                    child.GetComponent<ThirdPersonCharacter>().SetTarget(oldCharacter.transform.geoPosition.ToPosition().ToVector3());
+                    child.GetComponent<Rigidbody>().MoveRotation(Quaternion.Euler(new Vector3(0f, (float)oldCharacter.transform.rotation.y, 0f)));
+                }   
                     
         }
 
@@ -78,14 +77,10 @@ namespace GameController
             GameObjectUtility.SetLayer(newObjectContainer, LayerMask.NameToLayer("Objects"));
             GameObjectUtility.Transform(newObjectContainer, newCharacter.transform, true);
 
-
             GameObject newObject = Game.Instance.GetWorld().GetUMACreator().GenerateUMA(newObjectContainer, "uma_" + newCharacter.id);
             newObject.GetComponent<CharacterProperties>().SetCharacter(newCharacter);
             GameObjectUtility.SetLayer(newObject, LayerMask.NameToLayer("Objects"));
-
-            newObject.GetComponent<ThirdPersonCharacter>().SetTarget(Game.Instance.GetWorld().GetTerrainService().ClampPosition(newObject.transform.position));
-            newObject.GetComponent<ThirdPersonCharacter>().Unfreeze();
-
+            
             UnityEngine.GameObject effect = UnityEngine.GameObject.Instantiate(characterCreatedEffect) as UnityEngine.GameObject;
             effect.transform.position = newObject.transform.position;
             effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(newObject);
@@ -118,12 +113,10 @@ namespace GameController
             props.SetObject(newObject);
             if (!String.IsNullOrEmpty(newObject.userText))
                 GameObjectUtility.TrySettingTextInChildren(newGameObject, newObject.userText);
-            GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
-            UpdateAi(newGameObject, newObject);
             newObject.gameObject = newGameObject;
-            oldObjects.Add(newObject);
             GameObjectUtility.Transform(newGameObject, newObject.transform, (newObject.type.ai));
-
+            GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
+            oldObjects.Add(newObject);
             if (initialized)
             {
                 UnityEngine.GameObject effect = UnityEngine.GameObject.Instantiate(objectCreatedEffect) as UnityEngine.GameObject;
@@ -145,7 +138,6 @@ namespace GameController
                 if (controller != null)
                 {
                     controller.SetTarget(newObject.aiProperties.target.geoPosition.ToPosition().ToVector3());
-                    controller.Unfreeze();
                 }
                 GameObjectUtility.UnFreeze(gameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
             }

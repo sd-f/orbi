@@ -3,8 +3,8 @@ package foundation.softwaredesign.orbi.persistence.repo.game.gameobject;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
 import foundation.softwaredesign.orbi.model.game.gameobject.ai.AiProperties;
 import foundation.softwaredesign.orbi.persistence.entity.GameObjectEntity;
-import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.auth.UserService;
+import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.game.server.DateConverter;
 import org.apache.deltaspike.data.api.mapping.SimpleQueryInOutMapperBase;
 

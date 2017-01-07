@@ -8,24 +8,27 @@ using UnityEngine.UI;
 namespace GameScene
 {
     [AddComponentMenu("App/Scenes/Game/ConstructionController")]
-    class ConstructionController : GameMonoBehaviour
+    public class ConstructionController : GameMonoBehaviour
     {
 #pragma warning disable 0649
         public UnityEngine.GameObject mainCamera;
         public UnityEngine.GameObject processingEffect;
         public UnityEngine.GameObject earnedXPTextPrefab;
+        public UnityEngine.GameObject collisionWarningIcon;
         public Camera cam;
+        private bool collision = true;
         private bool crafting = false;
         private UnityEngine.GameObject newObject;
+        private Rigidbody newObjectBody;
         private Vector3 rotation = new Vector3(0, 0, 0);
         private float distance = 10f;
         private Vector3 firstpoint;
         private Vector3 secondpoint;
-        private bool collission = false;
         private GameObjectType selectedType;
         private string userText = "";
         private UnityEngine.GameObject objectToCraft;
         private UnityEngine.GameObject processingEffectGameObject;
+        private float bodyHeight = 0f;
 
         public override void Start()
         {
@@ -37,17 +40,24 @@ namespace GameScene
         {
             if (crafting)
             {
+                collisionWarningIcon.SetActive(collision);
                 if (desktopMode)
                     desktopMovement();
                 else
                     mobileMovement();
-                newObject.transform.position = Vector3.Lerp(newObject.transform.position, 
-                    CheckFloor(transform.position), Time.deltaTime * 20f);
-                //newObject.transform.localPosition = Vector3.Lerp(newObject.transform.position, CheckFloor(transform.position), Time.deltaTime * 20f);
-                //body.MovePosition(transform.position);
-                //body.MoveRotation(Quaternion.Slerp(newObject.transform.rotation, Quaternion.Euler(rotation), Time.deltaTime));
-                newObject.transform.rotation = Quaternion.Slerp(newObject.transform.rotation, Quaternion.Euler(rotation) , Time.deltaTime * 20f);
-                transform.localPosition = new Vector3(0, 0, distance);
+
+
+
+                //newObjectBody.transform.position = Vector3.Lerp(newObject.transform.position, CheckFloor(transform.position), Time.deltaTime * 20f);
+                //newObjectBody.rotation = Quaternion.Slerp(newObjectBody.rotation, Quaternion.Euler(rotation), Time.deltaTime * 20f);
+                // newObjectBody.transform.localPosition = Vector3.Lerp(newObjectBody.transform.localPosition, new Vector3(0,0,0), Time.deltaTime * 100f);
+                //newObjectBody.MovePosition(transform.position);
+                // container where object should be placed
+                //transform.position = Vector3.Lerp(transform.position, CheckFloor(transform.position), Time.deltaTime * 20f);
+               
+                transform.eulerAngles = rotation;
+                transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, distance);
+                newObject.transform.position = CheckFloor(transform.position);
             }
             
             
@@ -88,8 +98,13 @@ namespace GameScene
 
         public Vector3 CheckFloor(Vector3 newPosition)
         {
+            if (newPosition.y < 0)
+                return new Vector3(newPosition.x, 0, newPosition.z);
+            return newPosition;
+            /*
             float height = Game.Instance.GetWorld().GetMinHeightForObject(newObject);
             return new Vector3(newPosition.x, height, newPosition.z);
+            */
         }
 
         public void StartCrafting()
@@ -110,7 +125,8 @@ namespace GameScene
 
         public void Craft()
         {
-            StartCoroutine(CraftingProcess());
+            if (!IsColliding())
+                StartCoroutine(CraftingProcess());
         }
 
         IEnumerator CraftingProcess()
@@ -119,11 +135,11 @@ namespace GameScene
             UnityEngine.GameObject earnedText = UnityEngine.GameObject.Instantiate(earnedXPTextPrefab) as UnityEngine.GameObject;
             earnedText.GetComponent<XPEarnedText>().SetAmount(ServerModel.CharacterDevelopment.XP_CRAFT);
             earnedText.transform.rotation = Quaternion.Euler(0, cam.transform.rotation.eulerAngles.y, 0);
-            processingEffectGameObject.transform.position = newObject.transform.position;
+            processingEffectGameObject.transform.position = GetPosition();
             processingEffectGameObject.transform.localScale = processingEffectGameObject.transform.localScale * GameObjectUtility.GetMaxSize(newObject);
-            earnedText.transform.position = newObject.transform.position + (Vector3.up * 2f);
+            earnedText.transform.position = GetPosition() + (Vector3.up * 2f);
             
-            yield return Craft(newObject);
+            yield return DoCraft();
             
             CleanUp();
             Game.Instance.GetPlayer().Unfreeze();
@@ -133,10 +149,18 @@ namespace GameScene
         private void CreateObjectToCraft()
         {
             CheckInventory();
-            newObject = GameObjectFactory.CreateObject(transform, GetSelectedType().prefab, -1, null, LayerMask.NameToLayer("Default"));
+            newObject = GameObjectFactory.CreateObject(transform, GetSelectedType().prefab, -1, null, LayerMask.NameToLayer("ObjectToCraft"));
             if (!String.IsNullOrEmpty(GetUserText()))
                 GameObjectUtility.TrySettingTextInChildren(newObject, GetUserText());
-            newObject.transform.rotation = Quaternion.Euler(rotation);
+            GameObjectUtility.UnFreeze(newObject, RigidbodyConstraints.FreezeAll);
+            newObjectBody = GameObjectUtility.GetRigidBody(newObject);
+            bodyHeight = newObjectBody.transform.localPosition.y;
+            CraftingCollision collisionController = newObjectBody.gameObject.AddComponent<CraftingCollision>();
+            collisionController.SetController(this);
+           
+            //newObjectBody.isKinematic = true;
+            //newObjectBody.useGravity = false;
+            //newObjectBody.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
             SetCrafting(true, newObject);
         }
 
@@ -187,14 +211,14 @@ namespace GameScene
 
 
 
-        public void SetColliding(bool collission)
+        public void SetColliding(bool collision)
         {
-            this.collission = collission;
+            this.collision = collision;
         }
 
         public bool IsColliding()
         {
-            return this.collission;
+            return this.collision;
         }
 
         public string GetUserText()
@@ -212,23 +236,31 @@ namespace GameScene
 
 
 
-        public IEnumerator Craft(UnityEngine.GameObject gameObject)
+        public IEnumerator DoCraft()
         {
-            ServerModel.GameObject newObject = new ServerModel.GameObject();
-            newObject.id = -1;
-            newObject.name = "new";
-            newObject.type = GetSelectedType();
+            ServerModel.GameObject newObjectModel = new ServerModel.GameObject();
+            newObjectModel.id = -1;
+            newObjectModel.name = "new";
+            newObjectModel.type = GetSelectedType();
             if (GetSelectedType().supportsUserText)
-                newObject.userText = GetUserText();
-            newObject.transform.rotation = new Rotation(gameObject.transform.rotation.eulerAngles);
-            newObject.transform.geoPosition = new ClientModel.Position(gameObject.transform.position).ToGeoPosition();
-            newObject.constraints = (int)RigidbodyConstraints.FreezeAll;
+                newObjectModel.userText = GetUserText();
+            newObjectModel.transform.rotation = new Rotation(newObjectBody.transform.rotation.eulerAngles);
+            
+            newObjectModel.transform.geoPosition = new ClientModel.Position(GetPosition()).ToGeoPosition();
+            newObjectModel.constraints = (int)RigidbodyConstraints.FreezeAll;
             ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
-            player.gameObjectToCraft = newObject;
+            player.gameObjectToCraft = newObjectModel;
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestCraft(player);
             yield return Game.Instance.GetPlayer().GetInventoryService().RequestInventory();
             UnityEngine.GameObject.Destroy(processingEffectGameObject, 1f);
             yield return Game.Instance.GetWorld().UpdateObjects();
+        }
+
+        private Vector3 GetPosition()
+        {
+            Vector3 position = CheckFloor(newObject.transform.position);
+            //position.y = position.y - bodyHeight;
+            return position;
         }
 
     }

@@ -42,7 +42,8 @@ namespace GameController
         private static int NUMBER_OF_USER_LAYERS = 3;
         private static int USER_LAYER_START_INDEX = 2;
         private static int USER_LAYERS_END_INDEX = USER_LAYER_START_INDEX + NUMBER_OF_USER_LAYERS;
-
+        private static int TERRAIN_TILES = 16;
+        private static int TERRAIN_TILE_SIZE = 16;
 
         void Start()
         {
@@ -54,6 +55,7 @@ namespace GameController
             this.terrainHeight = (int)td.size.y;
             this.hm = new float[hmSize, hmSize];
             this.alphaMaps = td.GetAlphamaps(0, 0, amSizeX, amSizeY);
+            TERRAIN_TILE_SIZE = amSizeX / TERRAIN_TILES;
             ResetAlpha();
         }
 
@@ -114,9 +116,28 @@ namespace GameController
             terrain.terrainData.SetAlphamaps(0, 0, maps);
         }
 
-        public void SetAlphaMapsAsync(float[,,] maps)
+        public IEnumerator SetAlphaMapsAsync(float[,,] maps)
         {
+            /*
+            int offset_x = 0;
+            int offset_y = 0;
+            float[,,] tile_map;
+            for (int i = 0; i < TERRAIN_TILES; i++)
+            {
+                for (int j = 0; j < TERRAIN_TILES; j++)
+                {
+                    offset_x = i * TERRAIN_TILE_SIZE;
+                    offset_y = j * TERRAIN_TILE_SIZE;
+                    for (int s = 0; s < TERRAIN_TILE_SIZE; s++)
+                        for(int t = 0; t < TERRAIN_TILE_SIZE; t++)
+                            tile_map[]
+                    yield return null;
+                }
+            }
+            */
+            
             terrain.terrainData.SetAlphamaps(0, 0, maps);
+            yield return null;
         }
 
         private void ResetAlpha()
@@ -151,7 +172,7 @@ namespace GameController
             SetHeightMin(0.0f);
             //SetHeightsToMin();
             ResetAlpha();
-            Flush();
+            yield return Flush();
             yield return null;
         }
 
@@ -181,12 +202,13 @@ namespace GameController
             SetHeights();
         }
 
-        public void Flush()
+        public IEnumerator Flush()
         {
             Normalize(alphaMaps);
-            SetAlphaMaps(alphaMaps);
-            //SetAlphaMapsAsync(alphaMaps);
+            //SetAlphaMaps(alphaMaps);
+            yield return SetAlphaMapsAsync(alphaMaps);
             terrain.Flush();
+            yield return null;
         }
 
         private void Normalize(float[,,] maps)

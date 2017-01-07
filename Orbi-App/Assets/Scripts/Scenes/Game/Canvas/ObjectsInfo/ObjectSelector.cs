@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using GameScene;
 using UnityStandardAssets.CrossPlatformInput;
+using GameController;
 
 public class ObjectSelector : GameMonoBehaviour
 {
     public Camera playerBodyCamera;
+    public MainCanvas canvas;
     public LayerMask layersToCast;
     private Vector3 firstpoint;
     private Vector3 secondpoint;
@@ -56,19 +58,23 @@ public class ObjectSelector : GameMonoBehaviour
 
     private void checkTouchObjectSingleTouch(Vector2 position)
     {
-        RaycastHit hit = new RaycastHit();
-        Ray ray = playerBodyCamera.ScreenPointToRay(position);
+        if (!canvas.IsAnyOverlayCanvasActive())
+        {
+            RaycastHit hit = new RaycastHit();
+            Ray ray = playerBodyCamera.ScreenPointToRay(position);
+
+            if (Physics.Raycast(ray, out hit, 128f, layersToCast, QueryTriggerInteraction.Collide))
+            {
+                hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
+                return;
+            }
+            if (Physics.SphereCast(ray, 1f, out hit, 128f, layersToCast, QueryTriggerInteraction.Collide))
+            {
+                hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
+                return;
+            }
+        }
         
-        if (Physics.Raycast(ray, out hit, 128f, layersToCast, QueryTriggerInteraction.Collide))
-        {
-            hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
-            return;
-        }
-        if (Physics.SphereCast(ray, 1f, out hit, 128f, layersToCast, QueryTriggerInteraction.Collide))
-        {
-            hit.transform.gameObject.SendMessage("OnTouched", null, SendMessageOptions.DontRequireReceiver);
-            return;
-        }
 
     }
 }

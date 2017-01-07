@@ -11,6 +11,7 @@ public class ObjectsInfoCanvas : MonoBehaviour {
     public GameObject objectInfoContainer;
     public GameObject characterInfoContainer;
     public InputField messageInputField;
+    public GameObject removingEffect;
     public SelectedObjectCamera selectedObjectCamera;
     public MainCanvas canvas;
     public Button takeButton;
@@ -70,11 +71,11 @@ public class ObjectsInfoCanvas : MonoBehaviour {
 
     public void SetCharacter(ServerModel.Character character)
     {
+        this.obj = character.gameObject;
         try
         {
             if (obj != null)
             {
-                this.obj = obj.gameObject;
                 objSet = true;
                 characterInfoContainer.SetActive(true);
                 objectInfoContainer.SetActive(false);
@@ -138,11 +139,12 @@ public class ObjectsInfoCanvas : MonoBehaviour {
         // effect
         ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
         player.selectedObjectId = objectId;
-        
+        GameObject effect = GameObject.Instantiate(removingEffect) as GameObject;
+        Rigidbody body = GameObjectUtility.GetRigidBody(obj);
+        effect.transform.SetParent(body.transform, false);
         yield return Game.Instance.GetPlayer().GetPlayerService().RequestDestroy(player);
-        yield return Game.Instance.GetWorld().UpdateObjects();
         OnClose();
-
+        yield return Game.Instance.GetWorld().UpdateObjects();
     }
 
     public void OnClose()

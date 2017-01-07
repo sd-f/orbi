@@ -14,6 +14,7 @@ namespace GameScene
         public GameObject inventoryContent;
         public GameObject categoryPrefab;
         public GameObject inventoryItemPrefab;
+        public Camera inventoryCamera;
         private float categoryOffsetY = 0f;
         private List<GameObject> categoriesObjects = new List<GameObject>();
         private List<ServerModel.GameObjectTypeCategory> categories;
@@ -95,7 +96,7 @@ namespace GameScene
             }
             yield return new WaitForEndOfFrame();
             inventoryContent.GetComponent<RectTransform>().sizeDelta = new Vector2(0, categoryOffsetY);
-            //camera.enabled = true;
+            inventoryCamera.enabled = true;
         }
 
         public void OnItemSelected(GameObject item)

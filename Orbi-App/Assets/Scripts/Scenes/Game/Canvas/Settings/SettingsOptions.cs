@@ -3,6 +3,7 @@ using GameController;
 using UnityEngine;
 using UnityEngine.UI;
 using CanvasUtility;
+using GameController.Services;
 
 namespace GameScene
 {
@@ -22,6 +23,8 @@ namespace GameScene
         public EasyTween augmentedToggle;
 
         public GameObject augmentedCanvas;
+        public Text songInfoText;
+        public MusicController musicController;
 
         private bool initialized = false;
 
@@ -36,6 +39,11 @@ namespace GameScene
             initialized = true;
         }
 
+        private void OnEnable()
+        {
+            InvokeRepeating("UpdateSongInformation", 1, 1);
+        }
+
         private void ToggleAllOff()
         {
             ToggleMusic();
@@ -48,8 +56,6 @@ namespace GameScene
             if (initialized)
             {
                 Game.Instance.GetSettings().SetMusicEnabled(enabled);
-                if (enabled)
-                    Info.Show("Not available at the moment");
             }
                 
         }
@@ -69,9 +75,27 @@ namespace GameScene
             }
         }
 
+        public void OpenPrivacyPolicy()
+        {
+            Application.OpenURL("https://softwaredesign.foundation/orbi/privacy");
+        }
+
         public void ToggleMusic()
         {
             Toggle(musicToggle, musicToggleOn, musicToggleOff);
+        }
+
+        public void NextSong()
+        {
+            musicController.LoadNext();
+        }
+
+        public void UpdateSongInformation()
+        {
+            if (musicController.GetCurrentSong() != null)
+            {
+                songInfoText.text = musicController.GetCurrentSong().title;
+            }
         }
 
         public void ToggleDesktop()
@@ -92,6 +116,11 @@ namespace GameScene
             else
                 off.onClick.Invoke();
             return !enabled;
+        }
+
+        public void OnDisable()
+        {
+            CancelInvoke();
         }
     }
 }

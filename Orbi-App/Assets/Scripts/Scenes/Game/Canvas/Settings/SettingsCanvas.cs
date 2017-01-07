@@ -9,6 +9,8 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/SettingsCanvas")]
     public class SettingsCanvas : MonoBehaviour
     {
+
+
         public GameObject contentTabInventory;
         public GameObject contentTabSettings;
         public GameObject contentTabMessages;
@@ -74,7 +76,8 @@ namespace GameScene
             if (tab == SettingsTabs.Inventory)
             {
                 inventoryCanvas.enabled = state;
-                inventoryCamera.enabled = state;
+                if (!state)
+                    inventoryCamera.enabled = state;
             }
                 
             GameObject.Find(tab.ToString() + "TabTextInfo").GetComponent<Text>().color = GetColorFromState(state);

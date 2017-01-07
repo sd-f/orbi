@@ -6,14 +6,16 @@ namespace GameScene
     [AddComponentMenu("App/Scenes/Game/MainCanvas")]
     public class MainCanvas : GameMonoBehaviour
     {
-
         public GameObject settingsCanvas;
         public GameObject gameCanvas;
         public GameObject objectInfoCanvas;
+        public GameObject craftingCanvas;
         public GameObject splashscreen;
+
 
         public override void OnReady()
         {
+
             base.OnReady();
             Reset();
         }
@@ -40,6 +42,7 @@ namespace GameScene
             splashscreen.SetActive(false);
             objectInfoCanvas.SetActive(false);
             gameCanvas.SetActive(false);
+            craftingCanvas.SetActive(false);
         }
 
         public void Reset()
@@ -48,6 +51,7 @@ namespace GameScene
             CloseAll();
             gameCanvas.SetActive(true);
         }
+
 
         public void OpenCharacterInfos(ServerModel.Character character)
         {
@@ -60,9 +64,9 @@ namespace GameScene
             
         }
 
-        private bool IsAnyOverlayCanvasActive()
+        public bool IsAnyOverlayCanvasActive()
         {
-            return objectInfoCanvas.activeSelf || settingsCanvas.activeSelf || splashscreen.activeSelf;
+            return objectInfoCanvas.activeSelf || settingsCanvas.activeSelf || splashscreen.activeSelf || craftingCanvas.activeSelf;
         }
 
         public void OpenObjectInfos(ServerModel.GameObject obj)
@@ -75,12 +79,33 @@ namespace GameScene
             }
         }
 
+        public void StartCrafting()
+        {
+            if (!IsAnyOverlayCanvasActive())
+            {
+                CloseAll();
+                craftingCanvas.SetActive(true);
+            }
+        }
+
+        public void StopCrafting()
+        {
+            Reset();
+        }
+
         void Update()
         {
+
+            if (desktopMode)
+            {
+                if (Input.GetKeyDown(KeyCode.C) && !Game.Instance.IsInTypingMode())
+                    if (!Game.Instance.GetPlayer().GetConstructionController().IsCrafting())
+                        StartCrafting();
+            }
             if (Input.GetKeyDown(KeyCode.Escape))
                 if (IsAnyOverlayCanvasActive())
                     Reset();
-                else if (!Game.Instance.GetPlayer().GetConstructionController().IsCrafting() && !settingsCanvas.activeSelf)
+                else
                     OpenSettings();
         }
 

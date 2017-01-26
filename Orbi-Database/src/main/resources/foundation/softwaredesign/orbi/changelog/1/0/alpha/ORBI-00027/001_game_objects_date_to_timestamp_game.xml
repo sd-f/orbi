@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <changeSet id="create_create_date_mig_to_timestamp_001" author="Lucas Reeh">
+        <sql>alter table public.game_object add column create_date_tmp timestamp without time zone NOT NULL DEFAULT now();</sql>
+        <rollback>
+            <sql>alter table public.game_object drop column create_date_tmp;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_create_date_mig_to_timestamp_002" author="Lucas Reeh">
+        <sql>update public.game_object set create_date_tmp = create_date;</sql>
+        <rollback>
+            <sql></sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_create_date_mig_to_timestamp_003" author="Lucas Reeh">
+        <sql>alter table public.game_object rename create_date to create_date_2del;</sql>
+        <rollback>
+            <sql>alter table public.game_object rename create_date_2del to create_date;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="create_create_date_mig_to_timestamp_004" author="Lucas Reeh">
+        <sql>alter table public.game_object rename create_date_tmp to create_date;</sql>
+        <rollback>
+            <sql>alter table public.game_object rename create_date to create_date_tmp;</sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

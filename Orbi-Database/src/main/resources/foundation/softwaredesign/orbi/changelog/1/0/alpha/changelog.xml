@@ -94,4 +94,10 @@
 
     <include file="ORBI-00026/000_songs.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00027" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00027" />
+    </changeSet>
+
+    <include file="ORBI-00027/001_game_objects_date_to_timestamp_game.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

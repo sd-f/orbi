@@ -32,7 +32,7 @@ namespace GameController
         public override void OnReady()
         {
             base.OnReady();
-            Invoke("RefreshObjects", 2f);
+            Invoke("RefreshObjects", 3f);
         }
 
 
@@ -74,7 +74,7 @@ namespace GameController
                 yield return gameObjectService.RequestGameObjects();
             if (!IsInvoking("RefreshObjects"))
             {
-                Invoke("RefreshObjects", 2f);
+                Invoke("RefreshObjects", 3f);
             }
         }
 
@@ -143,6 +143,7 @@ namespace GameController
                 // checking bounds (no loop)
                 height = GetHeight(x, z);
                 return height;
+                /*
                 newHeight = GetHeight(x - box.x, z - box.z);
                 if (newHeight > height)
                     height = newHeight;
@@ -156,6 +157,7 @@ namespace GameController
                 if (newHeight > height)
                     height = newHeight;
                 break; // should be only one object
+                */
             }
 
             return height + 0.0000001f;

@@ -4,6 +4,7 @@ using GameScene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 using UnityStandardAssets.Characters.ThirdPerson;
 
@@ -19,6 +20,7 @@ namespace GameController
         private List<ServerModel.Character> oldCharacters = new List<ServerModel.Character>();
         private List<ServerModel.GameObject> oldObjects = new List<ServerModel.GameObject>();
         private bool initialized = false;
+        private DateTime lastUpdate;
 
         public IEnumerator RequestStatistics()
         {
@@ -85,11 +87,13 @@ namespace GameController
             effect.transform.position = newObject.transform.position;
             effect.transform.localScale = effect.transform.localScale * GameObjectUtility.GetMaxSize(newObject);
             Destroy(effect, 2f);
+            
             //newObject.gameObject.GetComponent<UMAMovement>().SetTransform(newObjectTarget.transform);
         }
 
         internal void ClearAll()
         {
+            initialized = false;
             oldCharacters = new List<ServerModel.Character>();
             oldObjects = new List<ServerModel.GameObject>();
             GameObjectUtility.DestroyAllChildObjects(gameObjectsContainer);
@@ -117,7 +121,9 @@ namespace GameController
             GameObjectUtility.Transform(newGameObject, newObject.transform, (newObject.type.ai));
             GameObjectUtility.SetConstraints(newGameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
             oldObjects.Add(newObject);
-            if (initialized)
+            DateTime dt = DateTime.ParseExact(newObject.createDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+            bool isNewObject = dt.CompareTo(lastUpdate) > 0;
+            if ((lastUpdate != null) && (isNewObject))
             {
                 UnityEngine.GameObject effect = UnityEngine.GameObject.Instantiate(objectCreatedEffect) as UnityEngine.GameObject;
                 effect.transform.position = newGameObject.transform.position;
@@ -140,6 +146,9 @@ namespace GameController
                     controller.SetTarget(newObject.aiProperties.target.geoPosition.ToPosition().ToVector3());
                 }
                 GameObjectUtility.UnFreeze(gameObject, GameObjectUtility.IntToRigidbodyConstraint(newObject.constraints));
+            } else
+            {
+                gameObject.isStatic = true;
             }
         }
 
@@ -202,7 +211,7 @@ namespace GameController
             yield return UpdateGameObjects(world);
             // update characters maybe reduce update interval
             yield return UpdateCharacters(world);
-            initialized = true;
+            lastUpdate = DateTime.Now;
         }
 
     }

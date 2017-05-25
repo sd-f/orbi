@@ -49,7 +49,7 @@ public class ObjectsInfoCanvas : MonoBehaviour {
                 characterInfoContainer.SetActive(false);
                 objectInfoContainer.SetActive(true);
                 DateTime dt = DateTime.ParseExact(obj.createDate, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-                objectInfoDate.text = dt.ToShortDateString();
+                objectInfoDate.text = dt.ToString("s", CultureInfo.InvariantCulture);
                 objectId = obj.id;
                 selectedObjectCamera.SetGameObject(obj.gameObject, GameObjectUtility.GetObject(obj.gameObject));
                 selectedObjectCamera.gameObject.SetActive(true);
@@ -140,11 +140,12 @@ public class ObjectsInfoCanvas : MonoBehaviour {
         ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
         player.selectedObjectId = objectId;
         GameObject effect = GameObject.Instantiate(removingEffect) as GameObject;
+        GameObject objToDestroy = GameObjectUtility.GetObject(obj.gameObject);
         Rigidbody body = GameObjectUtility.GetRigidBody(obj);
         effect.transform.SetParent(body.transform, false);
-        yield return Game.Instance.GetPlayer().GetPlayerService().RequestDestroy(player);
+        yield return Game.Instance.GetPlayer().GetPlayerService().RequestDestroy(player, objToDestroy);
         OnClose();
-        yield return Game.Instance.GetWorld().UpdateObjects();
+        StartCoroutine(Game.Instance.GetWorld().UpdateObjects());
     }
 
     public void OnClose()

@@ -39,6 +39,7 @@ namespace GameScene
             } else
             {
                 Game.Instance.SetReady(true);
+                Game.Instance.GetPlayer().Unfreeze();
             }
                 
         }

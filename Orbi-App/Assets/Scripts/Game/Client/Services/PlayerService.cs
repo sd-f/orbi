@@ -54,7 +54,7 @@ namespace GameController.Services
             Game.Instance.GetPlayer().GetModel().character.lastLevelXp = player.character.lastLevelXp;
         }
 
-        public IEnumerator RequestDestroy(ServerModel.Player player)
+        public IEnumerator RequestDestroy(ServerModel.Player player, GameObject objToDestroy)
         {
             yield return Request("player/destroy", JsonUtility.ToJson(player), OnDestroyed);
         }

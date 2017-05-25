@@ -55,11 +55,13 @@ namespace GameController
 
         public void Freeze()
         {
+            Game.Instance.GetLocation().Pause();
             this.frozen = true;
         }
 
         public void Unfreeze()
         {
+            Game.Instance.GetLocation().Resume();
             this.frozen = false;
         }
 
@@ -85,7 +87,7 @@ namespace GameController
 
         internal void SavePlayerTransform()
         {
-            Debug.Log(Game.Instance.IsReady());
+            //Debug.Log(Game.Instance.IsReady());
             if (GetPlayerBody() != null && Game.Instance.IsReady())
                 GetPlayerBodyController().UpdateTransformInModel();
         }
@@ -117,11 +119,16 @@ namespace GameController
                 {
                     Freeze();
                     SavePlayerTransform();
+                    WorldAdapter.VERBOSE = true;
+                    Game.Instance.GetClient().Log("Out of bounds " + GetPlayerBody().transform.position);
+                    WorldAdapter.VERBOSE = false;
                     Game.Instance.GetWorld().SetCenterGeoPosition(Game.Instance.GetPlayer().GetModel().character.transform.position.ToGeoPosition());
                     Game.Instance.GetPlayer().GetModel().character.transform.position = new Position();
                     GetPlayerBodyController().ResetPosition();
+                    
                     //Game.Instance.LoadScene(Game.GameScene.LoadingScene);
                     // TODO
+                    Unfreeze();
                 }
                 
             }

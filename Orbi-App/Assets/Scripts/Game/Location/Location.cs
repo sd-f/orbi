@@ -181,11 +181,10 @@ namespace GameController
             Input.compass.enabled = true;
             if (!SystemInfo.supportsGyroscope)
             {
-                Warning.Show("No Gyroscope available");
-            } else
-            {
-                Input.gyro.enabled = true;
+                Warning.Show("Gyroscope failed - trying fallback");
             }
+            SensorHelper.ActivateRotation();
+            Input.gyro.enabled = true;
             Info.Show("Location initialized");
             StartUpdatingLocation();
         }

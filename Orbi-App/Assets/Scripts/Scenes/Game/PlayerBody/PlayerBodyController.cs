@@ -16,11 +16,13 @@ namespace GameScene
 
         // handheld movement
         private Vector3 gyroRotation = new Vector3(0,0,0);
-        public Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
+        private float moveSpeed = 2f;
         private float deltaCompass = 0.0f;
         private MyFirstPersonController firstPersonController;
+
 #pragma warning disable 0649
         public Camera cam;
+        public Vector3 targetPosition = new Vector3(0, GameController.Player.HEIGHT, 0);
 
         private long updateCounter = 0;
 
@@ -62,12 +64,21 @@ namespace GameScene
         }
 
 
-        void Update()
+        void FixedUpdate()
         {
            // CanvasDebug.Log(targetPosition.ToString());
             if (!desktopMode && ready)
             {
-                this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, Time.deltaTime * 2);
+                // TODO adjust movespeed depending on distance
+                // prevent gps hopping in near distance
+                if (Vector3.Distance(this.transform.position, targetPosition) > 15) // should only happen if gps position is still not accurate
+                {
+                    this.transform.position = Vector3.Lerp(this.transform.position, targetPosition, 2f * Time.deltaTime);
+                } else
+                {
+                    moveSpeed = 0.9f * Time.deltaTime;
+                    this.transform.position = Vector3.MoveTowards(this.transform.position, targetPosition, moveSpeed);
+                }
                 ApplyGyroRotation();
             }
               

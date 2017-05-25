@@ -132,10 +132,10 @@ namespace GameController
         {
             if (obj.GetComponent<Rigidbody>() != null)
                 obj.GetComponent<Rigidbody>().constraints = constraints;
-            if (obj.GetComponent<NavMeshAgent>() != null)
+            if (obj.GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             {
-                obj.GetComponent<NavMeshAgent>().updatePosition = true;
-                obj.GetComponent<NavMeshAgent>().enabled = true;
+                obj.GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = true;
+                obj.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = true;
             }
             foreach (UnityEngine.Transform child in obj.transform)
                 UnFreeze(child.gameObject, constraints);
@@ -155,10 +155,10 @@ namespace GameController
         {
             if (obj.GetComponent<Rigidbody>() != null)
                 obj.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-            if (obj.GetComponent<NavMeshAgent>() != null)
+            if (obj.GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             {
-                obj.GetComponent<NavMeshAgent>().updatePosition = false;
-                obj.GetComponent<NavMeshAgent>().enabled = false;
+                obj.GetComponent<UnityEngine.AI.NavMeshAgent>().updatePosition = false;
+                obj.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
             }
             foreach (UnityEngine.Transform child in obj.transform)
                 Freeze(child.gameObject);
@@ -214,8 +214,8 @@ namespace GameController
             {
                 //Debug.Log(gameObject.name + " " + b);
                 b = Game.Instance.GetWorld().GetTerrainService().ClampPosition(b);
-                NavMeshHit hit;
-                if (NavMesh.SamplePosition(b, out hit, AICharacterControl.MOVE_RADIUS, NavMesh.AllAreas))
+                UnityEngine.AI.NavMeshHit hit;
+                if (UnityEngine.AI.NavMesh.SamplePosition(b, out hit, AICharacterControl.MOVE_RADIUS, UnityEngine.AI.NavMesh.AllAreas))
                 {
                     b = hit.position;
                    // Debug.Log(gameObject.name + " hit " + b);

@@ -7,7 +7,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 	[RequireComponent(typeof(Rigidbody))]
 	[RequireComponent(typeof(CapsuleCollider))]
 	[RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(NavMeshAgent))]
+    [RequireComponent(typeof(UnityEngine.AI.NavMeshAgent))]
     public class ThirdPersonCharacter : MonoBehaviour
 	{
 		[SerializeField] float m_MovingTurnSpeed = 360;
@@ -34,7 +34,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         protected Vector3 m_originalMove;
 
         private AICharacterControl ai;
-        private NavMeshAgent agent;
+        private UnityEngine.AI.NavMeshAgent agent;
         private GameObject target;
         private Vector3 targetVector = new Vector3(0, 0, 0);
         private bool frozen = true;
@@ -46,7 +46,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			m_Capsule = GetComponent<CapsuleCollider>();
 			m_CapsuleHeight = m_Capsule.height;
 			m_CapsuleCenter = m_Capsule.center;
-            agent = GetComponent<NavMeshAgent>();
+            agent = GetComponent<UnityEngine.AI.NavMeshAgent>();
             
             m_OrigGroundCheckDistance = m_GroundCheckDistance;
 
@@ -81,8 +81,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public void SetTarget(Vector3 newTargetPosition)
         {
             Vector3 clampedTargetPosition = Game.Instance.GetWorld().GetTerrainService().ClampPosition(newTargetPosition);
-            NavMeshHit hit;
-            if (NavMesh.SamplePosition(clampedTargetPosition, out hit, AICharacterControl.MOVE_RADIUS, NavMesh.AllAreas))
+            UnityEngine.AI.NavMeshHit hit;
+            if (UnityEngine.AI.NavMesh.SamplePosition(clampedTargetPosition, out hit, AICharacterControl.MOVE_RADIUS, UnityEngine.AI.NavMesh.AllAreas))
             {
                 InitAi();
                 target.transform.position = hit.position;

@@ -181,6 +181,7 @@ namespace GameScene
                 UnityEngine.GameObject.Destroy(processingEffectGameObject, 1);
             }
             GameObjectUtility.DestroyAllChildObjects(this.gameObject);
+            
         }
 
         public void SetCrafting(Boolean crafting, UnityEngine.GameObject objectToCraft)

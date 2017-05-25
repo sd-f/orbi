@@ -10,8 +10,8 @@ public class StreetNameText : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //
-        text = transform.FindChild("StreetNameText").gameObject;
-        background = transform.FindChild("StreetNameBackground").gameObject;
+        text = transform.Find("StreetNameText").gameObject;
+        background = transform.Find("StreetNameBackground").gameObject;
         TextMesh textMesh = text.GetComponent<TextMesh>();
         //
         scale = background.transform.localScale;

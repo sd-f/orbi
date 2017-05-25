@@ -81,11 +81,9 @@ namespace GameScene
 
         public void StartCrafting()
         {
-            if (!IsAnyOverlayCanvasActive())
-            {
-                CloseAll();
-                craftingCanvas.SetActive(true);
-            }
+            Game.Instance.LeaveTypingMode();
+            CloseAll();
+            craftingCanvas.SetActive(true);
         }
 
         public void StopCrafting()

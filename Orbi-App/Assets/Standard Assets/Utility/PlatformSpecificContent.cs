@@ -18,7 +18,6 @@ namespace UnityStandardAssets.Utility
             Mobile
         }
 
-#pragma warning disable 0649, 0169
         [SerializeField] private BuildTargetGroup m_BuildTargetGroup;
         [SerializeField] private GameObject[] m_Content = new GameObject[0];
         [SerializeField] private MonoBehaviour[] m_MonoBehaviours = new MonoBehaviour[0];
@@ -35,17 +34,16 @@ namespace UnityStandardAssets.Utility
 
         private void OnEnable()
         {
-            EditorUserBuildSettings.activeBuildTargetChanged += Update;
             EditorApplication.update += Update;
+            EditorUserBuildSettings.activeBuildTargetChanged += Update;
         }
 
 
         private void OnDisable()
         {
-            EditorUserBuildSettings.activeBuildTargetChanged -= Update;
             EditorApplication.update -= Update;
+            EditorUserBuildSettings.activeBuildTargetChanged -= Update;
         }
-
 
         private void Update()
         {

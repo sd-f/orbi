@@ -32,8 +32,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 		public float Xsensitivity = 1f;
 		public float Ysensitivity = 1f;
 
-#pragma warning disable 0649, 0169
-        Vector3 m_StartPos;
+		Vector3 m_StartPos;
 		Vector2 m_PreviousDelta;
 		Vector3 m_JoytickOutput;
 		bool m_UseX; // Toggle for using the x axis

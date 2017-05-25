@@ -47,7 +47,7 @@ namespace GameScene
             Stop();
             this.song = song;
             musicWWW = new WWW(song.url);
-            source.clip = musicWWW.audioClip;
+            source.clip = musicWWW.GetAudioClip();
         }
 
         public override void OnMusicSettingsChanged()

@@ -305,7 +305,8 @@ namespace GameController
                     }
                 }
             }
-            yield return null;
+           
+            yield return Flush();
             /* forest
             Mapity.MapRelation relation = null;
             

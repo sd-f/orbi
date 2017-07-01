@@ -116,10 +116,10 @@
             <plugin>
                 <groupId>org.apache.tomee.maven</groupId>
                 <artifactId>tomee-maven-plugin</artifactId>
-                <version>7.0.1</version>
+                <version>7.0.3</version>
                 <configuration>
                     <context>api</context>
-                    <tomeeVersion>7.0.1</tomeeVersion>
+                    <tomeeVersion>7.0.3</tomeeVersion>
                     <tomeeClassifier>plus</tomeeClassifier>
                     <reloadOnUpdate>true</reloadOnUpdate>
                     <config>${project.basedir}/target/tomee/conf</config>
@@ -152,6 +152,7 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <!--
     <repositories>
         <repository>
             <id>apache-m2-snapshot</id>
@@ -172,5 +173,5 @@
             <url>https://repository.apache.org/content/groups/snapshots</url>
         </pluginRepository>
     </pluginRepositories>
-
+    -->
 </project>

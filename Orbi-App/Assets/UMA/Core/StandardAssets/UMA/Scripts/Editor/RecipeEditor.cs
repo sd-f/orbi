@@ -97,7 +97,7 @@ namespace UMAEditor
 					if (context == null)
 					{
 						context = umaRecipeBase.CreateEditorContext();
-						generatedContext = context.gameObject;
+						generatedContext = context.gameObject.transform.parent.gameObject;
 					}
 					//legacy checks for context
 					if (context == null)
@@ -152,7 +152,7 @@ namespace UMAEditor
             recipeBase.Save(_recipe, UMAContext.FindInstance());
             EditorUtility.SetDirty(recipeBase);
             AssetDatabase.SaveAssets();
-            AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(recipeBase));
+            // AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(recipeBase));
             _rebuildOnLayout = true;
 
             _needsUpdate = false;

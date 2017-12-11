@@ -120,7 +120,7 @@ namespace GameController.Services
             if (jsonString != null)
             {
                 headers.Add("Content-Type", "application/json");
-                headers.Add("Content-Length", encoding.GetByteCount(jsonString).ToString());
+                //headers.Add("Content-Length", encoding.GetByteCount(jsonString).ToString());
                 www = new WWW(uri, encoding.GetBytes(jsonString), headers);
             } else
             {

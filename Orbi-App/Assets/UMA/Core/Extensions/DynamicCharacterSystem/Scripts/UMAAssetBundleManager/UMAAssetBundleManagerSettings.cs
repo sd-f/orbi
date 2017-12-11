@@ -518,11 +518,12 @@ namespace UMAAssetBundleManager
 			if (showClearCache)//no point in showing a button for bundles that dont exist - or is there? The user might be using a remote url to download assetbundles without the localserver?
 			{
 				EditorGUILayout.HelpBox("You can clear the cache to force asset bundles to be redownloaded.", MessageType.Info);
-
+                /*
 				if (GUILayout.Button("Clean the Cache"))
 				{
 					_statusMessage = Caching.CleanCache() ? "Cache Cleared." : "Error clearing cache.";
 				}
+                */
 				EditorGUILayout.Space();
 			}
 

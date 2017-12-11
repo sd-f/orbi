@@ -40,16 +40,13 @@ namespace GameScene
 
         public override void OnReady()
         {
-            Game.Instance.GetPlayer().GetConstructionController().CheckInventory();
+            // ex check inventory?
         }
 
         private void SetAmount()
         {
-            string prefab = Game.Instance.GetPlayer().GetConstructionController().GetSelectedType().prefab;
-            long amount = Game.Instance.GetPlayer().GetInventoryService().GetInventoryItem(prefab).amount;
-            craftingAmount.text = "x " + amount;
-            if (prefab.Equals(InventoryService.ALWAYS_RESTOCK_OBJECT_TYPE_PREFAB))
-                craftingAmount.text = "∞";
+            // TODO
+            craftingAmount.text = "∞";
         }
 
         public void OnCraftCancel()

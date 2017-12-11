@@ -10,14 +10,11 @@ namespace GameScene
     public class SettingsCanvas : MonoBehaviour
     {
 
-
-        public GameObject contentTabInventory;
         public GameObject contentTabSettings;
         public GameObject contentTabMessages;
         public Canvas inventoryCanvas;
         public Camera inventoryCamera;
         public GameObject messagesNewIndicator;
-        public GameObject inventoryNewIndicator;
         private SettingsTabs currentTab = SettingsTabs.Settings;
         private static Color COLOR_ACTIVE = new Color(0.259f,0.522f,0.957f);
         private static Color COLOR_INACTIVE = new Color(0.196f,0.196f,0.196f);
@@ -30,7 +27,6 @@ namespace GameScene
 
         public void SetIndicators()
         {
-            inventoryNewIndicator.SetActive(Game.Instance.GetPlayer().GetInventoryService().HasNewItems());
             List<ServerModel.CharacterMessage> messages = Game.Instance.GetPlayer().GetMessageService().GetMessages();
             messagesNewIndicator.SetActive(((messages != null) && (messages.Count > 0)));
         }
@@ -40,24 +36,9 @@ namespace GameScene
             this.gameObject.SetActive(false);
         }
 
-        void OnDisable()
-        {
-            if (currentTab == SettingsTabs.Inventory)
-            {
-                inventoryCanvas.enabled = false;
-                inventoryCamera.enabled = false;
-            }
-                
-        }
-
         public void OpenSettingsTab()
         {
             SetTabState(SettingsTabs.Settings, true);
-        }
-
-        public void OpenInventoryTab()
-        {
-            SetTabState(SettingsTabs.Inventory, true);
         }
 
         public void OpenMessagesTab()
@@ -73,12 +54,6 @@ namespace GameScene
         private void SetTabState(SettingsTabs tab, bool state, bool recursive)
         {
             GetContentTab(tab).SetActive(state);
-            if (tab == SettingsTabs.Inventory)
-            {
-                inventoryCanvas.enabled = state;
-                if (!state)
-                    inventoryCamera.enabled = state;
-            }
                 
             GameObject.Find(tab.ToString() + "TabTextInfo").GetComponent<Text>().color = GetColorFromState(state);
             GameObject.Find(tab.ToString() + "TabSeparator").GetComponent<Image>().color = GetColorFromState(state);
@@ -92,8 +67,6 @@ namespace GameScene
 
         private GameObject GetContentTab(SettingsTabs tab)
         {
-            if (tab == SettingsTabs.Inventory)
-                return contentTabInventory;
             if (tab == SettingsTabs.Messages)
                 return contentTabMessages;
             return contentTabSettings;
@@ -109,7 +82,6 @@ namespace GameScene
         public enum SettingsTabs
         {
             Settings,
-            Inventory,
             Messages
         }
 

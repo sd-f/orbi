@@ -140,7 +140,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private void InitAi()
         {
             agent.enabled = true;
-            ai.enabled = true;
+            if (this.ai !=  null)
+                ai.enabled = true;
             agent.updatePosition = !frozen;
         }
 

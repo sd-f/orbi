@@ -16,7 +16,6 @@ namespace GameController
 #pragma warning disable 0649
         public PlayerService playerService;
         public MessageService messageService;
-        public InventoryService inventoryService;
         public ConstructionController constructionController;
 
         private bool loggedIn = false;
@@ -39,8 +38,6 @@ namespace GameController
                 InvokeRepeating("CheckIfOutOfBounds", 1f, 1f);
             if (!IsInvoking("CheckForMessages"))
                 Invoke("CheckForMessages", 3f);
-            if (!IsInvoking("CheckInventory"))
-                Invoke("CheckInventory", 0f);
         }
 
         public void OnDisable()
@@ -68,11 +65,6 @@ namespace GameController
         public ConstructionController GetConstructionController()
         {
             return constructionController;
-        }
-
-        public InventoryService GetInventoryService()
-        {
-            return this.inventoryService;
         }
 
         public ServerModel.Player GetModel()
@@ -133,19 +125,6 @@ namespace GameController
                 
             }
         }
-
-        void CheckInventory()
-        {
-            StartCoroutine(LoadInventory());
-        }
-
-        public IEnumerator LoadInventory()
-        {
-            yield return Game.Instance.GetPlayer().GetInventoryService().RequestInventory();
-            if (!IsInvoking("CheckInventory"))
-                Invoke("CheckInventory", 5f);
-        }
-
 
         void CheckForMessages()
         {

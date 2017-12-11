@@ -14,7 +14,7 @@ namespace GameController.Services
 
         private void OnCrafted(string data, object prefab)
         {
-            Game.Instance.GetPlayer().GetInventoryService().RemoveInventoryItem((string)prefab);
+            // Game.Instance.GetPlayer().GetInventoryService().RemoveInventoryItem((string)prefab);
         }
 
         public IEnumerator RequestPlayer()

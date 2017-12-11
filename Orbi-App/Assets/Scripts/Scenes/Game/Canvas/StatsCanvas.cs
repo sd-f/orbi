@@ -16,17 +16,10 @@ namespace GameScene
         public Image xpBar;
         public Text statsInfoText;
         public GameObject statsInfo;
-        public Text newItemsInfoText;
-        public GameObject newItemsInfo;
         public GameObject levelUpEffect;
         public GameObject levelUpContainer;
         private bool statsInfoFading = false;
-        private bool newItemsInfoFading = false;
         private long oldLevel = 0;
-
-
-        private long inventoryItems = 0;
-
 
         void OnEnable()
         {
@@ -49,11 +42,6 @@ namespace GameScene
             statsInfoFading = true;
         }
 
-        void StartFadingNewItemsInfo()
-        {
-            newItemsInfoFading = true;
-        }
-
         void Update()
         {
             if (statsInfoFading)
@@ -65,18 +53,6 @@ namespace GameScene
                 {
                     statsInfoFading = false;
                     statsInfo.SetActive(false);
-                }
-            }
-
-            if (newItemsInfoFading)
-            {
-                Color color = newItemsInfoText.color;
-                color.a = color.a - 0.02f;
-                newItemsInfoText.color = color;
-                if (color.a < 0.1)
-                {
-                    newItemsInfoFading = false;
-                    newItemsInfo.SetActive(false);
                 }
             }
 
@@ -102,10 +78,6 @@ namespace GameScene
             long newXP = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xp);
             if ((oldXP > 0) && (newXP > oldXP))
                 AddStatsInfo("+ " + (newXP - Convert.ToInt64(textXp.text)) + " xp");
-            long newNumberOfInventoryItems = Game.Instance.GetPlayer().GetInventoryService().GetNumberOfItems();
-            if (inventoryItems > 0)
-                if (inventoryItems < newNumberOfInventoryItems)
-                    AddNewItemsInfo("+ " + (newNumberOfInventoryItems - inventoryItems) + " items");
             textXp.text = newXP.ToString();
             // textXr.text = Convert.ToInt64(Game.Instance.GetPlayer().GetModel().character.xr).ToString();
             float xpInNextLevel = Game.Instance.GetPlayer().GetModel().character.nextLevelXp - Game.Instance.GetPlayer().GetModel().character.lastLevelXp;
@@ -115,7 +87,6 @@ namespace GameScene
             string levelText = "lvl " + newLevel.ToString();
 
             level.text = levelText;
-            inventoryItems = newNumberOfInventoryItems;
             oldLevel = newLevel;
         }
 
@@ -126,15 +97,6 @@ namespace GameScene
             statsInfoText.text = text;
             statsInfoText.color = Color.red;
             Invoke("StartFadingStatsInfo", 2f);
-        }
-
-        private void AddNewItemsInfo(string text)
-        {
-            newItemsInfo.SetActive(true);
-            newItemsInfoFading = false;
-            newItemsInfoText.text = text;
-            newItemsInfoText.color = Color.red;
-            Invoke("StartFadingNewItemsInfo", 2f);
         }
 
 

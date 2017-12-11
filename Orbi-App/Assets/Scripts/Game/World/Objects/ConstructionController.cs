@@ -148,7 +148,6 @@ namespace GameScene
 
         private void CreateObjectToCraft()
         {
-            CheckInventory();
             newObject = GameObjectFactory.CreateObject(transform, GetSelectedType().prefab, -1, null, LayerMask.NameToLayer("ObjectToCraft"));
             if (!String.IsNullOrEmpty(GetUserText()))
                 GameObjectUtility.TrySettingTextInChildren(newObject, GetUserText());
@@ -164,15 +163,6 @@ namespace GameScene
             SetCrafting(true, newObject);
         }
 
-        public void CheckInventory()
-        {
-            GameObjectType type = GetSelectedType();
-            if ((type == null) || ((type != null) && !Game.Instance.GetPlayer().GetInventoryService().HasInventoryItem(type.prefab))) {
-                InventoryItem nextItem = Game.Instance.GetPlayer().GetInventoryService().GetNextAvailableItem();
-                if (nextItem != null)
-                    SetSelectedType(nextItem.type);
-            }
-        }
 
         private void CleanUp()
         {
@@ -252,7 +242,6 @@ namespace GameScene
             ServerModel.Player player = Game.Instance.GetPlayer().GetModel();
             player.gameObjectToCraft = newObjectModel;
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestCraft(player);
-            yield return Game.Instance.GetPlayer().GetInventoryService().RequestInventory();
             UnityEngine.GameObject.Destroy(processingEffectGameObject, 1f);
             yield return Game.Instance.GetWorld().UpdateObjects();
         }

@@ -64,7 +64,6 @@ namespace GameScene
             yield return Game.Instance.GetAuthService().LoadGameIfAuthorized();
             yield return Game.Instance.GetLocation().Boot();
             yield return Game.Instance.GetPlayer().GetPlayerService().RequestPlayer();
-            yield return Game.Instance.GetPlayer().LoadInventory();
             yield return new WaitForSeconds(1);
         }
 

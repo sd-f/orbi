@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext https://softwaredesign.foundation/xsd/liquibase/dbchangelog-ext.xsd">
+
+
+    <!-- irreversible!!!! -->
+    <changeSet id="backup_game_objects_531" author="Lucas Reeh">
+        <sql>create table game_object_531 as select * from game_object;</sql>
+        <rollback>
+            <sql>drop table game_object_531;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="truncate_game_objects_531" author="Lucas Reeh">
+        <sql>truncate game_object cascade;</sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="backup_inventory_531" author="Lucas Reeh">
+        <sql>create table inventory_531 as select * from inventory;</sql>
+        <rollback>
+            <sql>drop table inventory_531;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="truncate_inventory_531" author="Lucas Reeh">
+        <sql>truncate inventory;</sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="backup_game_object_type_531" author="Lucas Reeh">
+        <sql>create table game_object_type_531 as select * from game_object_type;</sql>
+        <rollback>
+            <sql>drop table game_object_type_531;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="truncate_game_object_type_531" author="Lucas Reeh">
+        <sql>delete from game_object_type;</sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="backup_game_object_type_category_531" author="Lucas Reeh">
+        <sql>create table game_object_type_category_531 as select * from game_object_type_category;</sql>
+        <rollback>
+            <sql>drop table game_object_type_category_531;</sql>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="truncate_object_type_category_531" author="Lucas Reeh">
+        <sql>delete from game_object_type_category where id != 0</sql>
+        <rollback>
+        </rollback>
+    </changeSet>
+
+    <!-- new generic game object type -->
+    <changeSet id="objects_dragons" author="Lucas Reeh">
+        <sql>insert into public.game_object_type_category(id,name,craftable,ordering)
+            values(1,'Creative Construct',1,1000);</sql>
+        <sql>insert into public.game_object_type(id,prefab,supports_user_text,category_id,ordering,spawn_amount,rarity,ai,gift)
+            values(101,'none',0,1,1001,0,0,0,0);</sql>
+        <rollback>
+            <sql>delete from public.game_object_type where id = 101;</sql>
+            <sql>delete from public.game_object_type_category where id = 1;</sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

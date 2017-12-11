@@ -100,4 +100,10 @@
 
     <include file="ORBI-00027/001_game_objects_date_to_timestamp_game.xml" relativeToChangelogFile="true"/>
 
+    <changeSet id="before_ORBI-00531" author="Lucas Reeh">
+        <tagDatabase tag="before_ORBI-00531" />
+    </changeSet>
+
+    <include file="ORBI-00531/001_cleanup_for_new_gameobjects.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace UMAAssetBundleManager
+namespace UMA.AssetBundles
 {
 	/// <summary>
 	/// An AssetBunldeIndex containing a list of assetbundles each with a list of assets inside that asset bundle. The user can customize the fields of data that are stored for each asset.
@@ -463,16 +463,10 @@ namespace UMAAssetBundleManager
 			return assetNameHash;
 		}
 
-		string GetTypeWithoutAssembly(string fullType)
+		static string GetTypeWithoutAssembly(string fullType)
 		{
-			//we could do with also checking anything after the last '.' since I am not sure if GetType always includes the assembly
-			//i.e. I am not sure if will always return 'UMA.OverlayDataAsset', of if its called in a UMA namespaced script it just returns 'OverlayDataAsset'
-			string typeWithoutAssembly = fullType;
-			if (fullType.IndexOf(".") > -1)
-			{
-				//will need to do regex on this and get the last match...
-				typeWithoutAssembly = Regex.Match(fullType, "[^.]+$").Value;
-			}
+			var typeParts = fullType.Split(new string[1] { "." }, System.StringSplitOptions.None);
+			string typeWithoutAssembly = typeParts[typeParts.Length - 1];
 			return typeWithoutAssembly;
 		}
 	}

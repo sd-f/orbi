@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections;
 
-
 namespace UMA
 {
 	/// <summary>
@@ -16,6 +15,7 @@ namespace UMA
 		public Color[] channelMask;
 		public Color[] channelAdditiveMask;
 		public Color color { get { return channelMask[0]; } set { channelMask[0] = value; } }
+		public int channelCount { get { return channelMask.Length; } }
 
 		/// <summary>
 		/// Default constructor

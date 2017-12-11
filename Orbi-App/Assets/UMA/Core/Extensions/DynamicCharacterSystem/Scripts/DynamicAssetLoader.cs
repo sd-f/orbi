@@ -6,9 +6,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UMAAssetBundleManager;
+using UMA.AssetBundles;
 
-namespace UMA
+namespace UMA.CharacterSystem
 {
     public class DynamicAssetLoader : MonoBehaviour
     {
@@ -120,7 +120,7 @@ namespace UMA
                     _instance.gameObjectsToActivate.Clear();
                     _instance.gameObjectsToActivate.AddRange(this.gameObjectsToActivate);
                     _instance.remoteServerIndexURL = this.remoteServerIndexURL;
-                    Destroy(this.gameObject);
+                    UMAUtils.DestroySceneObject(this.gameObject);
                     destroyingThis = true;
                 }
                 else
@@ -270,7 +270,7 @@ namespace UMA
                 var context = UMAContext.FindInstance();
                 if (context != null)
                 {
-                    if ((context.dynamicCharacterSystem != null && (context.dynamicCharacterSystem as UMACharacterSystem.DynamicCharacterSystem).dynamicallyAddFromAssetBundles)
+                    if ((context.dynamicCharacterSystem != null && (context.dynamicCharacterSystem as DynamicCharacterSystem).dynamicallyAddFromAssetBundles)
                         || (context.raceLibrary != null && (context.raceLibrary as DynamicRaceLibrary).dynamicallyAddFromAssetBundles)
                         || (context.slotLibrary != null && (context.slotLibrary as DynamicSlotLibrary).dynamicallyAddFromAssetBundles)
                         || (context.overlayLibrary != null && (context.overlayLibrary as DynamicOverlayLibrary).dynamicallyAddFromAssetBundles))
@@ -537,9 +537,9 @@ namespace UMA
             }
             LoadedAssetBundle loadedBundle = AssetBundleManager.GetLoadedAssetBundle(bundle, out error);
             float elapsedTime = Time.realtimeSinceStartup - startTime;
-            Debug.Log(bundle + (error != null ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
-            if (error != null)
-            {
+			Debug.Log(bundle + (!String.IsNullOrEmpty(error) ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
+			if (!String.IsNullOrEmpty(error))
+			{
                 Debug.LogError("[DynamicAssetLoader] Bundle Load Error: " + error);
                 yield break;
             }
@@ -557,10 +557,10 @@ namespace UMA
                     }
                 }
             }
-            UMACharacterSystem.DynamicCharacterSystem thisDCS = null;
+            DynamicCharacterSystem thisDCS = null;
             if (UMAContext.Instance != null)
             {
-                thisDCS = UMAContext.Instance.dynamicCharacterSystem as UMACharacterSystem.DynamicCharacterSystem;
+                thisDCS = UMAContext.Instance.dynamicCharacterSystem as DynamicCharacterSystem;
             }
             if (thisDCS != null)
             {
@@ -653,15 +653,15 @@ namespace UMA
                 {
 					//check if its a Placeholder asset that has been requested directly- this happens when the UMATextRecipePlaceholder tries to load
 					var typePlaceholderName = typeof(T).ToString().Replace(typeof(T).Namespace + ".", "") + "Placeholder";
-                    if (typePlaceholderName == assetName || typePlaceholderName+"_Slot" == assetName)
+					if (typePlaceholderName == assetName || typePlaceholderName + "_Slot" == assetName)
 					{
 						foundAsset = GetPlaceholderAsset<T>(assetName);
 					}
-                    //using UMAAssetIndexer
-					if(foundAsset == null)
+					//using UMAAssetIndexer
+					if (foundAsset == null)
 						foundAsset = (UMAAssetIndexer.Instance.GetAsset<T>(assetName, resourcesFolderPathArray) as T);
-                }
-                if (foundAsset != null)
+				}
+				if (foundAsset != null)
                 {
                     assetsToReturn.Add(foundAsset);
                     found = true;
@@ -675,16 +675,16 @@ namespace UMA
 				//UMAAssetIndexer returns null assets so check for that
 				if (assetIndexerAssets.Count > 0)
 				{
-					for(int i = 0; i < assetIndexerAssets.Count; i++)
+					for (int i = 0; i < assetIndexerAssets.Count; i++)
 					{
-						if(assetIndexerAssets[i] != null)
+						if (assetIndexerAssets[i] != null)
 						{
 							assetIndexerAssetsToAdd.Add(assetIndexerAssets[i]);
-                        }
+						}
 					}
 				}
-                assetsToReturn.AddRange(assetIndexerAssetsToAdd);
-                found = assetsToReturn.Count > 0;
+				assetsToReturn.AddRange(assetIndexerAssetsToAdd);
+				found = assetsToReturn.Count > 0;
             }
             return found;
         }
@@ -696,17 +696,17 @@ namespace UMA
 			return (T)Resources.Load<T>("PlaceholderAssets/" + placeholderName) as T;
 		}
 
-        /// <summary>
-        /// Generic Library function to search AssetBundles for a type of asset, optionally filtered by bundle name, and asset assetNameHash or assetName. 
-        /// Optionally sends the found assets to the supplied callback for processing.
-        /// Automatically performs the operation in SimulationMode if AssetBundleManager.SimulationMode is enabled or if the Application is not playing.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="bundlesToSearch"></param>
-        /// <param name="assetNameHash"></param>
-        /// <param name="assetName"></param>
-        /// <param name="callback"></param>
-        public bool AddAssetsFromAssetBundles<T>(ref Dictionary<string, List<string>> assetBundlesUsedDict, ref List<T> assetsToReturn, bool downloadAssetsEnabled, string[] bundlesToSearchArray, int? assetNameHash = null, string assetName = "", Action<T[]> callback = null, bool forceDownloadAll = false) where T : UnityEngine.Object
+		/// <summary>
+		/// Generic Library function to search AssetBundles for a type of asset, optionally filtered by bundle name, and asset assetNameHash or assetName. 
+		/// Optionally sends the found assets to the supplied callback for processing.
+		/// Automatically performs the operation in SimulationMode if AssetBundleManager.SimulationMode is enabled or if the Application is not playing.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="bundlesToSearch"></param>
+		/// <param name="assetNameHash"></param>
+		/// <param name="assetName"></param>
+		/// <param name="callback"></param>
+		public bool AddAssetsFromAssetBundles<T>(ref Dictionary<string, List<string>> assetBundlesUsedDict, ref List<T> assetsToReturn, bool downloadAssetsEnabled, string[] bundlesToSearchArray, int? assetNameHash = null, string assetName = "", Action<T[]> callback = null, bool forceDownloadAll = false) where T : UnityEngine.Object
         {
 #if UNITY_EDITOR
             if (AssetBundleManager.SimulateAssetBundleInEditor)
@@ -1026,7 +1026,7 @@ namespace UMA
                         possiblePaths = AssetDatabase.GetAssetPathsFromAssetBundle(assetBundleNamesArray[i]);
                     }
                 }
-				foreach (string path in possiblePaths)
+                foreach (string path in possiblePaths)
                 {
 					// the line T target = (T)AssetDatabase.LoadAssetAtPath(path, typeof(T)); below appears to load the asset *and then* check if its a type of T
 					// this leads to a big slowdown the first time this happens. Its much quicker (although messier) to do the following as getting the paths
@@ -1120,7 +1120,7 @@ namespace UMA
             //10012017 Only do this if thisDCS.addAllRecipesFromDownloadedBundles is true
             if (currentSimulatedDownloadedBundlesCount != simulatedDownloadedBundles.Count /*&& typeof(T) != typeof(RaceData)*/ && assetName != "")
             {
-                var thisDCS = UMAContext.Instance.dynamicCharacterSystem as UMACharacterSystem.DynamicCharacterSystem;
+                var thisDCS = UMAContext.Instance.dynamicCharacterSystem as DynamicCharacterSystem;
                 if (thisDCS != null)
                 {
                     if (thisDCS.addAllRecipesFromDownloadedBundles)
@@ -1155,7 +1155,7 @@ namespace UMA
             }
             var allAssetBundlePaths = AssetDatabase.GetAssetPathsFromAssetBundle(assetBundleToLoad);
             //We need to add the recipes from the bundle to DCS, other assets add them selves as they are requested by the recipes
-            var thisDCS = UMAContext.Instance.dynamicCharacterSystem as UMACharacterSystem.DynamicCharacterSystem;
+            var thisDCS = UMAContext.Instance.dynamicCharacterSystem as DynamicCharacterSystem;
             bool dcsNeedsRefresh = false;
             if (thisDCS)
             {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace UMA
+namespace UMA.Examples
 {
 	/// <summary>
 	/// Removes or disables components during character update callback.
@@ -16,7 +16,7 @@ namespace UMA
 			foreach (var componentName in removeComponentNames)
 			{
 				var component = data.animator.GetComponent(componentName);
-				Destroy(component);
+				UMAUtils.DestroySceneObject(component);
 			}
 			foreach (var componentName in disableComponentNames)
 			{

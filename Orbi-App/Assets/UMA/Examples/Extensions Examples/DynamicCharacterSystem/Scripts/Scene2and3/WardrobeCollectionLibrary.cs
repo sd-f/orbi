@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEditor;
 #endif
 using UMA;
-using UMAAssetBundleManager;
+using UMA.AssetBundles;
 
-namespace UMACharacterSystem
+namespace UMA.CharacterSystem.Examples
 {
 	/// <summary>
 	/// Gets a list of all the available 'UMAWardrobeCollection' assets that are available in Resources and (optionally) in any available assetBundles
@@ -168,6 +168,8 @@ namespace UMACharacterSystem
 		{
 			foreach (UMAWardrobeCollection uwc in uwcs)
 			{
+				if (uwc == null)
+					continue;
 				if (filename == "" || (filename != "" && filename.Trim() == uwc.name))
 				{
 					if (!collectionIndex.ContainsKey(uwc.name))

@@ -150,7 +150,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 176442}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.07072538, y: 1.1031593, z: -0.27025867}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children: []
@@ -176,7 +176,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160156}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.8348756, y: 1.1364161, z: 1.2319071}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_Children:
@@ -290,7 +290,7 @@ MonoBehaviour:
   gameObjectsToActivateOnInit: []
   loadingMessageObject: {fileID: 0}
   loadingMessageText: {fileID: 0}
-  loadingMessage: 
+  loadingMessage: Loading Assets...
   isInitialized: 0
   debugOnFail: 1
 --- !u!114 &11453434
@@ -309,9 +309,11 @@ MonoBehaviour:
   convertRenderTexture: 0
   convertMipMaps: 1
   atlasResolution: 4096
+  defaultOverlayAsset: {fileID: 11400000, guid: fe30fbf67b51de8499624c6913a39e64,
+    type: 2}
   textureMergePrefab: {fileID: 400002, guid: b67c04ae1c362e94e9e8c5505c381525, type: 2}
   meshCombiner: {fileID: 11456094}
-  InitialScaleFactor: 1
+  InitialScaleFactor: 2
   fastGeneration: 1
   garbageCollectionRate: 8
 --- !u!114 &11456094
@@ -384,7 +386,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   overlayElementList: []
-  scaleAdjust: 1
+  scaleAdjust: 0
   readWrite: 0
   compress: 0
   dynamicallyAddFromResources: 1
@@ -404,7 +406,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initializeOnAwake: 1
   dynamicallyAddFromResources: 1
-  resourcesCharactersFolder: 
+  resourcesCharactersFolder: CharacterRecipes
   resourcesRecipesFolder: 
   dynamicallyAddFromAssetBundles: 0
   assetBundlesForCharactersToSearch: 

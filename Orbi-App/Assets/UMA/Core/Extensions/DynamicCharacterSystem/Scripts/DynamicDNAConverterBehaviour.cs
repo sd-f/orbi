@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UMA.PoseTools;
 
-namespace UMA
+namespace UMA.CharacterSystem
 {
     //A serialized version of DNAConverterBehaviour, so that we can include these settings in assetBundles, which cannot include their own scripts...
     //Uses DynamicUmaDna which can have Dynamic DNA Names based on a DynamicUmaDnaAsset - if there is no asset set DynamicUmaDna falls back to UMADnaHumanoid
@@ -224,13 +222,15 @@ namespace UMA
             }
 			//overall modifiers
 			//Try to use updated Bounds to set the height.
-			if (overallModifiersEnabled && umaData.myRenderer != null)
+			if (overallModifiersEnabled && umaData.GetRenderer(0) != null)
 			{
-				if (!umaData.myRenderer.enabled)
+				if (umaData.rendererCount < 1)
 					return;
-				if(umaData.myRenderer.localBounds.size.y == 0)
+				if (!umaData.GetRenderer(0).enabled)
 					return;
-				var currentSMROffscreenSetting = umaData.myRenderer.updateWhenOffscreen;
+				if(umaData.GetRenderer(0).localBounds.size.y == 0)
+					return;
+				var currentSMROffscreenSetting = umaData.GetRenderer(0).updateWhenOffscreen;
 				Bounds newBounds;
 
 				//for this to properly calculate if the character is in a scaled game object it needs to be moved into the root
@@ -254,9 +254,9 @@ namespace UMA
 				umaTransform.localPosition = Vector3.zero;
 
 				//Do the calculations
-				umaData.myRenderer.updateWhenOffscreen = true;
-				newBounds = new Bounds(umaData.myRenderer.localBounds.center, umaData.myRenderer.localBounds.size);
-                umaData.myRenderer.updateWhenOffscreen = currentSMROffscreenSetting;
+				umaData.GetRenderer(0).updateWhenOffscreen = true;
+				newBounds = new Bounds(umaData.GetRenderer(0).localBounds.center, umaData.GetRenderer(0).localBounds.size);
+				umaData.GetRenderer(0).updateWhenOffscreen = currentSMROffscreenSetting;
 
 				//move it back
 				umaTransform.SetParent(oldParent, false);
@@ -296,7 +296,7 @@ namespace UMA
 					newBounds.Expand(boundsAdjust);
 				}
 				//set the padded bounds
-				umaData.myRenderer.localBounds = newBounds;
+				umaData.GetRenderer(0).localBounds = newBounds;
 			}
 		}
 

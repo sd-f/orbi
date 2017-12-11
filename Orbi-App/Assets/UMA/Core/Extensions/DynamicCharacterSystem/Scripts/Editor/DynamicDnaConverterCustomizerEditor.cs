@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Reflection;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UMA;
+using UMA.Editors;
 
-namespace UMAEditor
+namespace UMA.CharacterSystem.Editors
 {
     [CustomEditor(typeof(DynamicDNAConverterCustomizer), true)]
     public class DynamicDNAConverterCustomizerEditor : Editor

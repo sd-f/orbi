@@ -1,20 +1,12 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-
 using UnityEditor;
-
 using UnityEngine;
+using UMA.CharacterSystem;
 
-using Object = UnityEngine.Object;
-using UMA;
-using UMA.Integrations;
-using UMACharacterSystem;
-
-
-namespace UMAEditor
+namespace UMA.Editors
 {
 	//unfortunately this needs to be here if we are going to make it possible to have 'Backewards Compatible' DCA recipes (i.e. saved as 'Standard' but with a wardrobeSet)
 	//if we removed that functionality this could all go into UMADynamicCharacterAvatarRecipeEditor
@@ -165,7 +157,7 @@ namespace UMAEditor
 							for (int i = 0; i < wcRecipesForRace.Count; i++)
 							{
 								Type wcType = wcRecipesForRace[i].GetType();
-								if (wcType.ToString() == "UMAWardrobeCollection")
+								if (wcType.ToString().Replace(wcType.Namespace+".", "") == "UMAWardrobeCollection")
 								{
 									FieldInfo wcRecipeSlotField = wcType.GetField("wardrobeSlot", BindingFlags.Public | BindingFlags.Instance);
 									var wcRecipeSlot = (string)wcRecipeSlotField.GetValue(wcRecipesForRace[i]);
@@ -538,7 +530,7 @@ namespace UMAEditor
 
 							if (suppressWardrobeSlot != null)
 							{
-								if (activeRace == "" || ((compatibleRaces.Count == 0 || compatibleRaces.Contains(activeRace)) || (_recipe.raceData.findBackwardsCompatibleWith(compatibleRaces) && _recipe.raceData.wardrobeSlots.Contains(wardrobeSlot))))
+								if (activeRace == "" || ((compatibleRaces.Count == 0 || compatibleRaces.Contains(activeRace)) || (_recipe.raceData.IsCrossCompatibleWith(compatibleRaces) && _recipe.raceData.wardrobeSlots.Contains(wardrobeSlot))))
 								{
 									if (!SuppressSlotsStrings.Contains(wardrobeSlot))
 									{
@@ -570,7 +562,7 @@ namespace UMAEditor
 							string wardrobeSlot = (string)WardrobeSlotField.GetValue(utr);
 							List<string> hides = (List<string>)HidesField.GetValue(utr);
 
-							if (activeRace == "" || ((compatibleRaces.Count == 0 || compatibleRaces.Contains(activeRace)) || (_recipe.raceData.findBackwardsCompatibleWith(compatibleRaces) && _recipe.raceData.wardrobeSlots.Contains(wardrobeSlot))))
+							if (activeRace == "" || ((compatibleRaces.Count == 0 || compatibleRaces.Contains(activeRace)) || (_recipe.raceData.IsCrossCompatibleWith(compatibleRaces) && _recipe.raceData.wardrobeSlots.Contains(wardrobeSlot))))
 							{
 								Recipes.Add(utr);
 								if (hides.Count > 0)

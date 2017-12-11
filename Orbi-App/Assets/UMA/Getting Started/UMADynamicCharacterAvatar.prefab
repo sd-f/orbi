@@ -62,6 +62,11 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UMA.UMADataEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+  CharacterDnaUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UMA.UMADataEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   RecipeUpdated:
     m_PersistentCalls:
       m_Calls: []
@@ -70,7 +75,7 @@ MonoBehaviour:
   hide: 0
   loadBlendShapes: 0
   activeRace:
-    name: HumanMaleDCS
+    name: HumanMale
   defaultChangeRaceOptions: 8
   cacheCurrentState: 1
   rebuildSkeleton: 0
@@ -80,10 +85,16 @@ MonoBehaviour:
   raceAnimationControllers:
     defaultAnimationController: {fileID: 9100000, guid: eb280940c811fab4a9e3ddf09381c343,
       type: 2}
-    animators: []
+    animators:
+    - raceName: ToonFemale
+      animatorControllerName: IdleTest-w-head
+    - raceName: HumanMaleDCS
+      animatorControllerName: Locomotion with Head
+    - raceName: HumanFemaleResources
+      animatorControllerName: Locomotion with Head
     dynamicallyAddFromResources: 1
     resourcesFolderPath: 
-    dynamicallyAddFromAssetBundles: 0
+    dynamicallyAddFromAssetBundles: 1
     assetBundleNames: 
   characterColors:
     _colors:

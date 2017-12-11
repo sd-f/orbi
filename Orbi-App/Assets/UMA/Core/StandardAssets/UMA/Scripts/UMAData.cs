@@ -1,8 +1,5 @@
 using UnityEngine;
 using System;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Events;
 
@@ -13,7 +10,29 @@ namespace UMA
 	/// </summary>
 	public class UMAData : MonoBehaviour
 	{
+		[Obsolete("UMA 2.5 myRenderer is now obsolete, an uma can have multiple renderers. Use int rendererCount { get; } and GetRenderer(int) instead.", false)]
 		public SkinnedMeshRenderer myRenderer;
+
+		private SkinnedMeshRenderer[] renderers;
+		public int rendererCount { get { return renderers == null ? 0 : renderers.Length; } }
+
+		public SkinnedMeshRenderer GetRenderer(int idx)
+		{
+			return renderers[idx];
+		}
+
+		public SkinnedMeshRenderer[] GetRenderers()
+		{
+			return renderers;
+		}
+
+		public void SetRenderers(SkinnedMeshRenderer[] renderers)
+		{
+#pragma warning disable 618
+			myRenderer = (renderers != null && renderers.Length > 0) ? renderers[0] : null;
+#pragma warning restore 618
+			this.renderers = renderers;
+		}
 
 		[NonSerialized]
 		public bool firstBake;
@@ -53,7 +72,7 @@ namespace UMA
 		/// </summary>
 		public bool isAtlasDirty;
 
-		public bool ignoreBlendShapes = false;
+        public BlendShapeSettings blendShapeSettings = new BlendShapeSettings();
 
 		public RuntimeAnimatorController animationController;
 
@@ -77,6 +96,11 @@ namespace UMA
 			{
 				animatedBonesTable.Add(hash, animatedBonesTable.Count);
 			}
+		}
+
+		public Transform GetGlobalTransform()
+		{
+			return (renderers != null && renderers.Length > 0) ? renderers[0].rootBone : umaRoot.transform.Find("Global");
 		}
 
 		public void RegisterAnimatedBoneHierarchy(int hash)
@@ -104,9 +128,14 @@ namespace UMA
 		/// Callback event when character has been destroyed.
 		/// </summary>
 		public event Action<UMAData> OnCharacterDestroyed { add { if (CharacterDestroyed == null) CharacterDestroyed = new UMADataEvent(); CharacterDestroyed.AddListener(new UnityAction<UMAData>(value)); } remove { CharacterDestroyed.RemoveListener(new UnityAction<UMAData>(value)); } }
+
+		/// Callback event when character DNA has been updated.
+		/// </summary>
+		public event Action<UMAData> OnCharacterDnaUpdated { add { if (CharacterDnaUpdated == null) CharacterDnaUpdated = new UMADataEvent(); CharacterDnaUpdated.AddListener(new UnityAction<UMAData>(value)); } remove { CharacterDnaUpdated.RemoveListener(new UnityAction<UMAData>(value)); } }
 		public UMADataEvent CharacterCreated;
 		public UMADataEvent CharacterDestroyed;
 		public UMADataEvent CharacterUpdated;
+		public UMADataEvent CharacterDnaUpdated;
 
 		public GameObject umaRoot;
 
@@ -167,7 +196,8 @@ namespace UMA
 		public void Assign(UMAData other)
 		{
 			animator = other.animator;
-			myRenderer = other.myRenderer;
+			//myRenderer = other.myRenderer;
+			renderers = other.renderers;
 			umaRoot = other.umaRoot;
 			if (animationController == null)
 			{
@@ -195,8 +225,18 @@ namespace UMA
 				valid = valid && umaRecipe.Validate();
 			}
 
+			if (animationController == null)
+			{
+				if (Application.isPlaying)
+					Debug.LogWarning("No animation controller supplied.");
+			}
+
 #if UNITY_EDITOR
-			if (!valid && UnityEditor.EditorApplication.isPlaying) UnityEditor.EditorApplication.isPaused = true;
+			if (!valid && UnityEditor.EditorApplication.isPlaying)
+			{
+				Debug.LogError("UMAData: Recipe or Generator is not valid!");
+				UnityEditor.EditorApplication.isPaused = true;
+			}
 #endif
 
 			return valid;
@@ -206,6 +246,7 @@ namespace UMA
 		public class GeneratedMaterials
 		{
 			public List<GeneratedMaterial> materials = new List<GeneratedMaterial>();
+			public int rendererCount;
 		}
 
 
@@ -219,6 +260,7 @@ namespace UMA
 			public Vector2 cropResolution;
 			public float resolutionScale;
 			public string[] textureNameList;
+			public int renderer;
 		}
 
 		[System.Serializable]
@@ -266,6 +308,17 @@ namespace UMA
 			}
 		}
 
+		public void Show()
+		{
+			for (int i = 0; i < rendererCount; i++)
+				GetRenderer(i).enabled = true;
+		}
+
+		public void Hide()
+		{
+			for (int i = 0; i < rendererCount; i++)
+				GetRenderer(i).enabled = false;
+		}
 
 		[System.Serializable]
 		public class textureData
@@ -554,10 +607,10 @@ namespace UMA
 			/// </summary>
 			/// <param name="slot">Slot.</param>
 			/// <param name="dontSerialize">If set to <c>true</c> slot will not be serialized.</param>
-			public void MergeSlot(SlotData slot, bool dontSerialize)
+			public SlotData MergeSlot(SlotData slot, bool dontSerialize)
 			{
 				if ((slot == null) || (slot.asset == null))
-					return;
+					return null;
 
 				int overlayCount = 0;
 				for (int i = 0; i < slotDataList.Length; i++)
@@ -600,7 +653,7 @@ namespace UMA
 							}
 						}
 						originalSlot.dontSerialize = dontSerialize;
-						return;
+						return originalSlot;
 					}
 				}
 
@@ -624,6 +677,7 @@ namespace UMA
 				}
 				slotDataList[insertIndex] = slotCopy;
 				MergeMatchingOverlays();
+                return slotCopy;
 			}
 
 			/// <summary>
@@ -816,6 +870,11 @@ namespace UMA
 						}
                     }
 				}
+				foreach (int addedDNAHash in umaDnaConverter.Keys)
+				{
+					requiredDnas.Add(addedDNAHash);
+				}
+
 				//now remove any we no longer need
 				var keysToRemove = new List<int>();
 				foreach(var kvp in umaDna)
@@ -1026,7 +1085,7 @@ namespace UMA
 				CleanTextures();
 				CleanMesh(true);
 				CleanAvatar();
-				Destroy(umaRoot);
+				UMAUtils.DestroySceneObject(umaRoot);
 			}
 		}
 
@@ -1038,8 +1097,8 @@ namespace UMA
 			animationController = null;
 			if (animator != null)
 			{
-				if (animator.avatar) GameObject.Destroy(animator.avatar);
-				if (animator) GameObject.Destroy(animator);
+				if (animator.avatar) UMAUtils.DestroySceneObject(animator.avatar);
+				if (animator) UMAUtils.DestroySceneObject(animator);
 			}
 		}
 
@@ -1061,12 +1120,11 @@ namespace UMA
 							{
 								RenderTexture tempRenderTexture = tempTexture as RenderTexture;
 								tempRenderTexture.Release();
-								Destroy(tempRenderTexture);
-								tempRenderTexture = null;
+								UMAUtils.DestroySceneObject(tempRenderTexture);
 							}
 							else
 							{
-								Destroy(tempTexture);
+								UMAUtils.DestroySceneObject(tempTexture);
 							}
 							generatedMaterials.materials[atlasIndex].resultingAtlasList[textureIndex] = null;
 						}
@@ -1081,20 +1139,21 @@ namespace UMA
 		/// <param name="destroyRenderer">If set to <c>true</c> destroy mesh renderer.</param>
 		public void CleanMesh(bool destroyRenderer)
 		{
-			if (myRenderer)
+			for(int j = 0; j < rendererCount; j++)
 			{
-				var mats = myRenderer.sharedMaterials;
+				var renderer = GetRenderer(j);
+				var mats = renderer.sharedMaterials;
 				for (int i = 0; i < mats.Length; i++)
 				{
 					if (mats[i])
 					{
-						Destroy(myRenderer.sharedMaterials[i]);
+						UMAUtils.DestroySceneObject(mats[i]);
 					}
 				}
 				if (destroyRenderer)
 				{
-					Destroy(myRenderer.sharedMesh);
-					Destroy(myRenderer);
+					UMAUtils.DestroySceneObject(renderer.sharedMesh);
+					UMAUtils.DestroySceneObject(renderer);
 				}
 			}
 		}
@@ -1279,11 +1338,8 @@ namespace UMA
 				{
 					var bone = tpose.boneInfo[i];
 					var hash = UMAUtils.StringToHash(bone.name);
-					var go = skeleton.GetBoneGameObject(hash);
-					if (go == null) continue;
-					skeleton.SetPosition(hash, bone.position);
-					skeleton.SetRotation(hash, bone.rotation);
-					skeleton.SetScale(hash, bone.scale);
+					if (!skeleton.HasBone(hash)) continue;
+					skeleton.Set(hash, bone.position, bone.scale, bone.rotation);
 				}
 			}
 		}
@@ -1317,6 +1373,11 @@ namespace UMA
 		/// </summary>
 		public void FireDNAAppliedEvents()
 		{
+			if (CharacterDnaUpdated != null)
+			{
+				CharacterDnaUpdated.Invoke(this);
+			}
+			
 			foreach (var slotData in umaRecipe.slotDataList)
 			{
 				if (slotData != null && slotData.asset.DNAApplied != null)
@@ -1358,6 +1419,18 @@ namespace UMA
 		}
 
 		#region BlendShape Support
+        public class BlendShapeSettings
+        {
+            public bool ignoreBlendShapes; //default false
+            public Dictionary<string,float> bakeBlendShapes;
+
+            public BlendShapeSettings()
+            {
+                ignoreBlendShapes = false;
+                bakeBlendShapes = new Dictionary<string, float>();
+            }
+        }
+
 		//For future multiple renderer support
 		public struct BlendShapeLocation
 		{
@@ -1373,11 +1446,11 @@ namespace UMA
 		/// <param name="rIndex">index (default first) of the renderer this blendshape is on.</param>
 		public void SetBlendShape(int shapeIndex, float weight, int rIndex = 0)
 		{
-			/*if (rIndex >= rendererCount) //for multi-renderer support
+			if (rIndex >= rendererCount) //for multi-renderer support
 			{
 				Debug.LogError ("SetBlendShape: This renderer doesn't exist!");
 				return;
-			}*/
+			}
 
 			if (shapeIndex < 0) 
 			{
@@ -1385,7 +1458,7 @@ namespace UMA
 				return;
 			}
 
-			if (shapeIndex >= myRenderer.sharedMesh.blendShapeCount /*renderers [rIndex].sharedMesh.blendShapeCount*/) //for multi-renderer support
+			if (shapeIndex >= renderers [rIndex].sharedMesh.blendShapeCount) //for multi-renderer support
 			{
 				Debug.LogError ("SetBlendShape: Index is greater than blendShapeCount!");
 				return;
@@ -1397,8 +1470,7 @@ namespace UMA
 			weight = Mathf.Clamp01 (weight);
 			weight *= 100.0f; //Scale up to 1-100 for SetBlendShapeWeight.
 
-			//renderers [rIndex].SetBlendShapeWeight (shapeIndex, weight);//for multi-renderer support
-			myRenderer.SetBlendShapeWeight(shapeIndex,weight);
+			renderers [rIndex].SetBlendShapeWeight (shapeIndex, weight);//for multi-renderer support
 		}
 
 		/// <summary>
@@ -1418,8 +1490,7 @@ namespace UMA
 			weight = Mathf.Clamp01 (weight);
 			weight *= 100.0f; //Scale up to 1-100 for SetBlendShapeWeight.
 
-			//renderers [loc.rendererIndex].SetBlendShapeWeight (loc.shapeIndex, weight);//for multi-renderer support
-			myRenderer.SetBlendShapeWeight(loc.shapeIndex,weight);
+			renderers [loc.rendererIndex].SetBlendShapeWeight (loc.shapeIndex, weight);//for multi-renderer support
 		}
 		/// <summary>
 		/// Gets the first found index of the blendshape by name in the renderers
@@ -1431,7 +1502,7 @@ namespace UMA
 			loc.shapeIndex = -1;
 			loc.rendererIndex = -1;
 
-			/*for (int i = 0; i < rendererCount; i++) //for multi-renderer support
+			for (int i = 0; i < rendererCount; i++) //for multi-renderer support
 			{
 				int index = renderers [i].sharedMesh.GetBlendShapeIndex (name);
 				if (index >= 0) 
@@ -1440,16 +1511,9 @@ namespace UMA
 					loc.rendererIndex = i;
 					return loc;
 				}
-			}*/
-
-			loc.shapeIndex = myRenderer.sharedMesh.GetBlendShapeIndex (name);
-			if (loc.shapeIndex >= 0) 
-			{
-				loc.rendererIndex = 0;
-				return loc;
 			}
 
-			Debug.LogError ("GetBlendShapeIndex: blendshape " + name + " not found!");
+			//Debug.LogError ("GetBlendShapeIndex: blendshape " + name + " not found!");
 			return loc;
 		}
 		/// <summary>
@@ -1464,23 +1528,21 @@ namespace UMA
 				Debug.LogError ("GetBlendShapeName: Index is less than zero!");
 				return "";
 			}
-
-			/*
+				
 			if (rendererIndex >= rendererCount) //for multi-renderer support
 			{
 				Debug.LogError ("GetBlendShapeName: This renderer doesn't exist!");
 				return "";
-			}*/
+			}
 
 			//for multi-renderer support
-			/*if( shapeIndex < renderers [rendererIndex].sharedMesh.blendShapeCount )
-				return renderers [rendererIndex].sharedMesh.GetBlendShapeName (shapeIndex);*/
+			if( shapeIndex < renderers [rendererIndex].sharedMesh.blendShapeCount )
+				return renderers [rendererIndex].sharedMesh.GetBlendShapeName (shapeIndex);
 
-			return myRenderer.sharedMesh.GetBlendShapeName (shapeIndex);
-
-			/*Debug.LogError ("GetBlendShapeName: no blendshape at index " + shapeIndex + "!");
-			return "";*/
+			Debug.LogError ("GetBlendShapeName: no blendshape at index " + shapeIndex + "!");
+			return "";
 		}
+			
 		#endregion
 	}
 }

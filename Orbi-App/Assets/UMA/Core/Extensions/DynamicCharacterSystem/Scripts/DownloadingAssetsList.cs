@@ -1,18 +1,14 @@
 using UnityEngine;
 using System;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
-using UMAAssetBundleManager;
+using UMA.AssetBundles;
 
-namespace UMA
+namespace UMA.CharacterSystem
 {
-
 	[System.Serializable]
 	public class DownloadingAssetsList
 	{
-
-
 		public List<DownloadingAssetItem> downloadingItems = new List<DownloadingAssetItem>();
 		public bool areDownloadedItemsReady = true;
 
@@ -55,9 +51,8 @@ namespace UMA
 					requiredAssetNameHash = UMAUtils.StringToHash(requiredAssetName);
 				}
 				thisTempAsset = GetTempAsset<T>();
-                if (typeof(T) == typeof(RaceData))
+				if (typeof(T) == typeof(RaceData))
 				{
-					(thisTempAsset as RaceData).raceName = requiredAssetName;
 					(thisTempAsset as RaceData).raceName = requiredAssetName;
 					(thisTempAsset as RaceData).name = requiredAssetName;
 				}
@@ -65,7 +60,7 @@ namespace UMA
 				{
 					(thisTempAsset as SlotDataAsset).name = requiredAssetName;
 					(thisTempAsset as SlotDataAsset).slotName = requiredAssetName;
-					(thisTempAsset as SlotDataAsset).nameHash = (int)requiredAssetNameHash;//we can safely force because we just set this above
+					(thisTempAsset as SlotDataAsset).nameHash = (int)requiredAssetNameHash;
 				}
 				else if (typeof(T) == typeof(OverlayDataAsset))
 				{
@@ -131,12 +126,12 @@ namespace UMA
 		{
 			T thisTempAsset = null;
 			//we only want the last bit after any assembly
-			var thisTypeName = typeof(T).ToString().Replace(typeof(T).Namespace+".", "");
+			var thisTypeName = typeof(T).ToString().Replace(typeof(T).Namespace + ".", "");
 			//check RuntimeAnimatorController because these get called different things in the editor and in game
 			if (typeof(T) == typeof(RuntimeAnimatorController))
 				thisTypeName = "RuntimeAnimatorController";
 			T thisPlaceholder = (T)Resources.Load<T>("PlaceholderAssets/" + thisTypeName + "Placeholder") as T;
-			if(thisPlaceholder != null)//can we assume if an asset was found its a scriptableobject
+			if (thisPlaceholder != null)//can we assume if an asset was found its a scriptableobject
 			{
 				thisTempAsset = ScriptableObject.Instantiate(thisPlaceholder) as T;
 			}
@@ -207,9 +202,33 @@ namespace UMA
 					var itemFilename = AssetBundleManager.AssetBundleIndexObject.GetFilenameFromAssetName(item.containingBundle, item.requiredAssetName, assetType.ToString());
 					if (assetType == typeof(RaceData))
 					{
+						//HACK TO FIX RACEDATA DYNAMICDNACONVERTERS DYNAMICDNA ASSETS CAUSING LOAD FAILURES in UNITY 5.5+
+						//As of Unity 5.5 a bug has reappeared when loading some types of assets that reference assets in other bundles.
+						//AssetBundleManager successfully ensures these required bundles are loaded first, but even so Unity fils to load
+						//the required asset from them in some cases, notably it seems when the required asset is set in the field of a Prefab (like our DNAAssets are)
+						//To fix this generally we could 'LoadAllAssets' from any dependent bundles, but this could incur significant memory overhead
+						//So for now we will just fix this for UMA and hope a patch is forthcoming in a subsequent version of Unity 
+						//FIXED as of Unity5.6.2f1
+#if UNITY_5_5 || UNITY_5_6_0 || UNITY_5_6_1
+						if (AssetBundleManager.AssetBundleIndexObject.GetAllDependencies(item.containingBundle).Length > 0)
+						{
+							var allDeps = AssetBundleManager.AssetBundleIndexObject.GetAllDependencies(item.containingBundle);
+							for (int i = 0; i < allDeps.Length; i++)
+							{
+								string depsError = "";
+								LoadedAssetBundle depsBundle = AssetBundleManager.GetLoadedAssetBundle(allDeps[i], out depsError);
+								if (String.IsNullOrEmpty(depsError) && depsBundle != null)
+								{
+									depsBundle.m_AssetBundle.LoadAllAssets<DynamicUMADnaAsset>();
+								}
+							}
+						}
+#endif
 						RaceData actualRace = loadedBundleAB.LoadAsset<RaceData>(itemFilename);
 						UMAContext.Instance.raceLibrary.AddRace(actualRace);
 						UMAContext.Instance.raceLibrary.UpdateDictionary();
+						//Refresh DCS so that anything that this race is cross compatible with gets added to its list of available recipes
+						(UMAContext.Instance.dynamicCharacterSystem as DynamicCharacterSystem).RefreshRaceKeys();
 					}
 					else if (assetType == typeof(SlotDataAsset))
 					{
@@ -240,12 +259,12 @@ namespace UMA
 					else if (assetType == typeof(UMATextRecipe))
 					{
 						UMATextRecipe downloadedRecipe = loadedBundleAB.LoadAsset<UMATextRecipe>(itemFilename);
-						(UMAContext.Instance.dynamicCharacterSystem as UMACharacterSystem.DynamicCharacterSystem).AddRecipe(downloadedRecipe);
+						(UMAContext.Instance.dynamicCharacterSystem as DynamicCharacterSystem).AddRecipe(downloadedRecipe);
 					}
 					else if (assetType == typeof(UMAWardrobeRecipe))
 					{
 						UMAWardrobeRecipe downloadedRecipe = loadedBundleAB.LoadAsset<UMAWardrobeRecipe>(itemFilename);
-						(UMAContext.Instance.dynamicCharacterSystem as UMACharacterSystem.DynamicCharacterSystem).AddRecipe(downloadedRecipe);
+						(UMAContext.Instance.dynamicCharacterSystem as DynamicCharacterSystem).AddRecipe(downloadedRecipe);
 					}
 					else if (item.dynamicCallback.Count > 0)
 					{

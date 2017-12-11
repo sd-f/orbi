@@ -6,9 +6,12 @@ using UnityEngine.Networking;
 #if ENABLE_IOS_ON_DEMAND_RESOURCES
 using UnityEngine.iOS;
 #endif
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System.Collections;
 
-namespace UMAAssetBundleManager
+namespace UMA.AssetBundles
 {
 	public abstract class AssetBundleLoadOperation : IEnumerator
 	{
@@ -75,11 +78,12 @@ namespace UMAAssetBundleManager
 					try {
 						decryptedData = EncryptionUtil.Decrypt(encryptedAsset.data, AssetBundleManager.BundleEncryptionKey, encryptedAsset.IV);
 					}
-					catch
+					catch(System.Exception e)
 					{
-						Debug.LogError("[AssetBundleLoadOperation] could not decrypt " + assetBundleName);
+						Debug.LogError("[AssetBundleLoadOperation] could not decrypt " + assetBundleName+ "Error message was "+e.Message+" : "+e.StackTrace);
 						return false;
 					}
+					bundle.Unload (true);
 					decryptedLoadOperation = new AssetBundleLoadDecrypted(decryptedData, assetBundleName);
 					return true;
 				}
@@ -153,7 +157,7 @@ namespace UMAAssetBundleManager
         protected override void FinishDownload()
         {
             error = request.error;
-            if (error != null)
+            if (!string.IsNullOrEmpty(error))
                 return;
 
             var path = "res://" + assetBundleName;
@@ -476,9 +480,9 @@ namespace UMAAssetBundleManager
 			}
 
 			if (isAdditive)
-				m_Operation = UnityEditor.EditorApplication.LoadLevelAdditiveAsyncInPlayMode(levelPaths[0]);
+				m_Operation = EditorApplication.LoadLevelAdditiveAsyncInPlayMode(levelPaths[0]);
 			else
-				m_Operation = UnityEditor.EditorApplication.LoadLevelAsyncInPlayMode(levelPaths[0]);
+				m_Operation = EditorApplication.LoadLevelAsyncInPlayMode(levelPaths[0]);
 		}
 
 		public override bool Update()
@@ -548,7 +552,7 @@ namespace UMAAssetBundleManager
 		{
 			// Return if meeting downloading error.
 			// m_DownloadingError might come from the dependency downloading.
-			if (m_Request == null && m_DownloadingError != null)
+			if (m_Request == null && !string.IsNullOrEmpty(m_DownloadingError))
 			{
 				Debug.LogError(m_DownloadingError);
 				return true;
@@ -634,7 +638,7 @@ namespace UMAAssetBundleManager
 		{
 			// Return if meeting downloading error.
 			// m_DownloadingError might come from the dependency downloading.
-			if (m_Request == null && m_DownloadingError != null)
+			if (m_Request == null && !string.IsNullOrEmpty(m_DownloadingError))
 			{
 				Debug.LogError(m_DownloadingError);
 				return true;

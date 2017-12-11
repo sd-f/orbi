@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace UMA
@@ -39,8 +38,14 @@ namespace UMA
 		/// <value>The bone count.</value>
 		public virtual int boneCount { get { return boneHashData.Count; } }
 
-		private List<BoneData> boneHashDataBackup = new List<BoneData>();
+		public bool isUpdating { get { return updating; } }
+
 		private Dictionary<int, BoneData> boneHashDataLookup;
+
+#if UNITY_EDITOR
+		// Dictionary backup to support code reload
+		private List<BoneData> boneHashDataBackup = new List<BoneData>();
+#endif
 
 		private Dictionary<int, BoneData> boneHashData
 		{
@@ -49,10 +54,12 @@ namespace UMA
 				if (boneHashDataLookup == null)
 				{
 					boneHashDataLookup = new Dictionary<int, BoneData>();
+#if UNITY_EDITOR
 					foreach (BoneData tData in boneHashDataBackup)
 					{
 						boneHashDataLookup.Add(tData.boneNameHash, tData);
 					}
+#endif
 				}
 
 				return boneHashDataLookup;
@@ -61,7 +68,9 @@ namespace UMA
 			set
 			{
 				boneHashDataLookup = value;
+#if UNITY_EDITOR
 				boneHashDataBackup = new List<BoneData>(value.Values);
+#endif
 			}
 		}
 
@@ -135,7 +144,9 @@ namespace UMA
 			};
 
 			boneHashData.Add(hash, data);
+#if UNITY_EDITOR
 			boneHashDataBackup.Add(data);
+#endif
 
 			for (int i = 0; i < transform.childCount; i++)
 			{
@@ -178,8 +189,10 @@ namespace UMA
 				umaTransform = new UMATransform(transform, hash, parentHash),
 			};
 
-			boneHashDataBackup.Add(newBone);
 			boneHashData.Add(hash, newBone);
+#if UNITY_EDITOR
+			boneHashDataBackup.Add(newBone);
+#endif
 		}
 
 		/// <summary>
@@ -198,8 +211,10 @@ namespace UMA
 				umaTransform = transform.Duplicate(),
 			};
 
-			boneHashDataBackup.Add(newBone);
 			boneHashData.Add(transform.hash, newBone);
+#if UNITY_EDITOR
+			boneHashDataBackup.Add(newBone);
+#endif
 		}
 
 		/// <summary>
@@ -211,8 +226,10 @@ namespace UMA
 			BoneData bd = GetBone(nameHash);
 			if (bd != null)
 			{
-				boneHashDataBackup.Remove(bd);
 				boneHashData.Remove(nameHash);
+#if UNITY_EDITOR
+				boneHashDataBackup.Remove(bd);
+#endif
 			}
 		}
 
@@ -615,7 +632,7 @@ namespace UMA
 			if (boneHashData.TryGetValue(umaTransform.hash, out res))
 			{
 				res.accessedFrame = -1;
-				res.umaTransform.Assign(umaTransform);
+				//res.umaTransform.Assign(umaTransform);
 			}
 			else
 			{
@@ -643,7 +660,7 @@ namespace UMA
 
 		public virtual Quaternion GetTPoseCorrectedRotation(int nameHash, Quaternion tPoseRotation)
 		{
-			return tPoseRotation;
+			return boneHashData[nameHash].boneTransform.localRotation;
 		}
 	}
 }

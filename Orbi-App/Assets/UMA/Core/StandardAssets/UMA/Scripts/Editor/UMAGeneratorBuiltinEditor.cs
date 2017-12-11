@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-using UnityEditor;
-using UMA;
+﻿using UnityEditor;
 
-namespace UMAEditor
+namespace UMA.Editors
 {
 	[CustomEditor(typeof(UMAGeneratorBuiltin), true)]
 	public class UMAGeneratorBuiltinEditor : Editor

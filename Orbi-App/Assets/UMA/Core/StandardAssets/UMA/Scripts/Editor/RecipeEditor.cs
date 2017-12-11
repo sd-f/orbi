@@ -1,18 +1,10 @@
 #if UNITY_EDITOR
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-
 using UnityEditor;
-
 using UnityEngine;
-
-using Object = UnityEngine.Object;
-using UMA;
 using UMA.Integrations;
 
-namespace UMAEditor
+namespace UMA.Editors
 {
 	/// <summary>
 	/// Recipe editor.
@@ -52,7 +44,7 @@ namespace UMAEditor
 					position = hit.point;
 				}
 
-				var newSelection = new List<Object>(DragAndDrop.objectReferences.Length);
+				var newSelection = new List<UnityEngine.Object>(DragAndDrop.objectReferences.Length);
 				foreach (var reference in DragAndDrop.objectReferences)
 				{
 				    if (reference is UMARecipeBase)
@@ -94,10 +86,10 @@ namespace UMAEditor
                 {
 					var context = UMAContext.FindInstance();
 					//create a virtual UMAContext if we dont have one and we have DCS
-					if (context == null)
+					if (context == null || context.gameObject.name == "UMAEditorContext")
 					{
-						context = umaRecipeBase.CreateEditorContext();
-						generatedContext = context.gameObject.transform.parent.gameObject;
+						context = umaRecipeBase.CreateEditorContext();//will create or update an UMAEditorContext to the latest version
+						generatedContext = context.gameObject.transform.parent.gameObject;//The UMAContext in a UMAEditorContext is that gameobject's child
 					}
 					//legacy checks for context
 					if (context == null)

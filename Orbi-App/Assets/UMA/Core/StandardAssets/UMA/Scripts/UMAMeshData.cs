@@ -1,7 +1,3 @@
-// We can dramatically reduce garbage by using shared buffers
-// on desktop platforms and dynamically adjusting the
-// size which the arrays appear to be to C# code
-// See: http://feedback.unity3d.com/suggestions/allow-mesh-data-to-have-a-length
 #if !UNITY_STANDALONE
 #undef USE_UNSAFE_CODE
 #endif 
@@ -9,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UMA.Dynamics;
 
 namespace UMA
 {
@@ -251,6 +248,8 @@ namespace UMA
 		public Vector2[] uv3;
 		public Vector2[] uv4;
 		public UMABlendShape[] blendShapes;
+		public ClothSkinningCoefficient[] clothSkinning;
+		public Vector2[] clothSkinningSerialized;
 		public SubMeshTriangles[] submeshes;
 		[NonSerialized]
 		public Transform[] bones;
@@ -264,42 +263,151 @@ namespace UMA
 		public int vertexCount;
         public string RootBoneName = "Global";
 
+		// Static shared data to reduce garbage
+		// See: http://feedback.unity3d.com/suggestions/allow-mesh-data-to-have-a-length
+		private static UMAMeshData bufferLockOwner = null;
+		private static bool buffersInitialized = false;
+		private static bool haveBackingArrays = false;
+		const int MAX_VERTEX_COUNT = 65534;
+		static List<Vector3> gVertices = new List<Vector3>(MAX_VERTEX_COUNT);
+		static Vector3[] gVerticesArray;
+		static List<Vector3> gNormals = new List<Vector3>(MAX_VERTEX_COUNT);
+		static Vector3[] gNormalsArray;
+		static List<Vector4> gTangents = new List<Vector4>(MAX_VERTEX_COUNT);
+		static Vector4[] gTangentsArray;
+		static List<Vector2> gUV = new List<Vector2>(MAX_VERTEX_COUNT);
+		static Vector2[] gUVArray;
+		static List<Vector2> gUV2 = new List<Vector2>(MAX_VERTEX_COUNT);
+		static Vector2[] gUV2Array;
+		static List<Vector2> gUV3 = new List<Vector2>(MAX_VERTEX_COUNT);
+		static Vector2[] gUV3Array;
+		static List<Vector2> gUV4 = new List<Vector2>(MAX_VERTEX_COUNT);
+		static Vector2[] gUV4Array;
+		static List<Color32> gColors32 = new List<Color32>(MAX_VERTEX_COUNT);
+		static Color32[] gColors32Array;
+
+		const int UNUSED_SUBMESH = -1;
+		static List<int>[] gSubmeshTris = {
+			// Order gSubmeshTris list from smallest to largest so they can be
+			// efficiently assigned to the smallest valid array
+			new List<int>(MAX_VERTEX_COUNT / 4),
+			new List<int>(MAX_VERTEX_COUNT / 4),
+			new List<int>(MAX_VERTEX_COUNT / 2),
+			new List<int>(MAX_VERTEX_COUNT / 2),
+			new List<int>(MAX_VERTEX_COUNT),
+			new List<int>(MAX_VERTEX_COUNT),
+			new List<int>(MAX_VERTEX_COUNT * 2),
+		};
+		static int[][] gSubmeshTriArrays;
+		static int[] gSubmeshTriIndices;
+
+		// They forgot the List<> method for bone weights.
+#if USE_UNSAFE_CODE
+		static BoneWeight[] gBoneWeightsArray = new BoneWeight[MAX_VERTEX_COUNT];
+#endif
+
+		/// <summary>
+		/// Does this UMAMeshData own the shared buffers?
+		/// </summary>
+		/// <returns><c>true</c>, if this is the owner of the shared buffers.</returns>
 		private bool OwnSharedBuffers()
 		{
-#if USE_UNSAFE_CODE
 			return (this == bufferLockOwner);
-#else
-			return false;
-#endif
 		}
 
 		/// <summary>
 		/// Claims the static buffers.
 		/// </summary>
-		/// <returns><c>true</c>, if shared buffers was claimed, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, if shared buffers were claimed, <c>false</c> otherwise.</returns>
 		public bool ClaimSharedBuffers()
 		{
-#if USE_UNSAFE_CODE
+			if (!buffersInitialized)
+			{
+				buffersInitialized = true;
+				haveBackingArrays = true;
+
+				gVerticesArray = gVertices.GetBackingArray();
+				if (gVerticesArray == null) haveBackingArrays = false;
+				gNormalsArray = gNormals.GetBackingArray();
+				if (gNormalsArray == null) haveBackingArrays = false;
+				gTangentsArray = gTangents.GetBackingArray();
+				if (gTangentsArray == null) haveBackingArrays = false;
+				gUVArray = gUV.GetBackingArray();
+				if (gUVArray == null) haveBackingArrays = false;
+				gUV2Array = gUV2.GetBackingArray();
+				if (gUV2Array == null) haveBackingArrays = false;
+				gUV3Array = gUV3.GetBackingArray();
+				if (gUV3Array == null) haveBackingArrays = false;
+				gUV4Array = gUV4.GetBackingArray();
+				if (gUV4Array == null) haveBackingArrays = false;
+				gColors32Array = gColors32.GetBackingArray();
+				if (gColors32Array == null) haveBackingArrays = false;
+
+				gSubmeshTriIndices = new int[gSubmeshTris.Length];
+				gSubmeshTriArrays = new int[gSubmeshTris.Length][];
+				for (int i = 0; i < gSubmeshTris.Length; i++)
+				{
+					gSubmeshTriIndices[i] = UNUSED_SUBMESH;
+					gSubmeshTriArrays[i] = gSubmeshTris[i].GetBackingArray();
+					if (gSubmeshTriArrays[i] == null) haveBackingArrays = false;
+				}
+
+				if (haveBackingArrays == false)
+				{
+					Debug.LogError("Unable to access backing arrays for shared UMAMeshData!");
+				}
+			}
+
+			if (!haveBackingArrays)
+				return false;
+			
 			if (bufferLockOwner == null)
 			{
 				bufferLockOwner = this;
-				vertices = gVertices;
+
+				vertices = gVerticesArray;
+				normals = gNormalsArray;
+				tangents = gTangentsArray;
+				uv = gUVArray;
+				uv2 = gUV2Array;
+				uv3 = gUV3Array;
+				uv4 = gUV4Array;
+				colors32 = gColors32Array;
+
 				boneWeights = null;
-				unityBoneWeights = gBoneWeights;
-				normals = gNormals;
-				tangents = gTangents;
-				uv = gUV;
-				uv2 = gUV2;
-				uv3 = gUV3;
-				uv4 = gUV4;
-				colors32 = gColors32;
-				boneHierarchy = gUMABones;
+#if USE_UNSAFE_CODE
+				unityBoneWeights = gBoneWeightsArray;
+#endif
+
 				return true;
 			}
 
 			Debug.LogWarning("Unable to claim UMAMeshData global buffers!");
-#endif
 			return false;
+		}
+
+		/// <summary>
+		/// Get an array for submesh triangle data.
+		/// </summary>
+		/// <returns>Either a shared or allocated int array for submesh triangles.</returns>
+		public int[] GetSubmeshBuffer(int size, int submeshIndex)
+		{
+			if (OwnSharedBuffers())
+			{
+				for (int i = 0; i < gSubmeshTris.Length; i++)
+				{
+					if ((gSubmeshTriIndices[i] == UNUSED_SUBMESH) && (size < gSubmeshTris[i].Capacity))
+					{
+						gSubmeshTriIndices[i] = submeshIndex;
+						gSubmeshTris[i].SetActiveSize(size);
+						return gSubmeshTriArrays[i];
+					}
+				}
+
+				Debug.LogWarning("Could not claim shared submesh buffer of size: " + size);
+			}
+
+			return new int[size];
 		}
 
 		/// <summary>
@@ -307,22 +415,35 @@ namespace UMA
 		/// </summary>
 		public void ReleaseSharedBuffers()
 		{
-#if USE_UNSAFE_CODE
-			if (bufferLockOwner == this)
+			if (OwnSharedBuffers())
 			{
+				gVertices.SetActiveSize(0);
 				vertices = null;
+				gNormals.SetActiveSize(0);
+				normals = null;
+				gTangents.SetActiveSize(0);
+				tangents = null;
+				gUV.SetActiveSize(0);
+				uv = null;
+				gUV2.SetActiveSize(0);
+				uv2 = null;
+				gUV3.SetActiveSize(0);
+				uv3 = null;
+				gUV4.SetActiveSize(0);
+				uv4 = null;
+				gColors32.SetActiveSize(0);
+				colors32 = null;
+
+				for (int i = 0; i < gSubmeshTris.Length; i++)
+				{
+					gSubmeshTriIndices[i] = UNUSED_SUBMESH;
+					gSubmeshTris[i].SetActiveSize(0);
+				}
+
 				boneWeights = null;
 				unityBoneWeights = null;
-				normals = null;
-				tangents = null;
-				uv = null;
-				uv2 = null;
-				uv3 = null;
-				uv4 = null;
-				colors32 = null;
 				bufferLockOwner = null;
 			}
-#endif
 		}
 
 		public void PrepareVertexBuffers(int size)
@@ -337,6 +458,8 @@ namespace UMA
 			uv2 = new Vector2[size];
 			uv3 = new Vector2[size];
 			uv4 = new Vector2[size];
+			clothSkinning = new ClothSkinningCoefficient[size];
+			clothSkinningSerialized = new Vector2[size];
 		}
 		
 		/// <summary>
@@ -349,7 +472,6 @@ namespace UMA
 
 			UpdateBones(renderer.rootBone, renderer.bones);
 		}
-
 		
 		/// <summary>
 		/// Initialize UMA mesh data from Unity mesh.
@@ -397,6 +519,18 @@ namespace UMA
 				}
 			}
 			#endregion
+		}
+
+		/// <summary>
+		/// Initialize UMA mesh cloth data from Unity Cloth
+		/// </summary>
+		/// <param name="cloth"></param>
+		public void RetrieveDataFromUnityCloth(Cloth cloth)
+		{
+			clothSkinning = cloth.coefficients;
+			clothSkinningSerialized = new Vector2[clothSkinning.Length];
+			for (int i = 0; i < clothSkinning.Length; i++)
+				SkinnedMeshCombiner.ConvertData(ref clothSkinning[i], ref clothSkinningSerialized[i]);
 		}
 
 		/// <summary>
@@ -515,7 +649,20 @@ namespace UMA
 			mesh.subMeshCount = subMeshCount;
 			for (int i = 0; i < subMeshCount; i++)
 			{
-				mesh.SetTriangles(submeshes[i].triangles, i);
+				bool sharedBuffer = false;
+				for (int j = 0; j < gSubmeshTris.Length; j++)
+				{
+					if (gSubmeshTriIndices[j] == i)
+					{
+						sharedBuffer = true;
+						mesh.SetTriangles(gSubmeshTris[j], i);
+						gSubmeshTriIndices[j] = UNUSED_SUBMESH;
+						break;
+					}
+				}
+
+				if (!sharedBuffer)
+					mesh.SetTriangles(submeshes[i].triangles, i);
 			}
 
 			//Apply the blendshape data from the slot asset back to the combined UMA unity mesh.
@@ -527,19 +674,20 @@ namespace UMA
 				{
 					if (blendShapes [shapeIndex] == null) 
 					{
-						Debug.LogError ("blendShapes [shapeIndex] == null!");
+						//Debug.LogError ("blendShapes [shapeIndex] == null!");
+                        //No longer an error, this will be null if the blendshape got baked.
 						break;
 					}
 
 					for( int frameIndex = 0; frameIndex < blendShapes[shapeIndex].frames.Length; frameIndex++)
 					{
 						//There might be an extreme edge case where someone has the same named blendshapes on different meshes that end up on different renderers.
-						string name = blendShapes [shapeIndex].shapeName; 
+						string name = blendShapes[shapeIndex].shapeName; 
 						mesh.AddBlendShapeFrame (name,
-							blendShapes [shapeIndex].frames [frameIndex].frameWeight,
-							blendShapes [shapeIndex].frames [frameIndex].deltaVertices,
-							blendShapes [shapeIndex].frames [frameIndex].deltaNormals,
-							blendShapes [shapeIndex].frames [frameIndex].deltaTangents);
+							blendShapes[shapeIndex].frames[frameIndex].frameWeight,
+							blendShapes[shapeIndex].frames[frameIndex].deltaVertices,
+							blendShapes[shapeIndex].frames[frameIndex].deltaNormals,
+							blendShapes[shapeIndex].frames[frameIndex].deltaTangents);
 					}
 				}
 			}
@@ -549,6 +697,24 @@ namespace UMA
 			renderer.bones = bones != null ? bones : skeleton.HashesToTransforms(boneNameHashes);
 			renderer.sharedMesh = mesh;
 			renderer.rootBone = rootBone;
+
+			if (clothSkinning != null && clothSkinning.Length > 0)
+			{
+				var cloth = renderer.GetComponent<Cloth>();
+				if (cloth == null)
+				{
+					cloth = renderer.gameObject.AddComponent<Cloth>();
+                    UMAPhysicsAvatar physicsAvatar = renderer.gameObject.GetComponentInParent<UMAPhysicsAvatar> ();
+                    if (physicsAvatar != null)
+                    {
+                        cloth.sphereColliders = physicsAvatar.SphereColliders.ToArray();
+                        cloth.capsuleColliders = physicsAvatar.CapsuleColliders.ToArray();
+                    }
+                    else
+                        Debug.Log("PhysicsAvatar is null!");
+				}
+				cloth.coefficients = clothSkinning;
+			}
 		}
 
 		/// <summary>
@@ -588,7 +754,7 @@ namespace UMA
 
 		private void CreateTransforms(UMASkeleton skeleton)
 		{
-			for(int i = 0; i < umaBoneCount; i++ )
+			for(int i = 0; i < umaBoneCount; i++)
 			{
 				skeleton.EnsureBone(umaBones[i]);
 			}
@@ -597,151 +763,75 @@ namespace UMA
 
 		private void ApplySharedBuffers(Mesh mesh)
 		{
+			// Thanks for providing these awesome List<> methods rather than listening
+			// to every one of your users who told you to use Array and size, Unity!
+			gVertices.SetActiveSize(vertexCount);
+			mesh.SetVertices(gVertices);
+
+			// Whoops, looks like they also forgot one! Job well done.
 #if USE_UNSAFE_CODE
 			unsafe
 			{
-				UIntPtr* lengthPtr;
-				fixed (void* pVertices = gVertices) 
+				fixed (void* pBoneWeights = gBoneWeightsArray) 
 				{ 
-					lengthPtr = (UIntPtr*)pVertices - 1; 
+					UIntPtr* lengthPtr = (UIntPtr*)pBoneWeights - 1; 
 					try 
 					{ 
 						*lengthPtr = (UIntPtr)vertexCount; 
-						mesh.vertices = gVertices; 
+						mesh.boneWeights = gBoneWeightsArray; 
 					} 
 					finally 
 					{ 
 						*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
 					} 
-				} 
-				fixed (void* pBoneWeights = gBoneWeights) 
-				{ 
-					lengthPtr = (UIntPtr*)pBoneWeights - 1; 
-					try 
-					{ 
-						*lengthPtr = (UIntPtr)vertexCount; 
-						mesh.boneWeights = gBoneWeights; 
-					} 
-					finally 
-					{ 
-						*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-					} 
-				}
-				if (normals != null)
-				{
-					fixed (void* pNormals = gNormals) 
-					{ 
-						lengthPtr = (UIntPtr*)pNormals - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.normals = gNormals; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
-				}
-				if (tangents != null)
-				{
-					fixed (void* pTangents = gTangents) 
-					{ 
-						lengthPtr = (UIntPtr*)pTangents - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.tangents = gTangents; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
-				}
-				if (uv != null)
-				{
-					fixed (void* pUV = gUV) 
-					{ 
-						lengthPtr = (UIntPtr*)pUV - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.uv = gUV; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
-				}
-				if (uv2 != null)
-				{
-					fixed (void* pUV2 = gUV2) 
-					{ 
-						lengthPtr = (UIntPtr*)pUV2 - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.uv2 = gUV2; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
-				}
-				if (uv3 != null)
-				{
-					fixed (void* pUV3 = gUV3) 
-					{ 
-						lengthPtr = (UIntPtr*)pUV3 - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.uv3 = gUV3; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
-				}
-				if (uv4 != null)
-				{
-					fixed (void* pUV4 = gUV4) 
-					{ 
-						lengthPtr = (UIntPtr*)pUV4 - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.uv4 = gUV4; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
-				}
-
-				if (colors32 != null)
-				{
-					fixed (void* pColors32 = gColors32) 
-					{ 
-						lengthPtr = (UIntPtr*)pColors32 - 1; 
-						try 
-						{ 
-							*lengthPtr = (UIntPtr)vertexCount; 
-							mesh.colors32 = gColors32; 
-						} 
-						finally 
-						{ 
-							*lengthPtr = (UIntPtr)MAX_VERTEX_COUNT; 
-						} 
-					}
 				}
 			}
+#else
+			if (unityBoneWeights != null)
+			{
+				mesh.boneWeights = unityBoneWeights;
+			}
+			else
+			{
+				mesh.boneWeights = UMABoneWeight.Convert(boneWeights);
+			}
 #endif
+			if (normals != null)
+			{
+				gNormals.SetActiveSize(vertexCount);
+				mesh.SetNormals(gNormals);
+			}
+			if (tangents != null)
+			{
+				gTangents.SetActiveSize(vertexCount);
+				mesh.SetTangents(gTangents);
+			}
+			if (uv != null)
+			{
+				gUV.SetActiveSize(vertexCount);
+				mesh.SetUVs(0, gUV);
+			}
+			if (uv2 != null)
+			{
+				gUV2.SetActiveSize(vertexCount);
+				mesh.SetUVs(1, gUV2);
+			}
+			if (uv3 != null)
+			{
+				gUV3.SetActiveSize(vertexCount);
+				mesh.SetUVs(2, gUV3);
+			}
+			if (uv4 != null)
+			{
+				gUV4.SetActiveSize(vertexCount);
+				mesh.SetUVs(3, gUV4);
+			}
+			if (colors32 != null)
+			{
+				gColors32.SetActiveSize(vertexCount);
+				mesh.SetColors(gColors32);
+			}
+
 		}
 
 		private void ComputeBoneNameHashes(Transform[] bones)
@@ -752,22 +842,6 @@ namespace UMA
 				boneNameHashes[i] = UMAUtils.StringToHash(bones[i].name);
 			}
 		}
-
-#if USE_UNSAFE_CODE
-		private static UMAMeshData bufferLockOwner = null;
-		const int MAX_VERTEX_COUNT = 65534;
-		static Vector3[] gVertices = new Vector3[MAX_VERTEX_COUNT];
-		static BoneWeight[] gBoneWeights = new BoneWeight[MAX_VERTEX_COUNT];
-		static Vector3[] gNormals = new Vector3[MAX_VERTEX_COUNT];
-		static Vector4[] gTangents = new Vector4[MAX_VERTEX_COUNT];
-		static Vector2[] gUV = new Vector2[MAX_VERTEX_COUNT];
-		static Vector2[] gUV2 = new Vector2[MAX_VERTEX_COUNT];
-		static Vector2[] gUV3 = new Vector2[MAX_VERTEX_COUNT];
-		static Vector2[] gUV4 = new Vector2[MAX_VERTEX_COUNT];
-		static Color32[] gColors32 = new Color32[MAX_VERTEX_COUNT];
-		static UMATransform gUMABones = new UMATransform[MAX_VERTEX_COUNT];
-#endif
-
 
 		#region operator ==, != and similar HACKS, seriously.....
 		public static implicit operator bool(UMAMeshData obj)

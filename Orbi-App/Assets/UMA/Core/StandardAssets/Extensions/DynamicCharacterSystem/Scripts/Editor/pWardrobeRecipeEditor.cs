@@ -1,20 +1,12 @@
 #if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-
 using UnityEditor;
-
 using UnityEngine;
+using UMA.CharacterSystem;
 
-using Object = UnityEngine.Object;
-using UMA;
-using UMA.Integrations;
-using UMACharacterSystem;
-
- 
-namespace UMAEditor
+namespace UMA.Editors
 {
 	public partial class RecipeEditor
 	{
@@ -369,7 +361,9 @@ namespace UMAEditor
 			}
 			else
 			{
-				EditorGUILayout.HelpBox("No Compatible Races set. This " + TargetType.ToString() + " will be available to all races.", MessageType.None);
+				//EditorGUILayout.HelpBox("No Compatible Races set. This " + TargetType.ToString() + " will be available to all races.", MessageType.None);
+				//DOS MODIFIED this should really be possible tho...
+				EditorGUILayout.HelpBox("No Compatible Races set.", MessageType.Warning);
 			}
 			CompatibleRacesDropArea(dropArea, newCompatibleRaces);
 
@@ -605,7 +599,7 @@ namespace UMAEditor
 
 				GUILayout.Space(20);
 				Rect dropArea = GUILayoutUtility.GetRect(0.0f, 50.0f, GUILayout.ExpandWidth(true));
-				GUI.Box(dropArea, "Drag Slots here. Click to pick");
+				GUI.Box(dropArea, "Drag Slots and Overlays here. Click to pick");
 				if (DropAreaGUI(dropArea))
 				{
 					changed |= true;
@@ -656,8 +650,16 @@ namespace UMAEditor
 				}
 
 				GUILayout.Space(20);
-
-				if (GUILayout.Button("Remove Nulls"))
+                GUILayout.BeginHorizontal();
+                if (GUILayout.Button("Clear Recipe"))
+                {
+                    _recipe.slotDataList = new SlotData[0];
+                    changed |= true;
+                    _dnaDirty |= true;
+                    _textureDirty |= true;
+                    _meshDirty |= true;
+                }
+                if (GUILayout.Button("Remove Nulls"))
 				{
 					var newList = new List<SlotData>(_recipe.slotDataList.Length);
 					foreach (var slotData in _recipe.slotDataList)
@@ -670,6 +672,7 @@ namespace UMAEditor
 					_textureDirty |= true;
 					_meshDirty |= true;
 				}
+                GUILayout.EndHorizontal();
 
 				GUILayout.BeginHorizontal();
 				if (GUILayout.Button("Collapse All"))

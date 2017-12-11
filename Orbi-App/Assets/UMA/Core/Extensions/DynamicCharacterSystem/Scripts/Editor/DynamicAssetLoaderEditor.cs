@@ -1,11 +1,8 @@
 using UnityEngine;
-using System.Collections;
 using UnityEditor;
-using UMAAssetBundleManager;
-using UMAEditor;
-using UMACharacterSystem;
+using UMA.AssetBundles;
 
-namespace UMA
+namespace UMA.CharacterSystem.Editors
 {
 	[CustomEditor(typeof(DynamicAssetLoader),true)]
 	public class DynamicAssetLoaderEditor : Editor

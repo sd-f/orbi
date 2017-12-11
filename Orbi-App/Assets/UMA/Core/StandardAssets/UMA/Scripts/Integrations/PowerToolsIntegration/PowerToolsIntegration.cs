@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UMA.Integrations
@@ -26,7 +25,7 @@ namespace UMA.Integrations
 			{
 				foreach (var assembly in System.AppDomain.CurrentDomain.GetAssemblies())
 				{
-					umaEditorAvatarType = assembly.GetType("UMA.PowerTools.PowerPackPersistance");
+					umaEditorAvatarType = assembly.GetType("UMA.PowerTools.UMAEditorAvatar");
 					if (umaEditorAvatarType != null) break;
 				}
 			}

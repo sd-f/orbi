@@ -1,9 +1,8 @@
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using UMA.CharacterSystem;
 
-namespace UMAAssetBundleManager
+namespace UMA.AssetBundles
 {
 	//This is an example of how the AssetBundleIndex class can be extended to contain extra data about items in the index. 
 	//Here we have extended it to include extra data about UMATextRecipes that are set to be 'Wardrobe' recipes rather than 'Standard' ones.
@@ -17,7 +16,7 @@ namespace UMAAssetBundleManager
 
 			partial void AddDataPostProcess(string filename, UnityEngine.Object obj)
 			{
-				if (assetType == "UMATextRecipe")
+				if (GetTypeWithoutAssembly(assetType) == "UMATextRecipe")
 				{
 					if ((obj as UMATextRecipe).recipeType == "Wardrobe")
 					{
@@ -29,7 +28,7 @@ namespace UMAAssetBundleManager
 						}
 					}
 				}
-				else if (assetType == "UMAWardrobeRecipe")
+				else if (GetTypeWithoutAssembly(assetType) == "UMAWardrobeRecipe")
 				{
 					assetWardrobeCompatibleWith = (obj as UMAWardrobeRecipe).compatibleRaces;
 					if ((obj as UMAWardrobeRecipe).wardrobeSlot != "None")
@@ -38,7 +37,7 @@ namespace UMAAssetBundleManager
 						assetWardrobeHides = (obj as UMAWardrobeRecipe).Hides;
 					}
 				}
-				else if (assetType == "UMAWardrobeCollection")
+				else if (GetTypeWithoutAssembly(assetType) == "UMAWardrobeCollection")
 				{
 					assetWardrobeCompatibleWith = (obj as UMAWardrobeCollection).compatibleRaces;
 					if (assetWardrobeCompatibleWith.Count > 0)

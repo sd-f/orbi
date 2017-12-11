@@ -6,7 +6,7 @@ using UnityEngine.UI;
 using UnityEditor;
 #endif
 
-namespace UMA
+namespace UMA.Examples
 {
 	public class UMASlotVerifyWizard : MonoBehaviour
 	{
@@ -82,7 +82,7 @@ namespace UMA
 				}
 				else
 				{
-					Destroy(RaceGO);
+					UMAUtils.DestroySceneObject(RaceGO);
 				}
 			}
 		}
@@ -120,7 +120,7 @@ namespace UMA
 				}
 				else
 				{
-					Destroy(SlotGO);
+					UMAUtils.DestroySceneObject(SlotGO);
 				}
 			}
 		}
@@ -153,19 +153,19 @@ namespace UMA
 		{
 			if (forcedSlotBones)
 			{
-				Destroy(SlotGO);
+				UMAUtils.DestroySceneObject(SlotGO);
 				SlotGO = Instantiate(slotAsset) as GameObject;
 				SlotSMR = SlotGO.GetComponentInChildren<SkinnedMeshRenderer>();
 				forcedSlotBones = false;
 			}
-			Destroy(RaceGO);
+			UMAUtils.DestroySceneObject(RaceGO);
 			SetPage(0);
 		}
 
 		public void SelectNewSlotMesh()
 		{
 			forcedSlotBones = false;
-			Destroy(SlotGO);
+			UMAUtils.DestroySceneObject(SlotGO);
 			SetPage(1);
 		}
 

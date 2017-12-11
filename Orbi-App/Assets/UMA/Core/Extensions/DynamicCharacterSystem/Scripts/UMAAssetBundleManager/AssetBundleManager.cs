@@ -27,7 +27,7 @@ using System.Collections.Generic;
             Resolves the correct AssetBundle according to the active variant.
 */
 
-namespace UMAAssetBundleManager
+namespace UMA.AssetBundles
 {
 
 	/// <summary>
@@ -187,8 +187,6 @@ namespace UMAAssetBundleManager
 		{
 			if (Application.isEditor)
 				return "file://" + System.Environment.CurrentDirectory.Replace("\\", "/"); // Use the build output folder directly.
-			//else if (Application.isWebPlayer)
-			//	return System.IO.Path.GetDirectoryName(Application.absoluteURL).Replace("\\", "/") + "/StreamingAssets";
 			else if (Application.isMobilePlatform || Application.isConsolePlatform)
 				return Application.streamingAssetsPath;
 			else // For standalone player.
@@ -282,7 +280,6 @@ namespace UMAAssetBundleManager
 			// Otherwise Make sure all dependencies are loaded
 			foreach (var dependency in dependencies)
 			{
-
 				if (m_DownloadingErrors.TryGetValue(dependency, out error))
 					return null;
 				// Wait all the dependent assetBundles being loaded.
@@ -515,7 +512,7 @@ namespace UMAAssetBundleManager
 				foreach (OverrideBaseDownloadingURLDelegate method in overrideBaseDownloadingURL.GetInvocationList())
 				{
 					string res = method(bundleName);
-					if (res != null)
+					if (!String.IsNullOrEmpty(res))
 						return res;
 				}
 			}
@@ -633,7 +630,7 @@ namespace UMAAssetBundleManager
 			if (bundleBaseDownloadingURL.ToLower().StartsWith("odr://"))
 			{
 #if ENABLE_IOS_ON_DEMAND_RESOURCES
-                Log(LogType.Info, "Requesting bundle " + assetBundleName + " through ODR");
+				Log(LogType.Info, "Requesting bundle " + assetBundleToGet + " through ODR");
                 m_InProgressOperations.Add(new AssetBundleDownloadFromODROperation(assetBundleToGet));
 #else
 				new ApplicationException("Can't load bundle " + assetBundleToFind + " through ODR: this Unity version or build target doesn't support it.");
@@ -642,7 +639,7 @@ namespace UMAAssetBundleManager
 			else if (bundleBaseDownloadingURL.ToLower().StartsWith("res://"))
 			{
 #if ENABLE_IOS_APP_SLICING
-                Log(LogType.Info, "Requesting bundle " + assetBundleName + " through asset catalog");
+				Log(LogType.Info, "Requesting bundle " + assetBundleToGet + " through asset catalog");
                 m_InProgressOperations.Add(new AssetBundleOpenFromAssetCatalogOperation(assetBundleToGet));
 #else
 				new ApplicationException("Can't load bundle " + assetBundleToFind + " through asset catalog: this Unity version or build target doesn't support it.");
@@ -650,11 +647,12 @@ namespace UMAAssetBundleManager
 			}
 			else
 			{
-				WWW download = null;
 				if (!bundleBaseDownloadingURL.EndsWith("/"))
 					bundleBaseDownloadingURL += "/";
 
 				string url = bundleBaseDownloadingURL + assetBundleToGet;
+
+				WWW download = null;
 				// For index assetbundle, always download it as we don't have hash for it.
 				//TODO make something to test if there is and internet connection and if not try to get a cached version of this so we can still access the stuff that has been previously cached
 				//TODO2 Make the index cache somewhere when it is downloaded.
@@ -668,14 +666,10 @@ namespace UMAAssetBundleManager
 					{
 						url = url+ ".json";
 					}
-					/*else
-					{
-						url = url + encryptedSuffix;
-                    }*/
 					download = new WWW(url);
-					if (download.error != null || download == null)
+					if (!String.IsNullOrEmpty(download.error) || download == null)
 					{
-						if (download.error != null)
+						if (!String.IsNullOrEmpty(download.error))
 							Log(LogType.Warning, download.error);
 						else
 							Log(LogType.Warning, " index new WWW(url) was NULL");
@@ -683,7 +677,7 @@ namespace UMAAssetBundleManager
 				}
 				else
 				{
-					download = WWW.LoadFromCacheOrDownload(url/* + encryptedSuffix*/, m_AssetBundleIndex.GetAssetBundleHash(assetBundleToFind), 0);
+					download = WWW.LoadFromCacheOrDownload(url, m_AssetBundleIndex.GetAssetBundleHash(assetBundleToFind), 0);
 				}
 				m_InProgressOperations.Add(new AssetBundleDownloadFromWebOperation(assetBundleToFind/* + encryptedSuffix*/, download, useJsonIndex));
 			}
@@ -812,8 +806,11 @@ namespace UMAAssetBundleManager
 			if (download == null)
 				return;
 
-			if (download.error == null)
+			if (String.IsNullOrEmpty(download.error))
+			{
+				//Debug.Log("[AssetBundleManager] processed downloaded bundle " + download.assetBundleName);
 				m_LoadedAssetBundles.Add(download.assetBundleName, download.assetBundle);
+			}
 			else
 			{
 				string msg = string.Format("Failed downloading bundle {0} from {1}: {2}",

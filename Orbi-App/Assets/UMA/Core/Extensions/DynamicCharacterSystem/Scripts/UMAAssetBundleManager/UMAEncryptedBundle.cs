@@ -5,7 +5,7 @@ using UnityEditor;
 using System.Collections;
 using System.IO;
 
-namespace UMAAssetBundleManager
+namespace UMA.AssetBundles
 {
 	[System.Serializable]
 	public partial class UMAEncryptedBundle : ScriptableObject
@@ -20,7 +20,6 @@ namespace UMAAssetBundleManager
 		/// </summary>
 		/// <param name="bundleName">The bundleName as defined in a BuildPipeline buildmap (AssetBundleBuild[]}</param>
 		/// <param name="originalPath">Path to the uncompressed bundle</param>
-		/// <param name="outputPath">Destination path for the compressed bundle</param>
 		public void GenerateData(string bundleName, string originalPath)
 		{
 			assetBundleName = bundleName;

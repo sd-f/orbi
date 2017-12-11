@@ -1,11 +1,8 @@
 using UnityEngine;
 using UnityEditor;
-using System.Text;
-using System.IO;
-using UMA;
 using System.Collections.Generic;
 
-namespace UMAEditor
+namespace UMA.Editors
 {
 	public class UmaSlotBuilderWindow : EditorWindow 
 	{
@@ -16,6 +13,10 @@ namespace UMAEditor
 	    public SkinnedMeshRenderer normalReferenceMesh;
 	    public SkinnedMeshRenderer slotMesh;
 	    public UMAMaterial slotMaterial;
+        public bool createOverlay;
+        public bool createRecipe;
+        public bool addToGlobalLibrary;
+        public bool addToLocalLibrary;
 
 	    string GetAssetFolder()
 	    {
@@ -66,15 +67,65 @@ namespace UMAEditor
 			EnforceFolder(ref slotFolder);
             RootBone = EditorGUILayout.TextField("Root Bone (ex:'Global')", RootBone);
 			slotName = EditorGUILayout.TextField("Element Name", slotName);
-			
-	        if (GUILayout.Button("Create Slot"))
-	        {
-	            Debug.Log("Processing...");
-	            if (CreateSlot() != null)
-	            {
-	                Debug.Log("Success.");
-	            }
-	        }
+            EditorGUILayout.BeginHorizontal();
+            createOverlay = EditorGUILayout.Toggle("Create Overlay", createOverlay);
+            EditorGUILayout.LabelField(slotName + "_Overlay");
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            createRecipe = EditorGUILayout.Toggle("Create Wardrobe Recipe ", createRecipe);
+            EditorGUILayout.LabelField(slotName + "_Recipe");
+            EditorGUILayout.EndHorizontal();
+            addToGlobalLibrary = EditorGUILayout.Toggle("Add To Global Library", addToGlobalLibrary);
+            if (UMAContext.Instance != null)
+            {
+                if (UMAContext.Instance.slotLibrary != null)
+                {
+                    addToLocalLibrary = EditorGUILayout.Toggle("Add to Scene Library", addToLocalLibrary);
+                }
+            }
+
+
+
+
+            if (GUILayout.Button("Create Slot"))
+            {
+                Debug.Log("Processing...");
+                SlotDataAsset sd = CreateSlot();
+                if (sd != null)
+                {
+                    Debug.Log("Success.");
+                    string AssetPath = AssetDatabase.GetAssetPath(sd.GetInstanceID());
+                    if (addToGlobalLibrary)
+                    {
+                        UMAAssetIndexer.Instance.EvilAddAsset(typeof(SlotDataAsset), sd);
+                    }
+                    if (addToLocalLibrary && UMAContext.Instance != null)
+                    {
+                        if (UMAContext.Instance.slotLibrary != null)
+                        {
+                            UMAContext.Instance.slotLibrary.AddSlotAsset(sd);
+                        }
+                    }
+                    if (createOverlay)
+                    {
+                        CreateOverlay(AssetPath.Replace(sd.name, sd.slotName + "_Overlay"), sd);
+                    }
+                    if (createRecipe)
+                    {
+                        CreateRecipe(AssetPath.Replace(sd.name, sd.slotName + "_Recipe"));
+                    }
+                }
+            }
+
+
+			if (slotMesh != null )
+			{
+				if( slotMesh.localBounds.size.x > 10.0f || slotMesh.localBounds.size.y > 10.0f || slotMesh.localBounds.size.z > 10.0f)
+					EditorGUILayout.HelpBox ("This slot's size is very large. It's import scale may be incorrect!", MessageType.Warning);
+
+				if( slotMesh.localBounds.size.x < 0.01f || slotMesh.localBounds.size.y < 0.01f || slotMesh.localBounds.size.z < 0.01f)
+					EditorGUILayout.HelpBox ("This slot's size is very small. It's import scale may be incorrect!", MessageType.Warning);
+			}
 	      
 	        GUILayout.Label("", EditorStyles.boldLabel);
 	        Rect dropArea = GUILayoutUtility.GetRect(0.0f, 50.0f, GUILayout.ExpandWidth(true));
@@ -92,11 +143,47 @@ namespace UMAEditor
 				Debug.LogError("slotName must be specified.");
 	            return null;
 			}
-			
-	        return CreateSlot_Internal();
+
+            SlotDataAsset sd = CreateSlot_Internal();
+
+            return sd;
 	    }
 
-	    private SlotDataAsset CreateSlot_Internal()
+        private void CreateOverlay(string path, SlotDataAsset sd)
+        {
+            OverlayDataAsset asset = ScriptableObject.CreateInstance<OverlayDataAsset>();
+            asset.overlayName = slotName + "_Overlay";
+            asset.material = sd.material;
+            AssetDatabase.CreateAsset(asset, path);
+            AssetDatabase.SaveAssets();
+            if (addToGlobalLibrary)
+            {
+                UMAAssetIndexer.Instance.EvilAddAsset(typeof(OverlayDataAsset), asset);
+            }
+            if (addToLocalLibrary && UMAContext.Instance != null)
+            {
+                if (UMAContext.Instance.overlayLibrary != null)
+                {
+                    UMAContext.Instance.overlayLibrary.AddOverlayAsset(asset);
+                }
+            }
+        }
+
+        private void CreateRecipe(string path)
+        {
+            CharacterSystem.UMAWardrobeRecipe asset = ScriptableObject.CreateInstance<CharacterSystem.UMAWardrobeRecipe>();
+            //UMAData ud = new UMAData();
+            //ud.SetSlots()
+            asset.DisplayValue = slotName;
+            AssetDatabase.CreateAsset(asset, path);
+            AssetDatabase.SaveAssets();
+            if (addToGlobalLibrary)
+            {
+                UMAAssetIndexer.Instance.EvilAddAsset(typeof(CharacterSystem.UMAWardrobeRecipe), asset);
+            }
+        }
+
+        private SlotDataAsset CreateSlot_Internal()
 	    {
 			var material = slotMaterial;
 			if (slotName == null || slotName == "")
@@ -122,6 +209,7 @@ namespace UMAEditor
 	            Debug.LogError("Slot Mesh not supplied.");
 	            return null;
 	        }
+
             Debug.Log("Slot Mesh: " + slotMesh.name, slotMesh.gameObject);
 			SlotDataAsset slot = UMASlotProcessingUtil.CreateSlotData(AssetDatabase.GetAssetPath(slotFolder), GetAssetFolder(), GetAssetName(), slotMesh, material, normalReferenceMesh,RootBone);
 	        return slot;
@@ -151,16 +239,27 @@ namespace UMAEditor
 						RecurseObject(draggedObjects[i], meshes);
 					}
 
+                    SlotDataAsset sd = null;
 					foreach(var mesh in meshes)
 					{
 						slotMesh = mesh;
 						GetMaterialName(mesh.name, mesh);
-						if (CreateSlot() != null)
+                        sd = CreateSlot();
+						if (sd != null)
 						{
 							Debug.Log("Batch importer processed mesh: " + slotName);
-						}
+                            string AssetPath = AssetDatabase.GetAssetPath(sd.GetInstanceID());
+                            if (createOverlay)
+                            {
+                                CreateOverlay(AssetPath.Replace(sd.name, sd.slotName + "_Overlay"), sd);
+                            }
+                            if (createRecipe)
+                            {
+                                CreateRecipe(AssetPath.Replace(sd.name, sd.slotName + "_Recipe"));
+                            }
+                        }
 					}
-	            }
+                }
 	        }
 	    }
 

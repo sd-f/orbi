@@ -2,9 +2,8 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using UMA.CharacterSystem;
 
 namespace UMA
 {
@@ -206,29 +205,30 @@ namespace UMA
             throw new System.ArgumentOutOfRangeException();
         }
 
-        /// <summary>
-        /// Method for finding a DynamicUMADnaAsset by name using DynamicAssetLoader. This can happen when a recipe tries to load load an asset based on an instance ID that may have changed or if the Asset is in an AssetBundle and was not available when the dna was loaded
-        /// </summary>
-        /// <param name="dnaAssetName"></param>
-        /// <param name="dynamicallyAddFromResources"></param>
-        /// <param name="dynamicallyAddFromAssetBundles"></param>
-        public override void FindMissingDnaAsset(string _dnaAssetName, bool dynamicallyAddFromResources = true, bool dynamicallyAddFromAssetBundles = false)
-        {
+		/// <summary>
+		/// Method for finding a DynamicUMADnaAsset by name using DynamicAssetLoader. This can happen when a recipe tries to load load an asset based on an instance ID that may have changed or if the Asset is in an AssetBundle and was not available when the dna was loaded
+		/// </summary>
+		/// <param name="dnaAssetName"></param>
+		public override void FindMissingDnaAsset(string dnaAssetName)
+		{
+			InitializeDynamicDNADictionary();
+			if (DynamicDNADictionary.TryGetValue(dnaAssetName, out _dnaAsset))
+				return;
 			//if we are in the editor and the application is not running find the Asset using AssetDatabase
 #if UNITY_EDITOR
-			if (!Application.isPlaying)
+				if (!Application.isPlaying)
 			{
 				var allDNAAssetsGUIDs = AssetDatabase.FindAssets("t:DynamicUMADnaAsset");
 				for (int i = 0; i < allDNAAssetsGUIDs.Length; i++)
 				{
 					var thisDNAPath = AssetDatabase.GUIDToAssetPath(allDNAAssetsGUIDs[i]);
 					var thisDNA = AssetDatabase.LoadAssetAtPath<DynamicUMADnaAsset>(thisDNAPath);
-					if(thisDNA.name == _dnaAssetName)
+					if (thisDNA.name == dnaAssetName)
 					{
 						//Debug.Log("DynamicUMADna found  " + _dnaAssetName + " from AssetDatabase");
 						SetMissingDnaAsset(new DynamicUMADnaAsset[1] { thisDNA });
 						break;
-                    }
+					}
 				}
 				//This just makes it super slow *every* time a recipe is loaded
 				//Resources.UnloadUnusedAssets();
@@ -236,14 +236,14 @@ namespace UMA
 			}
 #endif
 			didDnaAssetUpdate = false;
-            didDnaAssetUpdate = DynamicAssetLoader.Instance.AddAssets <UMA.DynamicUMADnaAsset > (true, true, true, "", "", null, _dnaAssetName, SetMissingDnaAsset);
-            if (didDnaAssetUpdate == false)
-            {
-                Debug.LogWarning("DynamicUMADna could not find DNAAsset " + _dnaAssetName + "!");
-            }
-        }
+			didDnaAssetUpdate = DynamicAssetLoader.Instance.AddAssets<UMA.DynamicUMADnaAsset>(true, true, true, "", "", null, dnaAssetName, SetMissingDnaAsset);
+			if (didDnaAssetUpdate == false)
+			{
+				Debug.LogWarning("DynamicUMADna could not find DNAAsset " + dnaAssetName + "!");
+			}
+		}
 
-        public static DynamicUMADna LoadInstance(string data)
+		public static DynamicUMADna LoadInstance(string data)
         {
             return UnityEngine.JsonUtility.FromJson<DynamicUMADna_Byte>(data).ToDna();
         }
@@ -254,7 +254,9 @@ namespace UMA
 
         #endregion
     }
-    //class to store dynamic settings as name value pairs- we need this because the DynamicUMADnaAssets values may change and so we need to match any existing values to names even if the array size has changed
+
+   // Class to store dynamic settings as name value pairs. 
+   // We need this because the DynamicUMADnaAssets values may change and so we need to match any existing values to names even if the array size has changed
     [System.Serializable]
     public class DNASettings
     {

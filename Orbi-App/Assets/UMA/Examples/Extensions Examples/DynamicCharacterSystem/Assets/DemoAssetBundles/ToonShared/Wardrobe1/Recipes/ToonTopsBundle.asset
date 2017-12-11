@@ -18,14 +18,13 @@ MonoBehaviour:
   wardrobeRecipeThumbs:
   - race: ToonFemale
     filename: 
-    thumb: {fileID: 21300000, guid: d9166f7a7c366bc4a81da4987c433ead, type: 3}
+    thumb: {fileID: 21300000, guid: 54c81785648a33243a6fa7c97cd4f683, type: 3}
   wardrobeSlot: None
   Hides: []
   suppressWardrobeSlots: []
   activeWardrobeSet: []
-  recipeString: '{"version":2,"packedSlotDataList":[],"slotsV2":[],"colors":[],"fColors":[{"name":"Hair","colors":[179,21,21,255,0,0,0,0,255,255,255,255,0,0,0,0]},{"name":"Skin","colors":[255,166,166,255,0,0,0,0,255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0]},{"name":"SharedColor1","colors":[8,225,90,255,0,0,0,0,255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0]},{"name":"SharedColor2","colors":[170,30,126,255,0,0,0,0,255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0]},{"name":"SharedColor3","colors":[255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0,255,255,255,255,0,0,0,0]}],"sharedColorCount":5,"race":"","packedDna":[]}'
-  coverImages:
-  - {fileID: 21300000, guid: 62a1872587a7aa04eab1c4eb9b178386, type: 3}
+  recipeString: '{"version":3,"packedSlotDataList":[],"slotsV2":[],"slotsV3":[],"colors":[],"fColors":[],"sharedColorCount":0,"race":"","packedDna":[]}'
+  coverImages: []
   wardrobeCollection:
     sets:
     - targetRace: ToonFemale

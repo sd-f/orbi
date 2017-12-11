@@ -1,8 +1,6 @@
 using System;
 using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using Object = UnityEngine.Object;
 
 namespace UMA
 {
@@ -61,6 +59,9 @@ namespace UMA
 
 			if (atlasResolution == 0)
 				atlasResolution = 256;
+
+			if (defaultOverlayAsset != null)
+				_defaultOverlayData = new OverlayData (defaultOverlayAsset);
 
 			if (!textureMerge)
 			{
@@ -139,7 +140,7 @@ namespace UMA
 		}
 
 #pragma warning disable 618
-		private void RebuildAllRenderTextures()
+		public void RebuildAllRenderTextures()
 		{
 			var activeUmaData = umaData;
 			var storedGeneratorCoroutine = activeGeneratorCoroutine;
@@ -232,29 +233,45 @@ namespace UMA
 					return false;
 			}
 
-			if (umaData.isShapeDirty)
+			if (umaData.isShapeDirty) 
 			{
+				if (!umaData.skeleton.isUpdating)
+				{
+					umaData.skeleton.BeginSkeletonUpdate();
+				}
 				UpdateUMABody(umaData);
 				umaData.isShapeDirty = false;
 				DnaChanged++;
+			} 
+			else if (umaData.skeleton.isUpdating)
+			{
+				umaData.skeleton.EndSkeletonUpdate();
 			}
+
 			UMAReady();
 			return true;
 		}
 
 		public virtual void OnDirtyUpdate()
 		{
-			if (HandleDirtyUpdate(umaDirtyList[0]))
+			try
 			{
-				umaDirtyList.RemoveAt(0);
-				umaData.MoveToList(cleanUmas);
-				umaData = null;
+				if (HandleDirtyUpdate(umaDirtyList[0]))
+				{
+					umaDirtyList.RemoveAt(0);
+					umaData.MoveToList(cleanUmas);
+					umaData = null;
+				}
+				else if (fastGeneration && HandleDirtyUpdate(umaDirtyList[0]))
+				{
+					umaDirtyList.RemoveAt(0);
+					umaData.MoveToList(cleanUmas);
+					umaData = null;
+				}
 			}
-			else if (fastGeneration && HandleDirtyUpdate(umaDirtyList[0]))
+			catch (Exception ex)
 			{
-				umaDirtyList.RemoveAt(0);
-				umaData.MoveToList(cleanUmas);
-				umaData = null;
+				UnityEngine.Debug.LogWarning("Exception in UMAGeneratorBuiltin.OnDirtyUpdate: " + ex);
 			}
 		}
 
@@ -296,7 +313,7 @@ namespace UMA
 		{
 			if (umaData)
 			{
-				umaData.myRenderer.enabled = true;
+				umaData.Show();
 				umaData.FireUpdatedEvent(false);
 				umaData.FireCharacterCompletedEvents();
 				if (umaData.skeleton.boneCount > 300)

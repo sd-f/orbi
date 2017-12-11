@@ -2,13 +2,9 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using System.Collections;
 using System.Collections.Generic;
-using System;
-using UMA;
-using UMAAssetBundleManager;
 
-namespace UMACharacterSystem
+namespace UMA.CharacterSystem
 {
 	public class DynamicCharacterSystem : DynamicCharacterSystemBase
 	{
@@ -82,7 +78,7 @@ namespace UMACharacterSystem
 				//we need to check that this is not null- the user may not have downloaded it yet
 				if (possibleRaces[i] == null)
 					continue;
-				if (DynamicAssetLoader.Instance != null && possibleRaces[i].raceName == "RaceDataPlaceholder")
+				if (possibleRaces[i].raceName == "RaceDataPlaceholder")
 					continue;
 				if (Recipes.ContainsKey(possibleRaces[i].raceName))
 				{
@@ -170,7 +166,7 @@ namespace UMACharacterSystem
 					if (possibleRaces[i] != null)
 					{
 						if (!Recipes.ContainsKey(possibleRaces[i].raceName) && possibleRaces[i].raceName != "RaceDataPlaceholder")
-						{
+                        {
 							Recipes.Add(possibleRaces[i].raceName, new Dictionary<string, List<UMATextRecipe>>());
 						}
 					}
@@ -251,10 +247,6 @@ namespace UMACharacterSystem
 			{
 				if (filename == "" || (filename != "" && filename.Trim() == u.name))
 				{
-					if(u.wardrobeSlot == null)//u == null is getting sent somehow
-					{
-						Debug.Log(u.name + " had no wardrobe slot");
-					}
 					var thisWardrobeSlot = u.wardrobeSlot;
 					if (u.GetType() == typeof(UMAWardrobeCollection))
 					{
@@ -350,8 +342,8 @@ namespace UMACharacterSystem
 							RaceData raceKeyRace = (context.raceLibrary as DynamicRaceLibrary).GetRace(racekey, false);
 							if (raceKeyRace == null)
 								continue;
-							if (raceKeyRace.backwardsCompatibleWith.Contains(u.compatibleRaces[i]) && raceKeyRace.wardrobeSlots.Contains(thisWardrobeSlot))
-							{
+							if (raceKeyRace.IsCrossCompatibleWith(u.compatibleRaces[i]) && (raceKeyRace.wardrobeSlots.Contains(thisWardrobeSlot) || thisWardrobeSlot == "WardrobeCollection"))
+                            {
 								Dictionary<string, List<UMATextRecipe>> RaceRecipes = Recipes[racekey];
 								if (!RaceRecipes.ContainsKey(thisWardrobeSlot))
 								{

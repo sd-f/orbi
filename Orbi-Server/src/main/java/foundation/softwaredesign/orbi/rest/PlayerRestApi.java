@@ -2,7 +2,6 @@ package foundation.softwaredesign.orbi.rest;
 
 import foundation.softwaredesign.orbi.model.game.character.CharacterMessage;
 import foundation.softwaredesign.orbi.model.game.character.CharacterMessages;
-import foundation.softwaredesign.orbi.model.game.character.Inventory;
 import foundation.softwaredesign.orbi.model.game.character.Player;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
 import foundation.softwaredesign.orbi.model.game.world.World;
@@ -82,12 +81,6 @@ public class PlayerRestApi {
     public World destroy(@NotNull Player player) {
         checkPlayerParameter(player);
         return playerService.destroy(player);
-    }
-
-    @GET
-    @Path("/inventory")
-    public Inventory inventory() {
-        return playerService.getInventory();
     }
 
     @GET

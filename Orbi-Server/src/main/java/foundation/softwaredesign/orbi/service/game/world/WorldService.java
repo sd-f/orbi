@@ -7,7 +7,6 @@ import foundation.softwaredesign.orbi.model.game.world.World;
 import foundation.softwaredesign.orbi.persistence.entity.BodyConstraints;
 import foundation.softwaredesign.orbi.service.auth.UserService;
 import foundation.softwaredesign.orbi.service.game.character.CharacterService;
-import foundation.softwaredesign.orbi.service.game.character.SpawnService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectService;
 import foundation.softwaredesign.orbi.service.game.gameobject.GameObjectTypeService;
 import foundation.softwaredesign.orbi.service.game.gameobject.ai.AiService;
@@ -37,8 +36,6 @@ public class WorldService {
     @Inject
     WorldAdapterService worldAdapterService;
     @Inject
-    SpawnService spawnService;
-    @Inject
     DateConverter date;
 
     public World getWorld(GeoPosition geoPosition) {
@@ -46,7 +43,6 @@ public class WorldService {
         List<GameObject> gameObjectList = gameObjectService.getObjectAround(geoPosition);
         world.setGameObjects(gameObjectList);
         //elevationService.addAltitude(world);
-        spawnService.spawnObjects(gameObjectList);
         List<Character> characterList = characterService.getCharactersAround(geoPosition);
 
         aiService.updateAiTargets(gameObjectList);

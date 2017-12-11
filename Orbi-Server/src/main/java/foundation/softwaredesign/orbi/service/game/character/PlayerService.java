@@ -2,7 +2,6 @@ package foundation.softwaredesign.orbi.service.game.character;
 
 import foundation.softwaredesign.orbi.model.game.character.Character;
 import foundation.softwaredesign.orbi.model.game.character.CharacterDevelopment;
-import foundation.softwaredesign.orbi.model.game.character.Inventory;
 import foundation.softwaredesign.orbi.model.game.character.Player;
 import foundation.softwaredesign.orbi.model.game.gameobject.GameObject;
 import foundation.softwaredesign.orbi.model.game.transform.Transform;
@@ -28,16 +27,12 @@ public class PlayerService {
     @Inject
     UserService user;
     @Inject
-    InventoryService inventory;
-    @Inject
     GameObjectService gameObjectService;
     @Inject
     CharacterService characterService;
 
     public World craft(Player player) {
         characterService.updateTransform(player.getCharacter().getTransform());
-        inventory.checkBasicInventoryAndRestock();
-        inventory.use(player.getGameObjectToCraft());
         player.getGameObjectToCraft().setIdentityId(user.getIdentity().getId());
         world.create(player.getGameObjectToCraft());
         characterService.incrementXp(CharacterDevelopment.XP_CRAFT);
@@ -49,20 +44,12 @@ public class PlayerService {
         Long id = player.getSelectedObjectId();
         try {
             GameObject object = gameObjectService.findById(id);
-            inventory.addItem(object.getType().getPrefab(), new Long(1));
-            inventory.checkForGiftChest(object);
             world.delete(object.getId());
             characterService.incrementXp(CharacterDevelopment.XP_DESTROY);
         } catch (NotFoundException ex) {
             Logger.getLogger(PlayerService.class.getName()).fine(ex.getMessage());
         }
         return world.getWorld(player.getCharacter().getTransform().getGeoPosition());
-    }
-
-    public Inventory getInventory() {
-        inventory.checkBasicInventoryAndRestock();
-
-        return inventory.getInventory();
     }
 
     /**

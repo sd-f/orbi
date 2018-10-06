@@ -53,10 +53,10 @@ namespace GameScene
 
             // morph
             uma.umaDna = new UMADnaHumanoid();
-            uma.umaTutorialDna = new UMADnaTutorial();
+            //uma.umaTutorialDna = new UMADnaTutorial();
             uma.umaData.umaRecipe.AddDna(uma.umaDna);
-            uma.umaData.umaRecipe.AddDna(uma.umaTutorialDna);
-
+            //uma.umaData.umaRecipe.AddDna(uma.umaTutorialDna);
+            
             CreateMale(uma);
 
             uma.umaDynamicAvatar.animationController = animController;
